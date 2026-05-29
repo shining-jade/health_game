@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
@@ -415,15 +415,19 @@ body{background:
   font-size:4.4rem;
   margin-bottom:0;
   display:flex;
-  align-items:flex-end;
+  align-items:flex-start;
   justify-content:center;
+  position:absolute;
+  inset:0;
+  overflow:hidden;
+  padding-top:14px;
 }
 #screen-student .scene-char img{
-  height:370px;
-  max-width:390px;
+  height:520px;
+  max-width:none;
   object-fit:contain;
-  object-position:center bottom;
-  transform:translateY(142px);
+  object-position:center top;
+  transform:translateY(36px) scale(1.06);
 }
 .scene-clues{
   position:absolute;
@@ -722,6 +726,160 @@ body{background:
   font-weight:700;
   line-height:1.7;
 }
+.choice-modal{
+  position:fixed;
+  inset:0;
+  z-index:140;
+  display:none;
+  align-items:flex-start;
+  justify-content:center;
+  padding:150px 10px 18px;
+  background:rgba(255,246,235,.50);
+}
+.choice-modal.show{display:flex;}
+#screen-student.choice-open .s-right{
+  filter:blur(4px);
+}
+#screen-student.choice-collapsed .s-right{
+  filter:none;
+}
+.choice-sheet{
+  width:min(430px,100%);
+  max-height:min(62dvh,470px);
+  overflow-y:auto;
+  border:2px solid rgba(255,159,128,.48);
+  border-radius:22px;
+  background:linear-gradient(180deg,#fffdf7 0%,#fff5e8 100%);
+  color:#3f2d24;
+  box-shadow:0 18px 48px rgba(126,102,85,.20);
+  padding:16px 18px 18px;
+  animation:choiceFloat .28s ease both;
+}
+@keyframes choiceFloat{
+  from{opacity:0;transform:translateY(14px) scale(.98);}
+  to{opacity:1;transform:translateY(0);}
+}
+.choice-profile{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:12px;
+}
+.choice-profile-main{
+  flex:1;
+  min-width:0;
+}
+.choice-toggle{
+  border:2px solid #f1d3b8;
+  border-radius:999px;
+  background:#fff;
+  color:#7e6655;
+  font-family:'Jua',sans-serif;
+  font-size:.78rem;
+  padding:7px 10px;
+  cursor:pointer;
+  flex-shrink:0;
+}
+.choice-toggle:hover{
+  border-color:#ff9f80;
+  color:#e76642;
+}
+.choice-avatar{
+  width:58px;
+  height:58px;
+  border-radius:50%;
+  border:3px solid #ff9f80;
+  background:#fff;
+  overflow:hidden;
+  display:flex;
+  align-items:flex-start;
+  justify-content:center;
+  flex-shrink:0;
+}
+.choice-avatar img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  object-position:center top;
+  transform:translateY(32%) scale(2.55);
+  transform-origin:center 28%;
+}
+.choice-avatar span{font-size:2rem;line-height:58px;}
+.choice-name{
+  font-family:'Jua',sans-serif;
+  font-size:1rem;
+  color:#e76642;
+}
+.choice-desc{
+  font-size:.74rem;
+  color:#7e6655;
+  font-weight:800;
+}
+.choice-question{
+  border-left:4px solid #ff9f80;
+  border-radius:0 14px 14px 0;
+  background:#fff;
+  padding:13px 15px;
+  margin-bottom:12px;
+  font-size:1rem;
+  line-height:1.65;
+  font-weight:900;
+  color:#3f2d24;
+}
+.choice-modal-list{
+  display:flex;
+  flex-direction:column;
+  gap:9px;
+}
+.choice-modal-list .choice-btn{
+  min-height:auto;
+  border:2px solid #f1d3b8;
+  box-shadow:none;
+  background:#fff;
+  color:#3f2d24;
+  font-size:.95rem;
+  font-weight:900;
+}
+.choice-modal-list .choice-btn:nth-child(2),
+.choice-modal-list .choice-btn:nth-child(3){
+  background:#fff;
+  color:#3f2d24;
+}
+.choice-modal-list .choice-btn:hover{
+  transform:translateY(-2px);
+  border-color:#ff9f80;
+}
+.choice-modal.collapsed{
+  background:transparent;
+  pointer-events:none;
+}
+.choice-modal.collapsed .choice-sheet{
+  pointer-events:auto;
+  max-height:86px;
+  width:min(360px,calc(100% - 24px));
+  padding:10px 12px;
+  overflow:hidden;
+  box-shadow:0 10px 26px rgba(126,102,85,.16);
+}
+.choice-modal.collapsed .choice-profile{
+  margin-bottom:0;
+}
+.choice-modal.collapsed .choice-question,
+.choice-modal.collapsed .choice-modal-list,
+.choice-modal.collapsed .choice-desc{
+  display:none;
+}
+.choice-modal.collapsed .choice-avatar{
+  width:46px;
+  height:46px;
+}
+.choice-modal.collapsed .choice-name::after{
+  content:" · 선택지를 접어둠";
+  color:#7e6655;
+  font-family:'Noto Sans KR','Malgun Gothic',system-ui,sans-serif;
+  font-size:.72rem;
+  font-weight:900;
+}
 
 #screen-ending{
   background:
@@ -915,12 +1073,61 @@ body{background:
   #screen-student .hud-btn{height:38px;}
   #screen-student .hud-main{min-height:38px;}
   #screen-student .scene-area{height:210px;min-height:210px;}
-  #screen-student .scene-char img{height:330px;max-width:350px;transform:translateY(128px);}
+  #screen-student .scene-char img{height:460px;transform:translateY(28px) scale(1.04);}
   #screen-student .stat-row{min-height:46px;}
   #screen-student .stat-row label span{font-size:.62rem;}
   #screen-student .stat-row label b{font-size:.98rem;}
   #screen-student .choice-btn{min-height:64px;}
   #screen-student .dialog-box .txt{font-size:.84rem;line-height:1.55;}
+}
+@media(max-width:460px){
+  html,body{
+    height:auto;
+    min-height:100%;
+    overflow:auto;
+  }
+  #app{
+    height:auto;
+    min-height:100svh;
+    overflow:visible;
+  }
+  #screen-student.active{
+    height:auto;
+    min-height:100svh;
+    overflow-y:auto;
+    overflow-x:hidden;
+    -webkit-overflow-scrolling:touch;
+  }
+  #screen-student .s-right{
+    flex:none;
+    min-height:auto;
+    overflow:visible;
+  }
+  #screen-student .student-hud{
+    position:sticky;
+    top:0;
+    z-index:20;
+  }
+  #screen-student .scene-area,
+  #screen-student .s-left,
+  #screen-student .caffeine-hud{
+    flex:0 0 auto;
+  }
+  #screen-student .s-dialog{
+    flex:0 0 auto;
+    min-height:auto;
+    overflow:visible;
+    padding-bottom:max(26px, env(safe-area-inset-bottom));
+  }
+  #screen-student .choices{
+    padding-bottom:18px;
+  }
+  .choice-modal{
+    padding:126px 10px 14px;
+  }
+  .choice-sheet{
+    max-height:64dvh;
+  }
 }
 </style>
 </head>
@@ -1046,6 +1253,22 @@ body{background:
   </div>
 </div>
 
+<!-- ══ 시나리오 질문 팝업 ══ -->
+<div class="choice-modal" id="choice-modal">
+  <div class="choice-sheet">
+    <div class="choice-profile">
+      <div class="choice-avatar" id="choice-avatar"><span>🧑‍🎓</span></div>
+      <div class="choice-profile-main">
+        <div class="choice-name" id="choice-name">학생</div>
+        <div class="choice-desc" id="choice-desc">상황 선택</div>
+      </div>
+      <button class="choice-toggle" id="choice-toggle" type="button" onclick="toggleChoiceModal(event)">접기</button>
+    </div>
+    <div class="choice-question" id="choice-question"></div>
+    <div class="choice-modal-list" id="choice-modal-list"></div>
+  </div>
+</div>
+
 <!-- ══ ENDING ══ -->
 <div id="screen-ending" class="screen">
   <div style="flex:1;display:flex;align-items:center;justify-content:center;padding:40px 20px;">
@@ -1108,12 +1331,12 @@ body{background:
 <!-- ══ 음료 선택 팝업 ══ -->
 <div id="drink-modal" style="display:none;position:fixed;inset:0;z-index:200;
   background:rgba(255,245,232,.78);backdrop-filter:blur(4px);
-  display:none;align-items:flex-end;justify-content:center;">
-  <div id="drink-sheet" style="background:linear-gradient(180deg,#fffaf2 0%,#fff5e8 100%);border-radius:24px 24px 0 0;
-    width:100%;max-width:480px;padding:24px 20px 36px;max-height:80vh;overflow-y:auto;color:#3f2d24;box-shadow:0 -18px 48px rgba(126,102,85,.18);">
+  display:none;align-items:stretch;justify-content:center;">
+  <div id="drink-sheet" style="background:linear-gradient(180deg,#fffaf2 0%,#fff5e8 100%);border-radius:0;
+    width:100%;max-width:480px;height:100dvh;max-height:100dvh;padding:24px 20px 36px;overflow-y:auto;color:#3f2d24;box-shadow:0 -18px 48px rgba(126,102,85,.18);">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
       <h3 id="drink-title" style="font-family:'Jua',sans-serif;font-size:1.1rem;">음료 선택</h3>
-      <button onclick="closeDrinkModal()"
+      <button onclick="cancelDrinkModal()"
         style="background:#fff;border:2px solid #eec7a9;border-radius:14px;font-size:1.2rem;cursor:pointer;color:#7e6655;width:42px;height:42px;">✕</button>
     </div>
     <!-- 카페인 게이지 -->
@@ -1380,10 +1603,16 @@ const DEFAULT_DATA = {
   meta:{ title:'약, 알고 먹자!', school:'전북특별자치도 보건교사 교육용' },
   images:{
     // ── 배경 ──
-    scene_classroom: '',
-    scene_library:   '',
-    scene_gym:       '',
-    scene_health:    '',
+    scene_classroom: 'assets/backgrounds/scene_classroom.png',
+    scene_library:   'assets/backgrounds/scene_library.png',
+    scene_gym:       'assets/backgrounds/scene_gym.png',
+    scene_health:    'assets/backgrounds/scene_health.png',
+    scene_commute:   'assets/backgrounds/scene_commute.png',
+    scene_convenience:'assets/backgrounds/scene_convenience.png',
+    scene_bedroom:   'assets/backgrounds/scene_bedroom.png',
+    scene_cafeteria: 'assets/backgrounds/scene_cafeteria.png',
+    scene_cafe:      'assets/backgrounds/scene_cafe.png',
+    scene_exam:      'assets/backgrounds/scene_exam.png',
 
     // ── 주인공 ──
     char_male:   'assets/characters/char_male.png',
@@ -1573,6 +1802,9 @@ let G = {
   caffeineToday:0, caffeineStreak:0, noCaffeineStreak:0, caffeineOverDays:0,
   lateSleepStreak:0, veryLateSleepStreak:0, sleepDebt:0,
   lastSleepHour:22, nextDayPenalty:'normal', teacherEventDay:0,
+  totalCaffeine:0, caffeineDays:0, sleepTotal:0, sleepCount:0, lastDayCaffeine:0,
+  analgesicCount:0, fastingMedCount:0, comboCount:0, helpedFriend:0,
+  labelChecked:false, snsRisk:false, minjunWarned:false, recoveryPlan:false,
   stats:{health:70,knowledge:50,caffeine:70,sleep:60,judgment:55,social:60},
 };
 let T = { trust:50, currentCase:-1, done:[] };
@@ -1600,25 +1832,7 @@ function upgradeGameData(data){
     {key:'judgment',label:'🟢 판단력',color:'#58c4a0'},
     {key:'social',label:'🟣 사회성',color:'#c084fc'},
   ];
-  const target=data.scenarios.find(s=>
-    (s.location||'').includes('체육') ||
-    (s.text||'').includes('에너지음료') && (s.text||'').includes('게보린')
-  );
-  if(target){
-    target.text='밤새 공부 탓에 체육 시간에 너무 졸렸다. 에너지음료를 마셨는데 두통도 생겼다. 가방에는 아까 약국에서 산 게보린이 있다. 먹기 전에 음료 라벨과 약 상자의 성분표를 확인해 보자.';
-    target.clues=caffeineClues();
-    if(target.choices && target.choices[0]){
-      target.choices[0].text='📋 라벨과 성분표를 확인하고 게보린을 먹지 않는다. 보건실에 간다.';
-    }
-  }
-  const cumulative=data.scenarios.find(s=>(s.location||'').includes('누적'));
-  if(cumulative){
-    cumulative.text='DAY 5 지금까지의 선택이 누적되어 몸에 영향을 남긴다. 카페인과 약물 과다 선택이 반복되면 내성, 집중력 붕괴, 부작용이 생길 수 있다.';
-  }
-  const final=data.scenarios.find(s=>(s.location||'').includes('시험 전날'));
-  if(final){
-    final.text='FINAL ROUND. 시험 전날 밤, 집중이 부족하다는 불안이 올라온다. 마지막 선택을 해 보자.';
-  }
+  data.scenarios=buildFourteenDayScenarios();
   return data;
 }
 
@@ -1626,6 +1840,7 @@ function upgradeGameData(data){
 // 4. 화면 전환
 // ══════════════════════════════════════
 const show=id=>{
+  closeAllOverlays();
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById('screen-'+id).classList.add('active');
   document.getElementById('app').scrollTop=0;
@@ -1639,6 +1854,21 @@ const goName=()=>{
   show('name');
 };
 const goTeacher=()=>{ show('teacher'); renderCaseList(); renderCaseMain(-1); };
+
+function closeAllOverlays(){
+  ['drink-modal','sleep-modal','daily-report','prescription-modal','npc-bubble','sns-modal'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.style.display='none';
+  });
+  document.getElementById('clue-modal')?.classList.remove('show');
+  const choiceModal=document.getElementById('choice-modal');
+  if(choiceModal) choiceModal.classList.remove('show','collapsed');
+  const choiceList=document.getElementById('choice-modal-list');
+  if(choiceList) choiceList.innerHTML='';
+  const screen=document.getElementById('screen-student');
+  if(screen) screen.classList.remove('choice-open','choice-collapsed');
+  window._pendingDrinkChoice=null;
+}
 
 function getSavePayload() {
   return {
@@ -1739,6 +1969,10 @@ const confirmName=()=>{
   G.lastSleepHour=22; G.nextDayPenalty='normal'; G.teacherEventDay=0;
   G.day11Applied=false; G.day12Applied=false;
   G.currentDay=undefined;
+  G.totalCaffeine=0; G.caffeineDays=0; G.sleepTotal=0; G.sleepCount=0;
+  G.lastDayCaffeine=0;
+  G.analgesicCount=0; G.fastingMedCount=0; G.comboCount=0; G.helpedFriend=0;
+  G.labelChecked=false; G.snsRisk=false; G.minjunWarned=false; G.recoveryPlan=false;
   const data=DB.gameData;
   data.stats=[
     {key:'health',label:'🔴 체력',color:'#e76f51'},
@@ -1803,16 +2037,18 @@ function updateCaffeineHud(){
 }
 const DRINK_MENU = {
   cvs: [
-    { id:'energy',   name:'에너지드링크',  emoji:'🥤', caffeine:62,  delta:{health:-5, caffeine:-8,  judgment:-3}, good:false,
-      desc:'카페인 62mg. 오늘 남은 허용량을 확인하세요.' },
-    { id:'cancoffee', name:'캔커피',       emoji:'☕', caffeine:50,  delta:{health:-3, caffeine:-6},               good:false,
-      desc:'카페인 50mg. 달달하지만 카페인이 쌓여요.' },
+    { id:'energy',   name:'에너지드링크',  emoji:'🥤', caffeine:80,  delta:{health:-5, caffeine:-8,  judgment:-3}, good:false,
+      desc:'라벨을 확인하니 카페인 80mg. 짧게는 눈이 떠지지만 밤 수면을 밀어낼 수 있어요.' },
+    { id:'cancoffee', name:'캔커피',       emoji:'☕', caffeine:60,  delta:{health:-3, caffeine:-6},               good:false,
+      desc:'라벨을 확인하니 카페인 60mg. 달달하고 그럴싸하지만 오늘 총량에 쌓입니다.' },
+    { id:'vitamin',  name:'비타민음료',    emoji:'🧃', caffeine:10,  delta:{health:1, caffeine:-1},               good:true,
+      desc:'카페인 10mg. 마신 기분은 나지만 각성 효과는 크지 않아요.' },
     { id:'cola',     name:'콜라',          emoji:'🥤', caffeine:23,  delta:{health:-2, caffeine:-3},               good:false,
       desc:'카페인 23mg. 비교적 적지만 당분도 많아요.' },
     { id:'greentea', name:'녹차',          emoji:'🍵', caffeine:30,  delta:{health:3,  caffeine:-3,  social:2},    good:true,
       desc:'카페인 30mg. 항산화 성분도 있어요.' },
     { id:'water',    name:'물/이온음료',   emoji:'💧', caffeine:0,   delta:{health:5,  caffeine:6},  good:true, noCaffeine:true,
-      desc:'카페인 0mg. 가장 건강한 선택이에요.' },
+      desc:'카페인 0mg. 갈증이 날 때 부담 없이 마실 수 있어요.' },
   ],
   cafe: [
     { id:'americano', name:'아메리카노',   emoji:'☕', caffeine:125, delta:{health:-5, caffeine:-15, judgment:-5}, good:false,
@@ -1919,322 +2155,267 @@ const NPC_DATA = {
   }
 };
 function buildFourteenDayScenarios(){
-  /* ─────────────────────────────────────
-     캐릭터 말투 원칙
-     민준  : 짧고 현실적, 귀찮아하는 척
-     서연  : 차분하고 배려하는, 걱정 많음
-     태양  : 관찰자적, 가끔 핵심 찌름
-     하은  : 가볍고 SNS 감성, 유행어
-     선생님: 단호하지만 따뜻함
-     나레이터: 장면 묘사 전담, 설명 없음
-  ───────────────────────────────────── */
   return [
-
-    // ── DAY 1 ──────────────────────────
-    {type:'narration', day:1,
-      location:'🏫 DAY 1 첫 등교', scene:'scene_classroom',
-      emoji: G.gender==='f' ? '👩‍🎓' : '🧑‍🎓',
-      speaker:'나레이터',
-      text:`3월의 아침. 새 교복 냄새가 채 빠지지 않은 복도. ${G.name}은 가방 끈을 고쳐 메며 자신의 첫 칸을 밟았다.`,
+    {type:'narration', day:1, location:'🏫 DAY 1 등교길', scene:'scene_commute', speaker:'나레이터',
+      text:'3월 첫 등교일. 새 교복 냄새가 아직 남아있다. {name}은 간밤에 설레서 늦게 잤다. 버스 안에서 눈이 무거운데 학교까지는 아직 20분이 남았다.',
       choices:null},
-
-    {type:'event', day:1,
-      location:'🌅 DAY 1 아침', scene:'scene_classroom',
-      emoji:'🌱', speaker:'서연',
-      text:'교문 앞에서 서연이 뛰어온다. "야, 오늘 아침 먹었어? 나는 바나나 하나 먹고 나왔는데 — 그거라도 챙겨야 오전을 버티더라고."',
+    {type:'event', day:1, location:'🏪 DAY 1 교문 앞 편의점', scene:'scene_convenience', speaker:'민준',
+      text:'민준이 편의점에서 나오며 손을 흔든다. "야, 어제 설레서 못 잤지? 나도. 에너지드링크 하나 샀는데 너도 살래? 오전 버티려면 이거라도 마셔야 해."',
       choices:[
-        { text:'🍚 "나도 먹고 나왔어. 엄마가 억지로 먹이긴 했는데." 함께 교실로 향한다.',
-          good:true, delta:{health:8, social:3},
-          result:{title:'든든한 출발',
-            text:'아침 식사는 혈당을 안정시켜 오전 집중력에 실질적으로 도움이 돼요. 서연과 이야기하며 교실에 들어섰다.'}},
-        { text:'🏃 "나는 그냥 왔어, 시간도 없고." 슬쩍 화제를 돌린다.',
-          good:false, delta:{health:-8, sleep:-3},
-          result:{title:'텅 빈 위장',
-            text:'1교시가 시작되자마자 위에서 소리가 났다. 아침 결식은 오전 피로와 집중 저하로 이어질 수 있어요.'}},
+        {text:'🥤 편의점 냉장고에서 음료를 직접 고른다.', good:false, openDrink:'cvs', delta:{knowledge:2},
+          result:{title:'첫 음료 선택', text:'오전은 조금 버틸 수 있을 것 같다. 어떤 음료를 골랐는지가 오늘 총량에 남는다.'}},
+        {text:'💧 "됐어, 이따 물 마실게." 민준의 시선을 견딘다.', good:true, caffeineMg:0, noCaffeine:true, delayed:{judgment:5}, delta:{judgment:3},
+          result:{title:'어색한 거절', text:'민준이 "어, 진짜로?" 하며 쳐다봤다. 조금 어색했지만 그냥 걸어갔다. 당장은 아무 효과도 없는 선택처럼 느껴졌다.'}},
       ]},
-
-    {type:'event', day:1,
-      location:'🌙 DAY 1 취침', scene:'scene_classroom',
-      emoji:'🛌', speaker:'나레이터',
-      text:'불을 끄려던 손이 잠깐 멈췄다. 핸드폰 화면만 천장에 반사되고 있다.',
+    {type:'event', day:1, location:'🌙 DAY 1 내 방', scene:'scene_bedroom', speaker:'나레이터',
+      text:'첫날치고 숙제가 많았다. 시계를 보니 11시. 수학 문제집이 아직 반이 남아있다.',
       choices:[
-        { text:'🛌 취침 시각을 선택한다', good:true, delta:{}, openSleep:true,
-          result:{ title:'취침', text:'' } }
+        {text:'📚 문제집을 다 끝내고 새벽 1시에 잔다.', good:false, sleepHour:25, sleepHours:6, delta:{knowledge:10,health:-8,sleep:-8,judgment:-5},
+          result:{title:'완성된 문제집', text:'문제집은 끝냈다. 하지만 눈꺼풀이 무겁다. 공부량은 늘었지만 내일 수업에서 얼마나 남을지는 아직 모른다.'}},
+        {text:'🛌 "오늘은 여기까지." 11시 30분쯤 눕는다.', good:true, sleepHour:23, sleepHours:7.5, delta:{health:6,sleep:5,judgment:3},
+          result:{title:'미완성의 불안', text:'반쯤 남은 문제집이 눈에 밟혔다. 그래도 내일 아침에 다시 볼 힘은 남겨두었다.'}},
+        {text:'📱 문제집을 덮고 폰을 보다가 잠든다.', good:false, sleepHour:24, sleepHours:6.5, delta:{health:-3,sleep:-5,judgment:-4},
+          result:{title:'늦어진 잠', text:'잠깐만 보려던 화면이 40분을 가져갔다. 쉬는 것 같았지만 몸은 쉬지 못했다.'}},
+        {text:'☕ 카페인 음료를 고르고 새벽 3시까지 버틴다.', good:false, openDrink:'cafe', sleepHour:26, sleepHours:4, delta:{knowledge:12,health:-15,sleep:-15,caffeine:-8},
+          result:{title:'밤샘의 대가', text:'진도는 나갔다. 대신 새벽 공기가 차갑게 느껴졌다. 내일 아침 몸이 먼저 대답할 것이다.'}},
       ]},
-
-    // ── DAY 2 ──────────────────────────
-    {type:'event', day:2,
-      location:'🏫 DAY 2 수업', scene:'scene_classroom',
-      emoji:'👩‍🏫', speaker:'선생님',
-      text:'선생님이 교탁을 탁 짚는다. "어젯밤 잘 잤어요? 수면이 충분한 사람은 지금 당장 판단력이 달라집니다." 교실이 조용해진다.',
+    {type:'event', day:2, location:'🏫 DAY 2 1교시', scene:'scene_classroom', speaker:'나레이터',
+      text:'칠판 글씨가 선명하다가도 흔들린다. 옆에서 민준이 속삭인다. "야, 카페인 없이 이거 버텨?" 어제의 수면이 지금 교실에 같이 앉아있다.',
       choices:[
-        { text:'📖 선생님 눈을 마주치며 끄덕인다. 칠판 글씨가 선명하게 보인다.',
-          good:true, delta:{ knowledge:8, social:5 },
-          result:{ title:'집중 수업',
-            text:'충분한 수면 덕에 선생님 설명이 머릿속에 그대로 박혔다. 오늘 수업 내용은 분명히 남을 것 같다.' }}
+        {text:'☕ 쉬는 시간에 자판기/편의점 음료를 고른다.', good:false, openDrink:'cvs', delta:{knowledge:5,health:-4,caffeine:-7,sleep:-4},
+          result:{title:'버티는 힘', text:'눈은 떠졌다. 하지만 오늘도 카페인이 수업을 대신 밀어주는 느낌이 들었다.'}},
+        {text:'😴 물만 마시며 억지로 버틴다.', good:true, caffeineMg:0, noCaffeine:true, delta:{knowledge:-4,judgment:5,caffeine:4},
+          result:{title:'느린 버티기', text:'집중은 완벽하지 않았다. 그래도 피곤하다고 바로 카페인에 기대는 습관은 만들지 않았다.'}},
+        {text:'💊 두통이 심해 타이레놀 한 알을 먹는다.', good:false, analgesic:true, delta:{health:4,judgment:-2},
+          result:{title:'잠깐 가라앉은 두통', text:'두통은 조금 가라앉았다. 다만 약을 찾는 선택이 하나 기록되었다.'}},
+        {text:'📖 정신을 차리려고 적극적으로 필기한다.', good:true, delta:{knowledge:8,judgment:5,sleep:2},
+          result:{title:'느리지만 남는 수업', text:'손으로 쓰다 보니 조금씩 눈이 떠졌다. 잠을 대신할 수는 없지만 수업을 붙잡는 데는 도움이 됐다.'}},
       ]},
-
-    {type:'event', day:2,
-      location:'🛒 DAY 2 편의점', scene:'scene_gym',
-      emoji:'🥱', speaker:'민준',
-      text:'점심 후 편의점 앞. 민준이 냉장고 문을 열며 말한다. "야, 에너지드링크 마셔봐. 오후 수업에 존버 가능함."',
+    {type:'event', day:2, location:'🛒 DAY 2 학교 앞 편의점', scene:'scene_convenience', speaker:'태양',
+      text:'태양이 편의점 냉장고 앞에 서 있다. "점심 먹고 나면 졸리잖아. 뭐 마실 거야?" 오늘 누적 카페인은 화면 위에 조용히 올라가 있다.',
       choices:[
-        { text:'🥤 "어떤 거 있어?" 냉장고 앞으로 간다.',
-          good:true, delta:{}, openDrink:'cvs',
-          result:{ title:'음료 선택', text:'카페인 게이지를 보며 선택하세요.' }},
-        { text:'💧 "나는 됐어, 물이나 마실게." 알아서 계산한다.',
-          good:true, caffeineMg:0, noCaffeine:true,
-          delta:{ health:3, caffeine:4 },
-          result:{ title:'조용한 거절',
-            text:'민준이 황당하다는 눈으로 봤지만 상관없다. 생수 한 병을 들고 나왔다.' }}
+        {text:'🧊 냉장고에서 마실 것을 직접 고른다.', good:false, openDrink:'cvs', delta:{},
+          result:{title:'점심 뒤 음료', text:'점심 뒤 졸음을 해결하려고 음료를 골랐다. 선택한 음료의 성분이 오후와 밤에 남는다.'}},
+        {text:'💧 생수를 고른다.', good:true, caffeineMg:0, noCaffeine:true, delta:{judgment:3,caffeine:4},
+          result:{title:'단순한 선택', text:'태양이 "오, 진짜 물?" 하고 웃었다. 단순한 선택이지만 오늘 총량은 늘지 않았다.'}},
       ]},
-
-    // ── DAY 3 ──────────────────────────
-    {type:'event', day:3,
-      location:'🍱 DAY 3 점심', scene:'scene_classroom',
-      emoji:'🍱', speaker:'민준',
-      text:'급식판을 들고 앉자마자 민준이 목소리를 낮춘다. "야, 어제 SNS 봤어? 어떤 애가 약을 한 번에 엄청 먹었다고 올렸던데 — 댓글이 난리야."',
+    {type:'event', day:2, location:'🌙 DAY 2 집', scene:'scene_bedroom', speaker:'나레이터',
+      text:'오늘은 어제보다 숙제가 적다. 하지만 낮에 집중을 못 했더니 복습이 밀려있다.',
       choices:[
-        { text:'👂 "그게 무슨 소리야?" 민준의 이야기를 끝까지 듣는다.',
-          good:true,
-          openNpc:{ id:'minjun', lineIdx:2, choices:[
-            { text:'🚩 "그거 장난이 아닌 것 같은데. 담임 선생님께 말씀드려야 하지 않아?"',
-              delta:{ judgment:10, social:5 },
-              result:{ title:'용기 있는 한마디',
-                text:'민준이 잠시 멈췄다. "...그거 생각 못 했는데." 위험한 상황을 어른에게 알리는 건 고자질이 아니라 예방이에요.' }},
-            { text:'😐 "뭔지는 모르겠지만 나는 그냥 밥이나 먹을게."',
-              delta:{ judgment:-3 },
-              result:{ title:'넘긴 신호',
-                text:'불편한 이야기를 외면했다. 나중에 그게 무엇이었는지 알게 됐을 때 조금 후회할 수도 있다.' }},
-          ]},
-          delta:{}, result:{ title:'NPC 대화', text:'' }},
-        { text:'🙈 "나 밥 먹는 중이거든." 이어폰을 꽂는다.',
-          good:false, delta:{ social:-5 },
-          result:{ title:'차단',
-            text:'이어폰 안으로 숟가락 소리만 들렸다. 민준은 할 말을 삼켰다.' }}
+        {text:'📚 밀린 복습을 끝내고 새벽 1시에 잔다.', good:false, sleepHour:25, sleepHours:6, delta:{knowledge:8,health:-7,sleep:-7},
+          result:{title:'밀린 복습 처리', text:'복습은 끝났다. 대신 몸은 어제와 같은 방식으로 다시 밀렸다.'}},
+        {text:'🛌 핵심만 보고 11시 30분에 잔다.', good:true, sleepHour:23, sleepHours:7.5, delta:{knowledge:3,health:5,sleep:5,judgment:3},
+          result:{title:'남겨둔 체력', text:'완벽하진 않지만 내일 집중할 만큼의 체력은 남겼다.'}},
+        {text:'📱 친구들 공부 인증을 보다가 자정 반에 잠든다.', good:false, sleepHour:24, sleepHours:6.5, delta:{sleep:-5,judgment:-5,social:1},
+          result:{title:'비교의 밤', text:'남들은 더 하는 것 같았다. 화면을 덮고 나서도 마음이 늦게 잠들었다.'}},
+        {text:'☕ 카페인 음료를 골라 더 버틴다.', good:false, openDrink:'cafe', sleepHour:26, sleepHours:4.5, delta:{knowledge:10,health:-12,sleep:-12,caffeine:-8},
+          result:{title:'또 한 번의 밤샘', text:'문제는 풀렸지만 몸은 점점 카페인을 공부의 조건으로 기억하기 시작했다.'}},
       ]},
-
-    {type:'event', day:3,
-      location:'🏸 DAY 3 방과 후', scene:'scene_gym',
-      emoji:'🏸', speaker:'태양',
-      text:'태양이 체육관 문에 기대어 있다. "오늘 뭐 해? 배드민턴 치러 가거나, 독서실 가거나, 아니면 또 편의점 순례?"',
+    {type:'event', day:3, location:'🏃 DAY 3 등교 중', scene:'scene_commute', speaker:'{name}',
+      text:'아침부터 가슴이 약간 두근거린다. 어제 마신 게 아직 남아있는 건지 모르겠다. 그래도 일단 학교는 가야 한다.',
       choices:[
-        { text:'🏸 "배드민턴 가자." 운동복을 빌려 입는다.',
-          good:true, delta:{health:10, social:10},
-          result:{title:'땀으로 리셋',
-            text:'셔틀콕을 칠 때마다 머릿속이 비워지는 느낌이었다. 체력과 기분이 동시에 올랐다.'}},
-        { text:'📚 "나는 독서실 갈게. 오늘 진도 밀려서."',
-          good:true, delta:{knowledge:10, health:-5}, sleepHour:24,
-          result:{title:'집중 공부',
-            text:'자리에 앉아 두 시간을 버텼다. 지식은 쌓였지만 시계를 보니 자정이 가까웠다.'}},
-        { text:'🛒 "나 편의점 들를게, 먼저 가."',
-          good:false, caffeineMg:50, delta:{caffeine:-6, health:-2},
-          result:{title:'캔커피 한 캔',
-            text:'뚜껑을 따는 순간 달콤한 냄새가 났다. 오늘 카페인 합산에 50mg이 추가됐다.'}},
+        {text:'☕ "오늘도 편의점에 들를까." 냉장고 앞으로 간다.', good:false, openDrink:'cvs', delta:{},
+          result:{title:'편의점으로', text:'오늘의 첫 선택이 또 음료 냉장고 앞에서 시작됐다.'}},
+        {text:'🚶 그냥 학교로 바로 간다.', good:true, caffeineMg:0, noCaffeine:true, delta:{judgment:3,caffeine:3},
+          result:{title:'그냥 지나가기', text:'편의점 불빛을 지나쳤다. 별일 아닌 것 같지만 습관은 이런 작은 지나침에서 바뀐다.'}},
+        {text:'🤔 "오늘 몸 상태부터 보자." 생각하다가 그냥 간다.', good:true, caffeineMg:0, noCaffeine:true, delta:{judgment:5,caffeine:4},
+          result:{title:'인지한 순간', text:'몸의 신호를 알아차린 것 자체가 판단이다. 오늘 아침 카페인은 추가하지 않았다.'}},
       ]},
-
-    {type:'event', day:3,
-      location:'☕ DAY 3 카페', scene:'scene_library',
-      emoji:'☕', speaker:'서연',
-      text:'서연이 문자를 보냈다. "나 근처 카페 왔는데 같이 올래? 공부하다가 머리 식히려고." 카페 창가에 서연이 자리를 잡아놨다.',
+    {type:'event', day:3, location:'🍱 DAY 3 급식실', scene:'scene_cafeteria', speaker:'하은',
+      text:'하은이 폰을 내밀었다. "야, 이거 봐봐. 어떤 애가 시험 전에 카페인이랑 진통제 같이 먹으면 집중력 올라간다고 올렸어. 댓글 엄청 달렸는데?"',
       choices:[
-        { text:'☕ "금방 갈게." 카페 메뉴를 고른다.',
-          good:true, delta:{}, openDrink:'cafe',
-          result:{ title:'카페 방문', text:'카페인 게이지를 확인하며 선택하세요.' }},
-        { text:'🚫 "오늘은 카페인은 됐어. 물이나 마실게."',
-          good:true, caffeineMg:0, noCaffeine:true,
-          delta:{ health:4, caffeine:5, social:2 },
-          result:{ title:'조용한 선택',
-            text:'서연이 "대단하다"며 웃었다. 창밖을 보며 그냥 같이 앉아있었다.' }}
+        {text:'👀 "진짜? 어떤 성분이야?" 폰을 당겨 본다.', good:true, labelChecked:true, delta:{knowledge:6,judgment:3},
+          result:{title:'댓글 사이의 단서', text:'댓글에 "이미 게보린에 카페인 들어있잖아"라는 말이 보였다. 성분표를 직접 확인해야겠다는 생각이 들었다.'}},
+        {text:'😐 "나중에 봐야겠다." 대충 흘려듣는다.', good:false, delta:{judgment:-5},
+          result:{title:'흘려들은 경고', text:'지금은 별일 아닌 것 같았다. 하지만 나중에 같은 정보를 다시 만날 때 판단이 늦어질 수 있다.'}},
+        {text:'🤩 "오 그거 써봐야겠다." 스크린샷을 찍는다.', good:false, snsRisk:true, delta:{judgment:-10},
+          result:{title:'저장된 함정', text:'사진첩에 게시물이 저장됐다. 지금은 호기심이지만 며칠 뒤 실제 선택지가 될 수 있다.'}},
+        {text:'🚩 "위험할 것 같은데." 링크를 찾아 확인한다.', good:true, labelChecked:true, delta:{knowledge:8,judgment:8},
+          result:{title:'직접 확인', text:'카페인과 일부 진통제 성분이 겹칠 수 있다는 설명을 찾았다. DAY 5에서 누군가를 말릴 근거가 생겼다.'}},
       ]},
-
-    // ── DAY 4 ──────────────────────────
-    {type:'event', day:4,
-      location:'🏫 DAY 4 보건 수업', scene:'scene_classroom',
-      emoji:'👩‍🏫', speaker:'선생님',
-      text:'보건 선생님이 교단 앞에 약봉지 하나를 올려놓았다. "자, 이 약을 받아왔다고 합시다. 제일 먼저 뭘 확인해야 할까요?" 잠시 침묵.',
+    {type:'event', day:3, location:'🏸 DAY 3 체육관 앞', scene:'scene_gym', speaker:'{name}',
+      text:'체육 시간에 무리했는지 머리가 지끈거린다. 가방에 지난번 약국에서 사둔 게보린이 있다. 오늘 카페인은 이미 조금 쌓여 있다.',
+      clues:caffeineClues(),
       choices:[
-        { text:'💊 손을 번쩍 든다. "성분이랑 복용법이요!"',
-          good:true, delta:{ knowledge:10, social:10, judgment:5 },
-          result:{ title:'선생님 눈빛이 달라졌다',
-            text:'선생님: "맞아요. 이름보다 성분, 간격보다 용량을 먼저 보는 습관이 약물 오남용을 막아줘요." 교실이 조용히 끄덕였다.'}},
-        { text:'😴 눈이 자꾸 감긴다. 아무 말도 못 했다.',
-          good:false, delta:{ social:-15, knowledge:-5 },
-          result:{ title:'선생님 시선이 멈췄다',
-            text:'선생님: "수업 시간에 너무 힘들어 보이는데, 밤에 잘 못 자고 있어요?" 교실 분위기가 살짝 어색해졌다.'}}
+        {text:'💊 게보린을 꺼내 먹는다.', good:false, analgesic:true, comboMedCaffeine:true, caffeineMg:50, delta:{health:4,caffeine:-12,judgment:-8},
+          result:{title:'두통은 가라앉았다', text:'통증은 줄었다. 그런데 게보린에도 카페인무수물 50mg이 들어있었다. 오늘 총량이 조용히 올라갔다.'}},
+        {text:'🏠 "일단 집에 가서 쉬자."', good:true, delta:{health:-3,judgment:5},
+          result:{title:'통증을 안고 귀가', text:'두통이 바로 사라지진 않았다. 그래도 성분을 모른 채 더하지는 않았다.'}},
+        {text:'💧 물 한 잔 마시고 잠깐 눕는다.', good:true, delta:{health:2,caffeine:2},
+          result:{title:'부분 완화', text:'완벽하진 않지만 조금 나아졌다. 약이 아닌 선택도 때로는 시간을 벌어준다.'}},
+        {text:'🩺 보건실에 가서 물어본다.', good:true, labelChecked:true, delta:{knowledge:8,judgment:8,social:3},
+          result:{title:'확인한 성분', text:'보건 선생님이 게보린 성분표에서 카페인무수물 50mg을 짚어줬다. 이제 같은 상황에서 경고를 볼 수 있다.'}},
       ]},
-
-    {type:'event', day:4,
-      location:'😣 DAY 4 몸 상태 신호', scene:'scene_health',
-      emoji:'😣', speaker:'서연',
-      text:'쉬는 시간, 서연이 슬쩍 묻는다. "야, 요즘 얼굴이 좀 떠 보여. 밥은 먹고 있어?" 거울을 보니 눈 밑이 칙칙하다.',
+    {type:'event', day:3, location:'☕ DAY 3 동네 카페', scene:'scene_cafe', speaker:'서연',
+      text:'서연이 문자를 보냈다. "카페 왔는데 같이 공부할래? 분위기가 집보다 나아." 카페 안은 따뜻하고 조용하다.',
       choices:[
-        { text:'🏠 "오늘은 진짜 일찍 들어가서 쉴게." 곧장 집으로 향한다.',
-          good:true, sleepHour:22, delta:{health:10, sleep:10, judgment:4},
-          result:{ title:'몸이 먼저',
-            text:'이불 속에 들어가자마자 잠이 쏟아졌다. 잠을 자야 몸이 회복된다는 걸 온몸으로 느꼈다.'}},
-        { text:'☕ "아메리카노 한 잔이면 버텨." 카페로 향한다.',
-          good:false, caffeineMg:125, delta:{caffeine:-15, health:-8},
-          result:{ title:'카페인의 함정',
-            text:'한 잔으로 오후는 버텼지만 밤 12시가 넘어도 눈이 말똥말똥했다. 아메리카노 한 잔에 카페인 125mg — 하루 최대량의 절반을 넘긴다.'}},
+        {text:'☕ 카페 메뉴에서 마실 것을 직접 고른다.', good:false, openDrink:'cafe', sleepHour:25, sleepHours:6, delta:{knowledge:6,health:-4,sleep:-4},
+          result:{title:'카페 공부', text:'카페 분위기 덕분에 공부는 잘 됐다. 어떤 메뉴를 골랐는지가 오늘 밤 잠드는 시간을 흔든다.'}},
+        {text:'🏠 "오늘은 집에서 할게."', good:true, caffeineMg:0, noCaffeine:true, sleepHours:8, delta:{knowledge:4,social:-3,sleep:5},
+          result:{title:'어색하지만 편한 밤', text:'서연과 조금 어색해졌지만 집에서는 일찍 정리할 수 있었다.'}},
       ]},
-
-    // ── DAY 5 ──────────────────────────
-    {type:'event', day:5,
-      location:'📱 DAY 5 SNS 소문', scene:'scene_classroom',
-      emoji:'📱', speaker:'하은',
-      text:'하은이 폰을 들이밀었다. "야, 이거 봤어? 어떤 애가 약 진짜 많이 먹었다고 올렸대. 댓글이 벌써 이만큼이야." 화면에는 번진 글씨와 이모지들이 가득하다.',
+    {type:'event', day:4, location:'🏫 DAY 4 등교 중', scene:'scene_commute', speaker:'나레이터',
+      text:'아침부터 심장이 빨리 뛰는 것 같다. 손끝도 약간 떨린다. 단순히 피곤한 건지, 지난 며칠의 선택이 신호를 보내는 건지 헷갈린다.',
       choices:[
-        { text:'📱 화면을 가까이 당긴다. "뭔데?" 피드를 직접 확인한다.',
-          good:true, openSns:{ caption:'소문이 빠르게 퍼지고 있습니다. 블러 처리된 게시물이 보입니다.' },
-          delta:{}, result:{ title:'SNS 확인', text:'' }},
-        { text:'📵 "나는 그런 거 안 봐." 폰을 내려놓는다.',
-          good:true, delta:{ judgment:3 },
-          result:{ title:'조용한 선 긋기',
-            text:'하은이 의아한 표정으로 폰을 거뒀다. 자극적인 소문에 휩쓸리지 않는 것도 하나의 선택이다.'}}
+        {text:'😐 "그냥 피곤한 거겠지." 무시하고 간다.', good:false, delta:{judgment:-5,health:-5},
+          result:{title:'무시한 신호', text:'몸이 보내는 신호를 넘겼다. 증상은 사라지지 않고 하루 뒤로 밀렸다.'}},
+        {text:'🩺 쉬는 시간에 보건실에 간다.', good:true, labelChecked:true, delta:{knowledge:8,judgment:5,health:3},
+          result:{title:'카페인 과다 설명', text:'보건 선생님이 카페인 과다와 수면 부족이 같이 오면 두근거림이 커질 수 있다고 설명했다.'}},
+        {text:'☕ "카페인이 더 필요한 건가." 편의점으로 간다.', good:false, openDrink:'cvs', delta:{judgment:-5},
+          result:{title:'다시 냉장고 앞', text:'몸이 힘들 때마다 카페인을 떠올리는 패턴이 강해지고 있다.'}},
+        {text:'📱 증상을 검색해본다.', good:true, delta:{knowledge:5,judgment:2},
+          result:{title:'자가 확인', text:'검색 결과가 모두 정확하진 않았다. 그래도 몸의 신호를 그냥 넘기지는 않았다.'}},
       ]},
-
-    // ── DAY 6 ──────────────────────────
-    {type:'event', day:6,
-      location:'🩺 DAY 6 보건 수업', scene:'scene_health',
-      emoji:'👩‍🏫', speaker:'선생님',
-      text:'선생님이 종이 한 장씩 나눠줬다. "이게 실제 감기약 처방전이에요. 혼자 읽어보고 — 모르는 게 있으면 질문해요." 종이에서 익숙한 약 이름이 눈에 들어왔다.',
+    {type:'event', day:4, location:'🩺 DAY 4 보건 수업', scene:'scene_health', speaker:'선생님',
+      text:'선생님이 종이를 한 장씩 나눠줬다. "이게 실제 약국에서 파는 감기약이에요. 같이 읽어볼까요?" 성분명, 함량, 복용법, 주의사항이 빼곡하다.',
       choices:[
-        { text:'📋 처방전 글씨를 하나하나 짚어가며 퀴즈를 푼다.',
-          good:true, openPrescription:'cold', delta:{},
-          result:{ title:'처방전 읽기', text:'' }},
-        { text:'😴 대충 훑어보고 접어서 가방에 넣는다.',
-          good:false, delta:{ knowledge:-10, social:-8 },
-          result:{ title:'접힌 처방전',
-            text:'나중에 꺼내봤을 때 뭐가 뭔지 알 수 없었다. 처방전은 펴서 읽는 순간부터 효력이 생긴다.'}}
+        {text:'📋 성분표를 하나씩 짚어가며 읽는다.', good:true, labelChecked:true, delta:{knowledge:12,judgment:8},
+          result:{title:'성분표가 보이기 시작했다', text:'이후 장면에서 카페인 중복과 복용 주의사항을 더 쉽게 알아차릴 수 있다.'}},
+        {text:'👀 대충 훑고 모르면 옆 친구에게 물어본다.', good:true, delta:{knowledge:5},
+          result:{title:'부분적인 이해', text:'몇 가지는 알았지만 전체 구조는 아직 흐릿하다.'}},
+        {text:'😴 졸려서 대충 한다.', good:false, delta:{knowledge:-3,sleep:-3},
+          result:{title:'놓친 정보', text:'중요한 문장이 눈앞을 지나갔다. 다음번 성분 중복 경고가 늦어질 수 있다.'}},
+        {text:'✋ "선생님, 이거 카페인이 들어있는 거 맞아요?" 질문한다.', good:true, labelChecked:true, delta:{knowledge:15,social:5,judgment:5},
+          result:{title:'완전한 확인', text:'질문 하나로 교실 전체가 성분표의 카페인 표시를 보게 됐다.'}},
       ]},
-
-    // ── DAY 7 ──────────────────────────
-    {type:'event', day:7,
-      location:'📊 DAY 7 1주차 결산', scene:'scene_classroom',
-      emoji:'📊', speaker:'나레이터',
-      text:'7일이 지났다. 책상 위에 빈 캔이 하나, 약 봉지가 하나, 안 읽은 처방전이 하나. 습관은 이미 쌓이고 있었다.',
+    {type:'event', day:4, location:'📚 DAY 4 자습실', scene:'scene_library', speaker:'나레이터',
+      text:'오후 3시. 교실이 따뜻하고 눈이 스르르 감긴다. 옆자리 민준이 에너지드링크를 꺼낸다. 캔 따는 소리가 크게 났다.',
       choices:[
-        { text:'✅ 지금까지의 선택을 하나씩 돌아본다.',
-          good:true, showReport:7, delta:{judgment:5, knowledge:5},
-          result:{title:'중간 점검',
-            text:'무너진 지표가 보인다. 2주차 시험기간이 시작되기 전에, 다시 잡아볼 수 있다.'}}
+        {text:'🥤 "나도 뭐 마실래." 음료를 고른다.', good:false, openDrink:'cvs', delta:{health:-3,caffeine:-4,sleep:-4},
+          result:{title:'쉬운 각성', text:'캔 하나가 오후를 밀어줬다. 하지만 오늘 총량은 다시 경고선에 가까워졌다.'}},
+        {text:'😴 엎드려서 10분만 눈을 감는다.', good:true, delta:{health:5,sleep:5,knowledge:3},
+          result:{title:'짧은 회복', text:'10분 수면이 생각보다 효과가 있었다. 카페인보다 느리지만 몸이 덜 흔들렸다.'}},
+        {text:'🚰 일어나서 세수하고 물을 마신다.', good:true, caffeineMg:0, noCaffeine:true, delta:{health:3,caffeine:3},
+          result:{title:'작은 리셋', text:'눈이 확 뜨이진 않았지만 졸음의 파도를 한 번 넘겼다.'}},
+        {text:'📱 SNS를 잠깐 보고 다시 공부한다.', good:false, delta:{knowledge:-5,judgment:-3},
+          result:{title:'사라진 20분', text:'활력은 조금 돌아온 듯했지만 시간은 생각보다 많이 사라졌다.'}},
       ]},
-
-    // ── DAY 8 ──────────────────────────
-    {type:'event', day:8,
-      location:'🏫 DAY 8 숙제 제출', scene:'scene_classroom',
-      emoji:'👩‍🏫', speaker:'선생님',
-      text:'시험기간 첫날. 선생님이 교탁 앞에 서서 손을 내밀었다. "숙제 낼게요." 가방 안을 더듬었다.',
+    {type:'event', day:5, location:'📱 DAY 5 교실', scene:'scene_classroom', speaker:'하은',
+      text:'하은이 조용히 다가온다. "야, 저번 게시물 기억나? 민준이 그거 따라 하려는 것 같아." 분위기상 그냥 넘기기 어렵다.',
+      clues:caffeineClues(),
       choices:[
-        { text:'📝 준비한 숙제를 꺼내 앞으로 간다.',
-          good:true, delta:{ social:10, judgment:5 },
-          result:{ title:'제출 완료',
-            text:'선생님이 이름을 확인하며 끄덕였다. 별거 아닌데도 가슴이 가벼워졌다.'}},
-        { text:'😬 손이 안 움직인다. 어젯밤에 못 했다.',
-          good:false, delta:{ social:-20, knowledge:-5 },
-          result:{ title:'빈손',
-            text:'선생님: "시험기간이라도 기본은 지켜야 해요." 뒷자리로 돌아오는 발걸음이 무거웠다.'}}
+        {text:'💊+🥤 게보린과 에너지드링크를 같이 먹어본다.', good:false, analgesic:true, comboMedCaffeine:true, caffeineMg:130, delta:{health:-20,caffeine:-18,judgment:-15},
+          result:{title:'복합 위험', text:'즉각적인 각성을 기대했지만 카페인 중복 위험이 커졌다. 성분표를 보면 피할 수 있던 상황이다.'}},
+        {text:'💊 게보린만 먹는다.', good:false, analgesic:true, delta:{health:5,judgment:-3},
+          result:{title:'두통만 겨냥', text:'에너지드링크는 피했지만 두통의 원인을 해결한 것은 아니다. 약 복용 기록이 하나 더 쌓였다.'}},
+        {text:'🤔 "잠깐, 성분을 확인해보자."', good:true, labelChecked:true, delta:{knowledge:10,judgment:8},
+          result:{title:'멈춘 손', text:'게보린 성분표에서 카페인무수물 50mg을 확인했다. 따라 하기 전에 멈춘 것이 가장 큰 선택이었다.'}},
+        {text:'🙅 결국 하지 않는다.', good:true, delta:{judgment:5},
+          result:{title:'멈춘 선택', text:'누가 보기엔 아무것도 안 한 것처럼 보인다. 하지만 위험한 조합을 피했다.'}},
       ]},
-
-    {type:'event', day:8,
-      location:'📚 DAY 8 시험기간 개시', scene:'scene_library',
-      emoji:'😵', speaker:'민준',
-      text:'독서실 자리를 잡고 앉았는데 민준이 옆에 슬며시 앉는다. "야 그냥 에너지드링크 마셔. 오늘은 한 캔이면 버틸 수 있어." 냉장고 불빛이 형광으로 깜빡였다.',
+    {type:'event', day:5, location:'🍱 DAY 5 급식실', scene:'scene_cafeteria', speaker:'{name}',
+      text:'저번에 게보린 먹고 두통이 가라앉긴 했다. 오늘도 머리가 좀 아프다. 이번엔 밥을 못 먹고 왔는데 먹어도 괜찮을까.',
       choices:[
-        { text:'🥤 "한 캔만이야." 뚜껑을 딴다.',
-          good:false, caffeineMg:62, delta:{caffeine:-10, sleep:-5, health:-6},
-          result:{title:'임시 각성',
-            text:'처음엔 집중되는 것 같았다. 하지만 자정이 넘자 가슴이 두근거리고 잠이 오지 않았다.'}},
-        { text:'🧭 "나는 일찍 끝내고 잔다." 공부량을 조절한다.',
-          good:true, sleepHour:22, delta:{sleep:12, health:8, judgment:6},
-          result:{title:'수면 우선',
-            text:'민준이 황당해했지만 상관없었다. 시험기간일수록 잠이 실력이다.'}}
+        {text:'💊 공복에 게보린을 먹는다.', good:false, analgesic:true, fastingMed:true, delta:{health:-3,judgment:-8},
+          result:{title:'공복 복용', text:'두통은 조금 줄었지만 속이 쓰리기 시작했다. 위장 자극은 나중에 더 크게 느껴질 수 있다.'}},
+        {text:'🍚 밥 먹고 나서 게보린을 먹는다.', good:true, analgesic:true, delta:{health:8,judgment:3},
+          result:{title:'시간을 둔 복용', text:'밥을 먹고 기다린 뒤 복용했다. 같은 약도 상황에 따라 위험이 달라진다.'}},
+        {text:'🏥 보건실에 가서 물어본다.', good:true, labelChecked:true, delta:{knowledge:8,judgment:5,health:2},
+          result:{title:'공복 주의 확인', text:'보건 선생님이 공복 복용 시 위장 자극을 설명해줬다. 약을 먹을 때는 몸 상태도 정보다.'}},
+        {text:'😐 그냥 참는다.', good:true, delta:{health:-5,judgment:5},
+          result:{title:'참는 선택', text:'두통은 남았다. 그래도 약을 반복해서 찾는 습관은 조금 늦췄다.'}},
       ]},
-
-    // ── DAY 9 ──────────────────────────
-    {type:'event', day:9,
-      location:'🏫 DAY 9 빈 자리', scene:'scene_classroom',
-      emoji:'😟', speaker:'서연',
-      text:'조회 시간. 민준 자리가 비어있다. 서연이 쪽지를 건넸다. "오늘 결석이래. 하은이 이상한 얘기 들었다는데 — 뭔지는 모르겠어."',
+    {type:'event', day:5, location:'🌙 DAY 5 집', scene:'scene_bedroom', speaker:'나레이터',
+      text:'시험이 일주일 남았다. SNS에 친구들이 "지금도 공부 중"이라고 올리고 있다. 나는 이제 자려던 참이었다.',
       choices:[
-        { text:'👩‍🏫 쉬는 시간에 담임 선생님 방으로 향한다. "민준이가 걱정돼서요."',
-          good:true, delta:{social:10, judgment:10},
-          result:{title:'말하는 용기',
-            text:'선생님이 수첩을 꺼내 뭔가를 적었다. 친구의 위험 신호는 혼자 감당하지 않아도 된다.'}},
-        { text:'🙈 "내가 신경 쓸 일은 아니지." 교과서를 펼친다.',
-          good:false, delta:{social:-12, judgment:-5},
-          result:{title:'지나친 자리',
-            text:'그날 수업이 끝나고 민준의 소식은 들리지 않았다. 이상 신호를 지나치면 도움을 줄 기회도 사라진다.'}}
+        {text:'📱 SNS에 자극받아 밤새 공부한다.', good:false, sleepHour:26, sleepHours:4, delta:{knowledge:15,health:-15,sleep:-15,judgment:-8},
+          result:{title:'불안이 만든 밤샘', text:'지식은 쌓였지만 몸은 버티는 쪽으로만 밀렸다. DAY 6과 7의 컨디션이 흔들릴 수 있다.'}},
+        {text:'📚 1시간 더 공부하고 잔다.', good:true, sleepHour:25, sleepHours:6.5, delta:{knowledge:5,health:-5,sleep:-5},
+          result:{title:'절충의 밤', text:'완벽하지는 않다. 그래도 밤샘보다는 덜 무너졌다.'}},
+        {text:'🛌 "오늘 분량은 했으니까" 바로 잔다.', good:true, sleepHour:23, sleepHours:8, delta:{health:8,sleep:10,judgment:5},
+          result:{title:'자기 기준', text:'다른 사람의 인증보다 오늘 한 분량을 믿기로 했다.'}},
+        {text:'☕ 카페인 음료를 고르고 버틴다.', good:false, openDrink:'cafe', sleepHour:26, sleepHours:5, delta:{knowledge:10,health:-12,sleep:-10,caffeine:-8},
+          result:{title:'카페인의 연장전', text:'공부 시간은 늘었다. 대신 몸이 쉬는 시간은 줄었다.'}},
       ]},
-
-    // ── DAY 10 ──────────────────────────
-    {type:'event', day:10,
-      location:'🏥 DAY 10 병원 방문', scene:'scene_health',
-      emoji:'🤒', speaker:'의사',
-      text:'컨디션이 끝까지 버텨주지 않았다. 진료실 의자에 앉자 의사 선생님이 처방전을 내밀었다. "이부프로펜이에요. 용법 꼭 확인하고 드세요."',
+    {type:'event', day:6, location:'🩺 DAY 6 보건 수업', scene:'scene_health', speaker:'선생님',
+      text:'선생님이 처방전 한 장을 보여줬다. "이 학생이 어젯밤 에너지드링크 두 캔, 게보린 한 알, 감기약 한 봉지를 같이 먹었어요. 뭐가 문제일까요?"',
       choices:[
-        { text:'📄 처방전을 접지 않고 꼼꼼히 읽는다.',
-          good:true, openPrescription:'muscle', delta:{},
-          result:{ title:'처방전 확인', text:'' }},
-        { text:'🛒 "편의점에서 그냥 아무 약이나 살게요."',
-          good:false, delta:{ knowledge:-8, judgment:-10, health:-10 },
-          result:{ title:'묻지 마 선택',
-            text:'편의점 직원이 약 설명을 해줬지만 잘 들리지 않았다. 증상이 심할 때일수록 성분 확인이 먼저다.'}}
+        {text:'✋ "카페인 중복이요! 게보린에도 카페인이 있어요."', good:true, labelChecked:true, delta:{knowledge:15,judgment:10},
+          result:{title:'정확한 연결', text:'자기 선택과 비슷한 상황을 성분으로 설명할 수 있게 됐다.'}},
+        {text:'🤔 "에너지드링크랑 같이 마시면 안 되는 거 아닌가요?"', good:true, delta:{knowledge:8,judgment:3},
+          result:{title:'부분 정답', text:'방향은 맞았다. 이제 어떤 성분이 겹치는지까지 확인하면 더 분명해진다.'}},
+        {text:'😐 아무 말도 못 하고 설명만 듣는다.', good:false, delta:{knowledge:3,social:-2},
+          result:{title:'듣기만 한 수업', text:'설명은 들었지만 내 행동과 연결되지는 않았다.'}},
+        {text:'💬 "저도 비슷하게 한 적 있는 것 같아요..."', good:true, delta:{knowledge:12,judgment:8,social:5},
+          result:{title:'솔직한 공유', text:'교실이 잠깐 조용해졌다. 경험을 말하는 것은 부끄러운 일이 아니라 다음 선택을 바꾸는 시작이다.'}},
       ]},
-
-    // ── DAY 11 ──────────────────────────
-    {type:'event', day:11,
-      location:'⚠️ DAY 11 누적의 무게', scene:'scene_health',
-      emoji:'⚠️', speaker:'나레이터',
-      text:'몸이 신호를 보내기 시작했다. 손이 약간 떨리고, 점심을 먹어도 금방 졸렸다. 지난 열흘의 선택들이 조용히 쌓인 결과였다.',
+    {type:'event', day:7, location:'📊 DAY 7 거울 앞', scene:'scene_health', speaker:'나레이터',
+      text:'7일이 지났다. 거울을 봤다. 눈 밑이 칙칙하고, 아침부터 어깨가 무겁다. 지난 일주일의 선택이 몸에 남아있다.',
       choices:[
-        { text:'🧭 일지를 꺼내 어느 날부터 무너졌는지 돌아본다.',
-          good:true, delta:{judgment:8, caffeine:5, sleep:5},
-          result:{title:'자기 점검',
-            text:'카페인, 수면, 체력 — 세 가지가 동시에 흔들리면 회복이 느려진다. 늦기 전에 습관을 고쳐보기로 했다.'}}
+        {text:'📓 일지를 써서 뭐가 문제였는지 찾아본다.', good:true, delta:{judgment:10,knowledge:5}, showReport:7,
+          result:{title:'1주차 리포트', text:'무엇이 무너졌는지 적어보자 패턴이 보였다. 문제를 찾는 것 자체가 회복의 시작이다.'}},
+        {text:'😤 "2주차엔 더 열심히 해야지" 다짐만 한다.', good:false, delta:{},
+          result:{title:'다짐만 남음', text:'기분은 잠깐 올라갔다. 하지만 계획 없는 다짐은 내일의 행동을 바꾸지 못했다.'}},
+        {text:'🔄 카페인을 줄이고 수면을 늘리기로 결심한다.', good:true, recoveryPlan:true, delta:{judgment:8,caffeine:5,sleep:5}, showReport:7,
+          result:{title:'회복 계획', text:'2주차에는 카페인과 수면 선택에서 회복 보너스가 붙을 준비가 됐다.'}},
+        {text:'😐 "이 정도면 괜찮은 거 아냐?" 무시한다.', good:false, delta:{health:-5,judgment:-4},
+          result:{title:'무시한 신호', text:'몸의 신호를 넘기면 신호는 사라지는 대신 더 크게 돌아올 수 있다.'}},
       ]},
-
-    // ── DAY 12 ──────────────────────────
-    {type:'event', day:12,
-      location:'🚨 DAY 12 최고조', scene:'scene_library',
-      emoji:'😵‍💫', speaker:'태양',
-      text:'태양이 독서실 복도에서 벽에 기댔다. "솔직히 다들 너무 무리하는 것 같아. 나도 그렇고." 잠깐의 침묵. 손에는 카페라떼와 진통제가 같이 있다.',
+    {type:'event', day:8, location:'📚 DAY 8 독서실', scene:'scene_library', speaker:'민준',
+      text:'민준이 독서실 책상 위에 에너지드링크 두 캔을 올려놨다. "야, 이번 주 내내 밤새야 해. 하나 가져가." 오늘부터 시험 3일 전이다.',
       choices:[
-        { text:'☕ "나도 카페인이라도 마셔야지." 음료를 고른다.',
-          good:false, caffeineMg:75, delta:{caffeine:-12, sleep:-8, health:-8},
-          result:{title:'동시 경고',
-            text:'카페인이 몸속에서 수면을 밀어냈다. 체력, 컨디션, 카페인 관리가 동시에 흔들렸다.'}},
-        { text:'🥛 "오늘은 따뜻한 우유 마시고 일찍 자야겠다."',
-          good:true, caffeineMg:0, noCaffeine:true, sleepHour:22,
-          delta:{sleep:12, health:6, caffeine:8},
-          result:{title:'회복 루틴',
-            text:'우유 한 잔, 일찍 끄는 불. 단순한 선택이지만 몸이 먼저 고마워했다.'}}
+        {text:'🥤 받아서 딴다. 어떤 음료인지 메뉴에서 확인한다.', good:false, openDrink:'cvs', sleepHours:6, delta:{knowledge:8,health:-8,caffeine:-6,sleep:-8},
+          result:{title:'시험기간 모드', text:'책상 앞 집중은 올라갔다. 하지만 DAY 10 컨디션은 이미 조금 깎였다.'}},
+        {text:'🙅 "나는 이번엔 됐어."', good:true, caffeineMg:0, noCaffeine:true, delta:{social:-3,judgment:8,caffeine:5},
+          result:{title:'혼자 다른 선택', text:'민준은 살짝 서운해했다. 그래도 DAY 10 컨디션은 덜 흔들릴 것이다.'}},
+        {text:'🔄 "뭐가 들어있어?" 성분 확인 후 결정한다.', good:true, labelChecked:true, delta:{knowledge:5,judgment:5},
+          result:{title:'라벨 확인', text:'캔 옆면의 카페인 함량이 보였다. 마시기 전 확인하는 습관이 선택을 늦춰줬다.'}},
+        {text:'💬 "너도 많이 마시지 마. 시험 끝나고 쓰러지면 어떡해."', good:true, helpedFriend:true, minjunWarned:true, delta:{social:5,judgment:5},
+          result:{title:'민준에게 남긴 말', text:'민준이 웃으며 넘겼지만 손은 캔에서 잠깐 멈췄다. 친구의 결과에도 영향이 생겼다.'}},
       ]},
-
-    // ── DAY 13 ──────────────────────────
-    {type:'event', day:13,
-      location:'🌙 DAY 13 시험 전날 밤', scene:'scene_library',
-      emoji:'🌙', speaker:'나레이터',
-      text:'내일이 시험이다. 책상 위에 형광펜과 물컵만 남아있다. 시계가 열한 시를 가리켰다.',
+    {type:'event', day:9, location:'😣 DAY 9 독서실', scene:'scene_library', speaker:'{name}',
+      text:'밤 11시. 3시간째 책을 보고 있는데 머리가 지끈거린다. 손에는 게보린, 옆에는 에너지드링크 반 캔이 남아있다. 아는 것과 행동이 꼭 같지는 않다.',
+      clues:caffeineClues(),
       choices:[
-        { text:'🛌 오늘 밤 취침 시각을 결정한다.',
-          good:true, delta:{}, openSleep:true,
-          result:{ title:'취침', text:'' }}
+        {text:'💊+🥤 게보린 먹고 에너지드링크도 마저 마신다.', good:false, analgesic:true, comboMedCaffeine:true, caffeineMg:90, sleepHour:26, sleepHours:5, delta:{health:-15,caffeine:-15,judgment:-12,sleep:-10},
+          result:{title:'아는데도 한 선택', text:'머리는 잠깐 맑아졌다. 하지만 카페인 중복과 수면 지연이 DAY 11 몸 상태로 돌아올 것이다.'}},
+        {text:'💊 게보린만 먹고 음료는 치운다.', good:true, analgesic:true, delta:{health:8,judgment:3},
+          result:{title:'하나는 치웠다', text:'두통은 가라앉았다. 적어도 카페인 중복은 피했다.'}},
+        {text:'🥤 음료 메뉴에서 하나를 고르고 진통제는 먹지 않는다.', good:false, openDrink:'cvs', delta:{health:-5,caffeine:-4,sleep:-5},
+          result:{title:'두통은 남았다', text:'활력은 조금 올랐지만 두통의 원인은 그대로 남았다.'}},
+        {text:'🛌 "그냥 자자. 내일 일찍 하자."', good:true, sleepHour:23, sleepHours:8, delta:{health:10,sleep:10,judgment:8},
+          result:{title:'중단하는 용기', text:'불안했지만 책을 덮었다. DAY 10 컨디션은 이 선택을 기억할 것이다.'}},
       ]},
-
-    // ── DAY 14 ──────────────────────────
-    {type:'event', day:14,
-      location:'📝 DAY 14 시험 당일', scene:'scene_classroom',
-      emoji:'📝', speaker:'나레이터',
-      text:'시험지가 뒤집어진 채 책상에 놓였다. 14일이 여기까지 왔다. 지금 컨디션은 — 어젯밤까지의 선택이 만든 것이다.',
+    {type:'event', day:10, location:'🌙 DAY 10 시험 전날 밤', scene:'scene_bedroom', speaker:'나레이터',
+      text:'내일이 시험이다. 지금 자면 8시간을 잘 수 있다. 하지만 아직 한 단원이 남았다. 카페인을 마시면 3시간을 더 할 수 있을 것 같다.',
       choices:[
-        { text:'📊 답안지를 받아들고 2주간의 결과를 마주한다.',
-          good:true, delta:{},
-          result:{title:'최종 결산',
-            text:'14일 동안의 지표가 오늘로 완성된다.'}}
+        {text:'☕ 카페인 음료를 고르고 새벽 3시까지 공부한다.', good:false, openDrink:'cafe', sleepHour:26, sleepHours:4, delta:{knowledge:15,health:-20,sleep:-18,caffeine:-10},
+          result:{title:'많이 봤지만 흐릿함', text:'공부량은 늘었다. 하지만 실전에서 기억을 꺼낼 컨디션은 크게 낮아졌다.'}},
+        {text:'🥤 편의점 음료를 고르고 새벽 2시까지 버틴다.', good:false, openDrink:'cvs', sleepHour:26, sleepHours:5, delta:{knowledge:10,health:-12,sleep:-12,caffeine:-8},
+          result:{title:'부분적으로 남은 공부', text:'조금 더 봤다. 대신 몸은 시험 전날 밤을 회복이 아니라 버티기로 보냈다.'}},
+        {text:'🛌 11시에 바로 잔다.', good:true, sleepHour:23, sleepHours:8, delta:{health:12,sleep:15,judgment:8},
+          result:{title:'기억 정리', text:'한 단원은 남았다. 하지만 아는 것을 제대로 꺼낼 힘을 남겼다.'}},
+        {text:'📚 한 단원만 보고 자정에 잔다.', good:true, sleepHour:24, sleepHours:7, delta:{knowledge:5,health:3,sleep:3,judgment:3},
+          result:{title:'균형 잡힌 마무리', text:'완벽하지 않지만 공부와 수면 사이에서 무너지지 않는 선을 골랐다.'}},
       ]},
-
+    {type:'narration', day:11, location:'📝 DAY 11 시험장', scene:'scene_exam', speaker:'나레이터',
+      text:'시험지를 받아들었다. 어젯밤의 선택이 손끝에 남아있다. 공부한 내용이 떠오를 듯 사라지기도 하고, 어떤 문제는 생각보다 선명하게 보이기도 한다.',
+      choices:null},
+    {type:'event', day:12, location:'🏫 DAY 12 쉬는 시간', scene:'scene_classroom', speaker:'서연',
+      text:'서연이 조용히 말했다. "민준이 오늘 보건실 갔다 왔대. 시험 기간에 에너지드링크를 너무 많이 마셔서 심장이 두근거렸다고."',
+      choices:[
+        {text:'😯 "나도 그런 증상 있었는데 무시했어."', good:true, delta:{judgment:5,knowledge:3},
+          result:{title:'자기 인식', text:'남의 일이 아니라 내 몸의 신호였다는 걸 뒤늦게 연결했다.'}},
+        {text:'😐 "그래? 괜찮대?" 관심 없이 넘긴다.', good:false, delta:{},
+          result:{title:'짧은 반응', text:'말은 했지만 행동은 바뀌지 않았다.'}},
+        {text:'🩺 "같이 보건실 가볼까, 선생님한테 물어보자."', good:true, helpedFriend:true, delta:{judgment:10,social:8},
+          result:{title:'같이 확인', text:'민준이 멋쩍게 웃었다. 혼자 버티는 것보다 같이 확인하는 쪽이 덜 위험하다.'}},
+      ]},
+    {type:'event', day:13, location:'🌙 DAY 13 독서실 복도', scene:'scene_library', speaker:'민준',
+      text:'마지막 시험 전날. 민준이 말했다. "야, 오늘만 버티면 돼. 한 캔만 더 마시자." 솔직히 요즘 마셔도 예전만큼 효과가 없는 것 같기도 하다.',
+      choices:[
+        {text:'🥤 "그래, 마지막이잖아." 음료를 고른다.', good:false, openDrink:'cvs', sleepHours:6, delta:{health:-8,caffeine:-6,sleep:-8},
+          result:{title:'마지막이라는 말', text:'마지막이라는 말은 편했다. 하지만 몸은 마지막인지 아닌지 구분하지 않는다.'}},
+        {text:'🙅 "나는 오늘 그냥 잘게. 이미 할 만큼 했어."', good:true, sleepHour:23, sleepHours:8, delta:{health:10,sleep:10,judgment:8},
+          result:{title:'충분함 인정', text:'완벽하지 않아도 멈출 수 있었다. DAY 14 컨디션이 올라갔다.'}},
+        {text:'💬 "요즘 마셔도 별로 안 들지 않아? 내성 생긴 것 같아."', good:true, helpedFriend:true, delta:{judgment:10,knowledge:8,social:5},
+          result:{title:'내성이라는 단어', text:'민준이 캔을 내려놨다. 같은 효과를 위해 더 많이 찾는 순간, 이미 신호가 시작된 것이다.'}},
+        {text:'🤔 "조금만 마실게." 메뉴에서 덜 부담스러운 걸 고른다.', good:false, openDrink:'cvs', sleepHours:7, delta:{health:-3,caffeine:-2,sleep:-3,judgment:1},
+          result:{title:'절충의 한계', text:'전부는 아니지만 카페인은 들어왔다. 반만 마셔도 총량에는 더해진다.'}},
+      ]},
+    {type:'narration', day:14, location:'📝 DAY 14 최종 시험 당일', scene:'scene_exam', speaker:'나레이터',
+      text:'14일이 여기까지 왔다. 시험지가 뒤집어진 채 책상 위에 있다. 지금 이 순간의 컨디션은 지난 2주 동안의 모든 선택이 만든 것이다.',
+      choices:null},
     {type:'ending'}
   ];
 }
@@ -2246,9 +2427,58 @@ function applyDelta(delta){
   });
   updateStatBars();
 }
+function sleepHoursFromClock(hour){
+  return ({21:10,22:9,23:8,24:7,25:6,26:5})[hour] || null;
+}
+function recordCaffeine(mg){
+  const amount=Number(mg)||0;
+  if(amount<=0) return;
+  G.totalCaffeine=(G.totalCaffeine||0)+amount;
+  const dayKey=`${G.day||1}`;
+  if(G._lastCaffeineDay!==dayKey){
+    G.caffeineDays=(G.caffeineDays||0)+1;
+    G._lastCaffeineDay=dayKey;
+  }
+}
+function recordSleep(hours){
+  const h=Number(hours);
+  if(!h) return;
+  G.sleepTotal=(G.sleepTotal||0)+h;
+  G.sleepCount=(G.sleepCount||0)+1;
+}
+function applyChoiceRecords(choice){
+  if(choice.labelChecked) G.labelChecked=true;
+  if(choice.snsRisk) G.snsRisk=true;
+  if(choice.minjunWarned) G.minjunWarned=true;
+  if(choice.recoveryPlan) G.recoveryPlan=true;
+  if(choice.helpedFriend) G.helpedFriend=(G.helpedFriend||0)+1;
+  if(choice.analgesic) G.analgesicCount=(G.analgesicCount||0)+1;
+  if(choice.fastingMed) G.fastingMedCount=(G.fastingMedCount||0)+1;
+  if(choice.comboMedCaffeine) G.comboCount=(G.comboCount||0)+1;
+  if(choice.sleepHours) recordSleep(choice.sleepHours);
+}
+function applySleepClockEffect(choice){
+  if(!choice.sleepHour) return;
+  if(!choice.sleepHours) recordSleep(sleepHoursFromClock(choice.sleepHour));
+  if(choice.sleepHour>=24){G.lateSleepStreak=(G.lateSleepStreak||0)+1;} else G.lateSleepStreak=0;
+  if(choice.sleepHour>=26){G.veryLateSleepStreak=(G.veryLateSleepStreak||0)+1;} else G.veryLateSleepStreak=0;
+  if(G.lateSleepStreak>=2) applyDelta({health:-5,sleep:-5});
+  if(G.veryLateSleepStreak>=2) applyDelta({social:-10,judgment:-5});
+  G.lastSleepHour=choice.sleepHour;
+  G.nextDayPenalty=choice.sleepHour>=26?'very_late':choice.sleepHour>=24?'late':'normal';
+}
+function applyPendingDrinkChoice(choice){
+  if(!choice) return '';
+  applyDelta(choice.delta||{});
+  applyChoiceRecords(choice);
+  applySleepClockEffect(choice);
+  return choice.result?.text ? `\n\n${choice.result.text}` : '';
+}
 function applySystemEffects(choice){
+  applyChoiceRecords(choice);
   if(choice.caffeineMg!==undefined){
     G.caffeineToday=(G.caffeineToday||0)+choice.caffeineMg;
+    recordCaffeine(choice.caffeineMg);
     if(choice.caffeineMg>0){G.caffeineStreak=(G.caffeineStreak||0)+1;G.noCaffeineStreak=0;}
     else if(choice.noCaffeine){G.noCaffeineStreak=(G.noCaffeineStreak||0)+1;G.caffeineStreak=0;}
     if(G.caffeineToday>G.caffeineMax){
@@ -2260,12 +2490,7 @@ function applySystemEffects(choice){
     if(G.noCaffeineStreak>=3) applyDelta({caffeine:5,social:5});
   }
   if(choice.sleepHour){
-    if(choice.sleepHour>=24){G.lateSleepStreak=(G.lateSleepStreak||0)+1;} else G.lateSleepStreak=0;
-    if(choice.sleepHour>=26){G.veryLateSleepStreak=(G.veryLateSleepStreak||0)+1;} else G.veryLateSleepStreak=0;
-    if(G.lateSleepStreak>=2) applyDelta({health:-5,sleep:-5});
-    if(G.veryLateSleepStreak>=2) applyDelta({social:-10,judgment:-5});
-    G.lastSleepHour=choice.sleepHour;
-    G.nextDayPenalty=choice.sleepHour>=26?'very_late':choice.sleepHour>=24?'late':'normal';
+    applySleepClockEffect(choice);
   }
   updateCaffeineHud();
 }
@@ -2323,6 +2548,8 @@ function renderClues(sc){
 }
 function showClue(idx){
   const clue=(window._currentClues||[])[idx]; if(!clue)return;
+  G.labelChecked=true;
+  saveGameState();
   document.getElementById('clue-title').textContent=clue.title||'단서 확인';
   document.getElementById('clue-visual').innerHTML=clue.type==='medicine'?`
     <div class="draw-med">
@@ -2524,20 +2751,104 @@ function hideChoices() {
   choices.innerHTML = '';
   choices.style.display = 'none';
   choices.style.animation = '';
+  const modal = document.getElementById('choice-modal');
+  const modalList = document.getElementById('choice-modal-list');
+  if (modal) modal.classList.remove('show');
+  if (modalList) modalList.innerHTML = '';
+  setChoiceModalCollapsed(false);
+  document.getElementById('screen-student')?.classList.remove('choice-open','choice-collapsed');
+}
+
+function setChoiceModalCollapsed(collapsed) {
+  const modal = document.getElementById('choice-modal');
+  const screen = document.getElementById('screen-student');
+  const toggle = document.getElementById('choice-toggle');
+  if (modal) modal.classList.toggle('collapsed', !!collapsed);
+  if (screen) screen.classList.toggle('choice-collapsed', !!collapsed);
+  if (toggle) toggle.textContent = collapsed ? '펼치기' : '접기';
+}
+
+function toggleChoiceModal(event) {
+  event?.stopPropagation?.();
+  const modal = document.getElementById('choice-modal');
+  setChoiceModalCollapsed(!modal?.classList.contains('collapsed'));
+}
+
+function choiceSpeakerProfile(sc) {
+  const slot = sceneCharacterSlot(sc);
+  const npc = Object.values(NPC_DATA || {}).find(x => x.imgSlot === slot);
+  const speaker = formatSpeakerName(sc?.speaker || '');
+  if (npc) {
+    return {
+      name: npc.name,
+      desc: npc.desc,
+      color: npc.color,
+      img: driveUrl(DB.gameData.images?.[npc.imgSlot] || ''),
+      emoji: npc.emoji
+    };
+  }
+  if (slot === 'teacher_main') {
+    return {
+      name: speaker.includes('의사') ? '의사' : '선생님',
+      desc: speaker.includes('의사') ? '진료실' : '수업 안내',
+      color: '#ff9f80',
+      img: driveUrl(DB.gameData.images?.teacher_main || ''),
+      emoji: '👩‍🏫'
+    };
+  }
+  return {
+    name: formatSpeakerName(sc?.speaker || G.name),
+    desc: `${G.grade || 1}학년 · 선택 상황`,
+    color: '#ff9f80',
+    img: driveUrl(DB.gameData.images?.[slot] || ''),
+    emoji: sceneCharacterFallback(sc, slot)
+  };
+}
+
+function choiceQuestionText(sc) {
+  const raw = String(sc?.text || '').replace(/{name}/g, G.name).replace(/\s+/g, ' ').trim();
+  if (!raw) return '어떻게 선택할까?';
+  const quoted = [...raw.matchAll(/["“”]([^"“”]{4,})["“”]/g)].map(m => m[1].trim());
+  const parts = raw.match(/[^.!?。！？]+[.!?。！？]?/g)?.map(s => s.trim()).filter(s => s.replace(/["“”'‘’]/g, '').length > 3) || [];
+  const picked = quoted.length ? quoted[quoted.length - 1] : (parts.length ? parts[parts.length - 1] : raw);
+  return picked.length > 86 ? `${picked.slice(0, 86)}...` : picked;
 }
 
 function renderChoices(sc) {
   const choices = document.getElementById('choices');
-  choices.innerHTML = '';
-  choices.style.display = '';
-  choices.style.animation = 'fadeInUp .35s ease';
+  const modal = document.getElementById('choice-modal');
+  const modalList = document.getElementById('choice-modal-list');
+  const target = modalList || choices;
+  if (choices) {
+    choices.innerHTML = '';
+    choices.style.display = 'none';
+    choices.style.animation = '';
+  }
+  target.innerHTML = '';
+  const profile = choiceSpeakerProfile(sc);
+  const avatar = document.getElementById('choice-avatar');
+  document.getElementById('choice-name').textContent = profile.name;
+  document.getElementById('choice-name').style.color = profile.color;
+  document.getElementById('choice-desc').textContent = profile.desc;
+  document.getElementById('choice-question').textContent = choiceQuestionText(sc);
+  if (avatar) {
+    avatar.style.borderColor = profile.color;
+    avatar.innerHTML = profile.img
+      ? `<img src="${profile.img}" alt="${profile.name}">`
+      : `<span>${profile.emoji}</span>`;
+  }
   (sc.choices || []).forEach((c, i) => {
     const b = document.createElement('button');
     b.className = 'choice-btn';
     b.textContent = c.text;
     b.onclick = () => pickChoice(i);
-    choices.appendChild(b);
+    target.appendChild(b);
   });
+  if (modal) {
+    modal.classList.add('show');
+    setChoiceModalCollapsed(false);
+  }
+  document.getElementById('screen-student')?.classList.add('choice-open');
 }
 
 function showChoicesOrNext() {
@@ -2605,6 +2916,40 @@ function formatHudLocation(location) {
     .trim();
 }
 
+function getScenarioText(sc, teacherEvent) {
+  let text = sc?.text || '';
+  const loc = sc?.location || '';
+  const lastCaf = G.lastDayCaffeine || 0;
+  const totalCaf = G.totalCaffeine || 0;
+  const avgSleep = G.sleepCount ? (G.sleepTotal || 0) / G.sleepCount : 8;
+
+  if (loc.includes('DAY 3') && loc.includes('등교')) {
+    if (lastCaf >= 80) {
+      text = '아침부터 가슴이 약간 두근거린다. 어제 마신 카페인이 아직 남아있는 건지 모르겠다. 그래도 일단 학교는 가야 한다.';
+    } else if (lastCaf > 0) {
+      text = '아침 몸이 아주 가볍지는 않다. 어제 마신 카페인이 조금 남아있는 건지, 잠을 덜 잔 건지 헷갈린다. 그래도 학교는 가야 한다.';
+    } else if (avgSleep < 7) {
+      text = '카페인은 마시지 않았는데도 몸이 무겁다. 어젯밤 수면이 부족했던 탓인지 발걸음이 느리다. 그래도 일단 학교는 가야 한다.';
+    } else {
+      text = '오늘 아침은 몸이 비교적 가볍다. 어제 카페인을 더하지 않은 선택이 생각보다 괜찮게 느껴진다. 그래도 방심하지 말고 학교로 향한다.';
+    }
+  }
+
+  if (loc.includes('DAY 4') && loc.includes('등교')) {
+    if (totalCaf >= 200 && avgSleep < 7) {
+      text = '심장이 빠르게 뛰고, 손끝도 약간 떨린다. 카페인과 부족한 잠이 며칠째 겹치면서 뭔가 잘못되고 있다는 느낌이 든다.';
+    } else if (totalCaf >= 160) {
+      text = '아침부터 심장이 조금 빨리 뛰는 것 같다. 지난 며칠 동안 쌓인 카페인이 몸에 남아있는 건지 헷갈린다.';
+    } else if (avgSleep < 6.5) {
+      text = '카페인을 많이 마신 건 아닌데도 집중하려고 하면 생각이 흩어진다. 며칠째 부족한 잠이 몸에 먼저 드러난다.';
+    } else {
+      text = '등굣길 공기가 선선하다. 몸은 아직 괜찮다. 지난 며칠의 선택이 크게 무너지진 않았지만, 시험기간은 이제부터다.';
+    }
+  }
+
+  return (text + (teacherEvent ? `\n\n${teacherEvent.text}\n${teacherEvent.result}` : '')).replace(/{name}/g, G.name);
+}
+
 function renderScene(idx){
   const sc=DB.gameData.scenarios[idx]; if(!sc)return;
   const day=sc.day||idx+1;
@@ -2630,7 +2975,10 @@ function renderScene(idx){
   G.answered=false;
   document.getElementById('result-box').classList.remove('show');
   document.getElementById('next-btn').classList.remove('show');
-  if(G.currentDay!==undefined && day!==G.currentDay) G.caffeineToday=0;
+  if(G.currentDay!==undefined && day!==G.currentDay){
+    G.lastDayCaffeine=G.caffeineToday||0;
+    G.caffeineToday=0;
+  }
   G.currentDay=day; G.day=day;
   document.getElementById('hud-name').textContent=`${G.name}(나)`;
   document.getElementById('s-day').textContent=`${day}일차`;
@@ -2667,18 +3015,21 @@ function renderScene(idx){
     : `<span style="font-size:5.5rem;">${charEmoji}</span>`;
   // 대화
   document.getElementById('d-spk').textContent=formatSpeakerName(sc.speaker);
-  const dialogText=((sc.text||'')+(teacherEvent?`\n\n${teacherEvent.text}\n${teacherEvent.result}`:'')).replace(/{name}/g,G.name);
+  const dialogText=getScenarioText(sc, teacherEvent);
   startTyping(splitSentences(dialogText), showChoicesOrNext);
   saveGameState();
 }
 function pickChoice(i){
   if(G.answered)return;
+  hideChoices();
   const sc=DB.gameData.scenarios[G.scene];
   const ch=sc.choices[i];
   if(ch.openDrink){
+    window._pendingDrinkChoice=ch;
     openDrinkModal(ch.openDrink);
     return;
   }
+  window._pendingDrinkChoice=null;
   if(ch.openSleep){
     openSleepModal();
     return;
@@ -2783,10 +3134,41 @@ function drawEndMsg(){
   const sleep   = G.stats.sleep   || 0;
   const caffeine= G.stats.caffeine|| 0;
   const judgment= G.stats.judgment|| 0;
+  const avgCaffeine = Math.round((G.totalCaffeine || 0) / 14);
+  const avgSleep = G.sleepCount ? ((G.sleepTotal || 0) / G.sleepCount) : 0;
+  const avgSleepText = avgSleep ? avgSleep.toFixed(1) : '-';
+  const analgesics = G.analgesicCount || 0;
+  const fasting = G.fastingMedCount || 0;
+  const combo = G.comboCount || 0;
+  const helped = G.helpedFriend || 0;
 
   let ending, title, msg, color;
 
-  if (allHigh && avg >= 70) {
+  if (combo >= 2) {
+    ending = 'complex';
+    title  = '😵 복합 위험형';
+    color  = '#ef4444';
+    msg    = `${G.name}은(는) 카페인이 들어있는 음료와 카페인 성분이 포함된 진통제를 함께 선택한 경우가 있었어요. 성분을 확인하는 습관 하나가 이런 상황을 막아줘요.`;
+
+  } else if (analgesics >= 3 || fasting >= 1) {
+    ending = 'medicine';
+    title  = '💊 진통제 반복형';
+    color  = '#f59e0b';
+    msg    = `${G.name}은(는) 두통이 생길 때마다 약을 찾는 패턴이 생겼어요. 약은 증상을 줄여주지만 원인을 없애주진 않아요. 특히 공복 복용은 위장 자극 위험을 키웁니다.`;
+
+  } else if (avgCaffeine >= 80 || (avgSleep && avgSleep <= 6.5)) {
+    ending = 'caffeine';
+    title  = '⚠️ 카페인 의존형';
+    color  = '#f97316';
+    msg    = `${G.name}은(는) 시험 기간 동안 카페인에 많이 기대었어요. 단기적으로 버틸 수는 있지만, 내성이 쌓이면 같은 효과를 위해 더 많은 양을 찾게 됩니다.`;
+
+  } else if (avgCaffeine <= 50 && (!avgSleep || avgSleep >= 7) && combo === 0) {
+    ending = 'balanced';
+    title  = '🌟 균형형';
+    color  = '#5fc89a';
+    msg    = `${G.name}은(는) 단기 효과보다 장기 컨디션을 더 자주 선택했어요. 카페인 의존 없이 시험을 마친 건 쉽지 않은 일이에요.`;
+
+  } else if (allHigh && avg >= 70) {
     ending = 'leader';
     title  = '🌟 건강한 리더';
     color  = '#5fc89a';
@@ -2826,7 +3208,15 @@ function drawEndMsg(){
 
   document.getElementById('ending-title').style.color = color;
   document.getElementById('ending-sub').textContent = title;
-  document.getElementById('ending-msg').textContent = msg;
+  document.getElementById('ending-msg').innerHTML = `
+    <div style="margin-bottom:12px;">${msg}</div>
+    <div style="display:grid;gap:7px;font-size:.82rem;line-height:1.55;">
+      <div>☕ 총 카페인 섭취: <strong>${G.totalCaffeine||0}mg</strong> (평균 1일 ${avgCaffeine}mg)</div>
+      <div>🌙 평균 수면 시간: <strong>${avgSleepText}시간</strong></div>
+      <div>💊 진통제 복용: <strong>${analgesics}회</strong> / 공복 복용: <strong>${fasting}회</strong></div>
+      <div>⚠️ 카페인+진통제 중복: <strong>${combo}회</strong></div>
+      <div>🤝 친구에게 도움을 준 횟수: <strong>${helped}회</strong></div>
+    </div>`;
   document.getElementById('ending-msg').style.borderLeftColor = color;
 
   const discussion = document.getElementById('ending-discussion');
@@ -3094,27 +3484,29 @@ function openDrinkModal(type) {
     const remaining = max - (G.caffeineToday || 0);
     const willOver = d.caffeine > 0 && d.caffeine > remaining;
     const pctAfter = Math.min(100, Math.round(((G.caffeineToday + d.caffeine) / max) * 100));
+    const canSeeCaffeine = !!G.labelChecked;
+    const visibleDesc = canSeeCaffeine
+      ? d.desc
+      : (d.caffeine === 0 ? '카페인 표시는 확인되지 않았어요. 직접 고르면 결과를 알 수 있습니다.' : '라벨을 자세히 보기 전에는 정확한 함량을 알 수 없어요.');
     return `
     <div onclick="selectDrink('${type}','${d.id}')"
-      style="background:${d.good ? '#f0fbf5' : '#fffaf2'};border:2px solid ${willOver ? '#ef4444' : d.good ? '#a7e3c4' : '#f1d3b8'};
+      style="background:#fffaf2;border:2px solid ${canSeeCaffeine && willOver ? '#ef4444' : '#f1d3b8'};
         border-radius:14px;padding:14px 16px;cursor:pointer;transition:all .2s;box-shadow:0 8px 18px rgba(126,102,85,.08);"
       onmouseover="this.style.transform='translateX(4px)'"
       onmouseout="this.style.transform=''">
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
         <span style="font-size:1.6rem;">${d.emoji}</span>
         <div style="flex:1;">
-          <div style="font-weight:700;font-size:.95rem;color:#3f2d24;">${d.name}
-            ${d.good ? '<span style="font-size:.7rem;background:#dcf7e8;color:#26976d;padding:2px 7px;border-radius:10px;margin-left:6px;">건강한 선택</span>' : ''}
-          </div>
-          <div style="font-size:.78rem;color:#7e6655;margin-top:2px;">${d.desc}</div>
+          <div style="font-weight:700;font-size:.95rem;color:#3f2d24;">${d.name}</div>
+          <div style="font-size:.78rem;color:#7e6655;margin-top:2px;">${visibleDesc}</div>
         </div>
         <div style="text-align:right;font-size:.82rem;font-weight:700;
-          color:${d.caffeine === 0 ? '#5fc89a' : willOver ? '#ef4444' : '#f59e0b'};">
-          ${d.caffeine === 0 ? '카페인 없음' : `+${d.caffeine}mg`}
-          ${willOver ? '<div style="font-size:.7rem;color:#ef4444;">⚠️ 초과</div>' : ''}
+          color:${!canSeeCaffeine ? '#7e6655' : d.caffeine === 0 ? '#5fc89a' : willOver ? '#ef4444' : '#f59e0b'};">
+          ${canSeeCaffeine ? (d.caffeine === 0 ? '카페인 없음' : `+${d.caffeine}mg`) : '함량 미확인'}
+          ${canSeeCaffeine && willOver ? '<div style="font-size:.7rem;color:#ef4444;">⚠️ 초과</div>' : ''}
         </div>
       </div>
-      ${d.caffeine > 0 ? `
+      ${canSeeCaffeine && d.caffeine > 0 ? `
       <div style="height:5px;border-radius:3px;background:#f0dbc8;overflow:hidden;">
         <div style="height:100%;width:${pctAfter}%;
           background:${pctAfter>=100?'#ef4444':pctAfter>=80?'#f59e0b':'#5fc89a'};
@@ -3132,10 +3524,12 @@ function openDrinkModal(type) {
 function selectDrink(type, drinkId) {
   const drink = DRINK_MENU[type].find(d => d.id === drinkId);
   if (!drink) return;
-  closeDrinkModal();
+  const pending = window._pendingDrinkChoice || null;
+  document.getElementById('drink-modal').style.display = 'none';
 
   if (drink.caffeine > 0) {
     G.caffeineToday = (G.caffeineToday || 0) + drink.caffeine;
+    recordCaffeine(drink.caffeine);
     G.caffeineStreak = (G.caffeineStreak || 0) + 1;
     G.noCaffeineStreak = 0;
   } else if (drink.noCaffeine) {
@@ -3155,16 +3549,38 @@ function selectDrink(type, drinkId) {
   if (G.caffeineStreak >= 3) applyDelta({ caffeine: -5, judgment: -3 });
   if (G.noCaffeineStreak >= 3) applyDelta({ caffeine: 5, social: 5 });
 
+  window._pendingDrinkChoice = null;
+  const extraText = applyPendingDrinkChoice(pending);
   updateCaffeineHud();
 
   showTypedResult(
-    drink.good ? `✅ ${drink.name} 선택` : `⚠️ ${drink.name} 선택`,
-    drink.desc + (G.caffeineToday > max ? '\n\n⚠️ 오늘 카페인 최대량을 초과했습니다! 체력이 감소합니다.' : '')
+    pending?.result?.title || (drink.good ? `✅ ${drink.name} 선택` : `⚠️ ${drink.name} 선택`),
+    drink.desc + extraText + (G.caffeineToday > max ? '\n\n⚠️ 오늘 카페인 최대량을 초과했습니다! 체력이 감소합니다.' : '')
   );
 }
 
 function closeDrinkModal() {
   document.getElementById('drink-modal').style.display = 'none';
+  if (window._pendingDrinkChoice) restoreChoiceModalAfterDrink();
+}
+
+function cancelDrinkModal() {
+  const pending = window._pendingDrinkChoice;
+  document.getElementById('drink-modal').style.display = 'none';
+  if (pending) {
+    restoreChoiceModalAfterDrink();
+    return;
+  }
+  window._pendingDrinkChoice = null;
+}
+
+function restoreChoiceModalAfterDrink() {
+  const sc = DB.gameData.scenarios[G.scene];
+  if (sc?.choices) renderChoices(sc);
+  const modal = document.getElementById('choice-modal');
+  if (modal) modal.classList.add('show');
+  setChoiceModalCollapsed(false);
+  document.getElementById('screen-student')?.classList.add('choice-open');
 }
 
 function showCaffeineWarning() {
@@ -3240,6 +3656,7 @@ function selectSleep(hour) {
 
   G.lastSleepHour = hour;
   G.nextDayPenalty = hour >= 26 ? 'very_late' : hour >= 24 ? 'late' : 'normal';
+  recordSleep(sleepHoursFromClock(hour));
 
   updateStatBars();
 
@@ -3473,7 +3890,13 @@ function sceneColor(key){
     scene_classroom:'linear-gradient(150deg,#dff5ff 0%,#fff3c7 46%,#ffe4ef 100%)',
     scene_library:'linear-gradient(150deg,#e5f0ff 0%,#fff0c9 50%,#f6e2ff 100%)',
     scene_gym:'linear-gradient(150deg,#e3ffe9 0%,#fff4c9 48%,#ffd9c9 100%)',
-    scene_health:'linear-gradient(150deg,#dffcf4 0%,#eef3ff 50%,#ffe5ef 100%)'
+    scene_health:'linear-gradient(150deg,#dffcf4 0%,#eef3ff 50%,#ffe5ef 100%)',
+    scene_commute:'linear-gradient(150deg,#ffe8ef 0%,#e1f8ff 45%,#e8f7d8 100%)',
+    scene_convenience:'linear-gradient(150deg,#fff0dc 0%,#e7fbff 48%,#ffe4ef 100%)',
+    scene_bedroom:'linear-gradient(150deg,#f0e8ff 0%,#fff0d9 50%,#dff2ff 100%)',
+    scene_cafeteria:'linear-gradient(150deg,#fff8d7 0%,#e4fff4 48%,#ffe6df 100%)',
+    scene_cafe:'linear-gradient(150deg,#fff0dc 0%,#f6e8ff 45%,#e6fff4 100%)',
+    scene_exam:'linear-gradient(150deg,#eef8ff 0%,#fff7df 46%,#e8f7e5 100%)'
   }[key]||'linear-gradient(150deg,#dff5ff 0%,#fff3c7 46%,#ffe4ef 100%)';
 }
 
