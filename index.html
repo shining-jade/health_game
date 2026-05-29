@@ -120,7 +120,7 @@ select option{background:var(--panel);}
 .scene-char{position:relative;z-index:2;font-size:5.5rem;filter:drop-shadow(0 8px 20px rgba(0,0,0,.5));
   animation:charBob 2.2s ease-in-out infinite;}
 .scene-char img{height:200px;object-fit:contain;}
-@keyframes charBob{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
+@keyframes charBob{0%,100%{transform:translateY(0);}50%{transform:translateY(-2px);}}
 
 .s-dialog{flex:1;padding:18px 22px;overflow-y:auto;background:var(--bg);}
 .prog-row{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
@@ -151,7 +151,7 @@ select option{background:var(--panel);}
 .choice-btn.c-bad{border-color:var(--s5);background:rgba(251,113,133,.12);}
 
 .result-box{display:none;background:var(--panel2);border:1px solid var(--border);
-  border-radius:12px;padding:14px 18px;margin-top:12px;font-size:.86rem;line-height:1.7;cursor:pointer;}
+  border-radius:12px;padding:14px 18px;margin-top:12px;font-size:.86rem;line-height:1.7;}
 .result-box.show{display:block;}
 .result-box .rt{font-family:'Jua',sans-serif;color:var(--accent2);margin-bottom:5px;}
 #r-text{white-space:pre-line;}
@@ -340,7 +340,7 @@ body{background:
 }
 #screen-student .student-hud{
   display:grid;
-  grid-template-columns:46px 1fr 46px;
+  grid-template-columns:46px 46px 1fr 46px;
   gap:8px;
   align-items:center;
   padding:14px 14px 12px;
@@ -379,8 +379,8 @@ body{background:
   font-weight:800;
 }
 #screen-student .scene-area{
-  height:240px;
-  min-height:240px;
+  height:270px;
+  min-height:270px;
   margin:0 10px;
   border-left:2px solid #ebc7a9;
   border-right:2px solid #ebc7a9;
@@ -420,14 +420,98 @@ body{background:
   position:absolute;
   inset:0;
   overflow:hidden;
-  padding-top:14px;
+  padding-top:0;
+  animation:none;
 }
 #screen-student .scene-char img{
-  height:520px;
+  height:272px;
   max-width:none;
   object-fit:contain;
   object-position:center top;
-  transform:translateY(36px) scale(1.06);
+  transform:translateY(0);
+  animation:charBob 2.2s ease-in-out infinite;
+}
+#screen-student .scene-char[class*="slot-char-male"] img,
+#screen-student .scene-char[class*="slot-char-female"] img{
+  height:272px;
+}
+#screen-student .scene-char.slot-npc-minjun img,
+#screen-student .scene-char.slot-npc-seoyeon img,
+#screen-student .scene-char.slot-npc-haeun img{
+  height:520px;
+  transform:translateY(0);
+}
+#screen-student .scene-char.slot-npc-taeyang img{
+  height:540px;
+  transform:translateY(0);
+}
+#screen-student .scene-char.slot-teacher-main img{
+  height:332px;
+  transform:translateY(3px);
+}
+#screen-student .scene-char.scene-duo{
+  align-items:flex-end;
+  justify-content:center;
+  padding-top:0;
+}
+#screen-student .scene-char.scene-duo .scene-actor{
+  position:absolute;
+  top:14px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:4px;
+  filter:drop-shadow(0 10px 16px rgba(76,48,31,.22));
+}
+#screen-student .scene-char.scene-duo .scene-actor.left{left:28px;}
+#screen-student .scene-char.scene-duo .scene-actor.right{right:24px;}
+#screen-student .scene-char.scene-duo .scene-actor img{
+  height:310px;
+  max-width:none;
+  object-fit:contain;
+  object-position:center bottom;
+  transform:none;
+}
+#screen-student .scene-char.scene-duo .scene-actor.left img{height:292px;}
+#screen-student .scene-char.scene-duo .scene-actor.right img{height:326px;}
+#screen-student .scene-char.scene-duo .actor-name{
+  position:absolute;
+  top:86px;
+  padding:5px 9px;
+  border:2px solid rgba(255,159,128,.62);
+  border-radius:999px;
+  background:rgba(255,253,247,.92);
+  color:#e76642;
+  font-family:'Jua',sans-serif;
+  font-size:.75rem;
+  line-height:1;
+  white-space:nowrap;
+  box-shadow:0 8px 18px rgba(92,61,42,.12);
+}
+#screen-student .scene-char.scene-duo .scene-actor.left .actor-name{left:50%;transform:translateX(-50%);}
+#screen-student .scene-char.scene-duo .scene-actor.right .actor-name{right:20px;}
+#screen-student .scene-char.scene-duo .scene-actor.left .actor-name{top:54px;}
+#screen-student .scene-char.scene-duo .scene-actor.right .actor-name{top:78px;}
+.scene-name-tag{
+  position:absolute;
+  z-index:6;
+  left:50%;
+  top:72px;
+  transform:translateX(58px);
+  max-width:128px;
+  padding:5px 10px;
+  border:2px solid rgba(255,159,128,.55);
+  border-radius:999px;
+  background:rgba(255,253,247,.9);
+  color:#e76642;
+  box-shadow:0 8px 18px rgba(92,61,42,.14);
+  font-family:'Jua',sans-serif;
+  font-size:.78rem;
+  line-height:1.1;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  pointer-events:none;
 }
 .scene-clues{
   position:absolute;
@@ -456,6 +540,35 @@ body{background:
   pointer-events:auto;
 }
 .clue-item:hover{transform:translateY(-2px);}
+.clue-item.checked{
+  border:2px solid #5fc89a;
+  background:rgba(240,251,245,.94);
+}
+.clue-item.checked .clue-label::after{
+  content:" 확인";
+  color:#26976d;
+}
+.clue-guide{
+  position:absolute;
+  left:50%;
+  bottom:82px;
+  transform:translateX(-50%);
+  z-index:6;
+  border:2px solid #f1d3b8;
+  border-radius:999px;
+  background:rgba(255,253,247,.92);
+  color:#7e6655;
+  font-size:.72rem;
+  font-weight:900;
+  padding:6px 10px;
+  box-shadow:0 8px 18px rgba(92,61,42,.12);
+  pointer-events:none;
+  white-space:nowrap;
+}
+.clue-guide.done{
+  border-color:#a7e3c4;
+  color:#26976d;
+}
 .clue-icon{font-size:1.5rem;line-height:1;}
 .clue-label{font-size:.68rem;}
 .clue-modal{
@@ -472,6 +585,8 @@ body{background:
 .clue-modal.show{display:flex;}
 .clue-card{
   width:min(390px,92vw);
+  max-height:88dvh;
+  overflow-y:auto;
   border:3px solid #ff9f80;
   border-radius:22px;
   background:#fffdf7;
@@ -532,6 +647,57 @@ body{background:
   font-size:.58rem;
   color:#fff8b8;
   font-weight:900;
+}
+.draw-drink-label{
+  width:210px;
+  min-height:226px;
+  border:4px solid #b9bec7;
+  border-radius:28px 28px 22px 22px;
+  background:linear-gradient(155deg,var(--drink-a,#96df68) 0 30%,var(--drink-b,#20242f) 30% 72%,var(--drink-c,#96df68) 72%);
+  color:#fff;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+  box-shadow:inset 12px 0 rgba(255,255,255,.22), inset -12px 0 rgba(0,0,0,.12);
+}
+.draw-drink-label::before,.draw-drink-label::after{
+  content:"";
+  position:absolute;
+  left:14px;
+  right:14px;
+  height:10px;
+  border-radius:50%;
+  background:rgba(255,255,255,.62);
+}
+.draw-drink-label::before{top:8px;}
+.draw-drink-label::after{bottom:8px;}
+.draw-drink-label .drink-emoji{
+  margin-top:30px;
+  font-size:3.2rem;
+  line-height:1;
+  filter:drop-shadow(0 4px 4px rgba(0,0,0,.18));
+}
+.draw-drink-label .drink-name{
+  margin:12px auto 8px;
+  width:82%;
+  border-radius:12px;
+  background:rgba(255,255,255,.9);
+  color:#3f2d24;
+  padding:8px 10px;
+  font-family:'Jua',sans-serif;
+  font-size:1.1rem;
+  line-height:1.15;
+}
+.draw-drink-label .drink-caf{
+  position:absolute;
+  left:14px;
+  right:14px;
+  bottom:28px;
+  border-radius:999px;
+  background:rgba(63,45,36,.62);
+  padding:7px 10px;
+  font-weight:900;
+  font-size:.82rem;
 }
 .draw-med{
   width:300px;
@@ -733,7 +899,7 @@ body{background:
   display:none;
   align-items:flex-start;
   justify-content:center;
-  padding:150px 10px 18px;
+  padding:92px 10px 12px;
   background:rgba(255,246,235,.50);
 }
 .choice-modal.show{display:flex;}
@@ -745,7 +911,7 @@ body{background:
 }
 .choice-sheet{
   width:min(430px,100%);
-  max-height:min(62dvh,470px);
+  max-height:calc(100dvh - 112px);
   overflow-y:auto;
   border:2px solid rgba(255,159,128,.48);
   border-radius:22px;
@@ -799,10 +965,23 @@ body{background:
 .choice-avatar img{
   width:100%;
   height:100%;
+  object-fit:cover;
+  object-position:center 22%;
+  transform:scale(1.35);
+  transform-origin:center 22%;
+}
+.choice-avatar.npc-profile img{
   object-fit:contain;
   object-position:center top;
-  transform:translateY(32%) scale(2.55);
-  transform-origin:center 28%;
+  transform:scale(2.65);
+  transform-origin:center 12%;
+}
+.choice-avatar.teacher-profile img{
+  object-fit:contain;
+  object-position:center center;
+  transform:none;
+  padding:2px;
+  background:#fff;
 }
 .choice-avatar span{font-size:2rem;line-height:58px;}
 .choice-name{
@@ -822,9 +1001,11 @@ body{background:
   padding:13px 15px;
   margin-bottom:12px;
   font-size:1rem;
-  line-height:1.65;
+  line-height:1.58;
   font-weight:900;
   color:#3f2d24;
+  white-space:normal;
+  word-break:keep-all;
 }
 .choice-modal-list{
   display:flex;
@@ -872,6 +1053,12 @@ body{background:
 .choice-modal.collapsed .choice-avatar{
   width:46px;
   height:46px;
+}
+.choice-modal.collapsed .choice-avatar.npc-profile img{
+  transform:scale(2.65);
+}
+.choice-modal.collapsed .choice-avatar.teacher-profile img{
+  padding:1px;
 }
 .choice-modal.collapsed .choice-name::after{
   content:" · 선택지를 접어둠";
@@ -1072,8 +1259,21 @@ body{background:
   #screen-student .student-hud{padding:10px 12px 9px;}
   #screen-student .hud-btn{height:38px;}
   #screen-student .hud-main{min-height:38px;}
-  #screen-student .scene-area{height:210px;min-height:210px;}
-  #screen-student .scene-char img{height:460px;transform:translateY(28px) scale(1.04);}
+  #screen-student .scene-area{height:238px;min-height:238px;}
+  #screen-student .scene-char img{height:286px;transform:translateY(2px);}
+  #screen-student .scene-char.slot-npc-minjun img,
+  #screen-student .scene-char.slot-npc-seoyeon img,
+  #screen-student .scene-char.slot-npc-haeun img{height:480px;transform:translateY(0);}
+  #screen-student .scene-char.slot-npc-taeyang img{height:500px;transform:translateY(0);}
+  #screen-student .scene-char.slot-teacher-main img{height:306px;}
+  #screen-student .scene-char.scene-duo .scene-actor.left{left:18px;}
+  #screen-student .scene-char.scene-duo .scene-actor.right{right:16px;}
+  #screen-student .scene-char.scene-duo .scene-actor.left img{height:256px;}
+  #screen-student .scene-char.scene-duo .scene-actor.right img{height:286px;}
+  #screen-student .scene-char.scene-duo .actor-name{font-size:.7rem;}
+  #screen-student .scene-char.scene-duo .scene-actor.left .actor-name{top:46px;}
+  #screen-student .scene-char.scene-duo .scene-actor.right .actor-name{top:66px;}
+  #screen-student .scene-name-tag{top:60px;transform:translateX(48px);}
   #screen-student .stat-row{min-height:46px;}
   #screen-student .stat-row label span{font-size:.62rem;}
   #screen-student .stat-row label b{font-size:.98rem;}
@@ -1394,15 +1594,15 @@ body{background:
       <div class="setup-field">
         <label>체중</label>
         <div style="display:flex;align-items:center;">
-          <input id="weight-inp" type="number" min="30" max="120" value="60"
+          <input id="weight-inp" type="number" min="30" max="120" placeholder="예: 60"
             oninput="updateCaffeinePreview()" style="flex:1;">
         </div>
-        <small id="caffeine-preview">하루 최대 카페인 150mg</small>
+        <small id="caffeine-preview">체중을 입력하면 하루 최대 카페인을 계산해요</small>
       </div>
       <div class="setup-field">
         <label>학년</label>
         <div class="seg-row" id="grade-row">
-          <button class="seg-btn active" type="button" data-value="1" onclick="selectSegment('grade','1')">1학년</button>
+          <button class="seg-btn" type="button" data-value="1" onclick="selectSegment('grade','1')">1학년</button>
           <button class="seg-btn" type="button" data-value="2" onclick="selectSegment('grade','2')">2학년</button>
           <button class="seg-btn" type="button" data-value="3" onclick="selectSegment('grade','3')">3학년</button>
         </div>
@@ -1422,6 +1622,7 @@ body{background:
   <div class="s-right">
     <div class="student-hud">
       <button class="hud-btn" onclick="goTitle()">🏠</button>
+      <button class="hud-btn" id="back-scene-btn" onclick="prevScene()" title="이전으로">←</button>
       <div class="hud-main">
         <strong id="hud-name">학생</strong>
         <span id="hud-day">1일차</span>
@@ -1431,6 +1632,7 @@ body{background:
     <div class="scene-area" id="scene-area">
       <span class="scene-loc" id="scene-loc">📍 교실</span>
       <div class="scene-char" id="scene-char">🧑‍🎓</div>
+      <div class="scene-name-tag" id="scene-name-tag">학생(나)</div>
     </div>
     <div class="s-left">
       <div class="portrait-wrap" id="portrait-wrap" onclick="document.getElementById('port-file').click()">
@@ -1459,7 +1661,7 @@ body{background:
         <div class="next-arrow" id="next-arrow" style="display:none">▼</div>
       </div>
       <div class="choices" id="choices"></div>
-      <div class="result-box" id="result-box" onclick="onResultTap()">
+      <div class="result-box" id="result-box">
         <div class="rt" id="r-title"></div>
         <div id="r-text"></div>
         <button class="skip-btn" id="result-skip" type="button" onclick="skipResultTyping(event)">SKIP</button>
@@ -1479,6 +1681,7 @@ body{background:
         <div class="choice-name" id="choice-name">학생</div>
         <div class="choice-desc" id="choice-desc">상황 선택</div>
       </div>
+      <button class="choice-toggle" id="choice-back" type="button" onclick="prevScene()">이전</button>
       <button class="choice-toggle" id="choice-toggle" type="button" onclick="toggleChoiceModal(event)">접기</button>
     </div>
     <div class="choice-question" id="choice-question"></div>
@@ -1571,9 +1774,9 @@ body{background:
 <!-- ══ 취침 시각 선택 팝업 ══ -->
 <div id="sleep-modal" style="display:none;position:fixed;inset:0;z-index:200;
   background:rgba(255,245,232,.78);backdrop-filter:blur(4px);
-  align-items:flex-end;justify-content:center;">
+  align-items:flex-end;justify-content:center;overflow-y:auto;">
   <div style="background:linear-gradient(180deg,#fffaf2 0%,#fff5e8 100%);border-radius:24px 24px 0 0;
-    width:100%;max-width:480px;padding:24px 20px 40px;color:#3f2d24;box-shadow:0 -18px 48px rgba(126,102,85,.18);">
+    width:100%;max-width:480px;min-height:78dvh;max-height:94dvh;padding:24px 20px 40px;overflow-y:auto;color:#3f2d24;box-shadow:0 -18px 48px rgba(126,102,85,.18);">
     <h3 style="font-family:'Jua',sans-serif;font-size:1.1rem;margin-bottom:6px;">🌙 오늘 취침 시각을 선택하세요</h3>
     <p style="font-size:.8rem;color:#7e6655;margin-bottom:18px;">
       오늘 밤 실제로 선택할 취침 시각을 골라보세요. 결과는 선택 후 확인합니다.
@@ -1587,7 +1790,7 @@ body{background:
   background:rgba(255,245,232,.78);backdrop-filter:blur(4px);
   align-items:center;justify-content:center;">
   <div style="background:linear-gradient(180deg,#fffaf2 0%,#fff5e8 100%);border-radius:20px;
-    width:90%;max-width:400px;padding:24px 20px;max-height:80vh;overflow-y:auto;color:#3f2d24;box-shadow:0 18px 48px rgba(126,102,85,.18);">
+    width:90%;max-width:400px;padding:24px 20px;min-height:54dvh;max-height:90dvh;overflow-y:auto;color:#3f2d24;box-shadow:0 18px 48px rgba(126,102,85,.18);">
     <div style="font-size:2rem;margin-bottom:8px;text-align:center;">📊</div>
     <h3 id="dr-title" style="font-family:'Jua',sans-serif;text-align:center;margin-bottom:16px;">오늘의 결산</h3>
     <div id="dr-body" style="display:flex;flex-direction:column;gap:8px;font-size:.86rem;line-height:1.7;"></div>
@@ -1604,7 +1807,7 @@ body{background:
   background:rgba(255,245,232,.78);backdrop-filter:blur(4px);
   align-items:center;justify-content:center;overflow-y:auto;">
   <div style="background:linear-gradient(180deg,#fffdf7 0%,#fff5e8 100%);border-radius:20px;width:90%;max-width:440px;
-    padding:0;overflow:hidden;box-shadow:0 20px 60px rgba(126,102,85,.24);color:#3f2d24;">
+    padding:0;max-height:92dvh;overflow-y:auto;box-shadow:0 20px 60px rgba(126,102,85,.24);color:#3f2d24;">
 
     <!-- 처방전 헤더 -->
     <div style="background:#ff967d;color:#fff;padding:16px 20px;">
@@ -1652,9 +1855,9 @@ body{background:
 <!-- ══ NPC 말풍선 팝업 ══ -->
 <div id="npc-bubble" style="display:none;position:fixed;inset:0;z-index:150;
   background:rgba(255,245,232,.72);backdrop-filter:blur(3px);
-  align-items:flex-end;justify-content:center;">
+  align-items:flex-end;justify-content:center;overflow-y:auto;">
   <div style="background:linear-gradient(180deg,#fffaf2 0%,#fff5e8 100%);border-radius:24px 24px 0 0;
-    width:100%;max-width:480px;padding:20px 20px 36px;color:#3f2d24;box-shadow:0 -18px 48px rgba(126,102,85,.18);">
+    width:100%;max-width:480px;min-height:62dvh;max-height:90dvh;padding:20px 20px 36px;overflow-y:auto;color:#3f2d24;box-shadow:0 -18px 48px rgba(126,102,85,.18);">
 
     <!-- NPC 프로필 -->
     <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px;">
@@ -1683,7 +1886,7 @@ body{background:
 <div id="sns-modal" style="display:none;position:fixed;inset:0;z-index:160;
   background:rgba(255,245,232,.78);backdrop-filter:blur(4px);
   align-items:center;justify-content:center;">
-  <div style="background:linear-gradient(180deg,#fffdf7 0%,#fff5e8 100%);border-radius:20px;width:90%;max-width:380px;padding:0;overflow:hidden;box-shadow:0 20px 60px rgba(126,102,85,.24);color:#3f2d24;">
+  <div style="background:linear-gradient(180deg,#fffdf7 0%,#fff5e8 100%);border-radius:20px;width:90%;max-width:380px;min-height:62dvh;max-height:90dvh;padding:0;overflow-y:auto;box-shadow:0 20px 60px rgba(126,102,85,.24);color:#3f2d24;">
 
     <!-- SNS 피드 헤더 -->
     <div style="background:#ff967d;padding:12px 16px;display:flex;align-items:center;gap:10px;">
@@ -1834,10 +2037,25 @@ const DEFAULT_DATA = {
     // ── 주인공 ──
     char_male:   'assets/characters/char_male.png',
     char_female: 'assets/characters/char_female.png',
+    char_male_tired:    'assets/characters/char_male_tired.png',
+    char_male_sleepy:   'assets/characters/char_male_sleepy.png',
+    char_male_headache: 'assets/characters/char_male_headache.png',
+    char_male_nervous:  'assets/characters/char_male_nervous.png',
+    char_male_recovered:'assets/characters/char_male_recovered.png',
+    char_male_sick:     'assets/characters/char_male_sick.png',
+    char_male_focused:  'assets/characters/char_male_focused.png',
+    char_female_tired:    'assets/characters/char_female_tired.png',
+    char_female_sleepy:   'assets/characters/char_female_sleepy.png',
+    char_female_headache: 'assets/characters/char_female_headache.png',
+    char_female_nervous:  'assets/characters/char_female_nervous.png',
+    char_female_recovered:'assets/characters/char_female_recovered.png',
+    char_female_sick:     'assets/characters/char_female_sick.png',
+    char_female_focused:  'assets/characters/char_female_focused.png',
     char_student:'',
 
     // ── NPC ──
     npc_minjun:  'assets/characters/npc_minjun.png',
+    npc_minjun_palpitations: 'assets/characters/npc_minjun_palpitations.png',
     npc_seoyeon: 'assets/characters/npc_seoyeon.png',
     npc_taeyang: 'assets/characters/npc_taeyang.png',
     npc_haeun:   'assets/characters/npc_haeun.png',
@@ -1894,7 +2112,7 @@ const DEFAULT_DATA = {
       ]
     },
     {
-      type:'event', location:'🩺 보건실', scene:'scene_health', emoji:'📋', speaker:'보건 선생님',
+      type:'event', location:'🩺 보건실', scene:'scene_health', emoji:'📋', speaker:'보건샘',
       text:'DAY 3 복약 문해력 미션! 약 설명서 카드에서 최대 복용량, 중복 성분, 주의사항을 찾아야 한다.',
       choices:[
         {text:'📖 최대 복용량과 같이 먹으면 안 되는 성분을 찾아 정답을 맞힌다.',good:true,
@@ -2022,6 +2240,7 @@ let G = {
   totalCaffeine:0, caffeineDays:0, sleepTotal:0, sleepCount:0, lastDayCaffeine:0,
   analgesicCount:0, fastingMedCount:0, comboCount:0, helpedFriend:0,
   labelChecked:false, snsRisk:false, minjunWarned:false, recoveryPlan:false,
+  cluesChecked:{}, pendingHealthOffice:'', lastCvsDrink:null, day3CvsDrink:null,
   stats:{health:70,knowledge:50,caffeine:70,sleep:60,judgment:55,social:60},
 };
 let T = { trust:50, currentCase:-1, done:[] };
@@ -2031,12 +2250,13 @@ let VOTE_TIME=30;
 
 function caffeineClues(){
   return [
-    {type:'can', icon:'🥤', label:'음료 라벨', title:'에너지음료 라벨', facts:['제품명: THE KING ENERGY', '표시: 카페인 함유', '카페인 함량: 60mg']},
+    {type:'can', dynamicDrink:true, icon:'🥤', label:'음료 라벨', title:'음료 라벨', facts:['제품명: 선택한 음료', '표시: 카페인 함량 확인', '카페인 함량: 선택 후 표시']},
     {type:'medicine', icon:'💊', label:'약 성분표', title:'게보린 성분표', facts:['유효성분: 아세트아미노펜 300mg', '이소프로필안티피린 150mg', '카페인무수물 50mg']}
   ];
 }
 function upgradeGameData(data){
   if(!data || !Array.isArray(data.scenarios)) return data;
+  const tempFollowups = data.scenarios.filter(s => s && s.tempFollowup);
   data.images = data.images || {};
   Object.entries(DEFAULT_DATA.images).forEach(([key, value]) => {
     if (!data.images[key]) data.images[key] = value;
@@ -2050,6 +2270,12 @@ function upgradeGameData(data){
     {key:'social',label:'🟣 사회성',color:'#c084fc'},
   ];
   data.scenarios=buildFourteenDayScenarios();
+  tempFollowups.forEach(follow => {
+    if (!follow.insertAfterLocation) return;
+    if (data.scenarios.some(s => s.tempFollowup && s.healthOfficeKind === follow.healthOfficeKind && s.insertAfterLocation === follow.insertAfterLocation)) return;
+    const insertAt = data.scenarios.findIndex(s => s.location === follow.insertAfterLocation);
+    if (insertAt >= 0) data.scenarios.splice(insertAt + 1, 0, follow);
+  });
   return data;
 }
 
@@ -2089,7 +2315,7 @@ function closeAllOverlays(){
 
 function getSavePayload() {
   return {
-    version: 9,
+    version: 10,
     savedAt: Date.now(),
     G: JSON.parse(JSON.stringify(G)),
   };
@@ -2098,7 +2324,7 @@ function getSavePayload() {
 function saveGameState() {
   try {
     if (!G || !G.name || G.scene === undefined) return;
-    localStorage.setItem('hg_v9_save', JSON.stringify(getSavePayload()));
+    localStorage.setItem('hg_v10_save', JSON.stringify(getSavePayload()));
   } catch (err) {
     console.warn('자동 저장 실패', err);
   }
@@ -2106,7 +2332,7 @@ function saveGameState() {
 
 function hasSavedGame() {
   try {
-    const saved = JSON.parse(localStorage.getItem('hg_v9_save') || 'null');
+    const saved = JSON.parse(localStorage.getItem('hg_v10_save') || 'null');
     return !!(saved && saved.G && saved.G.name && saved.G.scene !== undefined);
   } catch (err) {
     return false;
@@ -2115,10 +2341,12 @@ function hasSavedGame() {
 
 function resumeGame() {
   try {
-    const saved = JSON.parse(localStorage.getItem('hg_v9_save') || 'null');
+    const saved = JSON.parse(localStorage.getItem('hg_v10_save') || 'null');
     if (!saved || !saved.G) return show('name');
     const data = DB.gameData;
     Object.assign(G, saved.G);
+    if(!G.cluesChecked) G.cluesChecked={};
+    if(!G.pendingHealthOffice) G.pendingHealthOffice='';
     data.stats = [
       {key:'health',label:'🔴 체력',color:'#e76f51'},
       {key:'knowledge',label:'🟡 지식',color:'#facc15'},
@@ -2158,9 +2386,14 @@ function randomWeight(){
   document.getElementById('weight-inp').value=w;
   updateCaffeinePreview();
 }
+function randomGrade(){
+  const grade=String(Math.floor(Math.random()*3)+1);
+  selectSegment('grade',grade);
+}
 function randomCharacter(){
   randomName();
   randomWeight();
+  randomGrade();
 }
 function selectSegment(kind,value){
   const row=document.getElementById(kind+'-row'); if(!row)return;
@@ -2169,16 +2402,35 @@ function selectSegment(kind,value){
   if(kind==='grade') G.grade=Number(value);
 }
 function updateCaffeinePreview(){
-  const w=Math.max(30,Number(document.getElementById('weight-inp').value)||60);
-  document.getElementById('caffeine-preview').textContent=`하루 최대 카페인 ${Math.round(w*2.5)}mg`;
+  const raw=document.getElementById('weight-inp').value;
+  const w=Number(raw);
+  document.getElementById('caffeine-preview').textContent=
+    raw && Number.isFinite(w) && w>=30 && w<=120
+      ? `하루 최대 카페인 ${Math.round(w*2.5)}mg`
+      : '체중을 입력하면 하루 최대 카페인을 계산해요';
 }
 const confirmName=()=>{
-  const v=document.getElementById('name-inp').value.trim();
-  G.name=v||(G.gender==='f'?NAMES_F[0]:NAMES_M[0]);
-  G.weight=Math.max(30,Number(document.getElementById('weight-inp').value)||60);
+  const nameInput=document.getElementById('name-inp');
+  const weightInput=document.getElementById('weight-inp');
+  const gradeBtn=document.querySelector('#grade-row .seg-btn.active');
+  const v=nameInput.value.trim();
+  const weightRaw=weightInput.value.trim();
+  const weight=Number(weightRaw);
+  const missing=[];
+  if(!v) missing.push('이름');
+  if(!weightRaw || !Number.isFinite(weight) || weight<30 || weight>120) missing.push('체중(30~120kg)');
+  if(!gradeBtn) missing.push('학년');
+  if(missing.length){
+    alert(`${missing.join(', ')}을(를) 입력해 주세요.`);
+    if(!v) nameInput.focus();
+    else if(!weightRaw || !Number.isFinite(weight) || weight<30 || weight>120) weightInput.focus();
+    return;
+  }
+  G.name=v;
+  G.weight=weight;
   G.caffeineMax=Math.round(G.weight*2.5);
   G.gender=document.querySelector('#gender-row .seg-btn.active')?.dataset.value||'m';
-  G.grade=Number(document.querySelector('#grade-row .seg-btn.active')?.dataset.value||1);
+  G.grade=Number(gradeBtn.dataset.value);
   G.stats={health:70,knowledge:50,caffeine:70,sleep:60,judgment:55,social:60};
   G.scene=0; G.day=1; G.answered=false;
   G.caffeineToday=0; G.caffeineStreak=0; G.noCaffeineStreak=0; G.caffeineOverDays=0;
@@ -2190,6 +2442,9 @@ const confirmName=()=>{
   G.lastDayCaffeine=0;
   G.analgesicCount=0; G.fastingMedCount=0; G.comboCount=0; G.helpedFriend=0;
   G.labelChecked=false; G.snsRisk=false; G.minjunWarned=false; G.recoveryPlan=false;
+  G.cluesChecked={};
+  G.pendingHealthOffice='';
+  G.lastCvsDrink=null; G.day3CvsDrink=null;
   const data=DB.gameData;
   data.stats=[
     {key:'health',label:'🔴 체력',color:'#e76f51'},
@@ -2278,6 +2533,83 @@ const DRINK_MENU = {
       desc:'카페인 0mg. 수면 준비에 도움이 돼요.' },
   ]
 };
+
+const DRINK_LABEL_STYLES = {
+  energy:   ['#66d66f','#151923','#95e66e'],
+  cancoffee:['#d39a6a','#3b2418','#f5d2a7'],
+  vitamin:  ['#ffd86b','#ff8f58','#fff1a5'],
+  cola:     ['#ef4444','#2a1111','#111827'],
+  greentea: ['#78d98d','#1d5f43','#c6f6d5'],
+  water:    ['#8bd3ff','#2f80ed','#d8f5ff'],
+  americano:['#875f43','#24150e','#d9b48f'],
+  latte:    ['#e9c89f','#8b5e34','#fff3d7'],
+  herbtea:  ['#a7e3c4','#276749','#ecfccb'],
+  warmMilk: ['#fff7dc','#d6a76f','#ffffff'],
+};
+
+function findDrink(type, drinkId){
+  return (DRINK_MENU[type] || []).find(d => d.id === drinkId) || null;
+}
+
+function makeDrinkSnapshot(type, drink){
+  if(!drink) return null;
+  return {
+    type,
+    id: drink.id,
+    name: drink.name,
+    emoji: drink.emoji,
+    caffeine: drink.caffeine,
+    noCaffeine: !!drink.noCaffeine,
+  };
+}
+
+function selectedDrinkForClue(){
+  const snap = G.day3CvsDrink;
+  if(!snap) return null;
+  return findDrink(snap.type || 'cvs', snap.id) || snap;
+}
+
+function drinkLabelVisual(drink){
+  const colors = DRINK_LABEL_STYLES[drink?.id] || ['#96df68','#20242f','#96df68'];
+  const cafText = drink.caffeine === 0 ? '카페인 0mg' : `카페인 ${drink.caffeine}mg`;
+  return `
+    <div class="draw-drink-label" style="--drink-a:${colors[0]};--drink-b:${colors[1]};--drink-c:${colors[2]};">
+      <div class="drink-emoji">${escapeHtml(drink.emoji || '🥤')}</div>
+      <div class="drink-name">${escapeHtml(drink.name || '선택한 음료')}</div>
+      <div class="drink-caf">${escapeHtml(cafText)} · 라벨 확인</div>
+    </div>`;
+}
+
+function resolveClue(clue){
+  if(!clue?.dynamicDrink) return clue;
+  const drink = selectedDrinkForClue();
+  if(!drink){
+    return {
+      ...clue,
+      icon:'🥤',
+      label:'음료 라벨',
+      title:'선택한 음료 라벨',
+      emptyDrink:true,
+      facts:[
+        '3일차 편의점에서 음료를 선택하면 이곳에 제품 정보가 표시됩니다.',
+        '제품명, 카페인 함량, 오늘 누적 카페인 계산에 사용할 수 있어요.'
+      ]
+    };
+  }
+  return {
+    ...clue,
+    icon:drink.emoji || clue.icon || '🥤',
+    label:'음료 라벨',
+    title:`${drink.name} 라벨`,
+    drink,
+    facts:[
+      `제품명: ${drink.name}`,
+      drink.caffeine === 0 ? '표시: 카페인 없음' : '표시: 카페인 함유',
+      `카페인 함량: ${drink.caffeine}mg`,
+      `오늘 누적 카페인: ${G.caffeineToday || 0}mg / ${G.caffeineMax || Math.round((G.weight || 60) * 2.5)}mg`
+    ]
+  };
+}
 const PRESCRIPTIONS = [
   {
     id:'cold',
@@ -2451,7 +2783,7 @@ function buildFourteenDayScenarios(){
           result:{title:'직접 확인', text:'카페인과 일부 진통제 성분이 겹칠 수 있다는 설명을 찾았다. DAY 5에서 누군가를 말릴 근거가 생겼다.'}},
       ]},
     {type:'event', day:3, location:'🏸 DAY 3 체육관 앞', scene:'scene_gym', speaker:'{name}',
-      text:'체육 시간에 무리했는지 머리가 지끈거린다. 가방에 지난번 약국에서 사둔 게보린이 있다. 오늘 카페인은 이미 조금 쌓여 있다.',
+      text:'체육 시간에 무리했는지 머리가 지끈거린다. 가방에 지난번 약국에서 사둔 게보린이 있다. 먹기 전에 오늘 뭘 마셨는지 한번 떠올려봤다.',
       clues:caffeineClues(),
       choices:[
         {text:'💊 게보린을 꺼내 먹는다.', good:false, analgesic:true, comboMedCaffeine:true, caffeineMg:50, delta:{health:4,caffeine:-12,judgment:-8},
@@ -2460,8 +2792,8 @@ function buildFourteenDayScenarios(){
           result:{title:'통증을 안고 귀가', text:'두통이 바로 사라지진 않았다. 그래도 성분을 모른 채 더하지는 않았다.'}},
         {text:'💧 물 한 잔 마시고 잠깐 눕는다.', good:true, delta:{health:2,caffeine:2},
           result:{title:'부분 완화', text:'완벽하진 않지만 조금 나아졌다. 약이 아닌 선택도 때로는 시간을 벌어준다.'}},
-        {text:'🩺 보건실에 가서 물어본다.', good:true, labelChecked:true, delta:{knowledge:8,judgment:8,social:3},
-          result:{title:'확인한 성분', text:'보건 선생님이 게보린 성분표에서 카페인무수물 50mg을 짚어줬다. 이제 같은 상황에서 경고를 볼 수 있다.'}},
+        {text:'🩺 보건실에 가서 물어본다.', good:true, labelChecked:true, healthOffice:'geborin', delta:{knowledge:8,judgment:8,social:3},
+          result:{title:'보건실로 이동', text:'성분표를 들고 보건실에 가서 보건샘에게 직접 확인해 보기로 했다.'}},
       ]},
     {type:'event', day:3, location:'☕ DAY 3 동네 카페', scene:'scene_cafe', speaker:'서연',
       text:'서연이 문자를 보냈다. "카페 왔는데 같이 공부할래? 분위기가 집보다 나아." 카페 안은 따뜻하고 조용하다.',
@@ -2476,14 +2808,14 @@ function buildFourteenDayScenarios(){
       choices:[
         {text:'😐 "그냥 피곤한 거겠지." 무시하고 간다.', good:false, delta:{judgment:-5,health:-5},
           result:{title:'무시한 신호', text:'몸이 보내는 신호를 넘겼다. 증상은 사라지지 않고 하루 뒤로 밀렸다.'}},
-        {text:'🩺 쉬는 시간에 보건실에 간다.', good:true, labelChecked:true, delta:{knowledge:8,judgment:5,health:3},
-          result:{title:'카페인 과다 설명', text:'보건 선생님이 카페인 과다와 수면 부족이 같이 오면 두근거림이 커질 수 있다고 설명했다.'}},
+        {text:'🩺 쉬는 시간에 보건실에 간다.', good:true, labelChecked:true, healthOffice:'palpitation', delta:{knowledge:8,judgment:5,health:3},
+          result:{title:'보건실로 이동', text:'두근거림이 단순 피곤인지 확인하려고 보건실로 향했다.'}},
         {text:'☕ "카페인이 더 필요한 건가." 편의점으로 간다.', good:false, openDrink:'cvs', delta:{judgment:-5},
           result:{title:'다시 냉장고 앞', text:'몸이 힘들 때마다 카페인을 떠올리는 패턴이 강해지고 있다.'}},
         {text:'📱 증상을 검색해본다.', good:true, delta:{knowledge:5,judgment:2},
           result:{title:'자가 확인', text:'검색 결과가 모두 정확하진 않았다. 그래도 몸의 신호를 그냥 넘기지는 않았다.'}},
       ]},
-    {type:'event', day:4, location:'🩺 DAY 4 보건 수업', scene:'scene_health', speaker:'선생님',
+    {type:'event', day:4, location:'🩺 DAY 4 보건 수업', scene:'scene_classroom', speaker:'보건샘',
       text:'선생님이 종이를 한 장씩 나눠줬다. "이게 실제 약국에서 파는 감기약이에요. 같이 읽어볼까요?" 성분명, 함량, 복용법, 주의사항이 빼곡하다.',
       choices:[
         {text:'📋 성분표를 하나씩 짚어가며 읽는다.', good:true, labelChecked:true, delta:{knowledge:12,judgment:8},
@@ -2508,17 +2840,17 @@ function buildFourteenDayScenarios(){
           result:{title:'사라진 20분', text:'활력은 조금 돌아온 듯했지만 시간은 생각보다 많이 사라졌다.'}},
       ]},
     {type:'event', day:5, location:'📱 DAY 5 교실', scene:'scene_classroom', speaker:'하은',
-      text:'하은이 조용히 다가온다. "야, 저번 게시물 기억나? 민준이 그거 따라 하려는 것 같아." 분위기상 그냥 넘기기 어렵다.',
+      text:'하은이 조용히 다가온다. "야, 민준이 오늘도 에너지드링크 마시고 밤새려고 한대. 심장 두근거린다는데 괜찮은 거야?" 분위기상 그냥 넘기기 어렵다.',
       clues:caffeineClues(),
       choices:[
-        {text:'💊+🥤 게보린과 에너지드링크를 같이 먹어본다.', good:false, analgesic:true, comboMedCaffeine:true, caffeineMg:130, delta:{health:-20,caffeine:-18,judgment:-15},
-          result:{title:'복합 위험', text:'즉각적인 각성을 기대했지만 카페인 중복 위험이 커졌다. 성분표를 보면 피할 수 있던 상황이다.'}},
-        {text:'💊 게보린만 먹는다.', good:false, analgesic:true, delta:{health:5,judgment:-3},
-          result:{title:'두통만 겨냥', text:'에너지드링크는 피했지만 두통의 원인을 해결한 것은 아니다. 약 복용 기록이 하나 더 쌓였다.'}},
-        {text:'🤔 "잠깐, 성분을 확인해보자."', good:true, labelChecked:true, delta:{knowledge:10,judgment:8},
-          result:{title:'멈춘 손', text:'게보린 성분표에서 카페인무수물 50mg을 확인했다. 따라 하기 전에 멈춘 것이 가장 큰 선택이었다.'}},
-        {text:'🙅 결국 하지 않는다.', good:true, delta:{judgment:5},
-          result:{title:'멈춘 선택', text:'누가 보기엔 아무것도 안 한 것처럼 보인다. 하지만 위험한 조합을 피했다.'}},
+        {text:'🚩 "두근거리면 그냥 넘기면 안 돼. 카페인 줄이고 오늘은 자야 해."라고 말한다.', good:true, labelChecked:true, helpedFriend:true, delta:{knowledge:8,judgment:10,social:5,caffeine:5,sleep:3},
+          result:{title:'위험 신호를 짚음', text:'민준에게 카페인을 더 마시는 대신 쉬어야 한다고 말했다. 심장 두근거림은 몸이 보내는 경고일 수 있다.'}},
+        {text:'🩺 하은과 같이 민준을 보건샘에게 데려가자고 한다.', good:true, helpedFriend:true, healthOffice:'friend', delta:{judgment:10,social:8,knowledge:5},
+          result:{title:'어른에게 연결', text:'친구의 이상 신호를 혼자 판단하지 않고 보건샘에게 연결하기로 했다.'}},
+        {text:'😐 "그래? 괜찮대?" 하고 관심 없이 넘긴다.', good:false, delta:{judgment:-5,social:-3},
+          result:{title:'놓친 신호', text:'두근거림을 가볍게 넘겼다. 친구가 도움을 요청할 기회를 놓쳤을 수 있다.'}},
+        {text:'🥤 "그럼 나도 하나 마실래." 하며 같이 음료를 고른다.', good:false, openDrink:'cvs', delta:{health:-5,caffeine:-8,sleep:-6,judgment:-8},
+          result:{title:'같이 흔들림', text:'민준을 말리기는커녕 같은 방향으로 움직였다. 오늘 밤 수면과 카페인 총량이 더 흔들릴 수 있다.'}},
       ]},
     {type:'event', day:5, location:'🍱 DAY 5 급식실', scene:'scene_cafeteria', speaker:'{name}',
       text:'저번에 게보린 먹고 두통이 가라앉긴 했다. 오늘도 머리가 좀 아프다. 이번엔 밥을 못 먹고 왔는데 먹어도 괜찮을까.',
@@ -2527,8 +2859,8 @@ function buildFourteenDayScenarios(){
           result:{title:'공복 복용', text:'두통은 조금 줄었지만 속이 쓰리기 시작했다. 위장 자극은 나중에 더 크게 느껴질 수 있다.'}},
         {text:'🍚 밥 먹고 나서 게보린을 먹는다.', good:true, analgesic:true, delta:{health:8,judgment:3},
           result:{title:'시간을 둔 복용', text:'밥을 먹고 기다린 뒤 복용했다. 같은 약도 상황에 따라 위험이 달라진다.'}},
-        {text:'🏥 보건실에 가서 물어본다.', good:true, labelChecked:true, delta:{knowledge:8,judgment:5,health:2},
-          result:{title:'공복 주의 확인', text:'보건 선생님이 공복 복용 시 위장 자극을 설명해줬다. 약을 먹을 때는 몸 상태도 정보다.'}},
+        {text:'🏥 보건실에 가서 물어본다.', good:true, labelChecked:true, healthOffice:'fasting', delta:{knowledge:8,judgment:5,health:2},
+          result:{title:'보건실로 이동', text:'공복에 약을 먹어도 되는지 보건샘에게 직접 물어보기로 했다.'}},
         {text:'😐 그냥 참는다.', good:true, delta:{health:-5,judgment:5},
           result:{title:'참는 선택', text:'두통은 남았다. 그래도 약을 반복해서 찾는 습관은 조금 늦췄다.'}},
       ]},
@@ -2544,7 +2876,7 @@ function buildFourteenDayScenarios(){
         {text:'☕ 카페인 음료를 고르고 버틴다.', good:false, openDrink:'cafe', sleepHour:26, sleepHours:5, delta:{knowledge:10,health:-12,sleep:-10,caffeine:-8},
           result:{title:'카페인의 연장전', text:'공부 시간은 늘었다. 대신 몸이 쉬는 시간은 줄었다.'}},
       ]},
-    {type:'event', day:6, location:'🩺 DAY 6 보건 수업', scene:'scene_health', speaker:'선생님',
+    {type:'event', day:6, location:'🩺 DAY 6 보건 수업', scene:'scene_classroom', speaker:'보건샘',
       text:'선생님이 처방전 한 장을 보여줬다. "이 학생이 어젯밤 에너지드링크 두 캔, 게보린 한 알, 감기약 한 봉지를 같이 먹었어요. 뭐가 문제일까요?"',
       choices:[
         {text:'✋ "카페인 중복이요! 게보린에도 카페인이 있어요."', good:true, labelChecked:true, delta:{knowledge:15,judgment:10},
@@ -2556,7 +2888,7 @@ function buildFourteenDayScenarios(){
         {text:'💬 "저도 비슷하게 한 적 있는 것 같아요..."', good:true, delta:{knowledge:12,judgment:8,social:5},
           result:{title:'솔직한 공유', text:'교실이 잠깐 조용해졌다. 경험을 말하는 것은 부끄러운 일이 아니라 다음 선택을 바꾸는 시작이다.'}},
       ]},
-    {type:'event', day:7, location:'📊 DAY 7 거울 앞', scene:'scene_health', speaker:'나레이터',
+    {type:'event', day:7, location:'📊 DAY 7 집 거울 앞', scene:'scene_bedroom', speaker:'나레이터',
       text:'7일이 지났다. 거울을 봤다. 눈 밑이 칙칙하고, 아침부터 어깨가 무겁다. 지난 일주일의 선택이 몸에 남아있다.',
       choices:[
         {text:'📓 일지를 써서 뭐가 문제였는지 찾아본다.', good:true, delta:{judgment:10,knowledge:5}, showReport:7,
@@ -2609,14 +2941,14 @@ function buildFourteenDayScenarios(){
       text:'시험지를 받아들었다. 어젯밤의 선택이 손끝에 남아있다. 공부한 내용이 떠오를 듯 사라지기도 하고, 어떤 문제는 생각보다 선명하게 보이기도 한다.',
       choices:null},
     {type:'event', day:12, location:'🏫 DAY 12 쉬는 시간', scene:'scene_classroom', speaker:'서연',
-      text:'서연이 조용히 말했다. "민준이 오늘 보건실 갔다 왔대. 시험 기간에 에너지드링크를 너무 많이 마셔서 심장이 두근거렸다고."',
+      text:'서연이 조용히 말했다. "민준이 오늘 보건실 갔어. 시험 기간에 에너지드링크를 너무 많이 마셔서 심장이 두근거린대."',
       choices:[
         {text:'😯 "나도 그런 증상 있었는데 무시했어."', good:true, delta:{judgment:5,knowledge:3},
           result:{title:'자기 인식', text:'남의 일이 아니라 내 몸의 신호였다는 걸 뒤늦게 연결했다.'}},
         {text:'😐 "그래? 괜찮대?" 관심 없이 넘긴다.', good:false, delta:{},
           result:{title:'짧은 반응', text:'말은 했지만 행동은 바뀌지 않았다.'}},
-        {text:'🩺 "같이 보건실 가볼까, 선생님한테 물어보자."', good:true, helpedFriend:true, delta:{judgment:10,social:8},
-          result:{title:'같이 확인', text:'민준이 멋쩍게 웃었다. 혼자 버티는 것보다 같이 확인하는 쪽이 덜 위험하다.'}},
+        {text:'🩺 "같이 보건실 가볼까, 보건샘한테 물어보자."', good:true, helpedFriend:true, healthOffice:'friend', delta:{judgment:10,social:8},
+          result:{title:'보건실로 이동', text:'민준과 함께 보건실에 가서 증상을 이야기해 보기로 했다.'}},
       ]},
     {type:'event', day:13, location:'🌙 DAY 13 독서실 복도', scene:'scene_library', speaker:'민준',
       text:'마지막 시험 전날. 민준이 말했다. "야, 오늘만 버티면 돼. 한 캔만 더 마시자." 솔직히 요즘 마셔도 예전만큼 효과가 없는 것 같기도 하다.',
@@ -2643,6 +2975,7 @@ function applyDelta(delta){
     showDelta(k,v);
   });
   updateStatBars();
+  refreshSceneCharacterByCondition();
 }
 function sleepHoursFromClock(hour){
   return ({21:10,22:9,23:8,24:7,25:6,26:5})[hour] || null;
@@ -2752,20 +3085,96 @@ function renderClues(sc){
   const sa=document.getElementById('scene-area');
   const old=sa.querySelector('.scene-clues');
   if(old) old.remove();
+  const oldGuide=sa.querySelector('.clue-guide');
+  if(oldGuide) oldGuide.remove();
   if(!sc.clues || !sc.clues.length) return;
   const wrap=document.createElement('div');
   wrap.className='scene-clues';
-  wrap.innerHTML=sc.clues.map((clue,i)=>`
-    <button class="clue-item" type="button" onclick="showClue(${i})">
-      <span class="clue-icon">${clue.icon||'🔎'}</span>
-      <span class="clue-label">${clue.label||'단서'}</span>
-    </button>`).join('');
+  wrap.innerHTML=sc.clues.map((clue,i)=>{
+    const view=resolveClue(clue);
+    return `
+    <button class="clue-item ${isClueChecked(G.scene,i)?'checked':''}" type="button" onclick="showClue(${i})">
+      <span class="clue-icon">${escapeHtml(view.icon||'🔎')}</span>
+      <span class="clue-label">${escapeHtml(view.label||'단서')}</span>
+    </button>`;
+  }).join('');
   sa.appendChild(wrap);
+  const guide=document.createElement('div');
+  guide.className='clue-guide';
+  guide.textContent=cluesCompleteForScene(G.scene, sc) ? '단서 확인 완료' : '라벨과 성분표를 먼저 확인하세요';
+  if(cluesCompleteForScene(G.scene, sc)) guide.classList.add('done');
+  sa.appendChild(guide);
   window._currentClues=sc.clues;
 }
+
+function sceneActorsForScenario(sc){
+  if(sc?.healthOfficeKind === 'friend') {
+    return [
+      {slot:'teacher_main', name:'보건샘', side:'left'},
+      {slot:'npc_minjun_palpitations', name:'민준', side:'right'}
+    ];
+  }
+  if(Array.isArray(sc?.sceneActors) && sc.sceneActors.length) return sc.sceneActors;
+  return null;
+}
+
+function renderSceneActors(container, actors){
+  container.className='scene-char scene-duo';
+  container.innerHTML=actors.map((actor, idx)=>{
+    const side=actor.side || (idx === 0 ? 'left' : 'right');
+    const slot=actor.slot || 'char_male';
+    const imgUrl=driveUrl(DB.gameData.images?.[slot] || '');
+    const emoji=sceneCharacterFallback({}, slot);
+    const name=actor.name || sceneCharacterDisplayName({speaker:actor.name || ''}, slot);
+    return `
+      <div class="scene-actor ${side} slot-${String(slot).replace(/_/g, '-')}">
+        ${imgUrl ? `<img src="${imgUrl}" alt="${escapeHtml(name)}">` : `<span style="font-size:4rem;">${escapeHtml(emoji)}</span>`}
+        <span class="actor-name">${escapeHtml(name)}</span>
+      </div>`;
+  }).join('');
+}
+
+function clueSceneKey(sceneIdx=G.scene){
+  return String(sceneIdx ?? 0);
+}
+
+function isClueChecked(sceneIdx, clueIdx){
+  return !!G.cluesChecked?.[clueSceneKey(sceneIdx)]?.[clueIdx];
+}
+
+function markClueChecked(sceneIdx, clueIdx){
+  if(!G.cluesChecked) G.cluesChecked={};
+  const key=clueSceneKey(sceneIdx);
+  if(!G.cluesChecked[key]) G.cluesChecked[key]={};
+  G.cluesChecked[key][clueIdx]=true;
+}
+
+function cluesCompleteForScene(sceneIdx, sc){
+  if(!sc?.clues?.length) return true;
+  return sc.clues.every((_,i)=>isClueChecked(sceneIdx,i));
+}
+
+function refreshClueState(){
+  const sc=DB.gameData.scenarios[G.scene];
+  if(!sc?.clues?.length) return;
+  document.querySelectorAll('.scene-clues .clue-item').forEach((btn,i)=>{
+    btn.classList.toggle('checked', isClueChecked(G.scene,i));
+  });
+  const guide=document.querySelector('#scene-area .clue-guide');
+  if(guide){
+    const done=cluesCompleteForScene(G.scene, sc);
+    guide.textContent=done ? '단서 확인 완료' : '라벨과 성분표를 먼저 확인하세요';
+    guide.classList.toggle('done', done);
+  }
+}
+
 function showClue(idx){
-  const clue=(window._currentClues||[])[idx]; if(!clue)return;
-  G.labelChecked=true;
+  const rawClue=(window._currentClues||[])[idx]; if(!rawClue)return;
+  const clue=resolveClue(rawClue);
+  markClueChecked(G.scene, idx);
+  const sc=DB.gameData.scenarios[G.scene];
+  if(cluesCompleteForScene(G.scene, sc)) G.labelChecked=true;
+  refreshClueState();
   saveGameState();
   document.getElementById('clue-title').textContent=clue.title||'단서 확인';
   document.getElementById('clue-visual').innerHTML=clue.type==='medicine'?`
@@ -2777,17 +3186,24 @@ function showClue(idx){
       <div>이소프로필안티피린</div><div>150mg</div>
       <div>카페인무수물</div><div>50mg</div>
       <div class="warn">주의: 카페인 함유 제품과 함께 복용 전 확인</div>
-    </div>`:`
+    </div>`: clue.drink ? drinkLabelVisual(clue.drink) : clue.emptyDrink ? `
+    <div class="draw-drink-label" style="--drink-a:#ffd86b;--drink-b:#7e6655;--drink-c:#fff3c4;">
+      <div class="drink-emoji">🥤</div>
+      <div class="drink-name">음료 선택 전</div>
+      <div class="drink-caf">편의점 선택 후 표시</div>
+    </div>` : `
     <div class="draw-can">
       <div class="brand">THE<br>KING</div>
       <div class="flavor">ENERGY</div>
       <div class="tiny">카페인 함유 60mg · 355mL</div>
     </div>`;
-  document.getElementById('clue-facts').innerHTML=(clue.facts||[]).map(f=>`<div class="clue-fact">${f}</div>`).join('');
+  document.getElementById('clue-facts').innerHTML=(clue.facts||[]).map(f=>`<div class="clue-fact">${escapeHtml(f)}</div>`).join('');
   document.getElementById('clue-modal').classList.add('show');
 }
 function closeClue(){
   document.getElementById('clue-modal').classList.remove('show');
+  const sc=DB.gameData.scenarios[G.scene];
+  if(_typing.done && window._choicesWaitingForClues && cluesCompleteForScene(G.scene, sc)) showChoicesOrNext();
 }
 
 function renderProgDots(){
@@ -2806,6 +3222,21 @@ function updateProgDots(){
     el.className='prog-dot'+(i<ei?' done':i===ei?' cur':'');
   });
   document.getElementById('prog-lbl').textContent=`시나리오 ${Math.max(1,ei+1)} / ${events.length}`;
+  updateBackButton();
+}
+
+function updateBackButton(){
+  const btn = document.getElementById('back-scene-btn');
+  const canGoBack = (G.scene || 0) > 0;
+  if (btn) {
+    btn.disabled = !canGoBack;
+    btn.style.opacity = canGoBack ? '1' : '.42';
+  }
+  const modalBtn = document.getElementById('choice-back');
+  if (modalBtn) {
+    modalBtn.disabled = !canGoBack;
+    modalBtn.style.opacity = canGoBack ? '1' : '.42';
+  }
 }
 
 function splitSentences(text) {
@@ -3001,16 +3432,19 @@ function choiceSpeakerProfile(sc) {
       desc: npc.desc,
       color: npc.color,
       img: driveUrl(DB.gameData.images?.[npc.imgSlot] || ''),
-      emoji: npc.emoji
+      emoji: npc.emoji,
+      kind: 'npc',
+      slot: npc.imgSlot
     };
   }
   if (slot === 'teacher_main') {
     return {
-      name: speaker.includes('의사') ? '의사' : '선생님',
+      name: speaker.includes('의사') ? '의사' : '보건샘',
       desc: speaker.includes('의사') ? '진료실' : '수업 안내',
       color: '#ff9f80',
       img: driveUrl(DB.gameData.images?.teacher_main || ''),
-      emoji: '👩‍🏫'
+      emoji: '👩‍🏫',
+      kind: 'teacher'
     };
   }
   return {
@@ -3023,12 +3457,12 @@ function choiceSpeakerProfile(sc) {
 }
 
 function choiceQuestionText(sc) {
-  const raw = String(sc?.text || '').replace(/{name}/g, G.name).replace(/\s+/g, ' ').trim();
+  const raw = normalizeStoryText(sc?.text || '').replace(/{name}/g, G.name).replace(/\s+/g, ' ').trim();
   if (!raw) return '어떻게 선택할까?';
   const quoted = [...raw.matchAll(/["“”]([^"“”]{4,})["“”]/g)].map(m => m[1].trim());
   const parts = raw.match(/[^.!?。！？]+[.!?。！？]?/g)?.map(s => s.trim()).filter(s => s.replace(/["“”'‘’]/g, '').length > 3) || [];
   const picked = quoted.length ? quoted[quoted.length - 1] : (parts.length ? parts[parts.length - 1] : raw);
-  return picked.length > 86 ? `${picked.slice(0, 86)}...` : picked;
+  return picked;
 }
 
 function renderChoices(sc) {
@@ -3050,6 +3484,12 @@ function renderChoices(sc) {
   document.getElementById('choice-question').textContent = choiceQuestionText(sc);
   if (avatar) {
     avatar.style.borderColor = profile.color;
+    avatar.className = [
+      'choice-avatar',
+      profile.kind === 'teacher' ? 'teacher-profile' : '',
+      profile.kind === 'npc' ? 'npc-profile' : '',
+      profile.slot ? `slot-${String(profile.slot).replace(/_/g, '-')}` : ''
+    ].filter(Boolean).join(' ');
     avatar.innerHTML = profile.img
       ? `<img src="${profile.img}" alt="${profile.name}">`
       : `<span>${profile.emoji}</span>`;
@@ -3074,6 +3514,12 @@ function showChoicesOrNext() {
     document.getElementById('next-btn').classList.add('show');
     return;
   }
+  if (sc.clues?.length && !cluesCompleteForScene(G.scene, sc)) {
+    refreshClueState();
+    window._choicesWaitingForClues = true;
+    return;
+  }
+  window._choicesWaitingForClues = false;
   renderChoices(sc);
 }
 
@@ -3092,15 +3538,7 @@ function startResultTyping(text, onComplete) {
 }
 
 function onResultTap() {
-  if (_resultTyping.done) return;
-  if (_resultTyping.timer) {
-    finishTypingSentence(_resultTyping, 'r-text', showResultArrow);
-    return;
-  }
-  _resultTyping.sIdx++;
-  _resultTyping.charIdx = 0;
-  hideResultArrow();
-  typeNextChar(_resultTyping, 'r-text', showResultArrow);
+  return;
 }
 
 function skipResultTyping(event) {
@@ -3111,8 +3549,8 @@ function showTypedResult(title, text, onComplete) {
   clearTypingState(_resultTyping);
   hideResultArrow();
   setSkipVisible('result-skip', false);
-  document.getElementById('r-title').textContent = title || '';
-  document.getElementById('r-text').textContent = text || '';
+  document.getElementById('r-title').textContent = normalizeStoryText(title || '');
+  document.getElementById('r-text').textContent = normalizeStoryText(text || '');
   document.getElementById('result-box').classList.add('show');
   document.getElementById('next-btn').classList.add('show');
   G.answered = true;
@@ -3122,7 +3560,15 @@ function showTypedResult(title, text, onComplete) {
 
 function formatSpeakerName(speaker) {
   const name = String(speaker || '나레이터').replace('{name}', G.name);
-  return name === G.name ? `${G.name}(나)` : name;
+  if (name === G.name) return `${G.name}(나)`;
+  return name.replace(/보건\s*선생님/g, '보건샘').replace(/^선생님$/, '보건샘');
+}
+
+function normalizeStoryText(text) {
+  return String(text || '')
+    .replace(/의사 선생님/g, '의사샘')
+    .replace(/보건\s*선생님/g, '보건샘')
+    .replace(/선생님/g, '보건샘');
 }
 
 function formatHudLocation(location) {
@@ -3164,7 +3610,7 @@ function getScenarioText(sc, teacherEvent) {
     }
   }
 
-  return (text + (teacherEvent ? `\n\n${teacherEvent.text}\n${teacherEvent.result}` : '')).replace(/{name}/g, G.name);
+  return normalizeStoryText(text + (teacherEvent ? `\n\n${teacherEvent.text}\n${teacherEvent.result}` : '')).replace(/{name}/g, G.name);
 }
 
 function renderScene(idx){
@@ -3224,12 +3670,24 @@ function renderScene(idx){
   }
   // 캐릭터
   const sc_char=document.getElementById('scene-char');
-  const charSlot=sceneCharacterSlot(sc);
-  const charUrl=driveUrl(DB.gameData.images?.[charSlot]||DB.gameData.images?.['char_student']||'');
-  const charEmoji=sceneCharacterFallback(sc, charSlot);
-  sc_char.innerHTML=charUrl
-    ? `<img src="${charUrl}" alt="캐릭터">`
-    : `<span style="font-size:5.5rem;">${charEmoji}</span>`;
+  const sceneActors=sceneActorsForScenario(sc);
+  const scNameTag=document.getElementById('scene-name-tag');
+  if(sceneActors?.length){
+    renderSceneActors(sc_char, sceneActors);
+    if(scNameTag) scNameTag.style.display='none';
+  } else {
+    const charSlot=sceneCharacterSlot(sc);
+    const charUrl=driveUrl(DB.gameData.images?.[charSlot]||DB.gameData.images?.['char_student']||'');
+    const charEmoji=sceneCharacterFallback(sc, charSlot);
+    sc_char.className = `scene-char slot-${String(charSlot).replace(/_/g, '-')}`;
+    sc_char.innerHTML=charUrl
+      ? `<img src="${charUrl}" alt="캐릭터">`
+      : `<span style="font-size:5.5rem;">${charEmoji}</span>`;
+    if(scNameTag){
+      scNameTag.style.display='';
+      scNameTag.textContent=sceneCharacterDisplayName(sc, charSlot);
+    }
+  }
   // 대화
   document.getElementById('d-spk').textContent=formatSpeakerName(sc.speaker);
   const dialogText=getScenarioText(sc, teacherEvent);
@@ -3269,6 +3727,7 @@ function pickChoice(i){
   });
   applyDelta(ch.delta||{});
   applySystemEffects(ch);
+  queueFollowupScenario(ch);
   showTypedResult(ch.result.title, ch.result.text, () => {
     if(ch.showReport) setTimeout(()=>showDailyReport(ch.showReport),800);
   });
@@ -3276,7 +3735,30 @@ function pickChoice(i){
 function nextScene(){
   clearTypingState(_typing);
   clearTypingState(_resultTyping);
+  if (G.pendingHealthOffice) {
+    const data = DB.gameData;
+    const current = data.scenarios[G.scene];
+    const next = data.scenarios[G.scene + 1];
+    if (!next?.tempFollowup || next.healthOfficeKind !== G.pendingHealthOffice) {
+      const sc = makeHealthOfficeScenario(G.pendingHealthOffice);
+      sc.healthOfficeKind = G.pendingHealthOffice;
+      sc.insertAfterLocation = current?.location || '';
+      data.scenarios.splice(G.scene + 1, 0, sc);
+      DB.saveGameData(data);
+      renderProgDots();
+    }
+    G.pendingHealthOffice = '';
+  }
   G.scene++;
+  renderScene(G.scene);
+}
+function prevScene(){
+  if((G.scene || 0) <= 0) return;
+  hideChoices();
+  clearTypingState(_typing);
+  clearTypingState(_resultTyping);
+  G.scene = Math.max(0, (G.scene || 0) - 1);
+  G.answered = false;
   renderScene(G.scene);
 }
 
@@ -3742,7 +4224,15 @@ function selectDrink(type, drinkId) {
   const drink = DRINK_MENU[type].find(d => d.id === drinkId);
   if (!drink) return;
   const pending = window._pendingDrinkChoice || null;
+  const sc = DB.gameData.scenarios[G.scene] || {};
   document.getElementById('drink-modal').style.display = 'none';
+  if (type === 'cvs') {
+    const snap = makeDrinkSnapshot(type, drink);
+    G.lastCvsDrink = snap;
+    if (Number(sc.day) === 3 || String(sc.location || '').includes('DAY 3')) {
+      G.day3CvsDrink = snap;
+    }
+  }
 
   if (drink.caffeine > 0) {
     G.caffeineToday = (G.caffeineToday || 0) + drink.caffeine;
@@ -3924,6 +4414,143 @@ function closeDailyReport() {
   document.getElementById('daily-report').style.display = 'none';
   updateCaffeineHud();
   saveGameState();
+}
+
+function makeHealthOfficeScenario(kind) {
+  const day = G.day || 1;
+  const commonChoice = {
+    text:'✅ 설명을 듣고 다음 선택으로 넘어간다.',
+    good:true,
+    delta:{},
+    result:{title:'확인 완료', text:'궁금한 점을 그냥 넘기지 않고 확인했다. 다음에는 같은 상황에서 더 빨리 판단할 수 있을 것 같다.'}
+  };
+  // geborin은 호출 시점에 G.caffeineToday를 읽어야 하므로 함수로 분리
+  function getGeborinTemplate() {
+    const todayMg  = G.caffeineToday || 0;
+    const maxMg    = G.caffeineMax   || Math.round((G.weight || 60) * 2.5);
+    const afterMg  = todayMg + 50;
+    const pctAfter = Math.round((afterMg / maxMg) * 100);
+    let text, resultText, delta;
+    if (todayMg === 0) {
+      text = `보건샘이 게보린 성분표를 같이 펼쳤다. "어디 봐봐 — 여기 카페인무수물 50mg이 보이지? 오늘 에너지드링크나 커피 마신 거 없지?" 고개를 저으니 보건샘이 말을 이었다. "오늘은 카페인을 안 마셨으니까, 게보린까지 더해도 50mg이라 권고량(${maxMg}mg)엔 여유가 있어. 근데 이 사실 자체를 알고 있는 게 중요해 — 다음에 에너지드링크랑 같이 먹으려고 할 때 멈출 수 있거든."`;
+      resultText = `오늘 카페인 0mg + 게보린 50mg = 50mg. 권고량(${maxMg}mg) 이하라 지금은 괜찮아. 하지만 보건샘 말처럼, 에너지드링크(60~80mg)와 함께 먹으면 합산 110~130mg — 권고량에 근접하거나 초과할 수 있어. 성분표 확인 습관이 오늘 생겼다.`;
+      delta = {knowledge:8, judgment:6, caffeine:4};
+    } else if (afterMg < maxMg * 0.85) {
+      text = `보건샘이 성분표를 가리켰다. "오늘 카페인 음료 마셨어? 아까 뭐 마셨는지 생각해봐." 오늘 마신 것을 말하자 보건샘이 계산을 했다. "그거랑 게보린 카페인무수물 50mg 합치면 ${afterMg}mg이야. 하루 권고량이 ${maxMg}mg인데 아직 여유는 있어. 근데 오늘 오후에 음료 더 마실 것 같으면 게보린은 지금 참는 게 나아. 총량 관리가 핵심이거든."`;
+      resultText = `오늘 마신 카페인 ${todayMg}mg + 게보린 50mg = ${afterMg}mg. 권고량(${maxMg}mg)의 ${pctAfter}%. 아직 여유 있지만 오늘 하루 총량을 생각하면 지금 게보린은 보류하는 게 안전해.`;
+      delta = {knowledge:10, judgment:8, caffeine:3};
+    } else {
+      text = `보건샘이 눈을 약간 키우며 말했다. "오늘 카페인이 벌써 ${todayMg}mg이야. 게보린에 카페인무수물이 50mg 더 들어 있어서, 지금 먹으면 합산 ${afterMg}mg — 하루 권고량 ${maxMg}mg을${afterMg >= maxMg ? ' 이미 넘어' : ' 거의 다 채워'}." 보건샘이 물 한 컵을 건넸다. "오늘은 게보린 말고, 일단 여기 누워서 쉬어봐. 두통이 수분 부족일 수도 있거든."`;
+      resultText = `${todayMg}mg + 게보린 50mg = ${afterMg}mg — 권고량(${maxMg}mg)${afterMg >= maxMg ? '을 초과' : '에 거의 도달'}. 보건샘 판단대로 오늘은 게보린을 피하고 휴식을 선택한 게 맞아. 카페인이 쌓인 날엔 약보다 물과 쉬는 것이 더 안전할 수 있어.`;
+      delta = {knowledge:12, judgment:10, health:3, caffeine:3};
+    }
+    return { text, delta, result:{title:'보건샘과 성분표 확인', text:resultText} };
+  }
+
+  const templates = {
+    geborin: getGeborinTemplate(),
+    palpitation: {
+      text:'보건샘이 맥박과 오늘 마신 음료를 함께 물어봤다. "두근거림은 카페인 과다, 수면 부족, 긴장이 겹칠 때 더 커질 수 있어. 오늘은 카페인을 더하지 말고 쉬어 보자."',
+      delta:{health:5, knowledge:6, judgment:6},
+      result:{title:'몸 신호 확인', text:'두근거림을 무시하지 않고 원인을 확인했다. 몸이 보내는 신호도 중요한 정보다.'}
+    },
+    fasting: {
+      text:'보건샘이 물컵을 건네며 말했다. "빈속에 진통제를 먹으면 속이 쓰릴 수 있어. 약마다 다르지만, 식후 복용 표시가 있으면 먼저 먹는 게 안전해."',
+      delta:{health:4, knowledge:7, judgment:5},
+      result:{title:'공복 복용 확인', text:'약은 이름만 보는 것이 아니라 복용 시점과 내 몸 상태까지 같이 봐야 한다는 걸 알게 됐다.'}
+    },
+    friend: {
+      text:'보건샘이 민준의 이야기를 끝까지 들었다. "심장이 두근거릴 정도면 그냥 버티면 안 돼. 카페인 양은 줄이고 수면 시간은 늘려서 푹 쉬어줘야 해." 민준도 조용히 고개를 끄덕였다.',
+      delta:{social:8, judgment:6, knowledge:5},
+      result:{title:'같이 확인한 위험 신호', text:'친구의 이상 신호를 혼자 판단하지 않고 어른에게 연결했다. 도움을 요청하는 것도 중요한 선택이다.'}
+    }
+  };
+  const t = templates[kind] || templates.geborin;
+  const scenario = {
+    type:'event',
+    day,
+    location:`🩺 ${day}일차 보건실 상담`,
+    scene:'scene_health',
+    speaker:'보건샘',
+    text:t.text,
+    tempFollowup:true,
+    choices:[{
+      ...commonChoice,
+      delta:t.delta,
+      result:t.result
+    }]
+  };
+  if(kind === 'friend') {
+    scenario.sceneActors = [
+      {slot:'teacher_main', name:'보건샘', side:'left'},
+      {slot:'npc_minjun_palpitations', name:'민준', side:'right'}
+    ];
+  }
+  return scenario;
+}
+
+function queueFollowupScenario(choice) {
+  if (!choice?.healthOffice) return;
+  G.pendingHealthOffice = choice.healthOffice;
+  const data = DB.gameData;
+  const current = data.scenarios[G.scene];
+  const next = data.scenarios[G.scene + 1];
+  if (next?.tempFollowup && next.healthOfficeKind === choice.healthOffice) return;
+
+  const insertAt = G.scene + 1;
+  const locationTag = current?.location || '';
+
+  if (choice.healthOffice === 'geborin') {
+    const name = G.name || '나';
+    const day  = G.day  || 1;
+
+    // ① 나레이터: 보건실 이동
+    const sc_move = {
+      type:'narration', day, tempFollowup:true,
+      healthOfficeKind:'geborin_move',
+      location:`🩺 ${day}일차 보건실`, scene:'scene_health',
+      speaker:'나레이터',
+      text:`게보린 상자를 손에 들고 보건실 문을 열었다. 하얀 커튼과 소독약 냄새가 났다.`,
+      insertAfterLocation: locationTag,
+    };
+
+    // ② 주인공: 인사 + 자기소개 (학년은 G.grade에서 동적으로 읽기)
+    const grade = G.grade || 1;
+    const sc_intro = {
+      type:'narration', day, tempFollowup:true,
+      healthOfficeKind:'geborin_intro',
+      location:`🩺 ${day}일차 보건실`, scene:'scene_health',
+      speaker:`${name}(나)`,
+      text:`"선생님, 안녕하세요. 저 ${grade}학년 ${name}인데요. 잠깐 여쭤봐도 될까요?"`,
+      insertAfterLocation: locationTag,
+    };
+
+    // ③ 주인공: 증상 호소
+    const sc_symptom = {
+      type:'narration', day, tempFollowup:true,
+      healthOfficeKind:'geborin_symptom',
+      location:`🩺 ${day}일차 보건실`, scene:'scene_health',
+      speaker:`${name}(나)`,
+      text:`"체육 시간에 무리했는지 머리가 계속 지끈거려서요. 가방에 게보린이 있어서 먹으려고 했는데, 혹시 지금 먹어도 괜찮은지 여쭤보러 왔어요."`,
+      insertAfterLocation: locationTag,
+    };
+
+    // ④ 보건샘: 카페인 수치 기반 분기 상담
+    const sc_consult = makeHealthOfficeScenario('geborin');
+    sc_consult.healthOfficeKind = 'geborin';
+    sc_consult.insertAfterLocation = locationTag;
+
+    // 순서대로 삽입: 이동 → 인사 → 증상 → 상담
+    data.scenarios.splice(insertAt, 0, sc_move, sc_intro, sc_symptom, sc_consult);
+  } else {
+    const sc = makeHealthOfficeScenario(choice.healthOffice);
+    sc.healthOfficeKind = choice.healthOffice;
+    sc.insertAfterLocation = locationTag;
+    data.scenarios.splice(insertAt, 0, sc);
+  }
+
+  DB.saveGameData(data);
+  renderProgDots();
 }
 
 // ══════════════════════════════════════
@@ -4120,18 +4747,102 @@ function sceneColor(key){
 function sceneCharacterSlot(sc) {
   const speaker = String(sc?.speaker || '').replace('{name}', G.name);
   const text = String(sc?.text || '');
-  if (speaker.includes('민준') || text.includes('민준')) return 'npc_minjun';
-  if (speaker.includes('서연') || text.includes('서연')) return 'npc_seoyeon';
-  if (speaker.includes('태양') || text.includes('태양')) return 'npc_taeyang';
-  if (speaker.includes('하은') || text.includes('하은')) return 'npc_haeun';
-  if (speaker.includes('선생님') || speaker.includes('의사')) return 'teacher_main';
-  return G.gender === 'f' ? 'char_female' : 'char_male';
+  if (speaker.includes('민준')) return 'npc_minjun';
+  if (speaker.includes('서연')) return 'npc_seoyeon';
+  if (speaker.includes('태양')) return 'npc_taeyang';
+  if (speaker.includes('하은')) return 'npc_haeun';
+  if (speaker.includes('선생님') || speaker.includes('보건샘') || speaker.includes('의사')) return 'teacher_main';
+  if (text.includes('민준')) return 'npc_minjun';
+  if (text.includes('서연')) return 'npc_seoyeon';
+  if (text.includes('태양')) return 'npc_taeyang';
+  if (text.includes('하은')) return 'npc_haeun';
+  return protagonistConditionSlot(G.gender === 'f' ? 'char_female' : 'char_male');
+}
+
+function sceneCharacterDisplayName(sc, slot) {
+  const speaker = formatSpeakerName(sc?.speaker || '');
+  const npc = Object.values(NPC_DATA || {}).find(x => x.imgSlot === slot);
+  if (npc) return npc.name;
+  if (slot === 'teacher_main') return speaker.includes('의사') ? '의사' : '보건샘';
+  if (String(slot || '').startsWith('char_')) return `${G.name}(나)`;
+  if (speaker && speaker !== '나레이터') return speaker;
+  return `${G.name}(나)`;
+}
+
+function protagonistConditionSlot(baseSlot) {
+  const health = G.stats?.health ?? 70;
+  const sleep = G.stats?.sleep ?? 60;
+  const caffeine = G.stats?.caffeine ?? 70;
+  const avgSleep = G.sleepCount ? (G.sleepTotal || 0) / G.sleepCount : 8;
+  const overCaffeine = (G.caffeineToday || 0) > (G.caffeineMax || Math.round((G.weight || 60) * 2.5));
+  const prefix = baseSlot === 'char_female' ? 'char_female' : 'char_male';
+  const sc = DB.gameData?.scenarios?.[G.scene];
+  const conditionText = `${sc?.text || ''} ${sc?.location || ''} ${sc?.speaker || ''}`;
+  const bodyWarning = /가슴|두근|심장|떨|어지럽/.test(conditionText)
+    || (G.lastDayCaffeine || 0) >= 80
+    || (G.caffeineToday || 0) >= (G.caffeineMax || Math.round((G.weight || 60) * 2.5)) * 0.8;
+  const sickSignal = /감기|기침|콧물|보건실|병원|아프|아픈|열이|몸살/.test(conditionText);
+  const focusedSignal = /필기|공부|복습|시험|자습|독서실|처방전|수업/.test(conditionText);
+  const recoveredSignal = /가볍다|회복|잘 잔|컨디션 좋|괜찮다/.test(conditionText);
+
+  if (bodyWarning || overCaffeine) {
+    return `${prefix}_nervous`;
+  }
+  if (sickSignal || health <= 32) {
+    return `${prefix}_sick`;
+  }
+  if (/두통|머리/.test(conditionText) || health <= 42 || (G.comboCount || 0) > 0 || (caffeine <= 35 && health <= 58)) {
+    return `${prefix}_headache`;
+  }
+  if (sleep <= 45 || (G.veryLateSleepStreak || 0) > 0 || avgSleep < 5.8) {
+    return `${prefix}_sleepy`;
+  }
+  if (health <= 62 || sleep <= 62 || caffeine <= 55 || (G.lateSleepStreak || 0) > 0) {
+    return `${prefix}_tired`;
+  }
+  if (focusedSignal && health >= 55 && sleep >= 50) {
+    return `${prefix}_focused`;
+  }
+  if (recoveredSignal || (health >= 78 && sleep >= 70 && caffeine >= 65)) {
+    return `${prefix}_recovered`;
+  }
+  return baseSlot;
+}
+
+function refreshSceneCharacterByCondition() {
+  const sc = DB.gameData?.scenarios?.[G.scene];
+  if (!sc || sc.type === 'ending') return;
+  const slot = sceneCharacterSlot(sc);
+  if (!slot.startsWith('char_')) return;
+  const el = document.getElementById('scene-char');
+  if (!el) return;
+  const imgUrl = driveUrl(DB.gameData.images?.[slot] || '');
+  el.className = `scene-char slot-${String(slot).replace(/_/g, '-')}`;
+  el.innerHTML = imgUrl
+    ? `<img src="${imgUrl}" alt="캐릭터">`
+    : `<span style="font-size:5.5rem;">${sceneCharacterFallback(sc, slot)}</span>`;
+  const tag = document.getElementById('scene-name-tag');
+  if (tag) tag.textContent = sceneCharacterDisplayName(sc, slot);
 }
 
 function sceneCharacterFallback(sc, slot) {
   return {
     char_female: '👩‍🎓',
     char_male: '🧑‍🎓',
+    char_female_tired: '😟',
+    char_female_sleepy: '😴',
+    char_female_headache: '🤕',
+    char_female_nervous: '😰',
+    char_female_recovered: '🙂',
+    char_female_sick: '🤧',
+    char_female_focused: '📝',
+    char_male_tired: '😟',
+    char_male_sleepy: '😴',
+    char_male_headache: '🤕',
+    char_male_nervous: '😰',
+    char_male_recovered: '🙂',
+    char_male_sick: '🤧',
+    char_male_focused: '📝',
     npc_minjun: '😄',
     npc_seoyeon: '🤓',
     npc_taeyang: '😎',
@@ -4162,4 +4873,3 @@ function uploadPortrait(input){
 </script>
 </body>
 </html>
-
