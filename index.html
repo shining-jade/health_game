@@ -1129,6 +1129,223 @@ body{background:
     max-height:64dvh;
   }
 }
+
+/* Teacher mode: pastel classroom dashboard */
+#screen-teacher.active{
+  display:flex;
+  min-height:100vh;
+  background:
+    radial-gradient(circle at 16% 12%, rgba(255,183,197,.38), transparent 30%),
+    radial-gradient(circle at 88% 16%, rgba(181,235,222,.46), transparent 32%),
+    radial-gradient(circle at 52% 96%, rgba(255,225,145,.34), transparent 26%),
+    linear-gradient(180deg,#fff7fb 0%,#f4fcff 48%,#fff8e8 100%);
+  color:#38291f;
+}
+#screen-teacher .t-header{
+  background:rgba(255,255,255,.82);
+  border-bottom:2px solid #ffd2bf;
+  color:#38291f;
+  box-shadow:0 8px 22px rgba(109,72,45,.10);
+  backdrop-filter:blur(10px);
+}
+#screen-teacher .t-header h1{
+  color:#ff7f66;
+  text-shadow:0 3px 0 rgba(255,218,190,.7);
+}
+#screen-teacher .t-body{
+  background:
+    linear-gradient(135deg, rgba(255,183,197,.22) 0 18%, transparent 18% 100%),
+    linear-gradient(225deg, rgba(181,235,222,.24) 0 22%, transparent 22% 100%);
+}
+#screen-teacher .t-cases{
+  background:rgba(255,250,243,.88);
+  border-right:2px solid #ffd2bf;
+  box-shadow:8px 0 22px rgba(109,72,45,.08);
+}
+#screen-teacher .t-cases h3,
+#screen-teacher .trust-row label,
+#screen-teacher .case-card .cc-num,
+#screen-teacher .csc-header div[style],
+#screen-teacher .vote-info p,
+#screen-teacher .qr-box .qr-lbl,
+#screen-teacher .vote-result p{
+  color:#7e6655 !important;
+  font-weight:800;
+}
+#screen-teacher .case-card{
+  background:#fffdf7;
+  border-color:#ebc7a9;
+  color:#38291f;
+  box-shadow:0 8px 18px rgba(109,72,45,.08);
+}
+#screen-teacher .case-card:hover,
+#screen-teacher .case-card.active{
+  border-color:#ff9f80;
+  background:#fff3e8;
+}
+#screen-teacher .case-card.done{
+  opacity:.72;
+  background:#f7f1ea;
+}
+#screen-teacher .case-card .cc-name,
+#screen-teacher .case-card .cc-tag,
+#screen-teacher .trust-num,
+#screen-teacher .vote-choice .vc-label,
+#screen-teacher .vote-choice .vc-count{
+  color:#e76642;
+}
+#screen-teacher .t-main{
+  color:#38291f;
+}
+#screen-teacher .case-scene-card,
+#screen-teacher .vote-section{
+  background:rgba(255,253,247,.92);
+  border:2px solid #ebc7a9;
+  color:#38291f;
+  box-shadow:0 14px 30px rgba(109,72,45,.10);
+}
+#screen-teacher .csc-header{
+  background:#fff3e8;
+  border-bottom:2px solid #f1d3b8;
+}
+#screen-teacher .csc-avatar{
+  background:#fffaf2;
+  border:2px solid #ebc7a9;
+  box-shadow:0 6px 14px rgba(109,72,45,.10);
+}
+#screen-teacher .csc-body p,
+#screen-teacher .vote-choice .vc-text{
+  color:#3f2d24;
+  font-weight:800;
+}
+#screen-teacher .trust-bar-bg{
+  background:#f0dbc8;
+}
+#screen-teacher .trust-bar-fg{
+  background:linear-gradient(90deg,#ff9f80,#ffd76d);
+}
+#screen-teacher .tag-blue{
+  background:#eef4ff;
+  border-color:#b8cdfd;
+  color:#3d62a8;
+}
+#screen-teacher .urg-high{
+  background:#fff0ec;
+  color:#e76642;
+  border-color:#ffb5a0;
+}
+#screen-teacher .urg-mid{
+  background:#fff6df;
+  color:#b65f20;
+  border-color:#ffd76d;
+}
+#screen-teacher .urg-low{
+  background:#eafaf2;
+  color:#20845d;
+  border-color:#9fe2c5;
+}
+#screen-teacher .timer-circle{
+  background:conic-gradient(#5fc89a 0%,#f0dbc8 0%);
+  box-shadow:0 5px 14px rgba(95,200,154,.22);
+}
+#screen-teacher .timer-inner{
+  background:#fffdf7;
+}
+#screen-teacher .timer-num{
+  color:#20845d;
+}
+#screen-teacher .qr-box{
+  background:#fffaf2;
+  border:2px solid #ebc7a9;
+  box-shadow:0 8px 18px rgba(109,72,45,.08);
+}
+#screen-teacher .vote-url{
+  color:#3d62a8;
+  font-weight:800;
+}
+#screen-teacher .vote-choice{
+  background:#fffdf7;
+  border-color:#ebc7a9;
+  color:#38291f;
+}
+#screen-teacher .vote-choice:hover,
+#screen-teacher .vote-choice.winner{
+  border-color:#ff9f80;
+  background:#fff3e8;
+}
+#screen-teacher .vote-choice .vc-bar{
+  background:rgba(255,159,128,.20);
+}
+#screen-teacher .vote-choice .vc-count{
+  background:#ffe8d4;
+}
+#screen-teacher .vote-result{
+  background:#fff8ea;
+  border:2px solid #ebc7a9;
+  color:#38291f;
+}
+#screen-teacher .vote-result.good h3{
+  color:#20845d;
+}
+#screen-teacher .vote-result.bad h3{
+  color:#e76642;
+}
+#screen-teacher .learn-chip{
+  background:#eafaf2;
+  color:#20845d;
+  font-weight:900;
+}
+#screen-teacher .btn-primary{
+  background:#5fc89a;
+  color:#fff;
+}
+#screen-teacher .btn-warn{
+  background:#ffb86c;
+  color:#fff;
+}
+#screen-teacher .btn-ghost{
+  background:#fffdf7;
+  color:#7e6655;
+  border-color:#ebc7a9;
+}
+#screen-teacher .btn-ghost:hover{
+  border-color:#ff9f80;
+  color:#e76642;
+}
+#screen-vote{
+  background:
+    radial-gradient(circle at 18% 14%, rgba(255,183,197,.42), transparent 30%),
+    radial-gradient(circle at 84% 18%, rgba(181,235,222,.46), transparent 32%),
+    linear-gradient(180deg,#fff7fb 0%,#f4fcff 50%,#fff8e8 100%);
+  color:#38291f;
+}
+#screen-vote .vote-phone-card{
+  background:rgba(255,255,255,.86);
+  border-color:#ffbda8;
+  color:#38291f;
+  box-shadow:0 18px 42px rgba(109,72,45,.14);
+}
+#screen-vote .vote-phone-card h2{
+  color:#ff7f66;
+}
+#screen-vote .vote-phone-card p{
+  color:#7e6655;
+  font-weight:800;
+}
+#screen-vote .vpc-btn{
+  background:#fffdf7;
+  border-color:#ebc7a9;
+  color:#38291f;
+  font-weight:800;
+}
+#screen-vote .vpc-btn:hover{
+  border-color:#ff9f80;
+  background:#fff3e8;
+}
+#screen-vote .vpc-btn.voted{
+  border-color:#5fc89a;
+  background:#eafaf2;
+}
 </style>
 </head>
 <body>
@@ -3351,7 +3568,7 @@ function renderCaseMain(id){
     const qrEl=document.getElementById('qr-code');
     if(qrEl&&typeof QRCode!=='undefined'){
       qrEl.innerHTML='';
-      new QRCode(qrEl,{text:voteUrl,width:96,height:96,colorDark:'#e6edf3',colorLight:'#1c2230'});
+      new QRCode(qrEl,{text:voteUrl,width:96,height:96,colorDark:'#3f2d24',colorLight:'#fffdf7'});
     }
   },100);
   // 투표 리스너 등록
