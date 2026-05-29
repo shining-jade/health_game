@@ -1299,14 +1299,166 @@ function confirmDeleteScene() {
 // ══════════════════════════════════════════
 // 10. JSON 저장 / 불러오기
 // ══════════════════════════════════════════
+// 마지막 저장자 이름 기억
+let _lastAuthor = localStorage.getItem('sc_author') || '';
+
 function saveJSON() {
-  const data = { version:2, exportedAt: new Date().toISOString(), scenes: SCENES };
+  const today = new Date();
+  const dateStr = today.toISOString().slice(0,10).replace(/-/g,'');
+
+  // 수정된 장면 목록 수집
+  const modScenes = SCENES.filter(sc => modified.has(sc.id));
+  const modListHTML = modScenes.length
+    ? modScenes.map(sc => `<li style="padding:2px 0">${esc(sc.title)}</li>`).join('')
+    : '<li style="color:var(--sub2);font-style:italic">없음 (변경사항 없음)</li>';
+
+  document.getElementById('modal-root').innerHTML = `
+    <div class="modal-overlay" onclick="closeModal(event)">
+      <div class="modal-box" onclick="event.stopPropagation()" style="max-width:500px">
+        <h3>💾 JSON 저장</h3>
+        <p style="margin-bottom:14px">저장자 이름과 메모는 파일 내부에 기록됩니다.<br>파일명은 <b>날짜 + 이름</b>만 사용해 간결하게 유지돼요.</p>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+          <div class="modal-field" style="margin:0">
+            <label>저장자 이름 <span style="color:var(--danger)">*</span></label>
+            <input type="text" id="s-author" placeholder="예) 김선생님" value="${esc(_lastAuthor)}" maxlength="20">
+          </div>
+          <div class="modal-field" style="margin:0">
+            <label>파일명 미리보기</label>
+            <div id="s-preview" style="padding:8px 10px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:11.5px;font-family:monospace;color:var(--text);min-height:34px;word-break:break-all"></div>
+          </div>
+        </div>
+
+        <div class="modal-field">
+          <label>수정 메모 — 어떤 내용을 바꿨나요? (파일 내부 기록용)</label>
+          <input type="text" id="s-memo" placeholder="예) DAY5 게보린 선택지 능력치 조정, DAY3 피드백 텍스트 수정" maxlength="100">
+        </div>
+
+        <div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;margin-bottom:18px">
+          <div style="font-size:10px;font-weight:700;color:var(--sub2);letter-spacing:.04em;margin-bottom:7px">수정된 장면 (${modScenes.length}개) — 파일 내부에 목록으로 기록됩니다</div>
+          <ul style="list-style:none;font-size:12px;color:var(--text);max-height:100px;overflow-y:auto;line-height:1.6">
+            ${modListHTML}
+          </ul>
+        </div>
+
+        <div class="modal-row">
+          <button class="modal-btn cancel" onclick="closeModal()">취소</button>
+          <button class="modal-btn ok" onclick="confirmSaveJSON()">저장하기</button>
+        </div>
+      </div>
+    </div>`;
+
+  const authorInp = document.getElementById('s-author');
+  const preview   = document.getElementById('s-preview');
+
+  function updatePreview() {
+    const safeName = authorInp.value.trim().replace(/[^가-힣a-zA-Z0-9]/g,'') || '이름없음';
+    preview.textContent = `scenario_${dateStr}_${safeName}.json`;
+  }
+  authorInp.addEventListener('input', updatePreview);
+  updatePreview();
+  authorInp.focus();
+  authorInp.select();
+
+  [authorInp, document.getElementById('s-memo')].forEach(inp => {
+    inp?.addEventListener('keydown', e => { if (e.key === 'Enter') confirmSaveJSON(); });
+  });
+}
+
+function confirmSaveJSON() {
+  const authorInp = document.getElementById('s-author');
+  const memoInp   = document.getElementById('s-memo');
+  if (!authorInp) return;
+
+  const author = authorInp.value.trim();
+  if (!author) {
+    authorInp.focus();
+    authorInp.style.borderColor = 'var(--danger)';
+    authorInp.placeholder = '이름을 입력해주세요';
+    return;
+  }
+
+  _lastAuthor = author;
+  localStorage.setItem('sc_author', author);
+
+  const dateStr  = new Date().toISOString().slice(0,10).replace(/-/g,'');
+  const safeName = author.replace(/[^가-힣a-zA-Z0-9]/g,'');
+  const filename = `scenario_${dateStr}_${safeName}.json`;
+
+  // 수정된 장면 제목 목록
+  const modSceneList = SCENES
+    .filter(sc => modified.has(sc.id))
+    .map(sc => ({ id: sc.id, title: sc.title, day: sc.day }));
+
+  const data = {
+    version:      2,
+    exportedAt:   new Date().toISOString(),
+    author,
+    memo:         memoInp?.value.trim() || '',
+    modifiedScenes: modSceneList,
+    scenes:       SCENES
+  };
+
   const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = `scenario_${new Date().toISOString().slice(0,10)}.json`;
+  a.download = filename;
   a.click();
-  toast('💾 JSON 저장 완료');
+
+  closeModal();
+  modified.clear();
+  renderSidenav();
+  toast(`💾 ${filename} 저장 완료`);
+}
+
+function showLoadSummaryModal(data) {
+  const author    = data.author    || '';
+  const memo      = data.memo      || '';
+  const dateStr   = (data.exportedAt || '').slice(0, 10);
+  const modList   = Array.isArray(data.modifiedScenes) ? data.modifiedScenes : [];
+  const sceneCount = Array.isArray(data.scenes) ? data.scenes.length : 0;
+
+  const modHTML = modList.length
+    ? modList.map(sc => `
+        <div style="display:flex;align-items:center;gap:6px;padding:5px 0;border-bottom:1px solid var(--border)">
+          <span style="font-size:11px;background:var(--accent-bg);color:var(--accent);border-radius:3px;padding:1px 6px;white-space:nowrap">DAY ${sc.day}</span>
+          <span style="font-size:12.5px">${esc(sc.title)}</span>
+        </div>`).join('')
+    : `<div style="font-size:12px;color:var(--sub2);font-style:italic;padding:6px 0">기록 없음</div>`;
+
+  const authorRow = author
+    ? `<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+         <span style="font-size:13px;font-weight:700">${esc(author)}</span>
+         <span style="font-size:11px;color:var(--sub);background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:2px 9px">${dateStr}</span>
+       </div>`
+    : `<div style="font-size:12px;color:var(--sub);margin-bottom:10px">저장자 정보 없음</div>`;
+
+  const memoRow = memo
+    ? `<div style="background:var(--warn-bg);border-left:3px solid var(--warn);border-radius:0 var(--radius-sm) var(--radius-sm) 0;padding:8px 12px;margin-bottom:14px;font-size:12.5px;color:var(--text);line-height:1.6">
+         💬 ${esc(memo)}
+       </div>`
+    : '';
+
+  document.getElementById('modal-root').innerHTML = `
+    <div class="modal-overlay" onclick="closeModal(event)">
+      <div class="modal-box" onclick="event.stopPropagation()" style="max-width:480px">
+        <h3>📂 불러오기 완료</h3>
+
+        ${authorRow}
+        ${memoRow}
+
+        <div style="font-size:10px;font-weight:700;color:var(--sub2);letter-spacing:.04em;margin-bottom:8px">
+          수정된 장면 기록 (${modList.length}개) · 전체 ${sceneCount}개 장면
+        </div>
+        <div style="max-height:200px;overflow-y:auto;margin-bottom:18px;border:1px solid var(--border);border-radius:var(--radius-sm);padding:4px 10px">
+          ${modHTML}
+        </div>
+
+        <div class="modal-row">
+          <button class="modal-btn ok" onclick="closeModal()">확인</button>
+        </div>
+      </div>
+    </div>`;
 }
 
 function triggerLoad() {
@@ -1325,10 +1477,11 @@ function loadJSON(inp) {
       SCENES = loaded;
       modified.clear();
       currentIdx = 0;
+      snapshot('파일 불러오기');
       renderSidenav();
       renderDetail(0);
       if (currentView === 'overview') renderOverview();
-      toast('📂 JSON 불러오기 완료');
+      showLoadSummaryModal(data);
     } catch(err) {
       alert('파일 형식이 올바르지 않습니다.\n' + err.message);
     }
@@ -1346,12 +1499,12 @@ function esc(str) {
 }
 
 let toastTimer;
-function toast(msg) {
+function toast(msg, duration) {
   const el = document.getElementById('toast');
   el.textContent = msg;
   el.classList.add('show');
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => el.classList.remove('show'), 2000);
+  toastTimer = setTimeout(() => el.classList.remove('show'), duration || 2200);
 }
 
 // ══════════════════════════════════════════
