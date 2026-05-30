@@ -432,212 +432,234 @@ html, body { height:100%; overflow:hidden; font-family:'Noto Sans KR', sans-seri
 const STAT_KEYS = ['건강','지식','활력','수면','카페인','판단력','사회','피로','생활습관'];
 
 const DEFAULT_SCENES = [
+  // ── DAY 1 ──
   {id:'s0', day:1, loc:'🏫 DAY 1 등교길', type:'narration', title:'나레이션: 첫 등교',
     text:'3월 첫 등교일. 새 교복 냄새가 아직 남아있다. {이름}은 간밤에 설레서 늦게 잤다. 버스 안에서 눈이 무거운데 학교까지는 아직 20분이 남았다.', choices:[]},
 
-  {id:'s1', day:1, loc:'🏪 교문 앞 편의점', type:'event', title:'민준이 에너지드링크 권유',
+  {id:'s1', day:1, loc:'🏪 DAY 1 교문 앞 편의점', type:'event', title:'민준이 에너지드링크 권유',
     text:'민준이 편의점에서 나오며 손을 흔든다. "야, 어제 설레서 못 잤지? 나도. 에너지드링크 하나 샀는데 너도 살래? 오전 버티려면 이거라도 마셔야 해."',
     choices:[
-      {type:'bad', text:'편의점 냉장고에서 음료를 직접 고른다.', delta:{지식:2}, note:'openDrink 플래그 — 음료 미니게임 진입', result:'오전은 조금 버틸 수 있을 것 같다. 어떤 음료를 골랐는지가 오늘 총량에 남는다.'},
-      {type:'good', text:'"됐어, 이따 물 마실게." 민준의 시선을 견딘다.', delta:{판단력:3}, note:'noCaffeine 플래그 — 판단력 소폭 지연 보상', result:'민준이 "어, 진짜로?" 하며 쳐다봤다. 조금 어색했지만 그냥 걸어갔다.'},
+      {type:'bad',  text:'🥤 편의점 냉장고에서 음료를 직접 고른다.', delta:{지식:2}, note:'openDrink:"cvs" — 음료 미니게임 진입', result:'오전은 조금 버틸 수 있을 것 같다. 어떤 음료를 골랐는지가 오늘 총량에 남는다.'},
+      {type:'good', text:'💧 "됐어, 이따 물 마실게." 민준의 시선을 견딘다.', delta:{판단력:3}, note:'caffeineMg:0 / noCaffeine / delayed:{판단력:5}', result:'민준이 "어, 진짜로?" 하며 쳐다봤다. 조금 어색했지만 그냥 걸어갔다.'},
     ]},
 
-  {id:'s2', day:1, loc:'🌙 내 방', type:'event', title:'수면 선택 (DAY 1)',
+  {id:'s2', day:1, loc:'🌙 DAY 1 내 방', type:'event', title:'수면 선택 (DAY 1)',
     text:'첫날치고 숙제가 많았다. 시계를 보니 11시. 수학 문제집이 아직 반이 남아있다.',
     choices:[
-      {type:'good', text:'"오늘은 여기까지." 11시 30분쯤 눕는다.', delta:{건강:6,수면:5,판단력:3}, note:'sleepHours:7.5 — 충분한 수면', result:'반쯤 남은 문제집이 눈에 밟혔다. 그래도 내일 아침에 다시 볼 힘은 남겨두었다.'},
-      {type:'bad', text:'문제집을 다 끝내고 새벽 1시에 잔다.', delta:{지식:10,건강:-8,수면:-8,판단력:-5}, note:'sleepHours:6 — 수면 부족', result:'문제집은 끝냈다. 하지만 눈꺼풀이 무겁다.'},
-      {type:'bad', text:'문제집 덮고 폰 보다가 잠든다.', delta:{건강:-3,수면:-5,판단력:-4}, note:'sleepHours:6.5', result:'잠깐만 보려던 화면이 40분을 가져갔다.'},
-      {type:'bad', text:'카페인 음료 마시고 새벽 3시까지 버틴다.', delta:{지식:12,건강:-15,수면:-15,카페인:-8}, note:'sleepHours:4 — openDrink:cafe', result:'진도는 나갔다. 대신 새벽 공기가 차갑게 느껴졌다.'},
+      {type:'bad',  text:'📚 문제집을 다 끝내고 새벽 1시에 잔다.', delta:{지식:10,건강:-8,수면:-8,판단력:-5}, note:'sleepHour:25 / sleepHours:6', result:'문제집은 끝냈다. 하지만 눈꺼풀이 무겁다.'},
+      {type:'good', text:'🛌 "오늘은 여기까지." 11시 30분쯤 눕는다.', delta:{건강:6,수면:5,판단력:3}, note:'sleepHour:23 / sleepHours:7.5', result:'반쯤 남은 문제집이 눈에 밟혔다. 그래도 내일 아침에 다시 볼 힘은 남겨두었다.'},
+      {type:'bad',  text:'📱 문제집을 덮고 폰을 보다가 잠든다.', delta:{건강:-3,수면:-5,판단력:-4}, note:'sleepHour:24 / sleepHours:6.5', result:'잠깐만 보려던 화면이 40분을 가져갔다.'},
+      {type:'bad',  text:'☕ 카페인 음료를 고르고 새벽 3시까지 버틴다.', delta:{지식:12,건강:-15,수면:-15,카페인:-8}, note:'openDrink:"cafe" / sleepHour:26 / sleepHours:4', result:'진도는 나갔다. 대신 새벽 공기가 차갑게 느껴졌다.'},
     ]},
 
+  // ── DAY 2 ──
   {id:'s3', day:2, loc:'🏫 DAY 2 1교시', type:'event', title:'졸음 vs 집중 (수업 중)',
     text:'칠판 글씨가 선명하다가도 흔들린다. 옆에서 민준이 속삭인다. "야, 카페인 없이 이거 버텨?" 어제의 수면이 지금 교실에 같이 앉아있다.',
     choices:[
-      {type:'good', text:'물만 마시며 억지로 버틴다.', delta:{지식:-4,판단력:5,카페인:4}, result:'집중은 완벽하지 않았다. 그래도 카페인에 기대는 습관은 만들지 않았다.'},
-      {type:'good', text:'정신을 차리려고 적극적으로 필기한다.', delta:{지식:8,판단력:5,수면:2}, result:'손으로 쓰다 보니 조금씩 눈이 떠졌다.'},
-      {type:'bad', text:'쉬는 시간에 자판기/편의점 음료를 고른다.', delta:{지식:5,건강:-4,카페인:-7,수면:-4}, note:'openDrink 플래그', result:'눈은 떠졌다. 하지만 오늘도 카페인이 수업을 대신 밀어주는 느낌이 들었다.'},
-      {type:'mid', text:'두통이 심해 타이레놀 한 알을 먹는다.', delta:{건강:4,판단력:-2}, note:'analgesicCount +1 — 진통제 복용 누적 기록', result:'두통은 조금 가라앉았다. 다만 약을 찾는 선택이 하나 기록되었다.'},
+      {type:'bad',  text:'☕ 쉬는 시간에 자판기/편의점 음료를 고른다.', delta:{지식:5,건강:-4,카페인:-7,수면:-4}, note:'openDrink:"cvs"', result:'눈은 떠졌다. 하지만 오늘도 카페인이 수업을 대신 밀어주는 느낌이 들었다.'},
+      {type:'good', text:'😴 물만 마시며 억지로 버틴다.', delta:{지식:-4,판단력:5,카페인:4}, note:'caffeineMg:0 / noCaffeine', result:'집중은 완벽하지 않았다. 그래도 카페인에 기대는 습관은 만들지 않았다.'},
+      {type:'mid',  text:'💊 두통이 심해 타이레놀 한 알을 먹는다.', delta:{건강:4,판단력:-2}, note:'analgesic:true — 진통제 복용 누적', result:'두통은 조금 가라앉았다. 다만 약을 찾는 선택이 하나 기록되었다.'},
+      {type:'good', text:'📖 정신을 차리려고 적극적으로 필기한다.', delta:{지식:8,판단력:5,수면:2}, result:'손으로 쓰다 보니 조금씩 눈이 떠졌다.'},
     ]},
 
-  {id:'s4', day:2, loc:'🛒 학교 앞 편의점', type:'event', title:'점심 후 음료 선택',
+  {id:'s4', day:2, loc:'🛒 DAY 2 학교 앞 편의점', type:'event', title:'점심 후 음료 선택',
     text:'태양이 편의점 냉장고 앞에 서 있다. "점심 먹고 나면 졸리잖아. 뭐 마실 거야?" 오늘 누적 카페인은 화면 위에 조용히 올라가 있다.',
     choices:[
-      {type:'good', text:'생수를 고른다.', delta:{판단력:3,카페인:4}, result:'태양이 "오, 진짜 물?" 하고 웃었다. 오늘 총량은 늘지 않았다.'},
-      {type:'bad', text:'냉장고에서 마실 것을 직접 고른다.', delta:{}, note:'openDrink 플래그 — 음료 미니게임', result:'점심 뒤 졸음을 해결하려고 음료를 골랐다.'},
+      {type:'good', text:'💧 생수를 고른다.', delta:{판단력:3,카페인:4}, note:'caffeineMg:0 / noCaffeine', result:'태양이 "오, 진짜 물?" 하고 웃었다. 오늘 총량은 늘지 않았다.'},
+      {type:'bad',  text:'🧊 냉장고에서 마실 것을 직접 고른다.', delta:{}, note:'openDrink:"cvs" — 음료 미니게임', result:'점심 뒤 졸음을 해결하려고 음료를 골랐다. 선택한 음료의 성분이 오후와 밤에 남는다.'},
     ]},
 
   {id:'s5', day:2, loc:'🌙 DAY 2 집', type:'event', title:'수면 선택 (DAY 2)',
     text:'오늘은 어제보다 숙제가 적다. 하지만 낮에 집중을 못 했더니 복습이 밀려있다.',
     choices:[
-      {type:'good', text:'핵심만 보고 11시 30분에 잔다.', delta:{지식:3,건강:5,수면:5,판단력:3}, note:'sleepHours:7.5', result:'완벽하진 않지만 내일 집중할 만큼의 체력은 남겼다.'},
-      {type:'bad', text:'밀린 복습 끝내고 새벽 1시에 잔다.', delta:{지식:8,건강:-7,수면:-7}, note:'sleepHours:6', result:'복습은 끝났다. 대신 몸은 어제와 같은 방식으로 다시 밀렸다.'},
-      {type:'bad', text:'친구들 공부 인증 보다가 자정 반에 잠든다.', delta:{수면:-5,판단력:-5,사회:1}, note:'sleepHours:6.5', result:'남들은 더 하는 것 같았다. 마음이 늦게 잠들었다.'},
-      {type:'bad', text:'카페인 음료 골라 더 버틴다.', delta:{지식:10,건강:-12,수면:-12,카페인:-8}, note:'openDrink:cafe, sleepHours:4.5', result:'몸은 점점 카페인을 공부의 조건으로 기억하기 시작했다.'},
+      {type:'bad',  text:'📚 밀린 복습을 끝내고 새벽 1시에 잔다.', delta:{지식:8,건강:-7,수면:-7}, note:'sleepHour:25 / sleepHours:6', result:'복습은 끝났다. 대신 몸은 어제와 같은 방식으로 다시 밀렸다.'},
+      {type:'good', text:'🛌 핵심만 보고 11시 30분에 잔다.', delta:{지식:3,건강:5,수면:5,판단력:3}, note:'sleepHour:23 / sleepHours:7.5', result:'완벽하진 않지만 내일 집중할 만큼의 체력은 남겼다.'},
+      {type:'bad',  text:'📱 친구들 공부 인증을 보다가 자정 반에 잠든다.', delta:{수면:-5,판단력:-5,사회:1}, note:'sleepHour:24 / sleepHours:6.5', result:'남들은 더 하는 것 같았다. 마음이 늦게 잠들었다.'},
+      {type:'bad',  text:'☕ 카페인 음료를 골라 더 버틴다.', delta:{지식:10,건강:-12,수면:-12,카페인:-8}, note:'openDrink:"cafe" / sleepHour:26 / sleepHours:4.5', result:'몸은 점점 카페인을 공부의 조건으로 기억하기 시작했다.'},
     ]},
 
+  // ── DAY 3 ──
   {id:'s6', day:3, loc:'🏃 DAY 3 등교 중', type:'event', title:'몸 신호 인식',
-    text:'아침부터 가슴이 약간 두근거린다. 어제 마신 게 아직 남아있는 건지 모르겠다.',
+    text:'아침부터 가슴이 약간 두근거린다. 어제 마신 게 아직 남아있는 건지 모르겠다. 그래도 일단 학교는 가야 한다.',
     choices:[
-      {type:'good', text:'"오늘 몸 상태부터 보자." 생각하다가 그냥 간다.', delta:{판단력:5,카페인:4}, result:'몸의 신호를 알아차린 것 자체가 판단이다.'},
-      {type:'good', text:'그냥 학교로 바로 간다.', delta:{판단력:3,카페인:3}, result:'편의점 불빛을 지나쳤다. 습관은 이런 작은 지나침에서 바뀐다.'},
-      {type:'bad', text:'"오늘도 편의점에 들를까." 냉장고 앞으로 간다.', delta:{}, note:'openDrink 플래그', result:'오늘의 첫 선택이 또 음료 냉장고 앞에서 시작됐다.'},
+      {type:'bad',  text:'☕ "오늘도 편의점에 들를까." 냉장고 앞으로 간다.', delta:{}, note:'openDrink:"cvs" — DAY3 카페인 첫 기회', result:'오늘의 첫 선택이 또 음료 냉장고 앞에서 시작됐다.'},
+      {type:'good', text:'🚶 그냥 학교로 바로 간다.', delta:{판단력:3,카페인:3}, note:'caffeineMg:0 / noCaffeine', result:'편의점 불빛을 지나쳤다. 습관은 이런 작은 지나침에서 바뀐다.'},
+      {type:'good', text:'🤔 "오늘 몸 상태부터 보자." 생각하다가 그냥 간다.', delta:{판단력:5,카페인:4}, note:'caffeineMg:0 / noCaffeine', result:'몸의 신호를 알아차린 것 자체가 판단이다. 오늘 아침 카페인은 추가하지 않았다.'},
     ]},
 
-  {id:'s7', day:3, loc:'🍱 급식실 (SNS 정보)', type:'event', title:'카페인+진통제 SNS 정보 대처',
-    text:'하은이 폰을 내밀었다. "야, 어떤 애가 시험 전에 카페인이랑 진통제 같이 먹으면 집중력 올라간다고 올렸어. 댓글 엄청 달렸는데?"',
+  {id:'s7', day:3, loc:'🍱 DAY 3 급식실', type:'event', title:'카페인+진통제 SNS 정보 대처',
+    text:'하은이 폰을 내밀었다. "야, 이거 봐봐. 어떤 애가 시험 전에 카페인이랑 진통제 같이 먹으면 집중력 올라간다고 올렸어. 댓글 엄청 달렸는데?"',
     choices:[
-      {type:'good', text:'"진짜? 어떤 성분이야?" 폰을 당겨 본다.', delta:{지식:6,판단력:3}, note:'labelChecked 활성화', result:'댓글에 "이미 게보린에 카페인 들어있잖아"라는 말이 보였다.'},
-      {type:'good', text:'"위험할 것 같은데." 링크를 찾아 확인한다.', delta:{지식:8,판단력:8}, note:'labelChecked 활성화 — DAY5 민준 말릴 근거 생성', result:'카페인과 일부 진통제 성분이 겹칠 수 있다는 설명을 찾았다.'},
-      {type:'bad', text:'"나중에 봐야겠다." 대충 흘려듣는다.', delta:{판단력:-5}, result:'지금은 별일 아닌 것 같았다. 하지만 판단이 늦어질 수 있다.'},
-      {type:'bad', text:'"오 그거 써봐야겠다." 스크린샷을 찍는다.', delta:{판단력:-10}, note:'snsRisk 플래그 활성화', result:'지금은 호기심이지만 며칠 뒤 실제 선택지가 될 수 있다.'},
+      {type:'good', text:'👀 "진짜? 어떤 성분이야?" 폰을 당겨 본다.', delta:{지식:6,판단력:3}, note:'labelChecked:true', result:'댓글에 "이미 게보린에 카페인 들어있잖아"라는 말이 보였다.'},
+      {type:'bad',  text:'😐 "나중에 봐야겠다." 대충 흘려듣는다.', delta:{판단력:-5}, result:'지금은 별일 아닌 것 같았다. 하지만 판단이 늦어질 수 있다.'},
+      {type:'bad',  text:'🤩 "오 그거 써봐야겠다." 스크린샷을 찍는다.', delta:{판단력:-10}, note:'snsRisk:true — DAY5 위험 선택지 활성화', result:'사진첩에 게시물이 저장됐다. 지금은 호기심이지만 며칠 뒤 실제 선택지가 될 수 있다.'},
+      {type:'good', text:'🚩 "위험할 것 같은데." 링크를 찾아 확인한다.', delta:{지식:8,판단력:8}, note:'labelChecked:true — DAY5 민준 말릴 근거 생성', result:'카페인과 일부 진통제 성분이 겹칠 수 있다는 설명을 찾았다.'},
     ]},
 
-  {id:'s8', day:3, loc:'🏸 체육관 앞', type:'event', title:'★ 게보린 + 카페인 중복 핵심',
-    text:'체육 시간에 무리했는지 머리가 지끈거린다. 가방에 지난번 약국에서 사둔 게보린이 있다. 오늘 카페인은 이미 조금 쌓여 있다.',
+  {id:'s8', day:3, loc:'🏸 DAY 3 체육관 앞', type:'event', title:'★ 게보린+카페인 중복 핵심',
+    text:'체육 시간에 무리했는지 머리가 지끈거린다. 가방에 지난번 약국에서 사둔 게보린이 있다. 먹기 전에 오늘 뭘 마셨는지 한번 떠올려봤다.',
     choices:[
-      {type:'good', text:'"일단 집에 가서 쉬자."', delta:{건강:-3,판단력:5}, result:'두통이 바로 사라지진 않았다. 그래도 성분을 모른 채 더하지는 않았다.'},
-      {type:'good', text:'물 한 잔 마시고 잠깐 눕는다.', delta:{건강:2,카페인:2}, result:'완벽하진 않지만 조금 나아졌다.'},
-      {type:'good', text:'보건실에 가서 물어본다.', delta:{지식:8,판단력:8,사회:3}, note:'labelChecked 활성화 — 게보린 카페인무수물 50mg 설명', result:'보건 선생님이 게보린 성분표에서 카페인무수물 50mg을 짚어줬다.'},
-      {type:'bad', text:'게보린을 꺼내 먹는다.', delta:{건강:4,카페인:-12,판단력:-8}, note:'comboMedCaffeine +1 / 카페인 +50mg 누적', result:'통증은 줄었다. 그런데 게보린에도 카페인무수물 50mg이 들어있었다.'},
+      {type:'bad',  text:'💊 게보린을 꺼내 먹는다.', delta:{건강:4,카페인:-12,판단력:-8}, note:'analgesic / comboMedCaffeine / caffeineMg:50 — 카페인 +50mg 누적', result:'통증은 줄었다. 그런데 게보린에도 카페인무수물 50mg이 들어있었다.'},
+      {type:'good', text:'🏠 "일단 집에 가서 쉬자."', delta:{건강:-3,판단력:5}, result:'두통이 바로 사라지진 않았다. 그래도 성분을 모른 채 더하지는 않았다.'},
+      {type:'good', text:'💧 물 한 잔 마시고 잠깐 눕는다.', delta:{건강:2,카페인:2}, result:'완벽하진 않지만 조금 나아졌다.'},
+      {type:'good', text:'🩺 보건실에 가서 물어본다.', delta:{지식:8,판단력:8,사회:3}, note:'healthOffice:"geborin" — 카페인 수치 기반 3단계 분기 상담 진입
+  [0mg]   → "오늘 안 마셨지? 게보린만이면 50mg이라 여유 있어"
+  [1~106mg] → "오늘 이미 Xmg 마셨으니 합산 X+50mg. 오후 더 마실 것 같으면 참아"
+  [107mg+] → "벌써 Xmg. 게보린까지 더하면 초과. 오늘은 안 돼"', result:'성분표를 들고 보건실에 가서 보건샘에게 직접 확인해 보기로 했다.'},
     ]},
 
-  {id:'s9', day:3, loc:'☕ 동네 카페', type:'event', title:'카페 공부 vs 집',
-    text:'서연이 문자를 보냈다. "카페 왔는데 같이 공부할래? 분위기가 집보다 나아."',
+  {id:'s8b', day:3, loc:'🏠 DAY 3 귀가 중', type:'narration', title:'나레이션: 귀가 (카페 연결)',
+    text:'두통이 완전히 가시진 않았지만 조금은 나아졌다. 집으로 향하는 길에 서연에게서 문자가 왔다.', choices:[]},
+
+  {id:'s9', day:3, loc:'☕ DAY 3 동네 카페', type:'event', title:'카페 공부 vs 집',
+    text:'서연이 문자를 보냈다. "카페 왔는데 같이 공부할래? 분위기가 집보다 나아." 카페 안은 따뜻하고 조용하다. 아직 머리가 완전히 맑지는 않다.',
     choices:[
-      {type:'good', text:'"오늘은 집에서 할게."', delta:{지식:4,사회:-3,수면:5}, note:'sleepHours:8', result:'서연과 조금 어색해졌지만 집에서는 일찍 정리할 수 있었다.'},
-      {type:'bad', text:'카페 메뉴에서 마실 것을 직접 고른다.', delta:{지식:6,건강:-4,수면:-4}, note:'openDrink:cafe, sleepHours:6', result:'카페 분위기 덕분에 공부는 잘 됐다. 어떤 메뉴를 골랐는지가 오늘 밤 잠드는 시간을 흔든다.'},
+      {type:'bad',  text:'☕ 카페 메뉴에서 마실 것을 직접 고른다.', delta:{지식:6,건강:-4,수면:-4}, note:'openDrink:"cafe" / sleepHour:25 / sleepHours:6', result:'카페 분위기 덕분에 공부는 잘 됐다. 어떤 메뉴를 골랐는지가 오늘 밤 잠드는 시간을 흔든다.'},
+      {type:'good', text:'🏠 "오늘은 집에서 할게."', delta:{지식:4,사회:-3,수면:5}, note:'caffeineMg:0 / sleepHours:8', result:'서연과 조금 어색해졌지만 집에서는 일찍 정리할 수 있었다.'},
     ]},
 
+  // ── DAY 4 ──
   {id:'s10', day:4, loc:'🏫 DAY 4 등교 중', type:'event', title:'누적 신호 대처',
     text:'아침부터 심장이 빨리 뛰는 것 같다. 손끝도 약간 떨린다. 단순히 피곤한 건지, 지난 며칠의 선택이 신호를 보내는 건지 헷갈린다.',
     choices:[
-      {type:'good', text:'쉬는 시간에 보건실에 간다.', delta:{지식:8,판단력:5,건강:3}, note:'labelChecked 활성화 — 카페인+수면부족 복합 설명', result:'보건 선생님이 카페인 과다와 수면 부족이 같이 오면 두근거림이 커질 수 있다고 설명했다.'},
-      {type:'good', text:'증상을 검색해본다.', delta:{지식:5,판단력:2}, result:'검색 결과가 모두 정확하진 않았다. 그래도 몸의 신호를 그냥 넘기지는 않았다.'},
-      {type:'bad', text:'"그냥 피곤한 거겠지." 무시하고 간다.', delta:{판단력:-5,건강:-5}, result:'몸이 보내는 신호를 넘겼다.'},
-      {type:'bad', text:'"카페인이 더 필요한 건가." 편의점으로 간다.', delta:{판단력:-5}, note:'openDrink 플래그', result:'몸이 힘들 때마다 카페인을 떠올리는 패턴이 강해지고 있다.'},
+      {type:'bad',  text:'😐 "그냥 피곤한 거겠지." 무시하고 간다.', delta:{판단력:-5,건강:-5}, result:'몸이 보내는 신호를 넘겼다. 증상은 사라지지 않고 하루 뒤로 밀렸다.'},
+      {type:'good', text:'🩺 쉬는 시간에 보건실에 간다.', delta:{지식:8,판단력:5,건강:3}, note:'healthOffice:"palpitation" — 카페인+수면부족 복합 설명', result:'두근거림이 단순 피곤인지 확인하려고 보건실로 향했다.'},
+      {type:'bad',  text:'☕ "카페인이 더 필요한 건가." 편의점으로 간다.', delta:{판단력:-5}, note:'openDrink:"cvs"', result:'몸이 힘들 때마다 카페인을 떠올리는 패턴이 강해지고 있다.'},
+      {type:'good', text:'📱 증상을 검색해본다.', delta:{지식:5,판단력:2}, result:'검색 결과가 모두 정확하진 않았다. 그래도 몸의 신호를 그냥 넘기지는 않았다.'},
     ]},
 
-  {id:'s11', day:4, loc:'🩺 보건 수업 (성분표)', type:'event', title:'★ 복약 문해력 핵심 장면',
+  {id:'s11', day:4, loc:'🩺 DAY 4 보건 수업', type:'event', title:'★ 복약 문해력 핵심',
     text:'선생님이 종이를 한 장씩 나눠줬다. "이게 실제 약국에서 파는 감기약이에요. 같이 읽어볼까요?" 성분명, 함량, 복용법, 주의사항이 빼곡하다.',
     choices:[
-      {type:'good', text:'"선생님, 이거 카페인이 들어있는 거 맞아요?" 질문한다.', delta:{지식:15,사회:5,판단력:5}, note:'labelChecked 활성화 — 최고 지식 보상', result:'질문 하나로 교실 전체가 성분표의 카페인 표시를 보게 됐다.'},
-      {type:'good', text:'성분표를 하나씩 짚어가며 읽는다.', delta:{지식:12,판단력:8}, note:'labelChecked 활성화', result:'이후 장면에서 카페인 중복과 복용 주의사항을 더 쉽게 알아차릴 수 있다.'},
-      {type:'good', text:'대충 훑고 모르면 옆 친구에게 물어본다.', delta:{지식:5}, result:'몇 가지는 알았지만 전체 구조는 아직 흐릿하다.'},
-      {type:'bad', text:'졸려서 대충 한다.', delta:{지식:-3,수면:-3}, result:'중요한 문장이 눈앞을 지나갔다.'},
+      {type:'good', text:'📋 성분표를 하나씩 짚어가며 읽는다.', delta:{지식:12,판단력:8}, note:'labelChecked:true', result:'이후 장면에서 카페인 중복을 더 쉽게 알아차릴 수 있다.'},
+      {type:'good', text:'👀 대충 훑고 모르면 옆 친구에게 물어본다.', delta:{지식:5}, result:'몇 가지는 알았지만 전체 구조는 아직 흐릿하다.'},
+      {type:'bad',  text:'😴 졸려서 대충 한다.', delta:{지식:-3,수면:-3}, result:'중요한 문장이 눈앞을 지나갔다.'},
+      {type:'good', text:'✋ "선생님, 이거 카페인이 들어있는 거 맞아요?" 질문한다.', delta:{지식:15,사회:5,판단력:5}, note:'labelChecked:true — 최고 지식 보상', result:'질문 하나로 교실 전체가 성분표의 카페인 표시를 보게 됐다.'},
     ]},
 
-  {id:'s12', day:4, loc:'📚 자습실 (오후 졸음)', type:'event', title:'낮잠 vs 카페인',
-    text:'오후 3시. 교실이 따뜻하고 눈이 스르르 감긴다. 옆자리 민준이 에너지드링크를 꺼낸다.',
+  {id:'s12', day:4, loc:'📚 DAY 4 자습실', type:'event', title:'낮잠 vs 카페인',
+    text:'오후 3시. 교실이 따뜻하고 눈이 스르르 감긴다. 옆자리 민준이 에너지드링크를 꺼낸다. 캔 따는 소리가 크게 났다.',
     choices:[
-      {type:'good', text:'엎드려서 10분만 눈을 감는다.', delta:{건강:5,수면:5,지식:3}, result:'10분 수면이 생각보다 효과가 있었다.'},
-      {type:'good', text:'일어나서 세수하고 물을 마신다.', delta:{건강:3,카페인:3}, result:'눈이 확 뜨이진 않았지만 졸음의 파도를 한 번 넘겼다.'},
-      {type:'bad', text:'"나도 뭐 마실래." 음료를 고른다.', delta:{건강:-3,카페인:-4,수면:-4}, note:'openDrink 플래그', result:'캔 하나가 오후를 밀어줬다. 하지만 오늘 총량은 다시 경고선에 가까워졌다.'},
-      {type:'bad', text:'SNS를 잠깐 보고 다시 공부한다.', delta:{지식:-5,판단력:-3}, result:'시간은 생각보다 많이 사라졌다.'},
+      {type:'bad',  text:'🥤 "나도 뭐 마실래." 음료를 고른다.', delta:{건강:-3,카페인:-4,수면:-4}, note:'openDrink:"cvs"', result:'캔 하나가 오후를 밀어줬다. 하지만 오늘 총량은 다시 경고선에 가까워졌다.'},
+      {type:'good', text:'😴 엎드려서 10분만 눈을 감는다.', delta:{건강:5,수면:5,지식:3}, result:'10분 수면이 생각보다 효과가 있었다.'},
+      {type:'good', text:'🚰 일어나서 세수하고 물을 마신다.', delta:{건강:3,카페인:3}, note:'caffeineMg:0 / noCaffeine', result:'눈이 확 뜨이진 않았지만 졸음의 파도를 한 번 넘겼다.'},
+      {type:'bad',  text:'📱 SNS를 잠깐 보고 다시 공부한다.', delta:{지식:-5,판단력:-3}, result:'활력은 조금 돌아온 듯했지만 시간은 생각보다 많이 사라졌다.'},
     ]},
 
-  {id:'s13', day:5, loc:'📱 DAY 5 교실 (모방)', type:'event', title:'★ 게보린+에너지드링크 모방',
-    text:'하은이 조용히 다가온다. "야, 저번 게시물 기억나? 민준이 그거 따라 하려는 것 같아."',
+  // ── DAY 5 ──
+  {id:'s13', day:5, loc:'📱 DAY 5 교실', type:'event', title:'민준 걱정 — 친구 개입',
+    text:'하은이 조용히 다가온다. "야, 민준이 오늘도 에너지드링크 마시고 밤새려고 한대. 심장 두근거린다는데 괜찮은 거야?" 분위기상 그냥 넘기기 어렵다.',
     choices:[
-      {type:'good', text:'"잠깐, 성분을 확인해보자."', delta:{지식:10,판단력:8}, note:'labelChecked 활성화 — 카페인무수물 50mg 직접 확인', result:'게보린 성분표에서 카페인무수물 50mg을 확인했다.'},
-      {type:'good', text:'결국 하지 않는다.', delta:{판단력:5}, result:'누가 보기엔 아무것도 안 한 것처럼 보인다. 하지만 위험한 조합을 피했다.'},
-      {type:'mid', text:'게보린만 먹는다.', delta:{건강:5,판단력:-3}, note:'analgesicCount +1', result:'에너지드링크는 피했지만 두통의 원인을 해결한 것은 아니다.'},
-      {type:'bad', text:'게보린과 에너지드링크를 같이 먹어본다.', delta:{건강:-20,카페인:-18,판단력:-15}, note:'comboMedCaffeine +1 / caffeineMg +130mg — 최대 위험', result:'즉각적인 각성을 기대했지만 카페인 중복 위험이 커졌다.'},
+      {type:'good', text:'🚩 "두근거리면 그냥 넘기면 안 돼. 카페인 줄이고 오늘은 자야 해."라고 말한다.', delta:{지식:8,판단력:10,사회:5,카페인:5,수면:3}, note:'helpedFriend:true / labelChecked:true', result:'민준에게 카페인을 더 마시는 대신 쉬어야 한다고 말했다.'},
+      {type:'good', text:'🩺 하은과 같이 민준을 보건샘에게 데려가자고 한다.', delta:{판단력:10,사회:8,지식:5}, note:'helpedFriend:true / healthOffice:"friend"', result:'친구의 이상 신호를 혼자 판단하지 않고 보건샘에게 연결하기로 했다.'},
+      {type:'bad',  text:'😐 "그래? 괜찮대?" 하고 관심 없이 넘긴다.', delta:{판단력:-5,사회:-3}, result:'두근거림을 가볍게 넘겼다. 친구가 도움을 요청할 기회를 놓쳤을 수 있다.'},
+      {type:'bad',  text:'🥤 "그럼 나도 하나 마실래." 하며 같이 음료를 고른다.', delta:{건강:-5,카페인:-8,수면:-6,판단력:-8}, note:'openDrink:"cvs"', result:'민준을 말리기는커녕 같은 방향으로 움직였다.'},
     ]},
 
-  {id:'s14', day:5, loc:'🍱 급식실 (공복)', type:'event', title:'★ 공복 진통제 핵심',
+  {id:'s13b', day:5, loc:'🍱 DAY 5 급식실 앞', type:'narration', title:'나레이션: 급식실 연결',
+    text:'민준 걱정을 마음에 담은 채 점심 시간이 됐다. 오늘 아침을 못 먹었는데 머리가 또 지끈거리기 시작했다. 가방 속에는 게보린이 있다.', choices:[]},
+
+  {id:'s14', day:5, loc:'🍱 DAY 5 급식실', type:'event', title:'★ 공복 진통제 복용',
     text:'저번에 게보린 먹고 두통이 가라앉긴 했다. 오늘도 머리가 좀 아프다. 이번엔 밥을 못 먹고 왔는데 먹어도 괜찮을까.',
     choices:[
-      {type:'good', text:'밥 먹고 나서 게보린을 먹는다.', delta:{건강:8,판단력:3}, result:'같은 약도 상황에 따라 위험이 달라진다.'},
-      {type:'good', text:'보건실에 가서 물어본다.', delta:{지식:8,판단력:5,건강:2}, note:'labelChecked 활성화 — 공복 복용 위장 자극 설명', result:'보건 선생님이 공복 복용 시 위장 자극을 설명해줬다.'},
-      {type:'good', text:'그냥 참는다.', delta:{건강:-5,판단력:5}, result:'두통은 남았다. 그래도 약을 반복해서 찾는 습관은 조금 늦췄다.'},
-      {type:'bad', text:'공복에 게보린을 먹는다.', delta:{건강:-3,판단력:-8}, note:'fastingMed +1 — 위장 자극 위험 기록', result:'두통은 조금 줄었지만 속이 쓰리기 시작했다.'},
+      {type:'bad',  text:'💊 공복에 게보린을 먹는다.', delta:{건강:-3,판단력:-8}, note:'analgesic / fastingMed:true — 위장 자극 기록', result:'두통은 조금 줄었지만 속이 쓰리기 시작했다.'},
+      {type:'good', text:'🍚 밥 먹고 나서 게보린을 먹는다.', delta:{건강:8,판단력:3}, note:'analgesic:true', result:'같은 약도 상황에 따라 위험이 달라진다.'},
+      {type:'good', text:'🏥 보건실에 가서 물어본다.', delta:{지식:8,판단력:5,건강:2}, note:'healthOffice:"fasting" — 공복 복용 위장 자극 설명', result:'공복에 약을 먹어도 되는지 보건샘에게 직접 물어보기로 했다.'},
+      {type:'good', text:'😐 그냥 참는다.', delta:{건강:-5,판단력:5}, result:'두통은 남았다. 그래도 약을 반복해서 찾는 습관은 조금 늦췄다.'},
     ]},
 
-  {id:'s15', day:5, loc:'🌙 DAY 5 집 (SNS)', type:'event', title:'SNS 자극 vs 수면',
+  {id:'s15', day:5, loc:'🌙 DAY 5 집', type:'event', title:'SNS 자극 vs 수면',
     text:'시험이 일주일 남았다. SNS에 친구들이 "지금도 공부 중"이라고 올리고 있다. 나는 이제 자려던 참이었다.',
     choices:[
-      {type:'good', text:'"오늘 분량은 했으니까" 바로 잔다.', delta:{건강:8,수면:10,판단력:5}, result:'다른 사람의 인증보다 오늘 한 분량을 믿기로 했다.'},
-      {type:'mid', text:'1시간 더 공부하고 잔다.', delta:{지식:5,건강:-5,수면:-5}, result:'완벽하지는 않다. 그래도 밤샘보다는 덜 무너졌다.'},
-      {type:'bad', text:'SNS에 자극받아 밤새 공부한다.', delta:{지식:15,건강:-15,수면:-15,판단력:-8}, result:'지식은 쌓였지만 몸은 버티는 쪽으로만 밀렸다.'},
-      {type:'bad', text:'카페인 음료 고르고 버틴다.', delta:{지식:10,건강:-12,수면:-10,카페인:-8}, note:'openDrink:cafe', result:'공부 시간은 늘었다. 대신 몸이 쉬는 시간은 줄었다.'},
+      {type:'bad',  text:'📱 SNS에 자극받아 밤새 공부한다.', delta:{지식:15,건강:-15,수면:-15,판단력:-8}, note:'sleepHour:26 / sleepHours:4', result:'지식은 쌓였지만 몸은 버티는 쪽으로만 밀렸다.'},
+      {type:'mid',  text:'📖 1시간 더 공부하고 잔다.', delta:{지식:5,건강:-5,수면:-5}, note:'sleepHour:24 / sleepHours:6.5', result:'완벽하지는 않다. 그래도 밤샘보다는 덜 무너졌다.'},
+      {type:'good', text:'🛌 "오늘 분량은 했으니까" 바로 잔다.', delta:{건강:8,수면:10,판단력:5}, note:'sleepHour:23 / sleepHours:8', result:'다른 사람의 인증보다 오늘 한 분량을 믿기로 했다.'},
+      {type:'bad',  text:'☕ 카페인 음료를 고르고 버틴다.', delta:{지식:10,건강:-12,수면:-10,카페인:-8}, note:'openDrink:"cafe" / sleepHour:26', result:'공부 시간은 늘었다. 대신 몸이 쉬는 시간은 줄었다.'},
     ]},
 
+  // ── DAY 6 ──
   {id:'s16', day:6, loc:'🩺 DAY 6 보건 수업', type:'event', title:'처방전 케이스 토론',
     text:'선생님이 처방전 한 장을 보여줬다. "이 학생이 어젯밤 에너지드링크 두 캔, 게보린 한 알, 감기약 한 봉지를 같이 먹었어요. 뭐가 문제일까요?"',
     choices:[
-      {type:'good', text:'"카페인 중복이요! 게보린에도 카페인이 있어요."', delta:{지식:15,판단력:10}, note:'labelChecked — 자신의 선택과 연결 가능', result:'자기 선택과 비슷한 상황을 성분으로 설명할 수 있게 됐다.'},
-      {type:'good', text:'"저도 비슷하게 한 적 있는 것 같아요..."', delta:{지식:12,판단력:8,사회:5}, result:'교실이 잠깐 조용해졌다. 경험을 말하는 것은 다음 선택을 바꾸는 시작이다.'},
-      {type:'good', text:'"에너지드링크랑 같이 마시면 안 되는 거 아닌가요?"', delta:{지식:8,판단력:3}, result:'방향은 맞았다. 어떤 성분이 겹치는지까지 확인하면 더 분명해진다.'},
-      {type:'bad', text:'아무 말도 못 하고 설명만 듣는다.', delta:{지식:3,사회:-2}, result:'설명은 들었지만 내 행동과 연결되지는 않았다.'},
+      {type:'good', text:'💊 "카페인 중복이요! 게보린에도 카페인이 있어요."', delta:{지식:15,판단력:10}, note:'labelChecked:true — 자신의 선택과 연결 가능', result:'자기 선택과 비슷한 상황을 성분으로 설명할 수 있게 됐다.'},
+      {type:'good', text:'🗣️ "저도 비슷하게 한 적 있는 것 같아요..."', delta:{지식:12,판단력:8,사회:5}, result:'교실이 잠깐 조용해졌다.'},
+      {type:'good', text:'❓ "에너지드링크랑 같이 마시면 안 되는 거 아닌가요?"', delta:{지식:8,판단력:3}, result:'방향은 맞았다. 어떤 성분이 겹치는지까지 확인하면 더 분명해진다.'},
+      {type:'bad',  text:'😶 아무 말도 못 하고 설명만 듣는다.', delta:{지식:3,사회:-2}, result:'설명은 들었지만 내 행동과 연결되지는 않았다.'},
     ]},
 
-  {id:'s17', day:7, loc:'📊 DAY 7 거울 앞', type:'event', title:'1주차 자기 점검',
+  // ── DAY 7 ──
+  {id:'s17', day:7, loc:'📊 DAY 7 집 거울 앞', type:'event', title:'1주차 자기 점검',
     text:'7일이 지났다. 거울을 봤다. 눈 밑이 칙칙하고, 아침부터 어깨가 무겁다. 지난 일주일의 선택이 몸에 남아있다.',
     choices:[
-      {type:'good', text:'일지를 써서 뭐가 문제였는지 찾아본다.', delta:{판단력:10,지식:5}, note:'showReport:7 → 1주차 리포트 표시', result:'무엇이 무너졌는지 적어보자 패턴이 보였다. 문제를 찾는 것 자체가 회복의 시작이다.'},
-      {type:'good', text:'카페인을 줄이고 수면을 늘리기로 결심한다.', delta:{판단력:8,카페인:5,수면:5}, note:'recoveryPlan 활성화 → DAY 8+ 회복 보너스', result:'2주차에는 카페인과 수면 선택에서 회복 보너스가 붙을 준비가 됐다.'},
-      {type:'bad', text:'"2주차엔 더 열심히 해야지" 다짐만 한다.', delta:{}, result:'기분은 잠깐 올라갔다. 하지만 계획 없는 다짐은 내일의 행동을 바꾸지 못했다.'},
-      {type:'bad', text:'"이 정도면 괜찮은 거 아냐?" 무시한다.', delta:{건강:-5,판단력:-4}, result:'몸의 신호를 넘기면 신호는 사라지는 대신 더 크게 돌아올 수 있다.'},
+      {type:'good', text:'📓 일지를 써서 뭐가 문제였는지 찾아본다.', delta:{판단력:10,지식:5}, note:'showReport:7 → 1주차 리포트 표시', result:'무엇이 무너졌는지 적어보자 패턴이 보였다.'},
+      {type:'good', text:'☕ 카페인을 줄이고 수면을 늘리기로 결심한다.', delta:{판단력:8,카페인:5,수면:5}, note:'recoveryPlan 활성화 → DAY 8+ 회복 보너스', result:'2주차에는 카페인과 수면 선택에서 회복 보너스가 붙을 준비가 됐다.'},
+      {type:'bad',  text:'💪 "2주차엔 더 열심히 해야지" 다짐만 한다.', delta:{}, result:'기분은 잠깐 올라갔다. 하지만 계획 없는 다짐은 내일의 행동을 바꾸지 못했다.'},
+      {type:'bad',  text:'😐 "이 정도면 괜찮은 거 아냐?" 무시한다.', delta:{건강:-5,판단력:-4}, result:'몸의 신호를 넘기면 신호는 사라지는 대신 더 크게 돌아올 수 있다.'},
     ]},
 
+  // ── DAY 8 ──
   {id:'s18', day:8, loc:'📚 DAY 8 독서실', type:'event', title:'시험기간 — 민준 제안',
     text:'민준이 독서실 책상 위에 에너지드링크 두 캔을 올려놨다. "야, 이번 주 내내 밤새야 해. 하나 가져가." 오늘부터 시험 3일 전이다.',
     choices:[
-      {type:'good', text:'"너도 많이 마시지 마. 시험 끝나고 쓰러지면 어떡해."', delta:{사회:5,판단력:5}, note:'helpedFriend +1 / minjunWarned 활성화', result:'민준이 웃으며 넘겼지만 손은 캔에서 잠깐 멈췄다.'},
-      {type:'good', text:'"뭐가 들어있어?" 성분 확인 후 결정한다.', delta:{지식:5,판단력:5}, note:'labelChecked 활성화', result:'캔 옆면의 카페인 함량이 보였다.'},
-      {type:'good', text:'"나는 이번엔 됐어."', delta:{사회:-3,판단력:8,카페인:5}, result:'민준은 살짝 서운해했다. 그래도 DAY 10 컨디션은 덜 흔들릴 것이다.'},
-      {type:'bad', text:'받아서 딴다. 어떤 음료인지 메뉴에서 확인한다.', delta:{지식:8,건강:-8,카페인:-6,수면:-8}, note:'openDrink 플래그', result:'책상 앞 집중은 올라갔다. 하지만 DAY 10 컨디션은 이미 조금 깎였다.'},
+      {type:'good', text:'🗣️ "너도 많이 마시지 마. 시험 끝나고 쓰러지면 어떡해."', delta:{사회:5,판단력:5}, note:'helpedFriend:true / minjunWarned', result:'민준이 웃으며 넘겼지만 손은 캔에서 잠깐 멈췄다.'},
+      {type:'good', text:'🔍 "뭐가 들어있어?" 성분 확인 후 결정한다.', delta:{지식:5,판단력:5}, note:'labelChecked:true', result:'캔 옆면의 카페인 함량이 보였다.'},
+      {type:'good', text:'🙅 "나는 이번엔 됐어."', delta:{사회:-3,판단력:8,카페인:5}, note:'caffeineMg:0 / noCaffeine', result:'민준은 살짝 서운해했다. 그래도 DAY 10 컨디션은 덜 흔들릴 것이다.'},
+      {type:'bad',  text:'🥤 받아서 딴다. 어떤 음료인지 메뉴에서 확인한다.', delta:{지식:8,건강:-8,카페인:-6,수면:-8}, note:'openDrink:"cvs" / sleepHours:6', result:'책상 앞 집중은 올라갔다. 하지만 DAY 10 컨디션은 이미 조금 깎였다.'},
     ]},
 
+  // ── DAY 9 ──
   {id:'s19', day:9, loc:'😣 DAY 9 독서실 (밤)', type:'event', title:'★ 지식 vs 행동 괴리',
     text:'밤 11시. 3시간째 책을 보고 있는데 머리가 지끈거린다. 손에는 게보린, 옆에는 에너지드링크 반 캔이 남아있다. 아는 것과 행동이 꼭 같지는 않다.',
     choices:[
-      {type:'good', text:'"그냥 자자. 내일 일찍 하자."', delta:{건강:10,수면:10,판단력:8}, note:'sleepHours:8', result:'불안했지만 책을 덮었다. DAY 10 컨디션은 이 선택을 기억할 것이다.'},
-      {type:'good', text:'게보린만 먹고 음료는 치운다.', delta:{건강:8,판단력:3}, result:'두통은 가라앉았다. 적어도 카페인 중복은 피했다.'},
-      {type:'bad', text:'게보린 먹고 에너지드링크도 마저 마신다.', delta:{건강:-15,카페인:-15,판단력:-12,수면:-10}, note:'comboMedCaffeine +1 / caffeineMg +90mg', result:'머리는 잠깐 맑아졌다. 하지만 카페인 중복과 수면 지연이 DAY 11 몸 상태로 돌아올 것이다.'},
-      {type:'bad', text:'음료 메뉴에서 하나를 고르고 진통제는 먹지 않는다.', delta:{건강:-5,카페인:-4,수면:-5}, note:'openDrink 플래그', result:'활력은 조금 올랐지만 두통의 원인은 그대로 남았다.'},
+      {type:'good', text:'🛌 "그냥 자자. 내일 일찍 하자."', delta:{건강:10,수면:10,판단력:8}, note:'sleepHours:8', result:'불안했지만 책을 덮었다. DAY 10 컨디션은 이 선택을 기억할 것이다.'},
+      {type:'good', text:'💊 게보린만 먹고 음료는 치운다.', delta:{건강:8,판단력:3}, note:'analgesic:true — 카페인 중복 방지', result:'두통은 가라앉았다. 적어도 카페인 중복은 피했다.'},
+      {type:'bad',  text:'💊+🥤 게보린 먹고 에너지드링크도 마저 마신다.', delta:{건강:-15,카페인:-15,판단력:-12,수면:-10}, note:'comboMedCaffeine / caffeineMg:90', result:'머리는 잠깐 맑아졌다. 하지만 카페인 중복과 수면 지연이 DAY 11로 돌아올 것이다.'},
+      {type:'bad',  text:'🥤 음료 메뉴에서 하나를 고르고 진통제는 먹지 않는다.', delta:{건강:-5,카페인:-4,수면:-5}, note:'openDrink:"cvs"', result:'활력은 조금 올랐지만 두통의 원인은 그대로 남았다.'},
     ]},
 
+  // ── DAY 10 ──
   {id:'s20', day:10, loc:'🌙 DAY 10 시험 전날 밤', type:'event', title:'시험 전날 — 최후 선택',
     text:'내일이 시험이다. 지금 자면 8시간을 잘 수 있다. 하지만 아직 한 단원이 남았다. 카페인을 마시면 3시간을 더 할 수 있을 것 같다.',
     choices:[
-      {type:'good', text:'11시에 바로 잔다.', delta:{건강:12,수면:15,판단력:8}, result:'한 단원은 남았다. 하지만 아는 것을 제대로 꺼낼 힘을 남겼다.'},
-      {type:'mid', text:'한 단원만 보고 자정에 잔다.', delta:{지식:5,건강:3,수면:3,판단력:3}, result:'완벽하지 않지만 공부와 수면 사이에서 무너지지 않는 선을 골랐다.'},
-      {type:'bad', text:'편의점 음료 고르고 새벽 2시까지 버틴다.', delta:{지식:10,건강:-12,수면:-12,카페인:-8}, note:'openDrink:cvs, sleepHours:5', result:'조금 더 봤다. 대신 몸은 시험 전날 밤을 버티기로 보냈다.'},
-      {type:'bad', text:'카페인 음료 고르고 새벽 3시까지 공부한다.', delta:{지식:15,건강:-20,수면:-18,카페인:-10}, note:'openDrink:cafe, sleepHours:4', result:'공부량은 늘었다. 하지만 실전에서 기억을 꺼낼 컨디션은 크게 낮아졌다.'},
+      {type:'good', text:'🛌 11시에 바로 잔다.', delta:{건강:12,수면:15,판단력:8}, note:'sleepHour:23 / sleepHours:8', result:'한 단원은 남았다. 하지만 아는 것을 제대로 꺼낼 힘을 남겼다.'},
+      {type:'mid',  text:'📖 한 단원만 보고 자정에 잔다.', delta:{지식:5,건강:3,수면:3,판단력:3}, note:'sleepHour:24 / sleepHours:7', result:'완벽하지 않지만 공부와 수면 사이에서 무너지지 않는 선을 골랐다.'},
+      {type:'bad',  text:'🥤 편의점 음료를 고르고 새벽 2시까지 버틴다.', delta:{지식:10,건강:-12,수면:-12,카페인:-8}, note:'openDrink:"cvs" / sleepHour:26 / sleepHours:5', result:'조금 더 봤다. 대신 몸은 시험 전날 밤을 버티기로 보냈다.'},
+      {type:'bad',  text:'☕ 카페인 음료를 고르고 새벽 3시까지 공부한다.', delta:{지식:15,건강:-20,수면:-18,카페인:-10}, note:'openDrink:"cafe" / sleepHour:27 / sleepHours:4', result:'공부량은 늘었다. 하지만 실전에서 기억을 꺼낼 컨디션은 크게 낮아졌다.'},
     ]},
 
+  // ── DAY 11 ──
   {id:'s21', day:11, loc:'📝 DAY 11 시험장', type:'narration', title:'나레이션: 시험 시작',
     text:'시험지를 받아들었다. 어젯밤의 선택이 손끝에 남아있다. 공부한 내용이 떠오를 듯 사라지기도 하고, 어떤 문제는 생각보다 선명하게 보이기도 한다.', choices:[]},
 
+  // ── DAY 12 ──
   {id:'s22', day:12, loc:'🏫 DAY 12 쉬는 시간', type:'event', title:'민준의 보건실 방문 소식',
     text:'서연이 조용히 말했다. "민준이 오늘 보건실 갔다 왔대. 시험 기간에 에너지드링크를 너무 많이 마셔서 심장이 두근거렸다고."',
     choices:[
-      {type:'good', text:'"같이 보건실 가볼까, 선생님한테 물어보자."', delta:{판단력:10,사회:8}, note:'helpedFriend +1', result:'민준이 멋쩍게 웃었다. 혼자 버티는 것보다 같이 확인하는 쪽이 덜 위험하다.'},
-      {type:'good', text:'"나도 그런 증상 있었는데 무시했어."', delta:{판단력:5,지식:3}, result:'남의 일이 아니라 내 몸의 신호였다는 걸 뒤늦게 연결했다.'},
-      {type:'bad', text:'"그래? 괜찮대?" 관심 없이 넘긴다.', delta:{}, result:'말은 했지만 행동은 바뀌지 않았다.'},
+      {type:'good', text:'🩺 "같이 보건실 가볼까, 보건샘한테 물어보자."', delta:{판단력:10,사회:8}, note:'helpedFriend:true', result:'민준이 멋쩍게 웃었다. 혼자 버티는 것보다 같이 확인하는 쪽이 덜 위험하다.'},
+      {type:'good', text:'💬 "나도 그런 증상 있었는데 무시했어."', delta:{판단력:5,지식:3}, result:'남의 일이 아니라 내 몸의 신호였다는 걸 뒤늦게 연결했다.'},
+      {type:'bad',  text:'😐 "그래? 괜찮대?" 관심 없이 넘긴다.', delta:{}, result:'말은 했지만 행동은 바뀌지 않았다.'},
     ]},
 
+  // ── DAY 13 ──
   {id:'s23', day:13, loc:'🌙 DAY 13 독서실 복도', type:'event', title:'마지막 시험 전날 — 내성',
     text:'마지막 시험 전날. 민준이 말했다. "야, 오늘만 버티면 돼. 한 캔만 더 마시자." 솔직히 요즘 마셔도 예전만큼 효과가 없는 것 같기도 하다.',
     choices:[
-      {type:'good', text:'"나는 오늘 그냥 잘게. 이미 할 만큼 했어."', delta:{건강:10,수면:10,판단력:8}, result:'완벽하지 않아도 멈출 수 있었다.'},
-      {type:'good', text:'"요즘 마셔도 별로 안 들지 않아? 내성 생긴 것 같아."', delta:{판단력:10,지식:8,사회:5}, note:'helpedFriend +1 — 내성 개념 도입, 민준 캔 내려놓음', result:'민준이 캔을 내려놨다. 같은 효과를 위해 더 많이 찾는 순간, 이미 신호가 시작된 것이다.'},
-      {type:'mid', text:'"조금만 마실게." 덜 부담스러운 걸 고른다.', delta:{건강:-3,카페인:-2,수면:-3,판단력:1}, result:'전부는 아니지만 카페인은 들어왔다. 반만 마셔도 총량에는 더해진다.'},
-      {type:'bad', text:'"그래, 마지막이잖아." 음료를 고른다.', delta:{건강:-8,카페인:-6,수면:-8}, note:'openDrink 플래그', result:'마지막이라는 말은 편했다. 하지만 몸은 마지막인지 아닌지 구분하지 않는다.'},
+      {type:'good', text:'🛌 "나는 오늘 그냥 잘게. 이미 할 만큼 했어."', delta:{건강:10,수면:10,판단력:8}, result:'완벽하지 않아도 멈출 수 있었다.'},
+      {type:'good', text:'🤔 "요즘 마셔도 별로 안 들지 않아? 내성 생긴 것 같아."', delta:{판단력:10,지식:8,사회:5}, note:'helpedFriend:true — 내성 개념 도입', result:'민준이 캔을 내려놨다. 같은 효과를 위해 더 많이 찾는 순간, 이미 신호가 시작된 것이다.'},
+      {type:'mid',  text:'🥤 "조금만 마실게." 덜 부담스러운 걸 고른다.', delta:{건강:-3,카페인:-2,수면:-3,판단력:1}, note:'openDrink:"cvs" / sleepHours:7', result:'전부는 아니지만 카페인은 들어왔다. 반만 마셔도 총량에는 더해진다.'},
+      {type:'bad',  text:'🥤 "그래, 마지막이잖아." 음료를 고른다.', delta:{건강:-8,카페인:-6,수면:-8}, note:'openDrink:"cvs" / sleepHours:6', result:'마지막이라는 말은 편했다. 하지만 몸은 마지막인지 아닌지 구분하지 않는다.'},
     ]},
 
-  {id:'s24', day:14, loc:'📝 DAY 14 최종 시험', type:'narration', title:'나레이션: 14일간의 결과',
+  // ── DAY 14 & 엔딩 ──
+  {id:'s24', day:14, loc:'📝 DAY 14 최종 시험 당일', type:'narration', title:'나레이션: 14일간의 결과',
     text:'14일이 여기까지 왔다. 시험지가 뒤집어진 채 책상 위에 있다. 지금 이 순간의 컨디션은 지난 2주 동안의 모든 선택이 만든 것이다.', choices:[]},
 
   {id:'s25', day:'ending', loc:'', type:'ending', title:'엔딩 — 레이더 차트',
-    text:'6가지 누적 능력치(건강·지식·활력·수면·카페인·판단력)로 레이더 차트가 생성되고, 누적 플래그 기반 맞춤 피드백이 표시된다.', choices:[]},
+    text:'6가지 누적 능력치(건강·지식·활력·수면·카페인관리·판단력)로 레이더 차트 생성. 누적 플래그(labelChecked·comboMedCaffeine·helpedFriend 등) 기반 맞춤 피드백 표시.', choices:[]},
 ];
 
-// ══════════════════════════════════════════
-// 1. 상태
-// ══════════════════════════════════════════
+
+
 let SCENES = JSON.parse(JSON.stringify(DEFAULT_SCENES));
 let modified = new Set();
 let currentIdx = 0;
