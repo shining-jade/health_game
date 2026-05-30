@@ -2795,8 +2795,10 @@ function buildFourteenDayScenarios(){
         {text:'🩺 보건실에 가서 물어본다.', good:true, labelChecked:true, healthOffice:'geborin', delta:{knowledge:8,judgment:8,social:3},
           result:{title:'보건실로 이동', text:'성분표를 들고 보건실에 가서 보건샘에게 직접 확인해 보기로 했다.'}},
       ]},
+    {type:'narration', day:3, location:'🏠 DAY 3 귀가 중', scene:'scene_commute', speaker:'나레이터',
+      text:'두통이 완전히 가시진 않았지만 조금은 나아졌다. 집으로 향하는 길에 서연에게서 문자가 왔다.'},
     {type:'event', day:3, location:'☕ DAY 3 동네 카페', scene:'scene_cafe', speaker:'서연',
-      text:'서연이 문자를 보냈다. "카페 왔는데 같이 공부할래? 분위기가 집보다 나아." 카페 안은 따뜻하고 조용하다.',
+      text:'서연이 문자를 보냈다. "카페 왔는데 같이 공부할래? 분위기가 집보다 나아." 카페 안은 따뜻하고 조용하다. 아직 머리가 완전히 맑지는 않다.',
       choices:[
         {text:'☕ 카페 메뉴에서 마실 것을 직접 고른다.', good:false, openDrink:'cafe', sleepHour:25, sleepHours:6, delta:{knowledge:6,health:-4,sleep:-4},
           result:{title:'카페 공부', text:'카페 분위기 덕분에 공부는 잘 됐다. 어떤 메뉴를 골랐는지가 오늘 밤 잠드는 시간을 흔든다.'}},
@@ -2852,6 +2854,8 @@ function buildFourteenDayScenarios(){
         {text:'🥤 "그럼 나도 하나 마실래." 하며 같이 음료를 고른다.', good:false, openDrink:'cvs', delta:{health:-5,caffeine:-8,sleep:-6,judgment:-8},
           result:{title:'같이 흔들림', text:'민준을 말리기는커녕 같은 방향으로 움직였다. 오늘 밤 수면과 카페인 총량이 더 흔들릴 수 있다.'}},
       ]},
+    {type:'narration', day:5, location:'🍱 DAY 5 급식실 앞', scene:'scene_cafeteria', speaker:'나레이터',
+      text:'민준 걱정을 마음에 담은 채 점심 시간이 됐다. 오늘 아침을 못 먹었는데 머리가 또 지끈거리기 시작했다. 가방 속에는 게보린이 있다.'},
     {type:'event', day:5, location:'🍱 DAY 5 급식실', scene:'scene_cafeteria', speaker:'{name}',
       text:'저번에 게보린 먹고 두통이 가라앉긴 했다. 오늘도 머리가 좀 아프다. 이번엔 밥을 못 먹고 왔는데 먹어도 괜찮을까.',
       choices:[
