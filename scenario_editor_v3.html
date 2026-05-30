@@ -502,10 +502,7 @@ const DEFAULT_SCENES = [
       {type:'bad',  text:'💊 게보린을 꺼내 먹는다.', delta:{건강:4,카페인:-12,판단력:-8}, note:'analgesic / comboMedCaffeine / caffeineMg:50 — 카페인 +50mg 누적', result:'통증은 줄었다. 그런데 게보린에도 카페인무수물 50mg이 들어있었다.'},
       {type:'good', text:'🏠 "일단 집에 가서 쉬자."', delta:{건강:-3,판단력:5}, result:'두통이 바로 사라지진 않았다. 그래도 성분을 모른 채 더하지는 않았다.'},
       {type:'good', text:'💧 물 한 잔 마시고 잠깐 눕는다.', delta:{건강:2,카페인:2}, result:'완벽하진 않지만 조금 나아졌다.'},
-      {type:'good', text:'🩺 보건실에 가서 물어본다.', delta:{지식:8,판단력:8,사회:3}, note:'healthOffice:"geborin" — 카페인 수치 기반 3단계 분기 상담 진입
-  [0mg]   → "오늘 안 마셨지? 게보린만이면 50mg이라 여유 있어"
-  [1~106mg] → "오늘 이미 Xmg 마셨으니 합산 X+50mg. 오후 더 마실 것 같으면 참아"
-  [107mg+] → "벌써 Xmg. 게보린까지 더하면 초과. 오늘은 안 돼"', result:'성분표를 들고 보건실에 가서 보건샘에게 직접 확인해 보기로 했다.'},
+      {type:'good', text:'🩺 보건실에 가서 물어본다.', delta:{지식:8,판단력:8,사회:3}, note:'healthOffice:geborin — 카페인 분기: [0mg] 50mg 여유있음 / [1~106mg] 합산 주의 / [107mg+] 복용불가', result:'성분표를 들고 보건실에 가서 보건샘에게 직접 확인해 보기로 했다.'},
     ]},
 
   {id:'s8b', day:3, loc:'🏠 DAY 3 귀가 중', type:'narration', title:'나레이션: 귀가 (카페 연결)',
