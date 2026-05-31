@@ -20,6 +20,7 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 html,body{height:100%;overflow:hidden;}
 body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR','Malgun Gothic',system-ui,sans-serif;}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
 
 /* ── 스크롤 가능 래퍼 ── */
 #app{width:100%;height:100vh;overflow-y:auto;overflow-x:hidden;position:relative;}
@@ -70,6 +71,11 @@ select option{background:var(--panel);}
 .mode-card .mc-icon{font-size:2.8rem;margin-bottom:14px;}
 .mode-card h2{font-family:'Jua',sans-serif;font-size:1.25rem;margin-bottom:8px;}
 .mode-card p{font-size:.8rem;color:var(--subtext);line-height:1.7;margin-bottom:12px;}
+.training-footer{font-size:.78rem;color:var(--subtext2);line-height:1.7;text-align:center;font-weight:800;}
+.training-logo-chip{display:inline-flex;align-items:center;justify-content:center;margin-top:4px;
+  padding:4px 10px;background:rgba(255,255,255,.82);border:1px solid rgba(240,201,171,.72);
+  border-radius:10px;box-shadow:0 6px 16px rgba(109,72,45,.08);}
+.training-logo-chip img{display:block;width:min(116px,36vw);height:auto;}
 
 /* ════════════════════
    NAME INPUT
@@ -155,6 +161,22 @@ select option{background:var(--panel);}
 .result-box.show{display:block;}
 .result-box .rt{font-family:'Jua',sans-serif;color:var(--accent2);margin-bottom:5px;}
 #r-text{white-space:pre-line;}
+.result-section{margin-top:12px;white-space:normal;}
+.result-section:first-child{margin-top:0;}
+.result-speaker{font-family:'Jua',sans-serif;font-size:.88rem;margin-bottom:4px;}
+.result-body{white-space:pre-line;color:#38291f;font-weight:800;line-height:1.75;}
+.result-section.info .result-speaker{color:#9a5a22;}
+.result-section.info .result-body{color:#4f3b2f;}
+.result-section.outcome .result-speaker{color:#e76642;}
+.result-section.outcome .result-body{color:#3f2d24;}
+.result-section.inner .result-speaker{color:#6656b8;}
+.result-section.inner .result-body{color:#4a3d86;font-style:italic;}
+.result-section.self .result-speaker{color:#16856c;}
+.result-section.self .result-body{color:#0f5f50;}
+.result-section.npc .result-speaker{color:#d76f52;}
+.result-section.npc .result-body{color:#5f382c;}
+.result-section.narrator .result-speaker{color:#667085;}
+.result-section.narrator .result-body{color:#4b5563;}
 .next-btn{margin-top:14px;display:none;}
 .next-btn.show{display:inline-flex;}
 
@@ -303,6 +325,25 @@ select option{background:var(--panel);}
   .t-body{flex-direction:column;}
   .t-cases{width:100%;min-width:unset;max-height:160px;}
   .qr-row{flex-direction:column;}
+}
+
+@media(max-width:560px){
+  #screen-title{padding:28px 14px;}
+  #screen-title > div{padding:28px 12px !important;justify-content:flex-start !important;}
+  .title-pill{font-size:3.5rem;margin-bottom:8px;}
+  .title-logo{font-size:clamp(2.25rem,12vw,3.1rem);margin-bottom:5px;}
+  .title-byline{font-size:.78rem;letter-spacing:.2px;margin-bottom:24px;}
+  .mode-grid{width:min(86vw,340px);gap:10px;margin-bottom:18px;flex-direction:column;align-items:stretch;}
+  .mode-card{width:100%;min-height:0;padding:18px 18px;border-radius:18px;
+    display:grid;grid-template-columns:42px 1fr;column-gap:14px;align-items:center;}
+  .mode-card:hover{transform:translateY(-3px);}
+  .mode-card .mc-icon{grid-row:1 / span 3;font-size:2.05rem;margin:0;align-self:start;line-height:1;}
+  .mode-card h2{font-size:1.12rem;margin:0 0 4px;}
+  .mode-card p{font-size:.76rem;line-height:1.52;margin:0 0 8px;}
+  .mode-card .tag{justify-self:start;font-size:.66rem;padding:3px 9px;}
+  .training-footer{font-size:.7rem;line-height:1.5;margin-top:2px;}
+  .training-logo-chip{padding:3px 8px;border-radius:9px;}
+  .training-logo-chip img{width:min(104px,34vw);}
 }
 
 /* ════════════════════
@@ -585,7 +626,7 @@ body{background:
 .clue-modal.show{display:flex;}
 .clue-card{
   width:min(390px,92vw);
-  max-height:88dvh;
+  max-height:80dvh;
   overflow-y:auto;
   border:3px solid #ff9f80;
   border-radius:22px;
@@ -727,6 +768,337 @@ body{background:
   font-weight:800;
   line-height:1.55;
 }
+.clue-tabs{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin:2px 0 12px;
+  padding:5px;
+  border-radius:16px;
+  background:#fff4e7;
+  border:1px solid #f1d3b8;
+}
+.clue-tab-btn{
+  border:0;
+  border-radius:12px;
+  padding:9px 8px;
+  background:transparent;
+  color:#7e6655;
+  font-weight:900;
+  cursor:pointer;
+}
+.clue-tab-btn.active{
+  background:#ff9f80;
+  color:#fff;
+  box-shadow:0 8px 18px rgba(255,127,102,.22);
+}
+.clue-caf-bar-wrap{
+  display:grid;
+  gap:6px;
+  margin:0 0 12px;
+  padding:10px 12px;
+  border:1px solid #ebc7a9;
+  border-radius:14px;
+  background:#fffaf2;
+  color:#5d4739;
+  font-size:.82rem;
+  font-weight:900;
+}
+.clue-caf-track{
+  height:10px;
+  border-radius:999px;
+  background:#f0dbc8;
+  overflow:hidden;
+}
+.clue-caf-bar-fg{
+  height:100%;
+  border-radius:999px;
+  background:#5fc89a;
+  transition:width .25s ease;
+}
+.clue-drink-list{
+  display:grid;
+  gap:9px;
+  margin-bottom:14px;
+}
+.cvs-drink-row,
+.cafe-drink-row{
+  width:100%;
+  border:2px solid #f1d3b8;
+  border-radius:16px;
+  background:#fffdf8;
+  text-align:left;
+  cursor:pointer;
+  box-shadow:0 8px 18px rgba(126,102,85,.08);
+  transition:transform .18s ease,border-color .18s ease;
+}
+.cvs-drink-row:hover,
+.cafe-drink-row:hover{
+  transform:translateY(-1px);
+  border-color:#ffb08f;
+}
+.cvs-drink-row{
+  display:grid;
+  grid-template-columns:82px 1fr auto;
+  align-items:center;
+  gap:14px;
+  padding:16px 14px;
+  min-height:96px;
+}
+.cvs-drink-icon,
+.cafe-drink-icon{
+  width:68px;
+  height:68px;
+  display:grid;
+  place-items:center;
+  border-radius:12px;
+  background:#fff7ec;
+  border:1px solid #f2d6b9;
+}
+.cvs-drink-img{
+  width:64px;
+  height:64px;
+  object-fit:contain;
+  display:block;
+  filter:drop-shadow(0 3px 4px rgba(63,45,36,.14));
+}
+.cvs-drink-info strong{
+  display:block;
+  color:#3f2d24;
+  font-size:1.12rem;
+}
+.cvs-drink-info span{
+  display:block;
+  color:#7e6655;
+  margin-top:3px;
+  font-size:.82rem;
+  font-weight:800;
+  line-height:1.35;
+}
+.cvs-caffeine-badge{
+  border-radius:999px;
+  padding:8px 10px;
+  font-size:.74rem;
+  font-weight:900;
+  white-space:nowrap;
+  border:2px solid #f2cfa9;
+  background:#fff7ec;
+  color:#a05a22;
+}
+.badge-zero{color:#26976d;border-color:#a7e3c4;background:#f0fbf5;}
+.badge-low{color:#937117;border-color:#f5dfa5;background:#fff9dc;}
+.badge-mid{color:#a05a22;border-color:#f2cfa9;background:#fff7ec;}
+.badge-high{color:#ef4444;border-color:#fecaca;background:#fff1f1;}
+.drink-svg{
+  width:34px;
+  height:42px;
+  position:relative;
+}
+.drink-svg.can{
+  border:3px solid #b8c1cc;
+  border-radius:13px 13px 10px 10px;
+  background:linear-gradient(90deg,var(--a),var(--b));
+  box-shadow:inset 5px 0 rgba(255,255,255,.22), inset -5px 0 rgba(0,0,0,.10);
+}
+.drink-svg.can::before,
+.drink-svg.can::after{
+  content:"";
+  position:absolute;
+  left:6px;
+  right:6px;
+  height:4px;
+  border-radius:50%;
+  background:rgba(255,255,255,.72);
+}
+.drink-svg.can::before{top:2px;}
+.drink-svg.can::after{bottom:2px;background:rgba(0,0,0,.18);}
+.drink-svg.pack{
+  width:42px;
+  height:42px;
+}
+.drink-svg.pack::before{
+  content:"";
+  position:absolute;
+  left:8px;
+  top:10px;
+  width:28px;
+  height:28px;
+  background:#e7c98d;
+  border:2px solid #c9a66a;
+  clip-path:polygon(12% 30%,50% 0,88% 30%,100% 100%,0 100%);
+}
+.drink-svg.bottle{
+  width:28px;
+  height:44px;
+  border:3px solid #df9f4a;
+  border-radius:10px 10px 14px 14px;
+  background:#ffb451;
+}
+.drink-svg.bottle::before{
+  content:"";
+  position:absolute;
+  left:7px;
+  top:-8px;
+  width:10px;
+  height:10px;
+  border-radius:5px 5px 2px 2px;
+  background:#f4a24a;
+  border:2px solid #df9f4a;
+}
+.drink-svg.drop{
+  width:34px;
+  height:42px;
+  background:#5ec9f5;
+  clip-path:path("M17 0 C3 17 0 28 3 35 C6 42 28 42 31 35 C34 28 31 17 17 0 Z");
+}
+.cafe-drink-row{
+  display:block;
+  padding:0;
+  overflow:hidden;
+  background:#fffef9;
+}
+.cafe-drink-icon{
+  width:66px;
+  height:66px;
+}
+.cafe-menu-label{
+  width:100%;
+  height:auto;
+  display:block;
+}
+.cafe-label-fallback{
+  display:grid;
+  grid-template-columns:96px 1fr;
+  gap:14px;
+  padding:14px;
+}
+.drink-image-menu{
+  position:relative;
+  width:100%;
+  max-width:680px;
+  margin:0 auto 14px;
+}
+.drink-image-menu img{
+  width:100%;
+  height:auto;
+  display:block;
+  border-radius:10px;
+}
+.drink-map-btn{
+  position:absolute;
+  left:5.8%;
+  width:88.4%;
+  border:0;
+  border-radius:18px;
+  background:rgba(255,176,143,0);
+  cursor:pointer;
+}
+.cafe-image-menu .drink-map-btn{
+  left:4.0%;
+  width:92.0%;
+  border-radius:14px;
+}
+.drink-map-btn:hover,
+.drink-map-btn:focus-visible{
+  outline:3px solid rgba(255,159,128,.7);
+  background:rgba(255,159,128,.08);
+}
+.cafe-cup{
+  width:48px;
+  height:52px;
+  border:3px solid #b8cdd0;
+  border-radius:14px 14px 18px 18px;
+  background:linear-gradient(180deg,#e9f9ff,#ffffff);
+  position:relative;
+  overflow:hidden;
+}
+.cafe-cup::before{
+  content:"";
+  position:absolute;
+  left:7px;
+  right:7px;
+  top:6px;
+  height:8px;
+  border-radius:50%;
+  background:var(--drink,#6b3b22);
+}
+.cafe-cup.iced::after{
+  content:"";
+  position:absolute;
+  left:9px;
+  top:20px;
+  width:9px;
+  height:9px;
+  border-radius:4px;
+  background:rgba(255,255,255,.55);
+  box-shadow:13px 5px rgba(255,255,255,.45),22px -2px rgba(255,255,255,.38);
+}
+.cafe-cup.mug{
+  height:42px;
+  border-radius:12px;
+  overflow:visible;
+  background:#f8fbfb;
+}
+.cafe-cup.mug::after{
+  content:"";
+  position:absolute;
+  right:-14px;
+  top:12px;
+  width:17px;
+  height:17px;
+  border:4px solid #b8cdd0;
+  border-left:0;
+  border-radius:0 14px 14px 0;
+}
+.cafe-drink-info strong{
+  display:block;
+  font-size:.95rem;
+  color:#172033;
+}
+.cafe-drink-info small{
+  display:block;
+  color:#667085;
+  margin-top:2px;
+  font-weight:800;
+}
+.cafe-desc{
+  margin:4px 0 8px;
+  color:#344054;
+  font-size:.72rem;
+  font-weight:800;
+  line-height:1.35;
+}
+.cafe-nutrition-table{
+  display:grid;
+  grid-template-columns:repeat(7,minmax(0,1fr));
+  border:1px solid #ead7c7;
+  border-radius:8px;
+  overflow:hidden;
+  font-size:.58rem;
+  font-weight:900;
+}
+.cafe-nutrition-table div{
+  padding:5px 3px;
+  text-align:center;
+  background:#fffaf2;
+  color:#344054;
+  border-right:1px solid #f0dfd2;
+}
+.cafe-nutrition-table div:nth-child(7n){border-right:0;}
+.cafe-nutrition-table .head{
+  background:#8b079f;
+  color:#fff;
+}
+.cafe-nutrition-table .caf-cell{
+  background:#6f057f;
+  color:#fff;
+  font-size:.64rem;
+}
+.cafe-nutrition-table .caf-value{
+  color:#a05a22;
+  font-size:.66rem;
+}
+.cafe-nutrition-table .caf-value.zero{color:#26976d;}
 .clue-close{
   width:100%;
   border:0;
@@ -1179,6 +1551,14 @@ body{background:
   border-color:#ffb86c;
   box-shadow:0 18px 36px rgba(255,184,108,.24);
 }
+.training-footer{
+  color:#7e6655;
+}
+.training-logo-chip{
+  background:#fff;
+  border-color:rgba(255,159,128,.32);
+  box-shadow:0 8px 18px rgba(109,72,45,.12);
+}
 .tag-green{
   background:rgba(95,200,154,.18);
   color:#20845d;
@@ -1572,7 +1952,10 @@ body{background:
         <span class="tag tag-orange">교사 시연 · 학급 투표</span>
       </div>
     </div>
-    <div style="font-size:.72rem;color:var(--subtext2);">전북특별자치도 보건교사 교육용</div>
+    <div class="training-footer">
+      <div>전북특별자치도교육청 마약예방교육 교사연수회</div>
+      <div class="training-logo-chip"><img src="assets/logo_yakyak_junggan_cropped.png" alt="약?약!중간약!"></div>
+    </div>
   </div>
 </div>
 
@@ -1753,7 +2136,7 @@ body{background:
   background:rgba(255,245,232,.78);backdrop-filter:blur(4px);
   display:none;align-items:stretch;justify-content:center;">
   <div id="drink-sheet" style="background:linear-gradient(180deg,#fffaf2 0%,#fff5e8 100%);border-radius:0;
-    width:100%;max-width:480px;height:100dvh;max-height:100dvh;padding:24px 20px 36px;overflow-y:auto;color:#3f2d24;box-shadow:0 -18px 48px rgba(126,102,85,.18);">
+    width:100%;max-width:720px;height:100dvh;max-height:100dvh;padding:28px clamp(20px,5vw,40px) 40px;overflow-y:auto;color:#3f2d24;box-shadow:0 -18px 48px rgba(126,102,85,.18);">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
       <h3 id="drink-title" style="font-family:'Jua',sans-serif;font-size:1.1rem;">음료 선택</h3>
       <button onclick="cancelDrinkModal()"
@@ -1952,6 +2335,7 @@ body{background:
     <h3 id="clue-title">단서</h3>
     <div class="clue-visual" id="clue-visual"></div>
     <div class="clue-facts" id="clue-facts"></div>
+    <div id="clue-drink-ui"></div>
     <button class="clue-close" onclick="closeClue()">확인했어요</button>
   </div>
 </div>
@@ -2020,7 +2404,7 @@ const DB = {
 // 2. 기본 데이터
 // ══════════════════════════════════════
 const DEFAULT_DATA = {
-  meta:{ title:'약, 알고 먹자!', school:'전북특별자치도 보건교사 교육용' },
+  meta:{ title:'약, 알고 먹자!', school:'전북특별자치도교육청 마약예방교육 교사연수회 약?약!중간약!' },
   images:{
     // ── 배경 ──
     scene_classroom: 'assets/backgrounds/scene_classroom.png',
@@ -2099,16 +2483,16 @@ const DEFAULT_DATA = {
       speaker:'{name}',
       text:'밤새 공부 탓에 체육 시간에 너무 졸렸다. 에너지음료를 마셨는데 두통도 생겼다. 가방에는 아까 약국에서 산 게보린이 있다. 먹기 전에 음료 라벨과 약 상자의 성분표를 확인해 보자.',
       clues:[
-        {type:'can', icon:'🥤', label:'음료 라벨', title:'에너지음료 라벨', facts:['제품명: THE KING ENERGY', '표시: 카페인 함유', '카페인 함량: 60mg']},
+        {type:'can', icon:'🥤', label:'음료 라벨', title:'에너지음료 라벨', facts:['제품명: THE KING ENERGY', '표시: 카페인 함유', '카페인 함량: 100mg']},
         {type:'medicine', icon:'💊', label:'약 성분표', title:'게보린 성분표', facts:['유효성분: 아세트아미노펜 300mg', '이소프로필안티피린 150mg', '카페인무수물 50mg']}
       ],
       choices:[
         { text:'📋 라벨과 성분표를 확인하고 게보린을 먹지 않는다. 보건실에 간다.',
           good:true, delta:{knowledge:12,judgment:10,health:3,habit:5},
-          result:{title:'✅ 현명한 판단!', text:'에너지음료(60mg)+게보린(50mg)=카페인 110mg! 청소년 1일 권장량은 체중(kg) × 2.5mg 이하라서, 체중 50kg 기준 125mg에 가까워요. 카페인 과다는 심장 두근거림·불안·불면을 유발해요. 약 성분표 확인 습관이 중요합니다!'}},
+          result:{title:'✅ 현명한 판단!', text:'에너지음료(100mg)+게보린(50mg)=카페인 150mg! 청소년 1일 권장량은 체중(kg) × 2.5mg 이하라서, 체중 50kg 기준 125mg을 넘을 수 있어요. 카페인 과다는 심장 두근거림·불안·불면을 유발해요. 약 성분표 확인 습관이 중요합니다!'}},
         { text:'😮‍💨 두통이 심하니까 게보린도 그냥 먹는다.',
           good:false, delta:{health:-12,fatigue:8,judgment:-10,knowledge:-3},
-          result:{title:'⚠️ 카페인 중복!', text:'에너지음료+게보린으로 짧은 시간에 카페인 110mg 섭취! 체중 50kg 학생의 권고량 125mg에 가까워요. 두근거림·불안·두통 악화가 생길 수 있으니 약 먹기 전 성분표를 꼭 확인하세요!'}},
+          result:{title:'⚠️ 카페인 중복!', text:'에너지음료+게보린으로 짧은 시간에 카페인 150mg 섭취! 체중 50kg 학생의 권고량 125mg을 넘을 수 있어요. 두근거림·불안·두통 악화가 생길 수 있으니 약 먹기 전 성분표를 꼭 확인하세요!'}},
       ]
     },
     {
@@ -2507,31 +2891,57 @@ function updateCaffeineHud(){
   label.style.color = pct >= 100 ? '#ef4444' : pct >= 80 ? '#f59e0b' : '';
   label.style.fontWeight = pct >= 80 ? '900' : '';
 }
+const CVS_DRINKS = [
+  { id:'energy', name:'에너지드링크', product:'THE KING ENERGY', volume:'355mL', emoji:'🟢캔', icon:'energy', caffeine:100,
+    delta:{health:-6, caffeine:-10, judgment:-4}, good:false,
+    desc:'라벨을 확인하니 카페인 100mg. 짧게는 눈이 떠지지만 밤 수면을 밀어낼 수 있어요.' },
+  { id:'coffeeMilk', name:'커피우유', product:'우유팩 커피음료', volume:'300mL', emoji:'📦', icon:'pack', caffeine:115,
+    delta:{health:-4, caffeine:-10, sleep:-4}, good:false,
+    desc:'카페인 115mg. 우유팩 음료라도 커피가 들어가면 오늘 총량에 크게 쌓입니다.' },
+  { id:'cancoffee', name:'캔커피', product:'캔 모양 커피음료', volume:'200mL', emoji:'🔵캔', icon:'canblue', caffeine:81,
+    delta:{health:-3, caffeine:-8}, good:false,
+    desc:'카페인 81mg. 달달하고 그럴싸하지만 오늘 총량에 쌓입니다.' },
+  { id:'vitamin', name:'비타민음료', product:'비타민 음료', volume:'100mL', emoji:'🟠병', icon:'bottle', caffeine:0,
+    delta:{health:1, caffeine:3}, good:true, noCaffeine:true,
+    desc:'카페인 0mg. 카페인 부담 없이 마실 수 있어요.' },
+  { id:'cola', name:'콜라', product:'탄산음료', volume:'355mL', emoji:'🔴캔', icon:'canred', caffeine:35,
+    delta:{health:-2, caffeine:-4}, good:false,
+    desc:'카페인 35mg. 커피보다 적지만 당분과 카페인이 함께 들어옵니다.' },
+  { id:'water', name:'물/이온음료', product:'생수 또는 이온음료', volume:'-', emoji:'💧', icon:'drop', caffeine:0,
+    delta:{health:5, caffeine:6}, good:true, noCaffeine:true,
+    desc:'카페인 0mg. 갈증이 날 때 부담 없이 마실 수 있어요.' },
+];
+
+const CAFE_DRINKS = [
+  { id:'americano', name:'아이스 카페 아메리카노', english:'Iced Caffe Americano', volume:'355ml', kcal:'10', sugar:'0', protein:'1', satFat:'0', sodium:'5', allergy:'-', icon:'iced', color:'#3b1f16', caffeine:150,
+    delta:{health:-6, caffeine:-16, judgment:-5}, good:false,
+    desc:'진한 에스프레소에 정수물과 얼음을 더한 커피' },
+  { id:'latte', name:'카페라떼', english:'Cafe Latte', volume:'600ml', kcal:'160', sugar:'11', protein:'8', satFat:'5.2', sodium:'113', allergy:'우유', icon:'iced', color:'#c89a73', caffeine:168,
+    delta:{health:-5, caffeine:-17, sleep:-6}, good:false,
+    desc:'에스프레소에 우유가 더해진 부드러운 라떼' },
+  { id:'mixcoffee', name:'믹스커피', english:'Mix Coffee', volume:'600ml', kcal:'362', sugar:'16', protein:'2', satFat:'6.6', sodium:'31', allergy:'우유', icon:'iced', color:'#c7955d', caffeine:134,
+    delta:{health:-6, caffeine:-14, sleep:-5}, good:false,
+    desc:'인스턴트 커피 맛의 달콤한 믹스커피' },
+  { id:'peachtea', name:'복숭아아이스티', english:'Peach Iced Tea', volume:'600ml', kcal:'211', sugar:'40', protein:'-', satFat:'-', sodium:'21', allergy:'복숭아', icon:'iced', color:'#c2763a', caffeine:20,
+    delta:{health:-2, caffeine:-2}, good:false,
+    desc:'홍차에 달콤한 복숭아가 어우러진 아이스티' },
+  { id:'grapefruitblacktea', name:'허니자몽블랙티', english:'Honey Grapefruit Black Tea', volume:'600ml', kcal:'195', sugar:'46', protein:'-', satFat:'-', sodium:'39', allergy:'-', icon:'iced', color:'#d88434', caffeine:16,
+    delta:{health:-2, caffeine:-2}, good:false,
+    desc:'자몽과 블랙티가 섞인 달콤쌉쌀한 블렌딩티' },
+  { id:'earlgrey', name:'얼그레이', english:'Earl Grey Tea', volume:'600ml', kcal:'-', sugar:'0', protein:'0', satFat:'0.0', sodium:'0', allergy:'-', icon:'mug', color:'#b97831', caffeine:18,
+    delta:{health:1, caffeine:-2, social:1}, good:true,
+    desc:'베르가못 향이 은은한 클래식 티' },
+  { id:'greentea', name:'녹차', english:'Green Tea', volume:'600ml', kcal:'0', sugar:'0', protein:'0', satFat:'0.0', sodium:'0', allergy:'-', icon:'mug', color:'#8ec56b', caffeine:0,
+    delta:{health:3, caffeine:3, social:2}, good:true, noCaffeine:true,
+    desc:'떫은 맛을 줄이고 은은한 단맛을 살린 녹차' },
+  { id:'warmMilk', name:'따뜻한 우유', english:'Warm Milk', volume:'355ml', kcal:'210', sugar:'17', protein:'11', satFat:'5.0', sodium:'150', allergy:'우유', icon:'mug', color:'#fff3dc', caffeine:0,
+    delta:{health:5, sleep:5, social:3}, good:true, noCaffeine:true,
+    desc:'카페인이 없는 따뜻한 우유' },
+];
+
 const DRINK_MENU = {
-  cvs: [
-    { id:'energy',   name:'에너지드링크',  emoji:'🥤', caffeine:80,  delta:{health:-5, caffeine:-8,  judgment:-3}, good:false,
-      desc:'라벨을 확인하니 카페인 80mg. 짧게는 눈이 떠지지만 밤 수면을 밀어낼 수 있어요.' },
-    { id:'cancoffee', name:'캔커피',       emoji:'☕', caffeine:60,  delta:{health:-3, caffeine:-6},               good:false,
-      desc:'라벨을 확인하니 카페인 60mg. 달달하고 그럴싸하지만 오늘 총량에 쌓입니다.' },
-    { id:'vitamin',  name:'비타민음료',    emoji:'🧃', caffeine:10,  delta:{health:1, caffeine:-1},               good:true,
-      desc:'카페인 10mg. 마신 기분은 나지만 각성 효과는 크지 않아요.' },
-    { id:'cola',     name:'콜라',          emoji:'🥤', caffeine:23,  delta:{health:-2, caffeine:-3},               good:false,
-      desc:'카페인 23mg. 비교적 적지만 당분도 많아요.' },
-    { id:'greentea', name:'녹차',          emoji:'🍵', caffeine:30,  delta:{health:3,  caffeine:-3,  social:2},    good:true,
-      desc:'카페인 30mg. 항산화 성분도 있어요.' },
-    { id:'water',    name:'물/이온음료',   emoji:'💧', caffeine:0,   delta:{health:5,  caffeine:6},  good:true, noCaffeine:true,
-      desc:'카페인 0mg. 갈증이 날 때 부담 없이 마실 수 있어요.' },
-  ],
-  cafe: [
-    { id:'americano', name:'아메리카노',   emoji:'☕', caffeine:125, delta:{health:-5, caffeine:-15, judgment:-5}, good:false,
-      desc:'카페인 125mg. 한 잔만으로도 최대량의 절반을 넘길 수 있어요.' },
-    { id:'latte',    name:'카페라떼',      emoji:'🥛', caffeine:75,  delta:{health:-3, caffeine:-10},              good:false,
-      desc:'카페인 75mg. 우유가 들어 있지만 카페인은 높아요.' },
-    { id:'herbtea',  name:'허브티',        emoji:'🌿', caffeine:0,   delta:{health:5,  social:5,  judgment:3},     good:true, noCaffeine:true,
-      desc:'카페인 0mg. 스트레스 완화에 도움이 돼요.' },
-    { id:'warmMilk', name:'따뜻한 우유',   emoji:'🥛', caffeine:0,   delta:{health:5,  sleep:5,   social:3},       good:true, noCaffeine:true,
-      desc:'카페인 0mg. 수면 준비에 도움이 돼요.' },
-  ]
+  cvs: CVS_DRINKS,
+  cafe: CAFE_DRINKS
 };
 
 const DRINK_LABEL_STYLES = {
@@ -2547,6 +2957,32 @@ const DRINK_LABEL_STYLES = {
   warmMilk: ['#fff7dc','#d6a76f','#ffffff'],
 };
 
+const DRINK_MENU_IMAGES = {
+  cvs:'drink_menu_previews/convenience_drink_menu_energy100_old_coffee_milk.png',
+  cafe:'drink_menu_previews/cafe_drink_menu_pretty_illustrated_centered.png'
+};
+
+const DRINK_IMAGE_HOTSPOTS = {
+  cvs:[
+    {id:'energy', top:11.3, height:12.3},
+    {id:'coffeeMilk', top:25.1, height:12.3},
+    {id:'cancoffee', top:38.9, height:12.3},
+    {id:'vitamin', top:52.8, height:12.3},
+    {id:'cola', top:66.5, height:12.3},
+    {id:'water', top:80.3, height:12.3}
+  ],
+  cafe:[
+    {id:'americano', top:7.0, height:10.6},
+    {id:'latte', top:18.7, height:10.6},
+    {id:'mixcoffee', top:30.4, height:10.6},
+    {id:'peachtea', top:42.1, height:10.6},
+    {id:'grapefruitblacktea', top:53.8, height:10.6},
+    {id:'earlgrey', top:65.5, height:10.6},
+    {id:'greentea', top:77.2, height:10.6},
+    {id:'warmMilk', top:88.9, height:10.6}
+  ]
+};
+
 function findDrink(type, drinkId){
   return (DRINK_MENU[type] || []).find(d => d.id === drinkId) || null;
 }
@@ -2557,6 +2993,8 @@ function makeDrinkSnapshot(type, drink){
     type,
     id: drink.id,
     name: drink.name,
+    product: drink.product || drink.english || drink.name,
+    volume: drink.volume || '',
     emoji: drink.emoji,
     caffeine: drink.caffeine,
     noCaffeine: !!drink.noCaffeine,
@@ -2603,11 +3041,12 @@ function resolveClue(clue){
     title:`${drink.name} 라벨`,
     drink,
     facts:[
-      `제품명: ${drink.name}`,
+      `제품명: ${drink.product || drink.name}`,
+      drink.volume ? `용량: ${drink.volume}` : '',
       drink.caffeine === 0 ? '표시: 카페인 없음' : '표시: 카페인 함유',
       `카페인 함량: ${drink.caffeine}mg`,
       `오늘 누적 카페인: ${G.caffeineToday || 0}mg / ${G.caffeineMax || Math.round((G.weight || 60) * 2.5)}mg`
-    ]
+    ].filter(Boolean)
   };
 }
 const PRESCRIPTIONS = [
@@ -3026,7 +3465,27 @@ function applyPendingDrinkChoice(choice){
   applyDelta(choice.delta||{});
   applyChoiceRecords(choice);
   applySleepClockEffect(choice);
-  return choice.result?.text ? `\n\n${choice.result.text}` : '';
+  return choice.result?.text || '';
+}
+
+function formatDrinkResultText(drink, reactionText, overLimit){
+  const max = G.caffeineMax || Math.round((G.weight || 60) * 2.5);
+  const now = G.caffeineToday || 0;
+  const productLine = [drink.product || drink.english || drink.name, drink.volume].filter(Boolean).join(' · ');
+  const lines = [
+    '[음료 정보]',
+    `선택한 음료: ${drink.name}${productLine ? ` (${productLine})` : ''}`,
+    `카페인: ${drink.caffeine}mg`,
+    `오늘 누적 카페인: ${now}mg / ${max}mg`,
+    drink.desc || ''
+  ].filter(Boolean);
+  if(overLimit){
+    lines.push('오늘 카페인 최대량을 초과했습니다. 체력이 감소합니다.');
+  }
+  if(reactionText){
+    lines.push('', `[${selfInnerLabel()}]`, reactionText);
+  }
+  return lines.join('\n');
 }
 function applySystemEffects(choice){
   applyChoiceRecords(choice);
@@ -3138,6 +3597,54 @@ function renderSceneActors(container, actors){
   }).join('');
 }
 
+function renderSceneCharacters(sc){
+  const sc_char=document.getElementById('scene-char');
+  const sceneActors=sceneActorsForScenario(sc);
+  const scNameTag=document.getElementById('scene-name-tag');
+  if(sceneActors?.length){
+    renderSceneActors(sc_char, sceneActors);
+    if(scNameTag) scNameTag.style.display='none';
+    return;
+  }
+  const charSlot=sceneCharacterSlot(sc);
+  const charUrl=driveUrl(DB.gameData.images?.[charSlot]||DB.gameData.images?.['char_student']||'');
+  const charEmoji=sceneCharacterFallback(sc, charSlot);
+  sc_char.className = `scene-char slot-${String(charSlot).replace(/_/g, '-')}`;
+  sc_char.innerHTML=charUrl
+    ? `<img src="${charUrl}" alt="캐릭터">`
+    : `<span style="font-size:5.5rem;">${charEmoji}</span>`;
+  if(scNameTag){
+    scNameTag.style.display='';
+    scNameTag.textContent=sceneCharacterDisplayName(sc, charSlot);
+  }
+}
+
+function loadSceneBackgroundFirst(sa, sceneKey, onReady){
+  const imgUrl=driveUrl(DB.gameData.images?.[sceneKey]||'');
+  let bi=sa.querySelector('img.scene-bg-img');
+  window._sceneLoadToken=(window._sceneLoadToken||0)+1;
+  const token=window._sceneLoadToken;
+  if(!imgUrl){
+    if(bi)bi.remove();
+    sa.style.background=sceneColor(sceneKey);
+    onReady();
+    return;
+  }
+  if(!bi){
+    bi=document.createElement('img');
+    bi.className='scene-bg-img';
+    sa.insertBefore(bi,sa.firstChild);
+  }
+  const finish=()=>{
+    if(token!==window._sceneLoadToken) return;
+    onReady();
+  };
+  bi.onload=finish;
+  bi.onerror=finish;
+  if(bi.getAttribute('src')!==imgUrl) bi.src=imgUrl;
+  if(bi.complete) finish();
+}
+
 function clueSceneKey(sceneIdx=G.scene){
   return String(sceneIdx ?? 0);
 }
@@ -3172,15 +3679,98 @@ function refreshClueState(){
   }
 }
 
+let clueDrinkTab='cafe';
+
+function caffeineBadgeClass(mg){
+  if((mg || 0) <= 0) return 'badge-zero';
+  if(mg <= 50) return 'badge-low';
+  if(mg < 100) return 'badge-mid';
+  return 'badge-high';
+}
+
+function renderClueCafBar(){
+  const max=G.caffeineMax || Math.round((G.weight || 60) * 2.5);
+  const now=G.caffeineToday || 0;
+  const pct=Math.min(100, Math.round((now / max) * 100));
+  const color=pct >= 100 ? '#ef4444' : pct >= 80 ? '#f59e0b' : '#5fc89a';
+  return `
+    <div class="clue-caf-bar-wrap">
+      <div>☕ 오늘 카페인: ${now}mg / ${max}mg</div>
+      <div class="clue-caf-track"><div class="clue-caf-bar-fg" style="width:${pct}%;background:${color};"></div></div>
+    </div>`;
+}
+
+function renderCvsDrinks(){
+  return renderDrinkImageMenu('cvs');
+}
+
+function renderDrinkImageMenu(type, actionName='pickClueDrink'){
+  const image = DRINK_MENU_IMAGES[type];
+  const hotspots = DRINK_IMAGE_HOTSPOTS[type] || [];
+  const menu = DRINK_MENU[type] || [];
+  const alt = type === 'cvs' ? '편의점 음료 이미지 기준' : '카페 메뉴 음료 함량표시형식 기준';
+  return `
+    <div class="drink-image-menu ${type === 'cvs' ? 'cvs-image-menu' : 'cafe-image-menu'}">
+      <img src="${escapeHtml(image)}" alt="${escapeHtml(alt)}">
+      ${hotspots.map(h => {
+        const drink = menu.find(d => d.id === h.id);
+        const label = drink ? `${drink.name} 선택, 카페인 ${drink.caffeine}mg` : '음료 선택';
+        const args = actionName === 'selectDrink' ? `'${type}','${h.id}'` : `'${h.id}','${type}'`;
+        return `<button class="drink-map-btn" type="button" aria-label="${escapeHtml(label)}" onclick="${actionName}(${args})" style="top:${h.top}%;height:${h.height}%;"></button>`;
+      }).join('')}
+    </div>`;
+}
+
+function renderCafeDrinks(){
+  return renderDrinkImageMenu('cafe');
+}
+
+function renderClueModal(tab=clueDrinkTab){
+  clueDrinkTab = tab;
+  const content=document.getElementById('clue-drink-ui');
+  if(!content) return;
+  content.innerHTML = `
+    <div class="clue-tabs">
+      <button class="clue-tab-btn ${tab==='cafe'?'active':''}" type="button" onclick="renderClueModal('cafe')">☕ 카페</button>
+      <button class="clue-tab-btn ${tab==='cvs'?'active':''}" type="button" onclick="renderClueModal('cvs')">🏪 편의점</button>
+    </div>
+    ${renderClueCafBar()}
+    ${tab === 'cafe' ? renderCafeDrinks() : renderCvsDrinks()}`;
+}
+
+function pickClueDrink(drinkId, tab){
+  markClueChecked(G.scene, window._activeClueIdx ?? 0);
+  G.labelChecked=true;
+  refreshClueState();
+  closeClue();
+  selectDrink(tab, drinkId);
+}
+
 function showClue(idx){
   const rawClue=(window._currentClues||[])[idx]; if(!rawClue)return;
   const clue=resolveClue(rawClue);
+  window._activeClueIdx=idx;
   markClueChecked(G.scene, idx);
   const sc=DB.gameData.scenarios[G.scene];
   if(cluesCompleteForScene(G.scene, sc)) G.labelChecked=true;
   refreshClueState();
   saveGameState();
   document.getElementById('clue-title').textContent=clue.title||'단서 확인';
+  document.getElementById('clue-drink-ui').innerHTML='';
+  document.getElementById('clue-visual').style.display='';
+  document.getElementById('clue-facts').style.display='';
+  if(clue.type==='can' || clue.dynamicDrink || clue.drink || clue.emptyDrink){
+    document.getElementById('clue-title').textContent='음료 카페인 확인';
+    document.getElementById('clue-visual').innerHTML='';
+    document.getElementById('clue-facts').innerHTML='';
+    document.getElementById('clue-visual').style.display='none';
+    document.getElementById('clue-facts').style.display='none';
+    const sceneText=String(sc?.location || '') + String(sc?.scene || '');
+    clueDrinkTab = sceneText.includes('카페') || sceneText.includes('cafe') ? 'cafe' : 'cvs';
+    renderClueModal(clueDrinkTab);
+    document.getElementById('clue-modal').classList.add('show');
+    return;
+  }
   document.getElementById('clue-visual').innerHTML=clue.type==='medicine'?`
     <div class="draw-med">
       <div class="wide">일반의약품 정보</div>
@@ -3199,7 +3789,7 @@ function showClue(idx){
     <div class="draw-can">
       <div class="brand">THE<br>KING</div>
       <div class="flavor">ENERGY</div>
-      <div class="tiny">카페인 함유 60mg · 355mL</div>
+      <div class="tiny">카페인 함유 100mg · 355mL</div>
     </div>`;
   document.getElementById('clue-facts').innerHTML=(clue.facts||[]).map(f=>`<div class="clue-fact">${escapeHtml(f)}</div>`).join('');
   document.getElementById('clue-modal').classList.add('show');
@@ -3278,6 +3868,57 @@ function escapeHtml(text) {
     '"': '&quot;',
     "'": '&#39;'
   }[ch]));
+}
+
+function resultSectionType(label) {
+  const normalized = String(label || '');
+  if(/정보|성분표|학습|포인트|카페인/.test(normalized)) return 'info';
+  if(/선택 결과|결과|변화/.test(normalized)) return 'outcome';
+  if(normalized.includes('속마음')) return 'inner';
+  if(normalized.includes('(나)')) return 'self';
+  if(normalized.includes('나레이터')) return 'narrator';
+  return 'npc';
+}
+
+function renderResultContent(text, fallbackLabel='') {
+  const raw = normalizeStoryText(text || '');
+  const lines = raw.split(/\n/);
+  const sections = [];
+  let current = null;
+  let hasExplicitLabel = false;
+
+  lines.forEach(line => {
+    const trimmed = line.trim();
+    const labelMatch = trimmed.match(/^\[([^\]]+)\]$/);
+    if(labelMatch){
+      hasExplicitLabel = true;
+      if(current) sections.push(current);
+      current = { label: labelMatch[1], body: [] };
+      return;
+    }
+    if(!current){
+      current = { label: '', body: [] };
+    }
+    current.body.push(line);
+  });
+  if(current) sections.push(current);
+
+  if(!hasExplicitLabel && fallbackLabel && sections.length === 1){
+    sections[0].label = fallbackLabel;
+  }
+
+  return sections.map(section => {
+    const body = section.body.join('\n').trim();
+    if(!section.label){
+      return `<div class="result-section plain"><div class="result-body">${escapeHtml(body)}</div></div>`;
+    }
+    const type = resultSectionType(section.label);
+    return `
+      <div class="result-section ${type}">
+        <div class="result-speaker">[${escapeHtml(section.label)}]</div>
+        <div class="result-body">${escapeHtml(body)}</div>
+      </div>`;
+  }).join('');
 }
 
 function clearTypingState(state) {
@@ -3549,17 +4190,21 @@ function skipResultTyping(event) {
   skipTypingToEnd(_resultTyping, 'r-text', hideResultArrow, event);
 }
 
-function showTypedResult(title, text, onComplete) {
+function showTypedResult(title, text, onComplete, options={}) {
   clearTypingState(_resultTyping);
   hideResultArrow();
   setSkipVisible('result-skip', false);
   document.getElementById('r-title').textContent = normalizeStoryText(title || '');
-  document.getElementById('r-text').textContent = normalizeStoryText(text || '');
+  document.getElementById('r-text').innerHTML = renderResultContent(text || '', options.fallbackLabel || '');
   document.getElementById('result-box').classList.add('show');
   document.getElementById('next-btn').classList.add('show');
   G.answered = true;
   saveGameState();
   if (onComplete) onComplete();
+}
+
+function selfInnerLabel(){
+  return `${G.name || '학생'}(나)의 속마음`;
 }
 
 function formatSpeakerName(speaker) {
@@ -3654,14 +4299,12 @@ function renderScene(idx){
   updateCaffeineHud();
   document.getElementById('scene-loc').textContent=sc.location||'📍 교실';
   updateProgDots();
-  // 배경
   const sa=document.getElementById('scene-area');
-  const imgUrl=driveUrl(DB.gameData.images[sc.scene]||'');
-  let bi=sa.querySelector('img.scene-bg-img');
-  if(imgUrl){
-    if(!bi){bi=document.createElement('img');bi.className='scene-bg-img';sa.insertBefore(bi,sa.firstChild);}
-    bi.src=imgUrl;
-  } else { if(bi)bi.remove(); sa.style.background=sceneColor(sc.scene); }
+  const sc_char=document.getElementById('scene-char');
+  const scNameTag=document.getElementById('scene-name-tag');
+  sc_char.innerHTML='';
+  if(scNameTag) scNameTag.style.display='none';
+  loadSceneBackgroundFirst(sa, sc.scene, () => renderSceneCharacters(sc));
   renderClues(sc);
   let teacherEvent=null;
   if((sc.location||'').includes('수업') && G.teacherEventDay!==day){
@@ -3670,26 +4313,6 @@ function renderScene(idx){
       applyDelta(teacherEvent.delta||{});
       G.teacherEventDay=day;
       G.nextDayPenalty='normal';
-    }
-  }
-  // 캐릭터
-  const sc_char=document.getElementById('scene-char');
-  const sceneActors=sceneActorsForScenario(sc);
-  const scNameTag=document.getElementById('scene-name-tag');
-  if(sceneActors?.length){
-    renderSceneActors(sc_char, sceneActors);
-    if(scNameTag) scNameTag.style.display='none';
-  } else {
-    const charSlot=sceneCharacterSlot(sc);
-    const charUrl=driveUrl(DB.gameData.images?.[charSlot]||DB.gameData.images?.['char_student']||'');
-    const charEmoji=sceneCharacterFallback(sc, charSlot);
-    sc_char.className = `scene-char slot-${String(charSlot).replace(/_/g, '-')}`;
-    sc_char.innerHTML=charUrl
-      ? `<img src="${charUrl}" alt="캐릭터">`
-      : `<span style="font-size:5.5rem;">${charEmoji}</span>`;
-    if(scNameTag){
-      scNameTag.style.display='';
-      scNameTag.textContent=sceneCharacterDisplayName(sc, charSlot);
     }
   }
   // 대화
@@ -3734,7 +4357,7 @@ function pickChoice(i){
   queueFollowupScenario(ch);
   showTypedResult(ch.result.title, ch.result.text, () => {
     if(ch.showReport) setTimeout(()=>showDailyReport(ch.showReport),800);
-  });
+  }, {fallbackLabel:'선택 결과'});
 }
 function nextScene(){
   clearTypingState(_typing);
@@ -4183,43 +4806,7 @@ function openDrinkModal(type) {
   fill.style.background = pct >= 100 ? '#ef4444' : pct >= 80 ? '#f59e0b' : '#5fc89a';
 
   const list = document.getElementById('drink-list');
-  list.innerHTML = menu.map(d => {
-    const remaining = max - (G.caffeineToday || 0);
-    const willOver = d.caffeine > 0 && d.caffeine > remaining;
-    const pctAfter = Math.min(100, Math.round(((G.caffeineToday + d.caffeine) / max) * 100));
-    const canSeeCaffeine = !!G.labelChecked;
-    const visibleDesc = canSeeCaffeine
-      ? d.desc
-      : (d.caffeine === 0 ? '카페인 표시는 확인되지 않았어요. 직접 고르면 결과를 알 수 있습니다.' : '라벨을 자세히 보기 전에는 정확한 함량을 알 수 없어요.');
-    return `
-    <div onclick="selectDrink('${type}','${d.id}')"
-      style="background:#fffaf2;border:2px solid ${canSeeCaffeine && willOver ? '#ef4444' : '#f1d3b8'};
-        border-radius:14px;padding:14px 16px;cursor:pointer;transition:all .2s;box-shadow:0 8px 18px rgba(126,102,85,.08);"
-      onmouseover="this.style.transform='translateX(4px)'"
-      onmouseout="this.style.transform=''">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
-        <span style="font-size:1.6rem;">${d.emoji}</span>
-        <div style="flex:1;">
-          <div style="font-weight:700;font-size:.95rem;color:#3f2d24;">${d.name}</div>
-          <div style="font-size:.78rem;color:#7e6655;margin-top:2px;">${visibleDesc}</div>
-        </div>
-        <div style="text-align:right;font-size:.82rem;font-weight:700;
-          color:${!canSeeCaffeine ? '#7e6655' : d.caffeine === 0 ? '#5fc89a' : willOver ? '#ef4444' : '#f59e0b'};">
-          ${canSeeCaffeine ? (d.caffeine === 0 ? '카페인 없음' : `+${d.caffeine}mg`) : '함량 미확인'}
-          ${canSeeCaffeine && willOver ? '<div style="font-size:.7rem;color:#ef4444;">⚠️ 초과</div>' : ''}
-        </div>
-      </div>
-      ${canSeeCaffeine && d.caffeine > 0 ? `
-      <div style="height:5px;border-radius:3px;background:#f0dbc8;overflow:hidden;">
-        <div style="height:100%;width:${pctAfter}%;
-          background:${pctAfter>=100?'#ef4444':pctAfter>=80?'#f59e0b':'#5fc89a'};
-          border-radius:3px;transition:width .4s;"></div>
-      </div>
-      <div style="font-size:.7rem;color:#7e6655;margin-top:3px;">
-        마시면 오늘 총 ${Math.min(100,pctAfter)}% 사용
-      </div>` : ''}
-    </div>`;
-  }).join('');
+  list.innerHTML = renderDrinkImageMenu(type, 'selectDrink');
 
   document.getElementById('drink-modal').style.display = 'flex';
 }
@@ -4261,12 +4848,13 @@ function selectDrink(type, drinkId) {
   if (G.noCaffeineStreak >= 3) applyDelta({ caffeine: 5, social: 5 });
 
   window._pendingDrinkChoice = null;
-  const extraText = applyPendingDrinkChoice(pending);
+  const reactionText = applyPendingDrinkChoice(pending);
   updateCaffeineHud();
+  const overLimit = G.caffeineToday > max;
 
   showTypedResult(
     pending?.result?.title || (drink.good ? `✅ ${drink.name} 선택` : `⚠️ ${drink.name} 선택`),
-    drink.desc + extraText + (G.caffeineToday > max ? '\n\n⚠️ 오늘 카페인 최대량을 초과했습니다! 체력이 감소합니다.' : '')
+    formatDrinkResultText(drink, reactionText, overLimit)
   );
 }
 
@@ -4437,7 +5025,7 @@ function makeHealthOfficeScenario(kind) {
     let text, resultText, delta;
     if (todayMg === 0) {
       text = `보건샘이 게보린 성분표를 같이 펼쳤다. "어디 봐봐 — 여기 카페인무수물 50mg이 보이지? 오늘 에너지드링크나 커피 마신 거 없지?" 고개를 저으니 보건샘이 말을 이었다. "오늘은 카페인을 안 마셨으니까, 게보린까지 더해도 50mg이라 권고량(${maxMg}mg)엔 여유가 있어. 근데 이 사실 자체를 알고 있는 게 중요해 — 다음에 에너지드링크랑 같이 먹으려고 할 때 멈출 수 있거든."`;
-      resultText = `오늘 카페인 0mg + 게보린 50mg = 50mg. 권고량(${maxMg}mg) 이하라 지금은 괜찮아. 하지만 보건샘 말처럼, 에너지드링크(60~80mg)와 함께 먹으면 합산 110~130mg — 권고량에 근접하거나 초과할 수 있어. 성분표 확인 습관이 오늘 생겼다.`;
+      resultText = `오늘 카페인 0mg + 게보린 50mg = 50mg. 권고량(${maxMg}mg) 이하라 지금은 괜찮아. 하지만 보건샘 말처럼, 에너지드링크(100mg)와 함께 먹으면 합산 150mg — 권고량에 근접하거나 초과할 수 있어. 성분표 확인 습관이 오늘 생겼다.`;
       delta = {knowledge:8, judgment:6, caffeine:4};
     } else if (afterMg < maxMg * 0.85) {
       text = `보건샘이 성분표를 가리켰다. "오늘 카페인 음료 마셨어? 아까 뭐 마셨는지 생각해봐." 오늘 마신 것을 말하자 보건샘이 계산을 했다. "그거랑 게보린 카페인무수물 50mg 합치면 ${afterMg}mg이야. 하루 권고량이 ${maxMg}mg인데 아직 여유는 있어. 근데 오늘 오후에 음료 더 마실 것 같으면 게보린은 지금 참는 게 나아. 총량 관리가 핵심이거든."`;
