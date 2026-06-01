@@ -1,0 +1,1954 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>약, 알고 먹자! — 시나리오 편집기 v3</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700;900&display=swap');
+:root{
+  --bg:#fff7fb; --panel:#fffdf7; --panel2:#fff3e8; --panel3:#f0f6ff;
+  --border:#ebc7a9; --border2:#d9b48f;
+  --accent:#ff9f80; --accent-h:#e87a5a;
+  --green:#5fc89a; --green-bg:#edfbf3;
+  --blue:#7eaafc; --blue-bg:#eef4ff;
+  --purple:#c084fc; --purple-bg:#f5f0ff;
+  --red:#ff6b6b; --red-bg:#fff0f0;
+  --yellow:#ffd76d; --yellow-bg:#fffaea;
+  --text:#38291f; --sub:#7e6655; --sub2:#b09880;
+  --radius:12px; --radius-sm:8px;
+  --nav-w:196px; --top-h:48px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;overflow:hidden;font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);font-size:13px;}
+
+/* ── 툴바 ── */
+#topbar{height:var(--top-h);background:var(--panel);border-bottom:2px solid var(--border);display:flex;align-items:center;padding:0 14px;gap:8px;flex-shrink:0;z-index:100;position:relative;}
+.logo{font-family:'Jua',sans-serif;font-size:15px;color:var(--accent);margin-right:4px;white-space:nowrap;}
+.tb-sep{width:1px;height:20px;background:var(--border);margin:0 2px;}
+.main-tab{padding:5px 13px;border-radius:20px;border:1.5px solid transparent;background:transparent;cursor:pointer;font-size:12px;font-weight:700;color:var(--sub);font-family:'Noto Sans KR',sans-serif;transition:all .15s;white-space:nowrap;}
+.main-tab:hover{background:var(--panel2);color:var(--text);}
+.main-tab.on{background:var(--accent);color:#fff;border-color:var(--accent);}
+.main-tab.on.t-drug{background:var(--green);}
+.main-tab.on.t-quiz{background:var(--blue);color:var(--text);}
+.ml{margin-left:auto;display:flex;gap:6px;align-items:center;}
+.tb-btn{padding:5px 12px;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:var(--panel);cursor:pointer;font-size:11.5px;font-weight:600;color:var(--text);font-family:'Noto Sans KR',sans-serif;transition:all .15s;display:flex;align-items:center;gap:4px;white-space:nowrap;}
+.tb-btn:hover{background:var(--panel2);}
+.tb-btn.primary{background:var(--accent);color:#fff;border-color:var(--accent);}
+.tb-btn.primary:hover{opacity:.88;}
+.tb-btn.edit-mode{background:var(--purple);color:#fff;border-color:var(--purple);}
+.tb-btn:disabled{opacity:.35;cursor:default;}
+.edit-badge{display:none;padding:3px 10px;border-radius:20px;background:var(--yellow-bg);color:#7a4b00;border:1.5px solid var(--yellow);font-size:11px;font-weight:700;}
+.edit-badge.show{display:inline-flex;align-items:center;gap:4px;}
+
+/* ── 레이아웃 ── */
+#layout{display:flex;height:calc(100vh - var(--top-h));overflow:hidden;}
+
+/* ── 사이드 네비 ── */
+#sidenav{width:var(--nav-w);flex-shrink:0;background:var(--panel);border-right:2px solid var(--border);overflow-y:auto;padding:8px;display:flex;flex-direction:column;gap:1px;transition:width .2s;}
+#sidenav.hidden{width:0;padding:0;overflow:hidden;}
+.nav-section{font-size:9.5px;font-weight:700;color:var(--sub2);padding:8px 6px 2px;letter-spacing:.07em;margin-top:6px;}
+.nav-item{display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:var(--radius-sm);cursor:pointer;font-size:11.5px;color:var(--sub);font-weight:500;transition:all .12s;border:1.5px solid transparent;line-height:1.3;}
+.nav-item:hover{background:var(--panel2);color:var(--text);}
+.nav-item.on{background:#fff0e8;color:var(--accent);border-color:rgba(255,159,128,.28);font-weight:700;}
+.nav-item.modified{border-color:var(--yellow);background:var(--yellow-bg);}
+.nav-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.nav-lbl{flex:1;line-height:1.35;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.nav-ep{font-size:9px;padding:1px 5px;border-radius:8px;background:var(--blue-bg);color:#27375a;font-weight:700;flex-shrink:0;}
+
+/* ── 메인 ── */
+#main-area{flex:1;overflow:hidden;display:flex;flex-direction:column;}
+.tab-panel{display:none;flex:1;overflow:hidden;flex-direction:column;}
+.tab-panel.on{display:flex;}
+
+/* ── 서브탭 ── */
+.subtab-bar{display:flex;gap:6px;padding:10px 16px 0;border-bottom:1.5px solid var(--border);background:var(--panel);flex-shrink:0;}
+.subtab{padding:6px 15px;border-radius:8px 8px 0 0;border:1.5px solid transparent;background:transparent;cursor:pointer;font-size:12px;font-weight:700;color:var(--sub);font-family:'Noto Sans KR',sans-serif;transition:all .15s;border-bottom:none;position:relative;bottom:-1.5px;}
+.subtab:hover{color:var(--text);}
+.subtab.on{background:var(--bg);border-color:var(--border);color:var(--text);}
+.sub-panel{display:none;flex:1;overflow:hidden;flex-direction:column;}
+.sub-panel.on{display:flex;}
+
+/* ── 개요도 ── */
+#ov-scroll{flex:1;overflow:auto;padding:16px;}
+.ov-day-group{margin-bottom:12px;}
+.ov-day-head{font-family:'Jua',sans-serif;font-size:13px;color:var(--accent);padding:3px 0 7px;display:flex;align-items:center;gap:8px;}
+.ov-day-head::after{content:'';flex:1;height:1.5px;background:var(--border);}
+.ov-cards{display:flex;gap:7px;flex-wrap:wrap;align-items:flex-start;}
+.ov-card{background:var(--panel);border:2px solid var(--border);border-radius:var(--radius);padding:9px 11px;cursor:pointer;transition:all .15s;min-width:148px;max-width:210px;border-left:4px solid;}
+.ov-card:hover{box-shadow:0 4px 14px rgba(92,61,40,.12);transform:translateY(-2px);}
+.ov-card.on{box-shadow:0 0 0 2.5px var(--accent);}
+.ov-card-type{font-size:9px;font-weight:700;letter-spacing:.05em;margin-bottom:2px;}
+.ov-card-title{font-size:12px;font-weight:700;color:var(--text);line-height:1.35;margin-bottom:5px;}
+.ov-ep-badge{display:inline-flex;align-items:center;gap:2px;font-size:9px;padding:1px 6px;border-radius:8px;background:var(--blue-bg);color:#27375a;font-weight:700;margin-bottom:4px;}
+.ov-choices-mini{display:flex;flex-direction:column;gap:2px;}
+.ov-c-mini{font-size:10px;padding:2px 5px;border-radius:3px;}
+.ovc-g{background:var(--green-bg);color:var(--green);}
+.ovc-b{background:var(--red-bg);color:var(--red);}
+.ovc-m{background:var(--yellow-bg);color:#7a4b00;}
+.ov-arrow{display:flex;align-items:center;padding-top:16px;color:var(--border2);font-size:15px;}
+
+/* ── 장면 액션바 ── */
+#scene-action-bar{display:none;align-items:center;gap:5px;padding:7px 14px;background:#fff8f0;border-bottom:1.5px solid #f4d5b5;flex-shrink:0;flex-wrap:wrap;}
+#scene-action-bar.show{display:flex;}
+.sa-btn{padding:4px 11px;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:var(--panel);cursor:pointer;font-size:11.5px;font-weight:600;color:var(--text);font-family:'Noto Sans KR',sans-serif;transition:all .13s;display:inline-flex;align-items:center;gap:3px;white-space:nowrap;}
+.sa-btn:hover{background:var(--panel2);}
+.sa-btn.danger{color:var(--red);border-color:#ffbdbd;}
+.sa-btn.danger:hover{background:var(--red-bg);}
+.sa-btn.ep-on{background:var(--blue);color:#fff;border-color:var(--blue);}
+.sa-sep{width:1px;height:16px;background:var(--border);margin:0 2px;}
+.sa-day-wrap{display:flex;align-items:center;gap:5px;margin-left:auto;}
+.sa-day-wrap label{font-size:10.5px;color:var(--sub);font-weight:700;}
+.sa-inp{width:72px;padding:4px 7px;border:1.5px solid var(--border2);border-radius:var(--radius-sm);font-size:12px;font-family:'Noto Sans KR',sans-serif;background:var(--panel);color:var(--text);}
+.sa-inp:focus{outline:none;border-color:var(--accent);}
+.sa-sel{padding:4px 7px;border:1.5px solid var(--border2);border-radius:var(--radius-sm);font-size:12px;font-family:'Noto Sans KR',sans-serif;background:var(--panel);color:var(--text);cursor:pointer;}
+
+/* ── 상세도 ── */
+#detail-content{flex:1;overflow-y:auto;padding:18px 22px;}
+.scene-hdr{display:flex;align-items:flex-start;gap:11px;margin-bottom:16px;padding-bottom:14px;border-bottom:1.5px solid var(--border);}
+.scene-emoji-wrap{width:50px;height:50px;border-radius:11px;background:var(--panel2);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1.7rem;flex-shrink:0;cursor:pointer;}
+.scene-meta{flex:1;}
+.scene-loc-lbl{font-size:10.5px;color:var(--sub);margin-bottom:2px;font-weight:600;}
+.scene-title-text{font-size:15px;font-weight:700;color:var(--text);line-height:1.35;}
+.scene-badges{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px;}
+.sbadge{font-size:10.5px;padding:2px 9px;border-radius:20px;font-weight:700;}
+.sb-narr{background:var(--panel2);color:var(--sub);border:1.5px solid var(--border);}
+.sb-event{background:#fff0e8;color:var(--accent);border:1.5px solid rgba(255,159,128,.3);}
+.sb-exam{background:var(--green-bg);color:var(--green);border:1.5px solid rgba(95,200,154,.3);}
+.sb-ep{background:var(--blue-bg);color:#27375a;border:1.5px solid rgba(126,170,252,.3);}
+.sec-lbl{font-size:10px;font-weight:700;color:var(--sub2);letter-spacing:.06em;margin-bottom:7px;display:flex;align-items:center;gap:8px;}
+.sec-add-btn{padding:2px 9px;border-radius:20px;border:1.5px dashed var(--border2);background:transparent;cursor:pointer;font-size:11px;color:var(--sub);font-family:'Noto Sans KR',sans-serif;transition:all .15s;}
+.sec-add-btn:hover{border-color:var(--accent);color:var(--accent);}
+.situation-wrap{margin-bottom:16px;}
+.speaker-row{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--sub);font-weight:600;margin-bottom:4px;}
+.situation-box{background:var(--panel2);border-radius:var(--radius);padding:12px 15px;font-size:13px;line-height:1.75;color:var(--text);border-left:3px solid var(--border2);min-height:42px;}
+.hint-text{font-size:11px;color:var(--sub2);margin-top:3px;display:none;}
+.edit-active .hint-text{display:block;}
+
+/* ── 단서 카드 ── */
+.clue-list{display:flex;flex-direction:column;gap:7px;margin-bottom:16px;}
+.clue-card{background:var(--panel);border:2px solid var(--border);border-radius:var(--radius);padding:10px 13px;display:flex;align-items:flex-start;gap:9px;}
+.clue-card.key-item{border-color:var(--blue);background:var(--blue-bg);}
+.clue-icon-w{width:36px;height:36px;border-radius:8px;background:var(--panel2);display:flex;align-items:center;justify-content:center;font-size:1.25rem;flex-shrink:0;}
+.clue-body{flex:1;}
+.clue-lbl{font-size:9.5px;font-weight:700;color:var(--sub2);letter-spacing:.05em;margin-bottom:2px;}
+.clue-title{font-size:12.5px;font-weight:700;color:var(--text);margin-bottom:2px;}
+.clue-content{font-size:11.5px;color:var(--sub);line-height:1.55;}
+.clue-actions{display:flex;gap:4px;margin-left:auto;flex-shrink:0;}
+.c-act{padding:3px 8px;border-radius:6px;border:1.5px solid var(--border);background:transparent;cursor:pointer;font-size:10.5px;color:var(--sub);font-family:'Noto Sans KR',sans-serif;}
+.c-act:hover{background:var(--panel2);}
+.c-act.del{border-color:#ffbdbd;color:var(--red);}
+.c-act.del:hover{background:var(--red-bg);}
+
+/* ── 선택지 ── */
+.choices-section{margin-bottom:16px;}
+.choice-card{border-radius:var(--radius);padding:11px 13px;margin-bottom:9px;border:2px solid;border-left-width:4px;position:relative;}
+.ch-good{background:var(--green-bg);border-color:var(--green);}
+.ch-bad{background:var(--red-bg);border-color:var(--red);}
+.ch-mid{background:var(--yellow-bg);border-color:var(--yellow);}
+.choice-top{display:flex;align-items:center;gap:7px;margin-bottom:7px;flex-wrap:wrap;}
+.ct-sel{padding:2px 9px;border-radius:20px;border:1.5px solid;font-size:11px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;background:transparent;}
+.cs-g{border-color:var(--green);color:var(--green);}
+.cs-b{border-color:var(--red);color:var(--red);}
+.cs-m{border-color:var(--yellow);color:#7a4b00;}
+.lock-sel{padding:2px 8px;border-radius:12px;border:1.5px solid var(--blue);font-size:11px;color:#27375a;font-family:'Noto Sans KR',sans-serif;background:var(--blue-bg);cursor:pointer;display:none;}
+.edit-active .lock-sel{display:inline-block;}
+.lock-badge{font-size:10px;padding:2px 7px;border-radius:10px;background:var(--blue-bg);color:#27375a;font-weight:700;}
+.del-ch-btn{margin-left:auto;padding:2px 9px;border-radius:20px;border:1.5px solid var(--border);background:transparent;cursor:pointer;font-size:11px;color:var(--sub);font-family:'Noto Sans KR',sans-serif;display:none;}
+.edit-active .del-ch-btn{display:inline-block;}
+.del-ch-btn:hover{border-color:var(--red);color:var(--red);background:var(--red-bg);}
+.choice-text-field{font-size:12.5px;font-weight:600;color:var(--text);min-height:18px;margin-bottom:7px;line-height:1.6;}
+
+/* 델타 */
+.delta-row{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px;align-items:center;}
+.delta-chip{display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;cursor:default;}
+.chip-p{background:#d1fae5;color:#065f46;}
+.chip-m{background:#fee2e2;color:#991b1b;}
+.add-delta-btn{padding:2px 8px;border-radius:20px;border:1.5px dashed var(--border2);background:transparent;cursor:pointer;font-size:11px;color:var(--sub);font-family:'Noto Sans KR',sans-serif;display:none;}
+.edit-active .add-delta-btn{display:inline-flex;}
+.add-delta-btn:hover{border-color:var(--accent);color:var(--accent);}
+.editable-chip{cursor:pointer;}
+.editable-chip:hover{opacity:.7;}
+.delta-form{display:flex;gap:5px;align-items:center;flex-wrap:wrap;margin-top:4px;}
+.delta-form input,.delta-form select{padding:3px 7px;border-radius:var(--radius-sm);border:1.5px solid var(--border2);font-size:12px;font-family:'Noto Sans KR',sans-serif;background:var(--panel);color:var(--text);}
+.delta-form input[type=number]{width:66px;}
+.delta-form select{width:96px;}
+.delta-form button{padding:3px 10px;border-radius:var(--radius-sm);border:1.5px solid var(--accent);background:var(--accent);color:#fff;cursor:pointer;font-size:11.5px;font-family:'Noto Sans KR',sans-serif;}
+.note-field{font-size:11px;color:var(--sub2);border-top:1px solid rgba(0,0,0,.07);padding-top:5px;min-height:14px;line-height:1.6;font-style:italic;}
+.result-title-f{font-size:11px;font-weight:700;color:var(--sub);min-height:14px;margin-top:3px;}
+.result-text-f{font-size:11.5px;color:var(--sub);min-height:14px;line-height:1.6;}
+.result-story-f{font-size:11.5px;color:#7e6655;font-style:italic;min-height:14px;line-height:1.6;border-left:3px solid #c9a97a;padding-left:6px;margin-top:3px;}
+.result-edu-f{font-size:11.5px;color:#993c1d;min-height:14px;line-height:1.6;background:rgba(250,236,231,.55);border-radius:5px;padding:5px 8px;margin-top:3px;}
+.result-field-label{font-size:9.5px;font-weight:700;color:var(--sub2);margin-top:6px;margin-bottom:2px;letter-spacing:.04em;}
+.speaker-hint-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;margin-top:4px;display:inline-block;}
+.speaker-hint-badge.sh-narrator{background:#f1efe8;color:#5f5e5a;border-left:3px solid #b4b2a9;}
+.speaker-hint-badge.sh-name{background:#faeeda;color:#633806;border-left:3px solid #ef9f27;}
+.speaker-hint-badge.sh-npc{background:#e1f5ee;color:#085041;border-left:3px solid #5dcaa5;}
+.flags-row{display:flex;flex-wrap:wrap;gap:3px;margin-top:4px;}
+.flag-chip{font-size:9.5px;padding:1px 6px;border-radius:8px;background:var(--yellow-bg);color:#7a4b00;font-weight:700;}
+.flags-edit{display:none;}
+.edit-active .flags-edit{display:block;}
+.flags-edit label{font-size:11px;color:var(--sub);font-weight:600;display:inline-flex;align-items:center;gap:3px;margin-right:8px;margin-bottom:2px;cursor:pointer;}
+.nav-btns{display:flex;gap:7px;margin-top:18px;padding-top:14px;border-top:1.5px solid var(--border);}
+.nav-sc-btn{padding:7px 16px;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:var(--panel);cursor:pointer;font-size:12px;font-weight:600;color:var(--text);font-family:'Noto Sans KR',sans-serif;transition:all .13s;}
+.nav-sc-btn:hover{background:var(--panel2);}
+
+/* ── 약품 사전 패널 ── */
+.drug-panel-inner{flex:1;overflow-y:auto;padding:18px 22px;}
+.panel-header{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.panel-header h2{font-family:'Jua',sans-serif;font-size:17px;color:var(--text);}
+.panel-header p{font-size:11.5px;color:var(--sub);}
+.add-btn{padding:7px 16px;border-radius:var(--radius-sm);border:1.5px solid var(--green);background:var(--green-bg);color:var(--green);cursor:pointer;font-size:12px;font-weight:700;font-family:'Noto Sans KR',sans-serif;display:flex;align-items:center;gap:5px;transition:all .15s;margin-left:auto;}
+.add-btn:hover{background:var(--green);color:#fff;}
+.add-btn.blue{border-color:var(--blue);background:var(--blue-bg);color:#27375a;}
+.add-btn.blue:hover{background:var(--blue);color:#fff;}
+.drug-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(268px,1fr));gap:13px;}
+.drug-card{background:var(--panel);border:2px solid var(--border);border-radius:var(--radius);padding:15px;position:relative;}
+.drug-card-top{display:flex;align-items:center;gap:10px;margin-bottom:11px;}
+.drug-emoji{font-size:2rem;width:48px;height:48px;display:flex;align-items:center;justify-content:center;border-radius:10px;background:var(--panel2);border:2px solid var(--border);flex-shrink:0;overflow:hidden;}
+.drug-pill-art{width:42px;height:42px;position:relative;display:block;filter:drop-shadow(0 5px 7px rgba(126,102,85,.18));}
+.pill-shape{position:absolute;display:block;box-shadow:inset 5px 6px 10px rgba(255,255,255,.62),inset -5px -6px 10px rgba(71,44,28,.12),0 4px 7px rgba(126,102,85,.16);}
+.pill-shape::after{content:"";position:absolute;left:18%;top:13%;width:34%;height:20%;border-radius:50%;background:rgba(255,255,255,.62);filter:blur(.5px);}
+.pill-oblong{left:50%;top:50%;width:38px;height:17px;border-radius:999px;background:linear-gradient(145deg,#fffef8,#e9edf2);transform:translate(-50%,-50%);}
+.pill-round{left:50%;top:50%;width:27px;height:27px;border-radius:50%;background:linear-gradient(145deg,var(--pill-a),var(--pill-b));transform:translate(-50%,-50%);}
+.pill-oval{left:50%;top:50%;width:31px;height:21px;border-radius:999px;background:linear-gradient(145deg,var(--pill-a),var(--pill-b));transform:translate(-50%,-50%);}
+.pill-diamond{left:50%;top:50%;width:25px;height:25px;border-radius:6px;transform:translate(-50%,-50%) rotate(45deg);background:linear-gradient(145deg,var(--pill-a),var(--pill-b));}
+.pill-diamond .pill-mark{transform:rotate(-45deg);}
+.pill-pentagon{left:50%;top:50%;width:28px;height:28px;clip-path:polygon(50% 0,96% 36%,78% 100%,22% 100%,4% 36%);background:linear-gradient(145deg,var(--pill-a),var(--pill-b));transform:translate(-50%,-50%);}
+.pill-score::before{content:"";position:absolute;left:50%;top:12%;bottom:12%;width:2px;border-radius:99px;background:rgba(255,255,255,.42);box-shadow:1px 0 1px rgba(80,50,35,.10);transform:translateX(-50%);}
+.pill-score.horizontal::before{left:13%;right:13%;top:50%;bottom:auto;width:auto;height:2px;transform:translateY(-50%);}
+.pill-capsule-combo{left:50%;top:50%;width:36px;height:18px;border-radius:999px;overflow:hidden;background:linear-gradient(90deg,#f65f78 0 34%,#ffd45e 34% 67%,#75e4cf 67% 100%);transform:translate(-50%,-50%);}
+.pill-capsule-combo::before{content:"";position:absolute;inset:0;border-radius:999px;background:linear-gradient(145deg,rgba(255,255,255,.55),rgba(255,255,255,0) 42%,rgba(80,45,30,.13));}
+.pill-capsule-combo::after{content:"";position:absolute;left:7px;top:3px;width:13px;height:5px;border-radius:50%;background:rgba(255,255,255,.55);filter:blur(.5px);}
+.pill-mark{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Jua',sans-serif;font-size:7px;color:rgba(74,58,46,.46);letter-spacing:0;text-shadow:0 1px 0 rgba(255,255,255,.65);white-space:nowrap;}
+.pill-mark.light{color:rgba(255,255,255,.82);}
+.drug-name{font-family:'Jua',sans-serif;font-size:15px;color:var(--text);}
+.drug-ingr{font-size:11px;color:var(--sub);font-weight:600;margin-top:2px;}
+.drug-field{margin-bottom:8px;}
+.df-lbl{font-size:9.5px;font-weight:700;color:var(--sub2);letter-spacing:.05em;margin-bottom:3px;}
+.df-val{font-size:12px;color:var(--text);font-weight:500;line-height:1.5;}
+.drug-chips{display:flex;flex-wrap:wrap;gap:4px;}
+.drug-chip{padding:2px 8px;border-radius:20px;background:var(--panel2);border:1.5px solid var(--border);font-size:11px;color:var(--sub);font-weight:600;}
+.drug-chip.caution{background:var(--red-bg);color:var(--red);border-color:#ffbdbd;}
+.drug-chip.highlight{background:var(--yellow-bg);color:#7a4b00;border-color:var(--yellow);}
+.drug-actions{display:flex;gap:6px;margin-top:11px;padding-top:9px;border-top:1px solid var(--border);}
+.drink-ref-card{background:var(--panel);border:2px solid var(--border);border-radius:var(--radius);padding:12px;margin-bottom:14px;}
+.drink-ref-card h3{font-family:'Jua',sans-serif;font-size:15px;margin-bottom:4px;color:var(--text);}
+.drink-ref-card p{font-size:11.5px;color:var(--sub);margin-bottom:10px;}
+.drink-ref-card img{display:block;width:min(100%,560px);max-height:520px;object-fit:contain;border-radius:12px;border:1.5px solid var(--border);background:#fffaf2;margin:0 auto;}
+.drink-card{display:flex;flex-direction:column;gap:9px;}
+.drink-data-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;}
+.drink-data-box{border:1.5px solid var(--border);border-radius:9px;background:var(--panel2);padding:7px 9px;font-size:11.5px;}
+.drink-data-box b{display:block;font-size:10px;color:var(--sub2);margin-bottom:2px;}
+.drink-caf-pill{display:inline-flex;align-items:center;justify-content:center;border:1.5px solid var(--border);border-radius:999px;padding:4px 10px;background:#fffaf2;color:#a05a22;font-family:'Jua',sans-serif;font-size:14px;}
+.drink-caf-pill.zero{color:var(--green);}
+.drink-mini-icon{width:48px;height:48px;border-radius:11px;border:2px solid #ebc7a9;background:#fff8ea;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;font-family:'Jua',sans-serif;color:#7e6655;}
+.drink-mini-can{width:24px;height:38px;border-radius:9px;background:linear-gradient(#79df68,#44ba59);border:3px solid #b9bec7;display:flex;align-items:center;justify-content:center;color:#fff;font-size:7px;text-align:center;}
+.drink-mini-pack{width:34px;height:38px;background:#deb86d;clip-path:polygon(12% 24%,28% 8%,75% 8%,90% 24%,80% 100%,20% 100%);display:flex;align-items:center;justify-content:center;color:#5c371e;font-size:8px;}
+.drink-mini-bluecan{width:24px;height:38px;border-radius:9px;background:#2d7bd8;border:3px solid #9dc4ef;display:flex;align-items:center;justify-content:center;color:#fff;font-size:7px;}
+.drink-mini-bottle{width:24px;height:40px;border-radius:10px;background:#ffbd52;border:3px solid #e6a041;display:flex;align-items:center;justify-content:center;color:#fff;font-size:8px;}
+.drink-mini-redcan{width:24px;height:38px;border-radius:9px;background:#f43f5e;border:3px solid #b9bec7;display:flex;align-items:center;justify-content:center;color:#111;font-size:7px;}
+.drink-mini-drop{width:29px;height:38px;background:#55c3ea;clip-path:polygon(50% 0,82% 36%,100% 67%,84% 95%,50% 100%,16% 95%,0 67%,18% 36%);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:7px;}
+.drink-mini-glass,.drink-mini-mug{font-size:31px;line-height:1;}
+.drink-mini-cafe{
+  width:32px;
+  height:40px;
+  border:2px solid rgba(154,119,88,.35);
+  border-radius:7px 7px 12px 12px;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.72) 0 13%,transparent 13%),
+    linear-gradient(180deg,var(--drink-light,#efe2cf) 0 24%,var(--drink-color,#8b5e34) 24% 100%);
+  position:relative;
+  box-shadow:inset 5px 0 rgba(255,255,255,.28), inset -4px 0 rgba(80,45,20,.10);
+}
+.drink-mini-cafe::before{
+  content:"";
+  position:absolute;
+  left:4px;
+  right:4px;
+  top:7px;
+  height:7px;
+  border-radius:50%;
+  background:rgba(255,255,255,.58);
+}
+.drink-mini-cafe::after{
+  content:"";
+  position:absolute;
+  left:8px;
+  top:15px;
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:rgba(255,255,255,.25);
+  box-shadow:9px 3px 0 rgba(255,255,255,.18),4px 12px 0 rgba(255,255,255,.16);
+}
+.drink-mini-tea{
+  width:34px;
+  height:34px;
+  border-radius:9px 9px 13px 13px;
+  border:2px solid rgba(154,119,88,.35);
+  background:linear-gradient(180deg,rgba(255,255,255,.72) 0 18%,var(--drink-color,#b97831) 18% 100%);
+  position:relative;
+}
+.drink-mini-tea::after{
+  content:"";
+  position:absolute;
+  right:-7px;
+  top:10px;
+  width:9px;
+  height:13px;
+  border:2px solid rgba(154,119,88,.35);
+  border-left:0;
+  border-radius:0 9px 9px 0;
+}
+.drink-nutri{width:100%;border-collapse:collapse;font-size:10.5px;text-align:center;overflow:hidden;border-radius:6px;}
+.drink-nutri th{background:#9300a8;color:#fff;padding:4px 3px;font-weight:800;}
+.drink-nutri td{background:#fffaf2;color:#374151;padding:4px 3px;font-weight:700;border-bottom:1px solid #ead9c8;}
+.d-act{flex:1;padding:7px;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:var(--panel);cursor:pointer;font-size:12px;font-weight:600;color:var(--text);font-family:'Noto Sans KR',sans-serif;transition:all .13s;text-align:center;}
+.d-act:hover{background:var(--panel2);}
+.d-act.del{border-color:#ffbdbd;color:var(--red);}
+.d-act.del:hover{background:var(--red-bg);}
+.d-act.edit{border-color:rgba(126,170,252,.4);color:#27375a;background:var(--blue-bg);}
+.d-act.edit:hover{background:var(--blue);color:#fff;}
+
+/* ── 퀴즈 패널 ── */
+.quiz-panel-inner{flex:1;overflow-y:auto;padding:18px 22px;}
+.quiz-card{background:var(--panel);border:2px solid var(--border);border-radius:var(--radius);padding:15px 18px;margin-bottom:11px;}
+.quiz-card-head{display:flex;align-items:flex-start;gap:9px;margin-bottom:11px;}
+.qnum{font-family:'Jua',sans-serif;font-size:22px;color:var(--accent);min-width:26px;line-height:1;}
+.qmeta{flex:1;}
+.qtypebadge{font-size:10px;padding:1px 8px;border-radius:10px;font-weight:700;margin-bottom:4px;display:inline-block;}
+.qtb-mc{background:var(--green-bg);color:var(--green);border:1.5px solid rgba(95,200,154,.3);}
+.qtb-sa{background:var(--blue-bg);color:#27375a;border:1.5px solid rgba(126,170,252,.3);}
+.qtext{font-size:13.5px;font-weight:700;color:var(--text);line-height:1.5;}
+.q-ep-ref{font-size:10.5px;color:var(--sub2);font-style:italic;margin-top:3px;}
+.q-options{display:flex;flex-direction:column;gap:5px;margin-bottom:11px;}
+.q-opt{display:flex;align-items:center;gap:7px;padding:7px 11px;border-radius:8px;background:var(--panel2);border:1.5px solid var(--border);}
+.q-opt.correct{background:var(--green-bg);border-color:var(--green);}
+.q-opt-idx{font-weight:700;font-size:12px;color:var(--sub);min-width:16px;}
+.q-opt.correct .q-opt-idx{color:var(--green);}
+.q-opt-text{font-size:12.5px;color:var(--text);flex:1;}
+.q-answer-sa{padding:8px 13px;border-radius:8px;background:var(--green-bg);border:2px solid var(--green);font-size:13px;font-weight:700;color:var(--green);margin-bottom:9px;}
+.q-hint{padding:8px 13px;border-radius:8px;background:var(--blue-bg);font-size:12px;color:#27375a;font-weight:600;margin-bottom:9px;}
+.q-explain{padding:8px 13px;border-radius:8px;background:var(--panel2);border-left:3px solid var(--border2);font-size:12px;color:var(--sub);line-height:1.65;}
+.q-rewards{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px;}
+.q-rchip-label{padding:2px 4px;font-size:10.5px;font-weight:800;color:var(--sub2);align-self:center;}
+.q-rchip{padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700;}
+.q-rchip.plus{background:#d1fae5;color:#065f46;}
+.q-rchip.minus{background:#fee2e2;color:#991b1b;}
+.q-rchip.hint{background:var(--yellow-bg);color:#7a4b00;}
+.q-actions{display:flex;gap:6px;margin-top:11px;padding-top:9px;border-top:1px solid var(--border);}
+
+/* ── 모달 ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(56,41,31,.32);z-index:999;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(3px);}
+.modal-box{background:var(--panel);border-radius:18px;padding:24px 28px;max-width:490px;width:100%;box-shadow:0 24px 60px rgba(92,61,40,.2);border:2px solid var(--border);max-height:88vh;overflow-y:auto;}
+.modal-box h3{font-family:'Jua',sans-serif;font-size:16px;margin-bottom:4px;color:var(--text);}
+.modal-box .modal-sub{font-size:11.5px;color:var(--sub);margin-bottom:16px;line-height:1.65;}
+.mf{margin-bottom:13px;}
+.mf label{display:block;font-size:10.5px;font-weight:700;color:var(--sub2);margin-bottom:4px;letter-spacing:.04em;}
+.mf input,.mf select,.mf textarea{width:100%;padding:8px 11px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:13px;font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);transition:border-color .15s;}
+.mf input:focus,.mf select:focus,.mf textarea:focus{outline:none;border-color:var(--accent);}
+.mf textarea{resize:vertical;min-height:68px;line-height:1.6;}
+.modal-row{display:flex;gap:7px;margin-top:4px;}
+.m-btn{flex:1;padding:10px;border-radius:var(--radius-sm);border:1.5px solid var(--border);cursor:pointer;font-size:13px;font-weight:700;font-family:'Noto Sans KR',sans-serif;text-align:center;transition:all .15s;}
+.m-btn.ok{background:var(--accent);color:#fff;border-color:var(--accent);}
+.m-btn.ok:hover{opacity:.88;}
+.m-btn.ok-green{background:var(--green);color:#fff;border-color:var(--green);}
+.m-btn.ok-green:hover{opacity:.88;}
+.m-btn.ok-blue{background:var(--blue);color:#fff;border-color:var(--blue);}
+.m-btn.cancel{background:var(--panel2);color:var(--sub);}
+.mf-row{display:flex;gap:8px;}
+.mf-row .mf{flex:1;}
+
+/* 확인 삭제 */
+.confirm-del{background:var(--red-bg);border:1.5px solid #ffbdad;border-radius:var(--radius);padding:11px 13px;margin-top:10px;display:flex;align-items:center;gap:9px;}
+.confirm-del p{font-size:12px;color:var(--red);flex:1;line-height:1.5;font-weight:600;}
+.confirm-del button{padding:5px 13px;border-radius:var(--radius-sm);border:none;cursor:pointer;font-size:12px;font-weight:700;font-family:'Noto Sans KR',sans-serif;}
+.cd-yes{background:var(--red);color:#fff;}
+.cd-no{background:var(--border);color:var(--text);}
+[contenteditable]{outline:none;border-radius:3px;transition:box-shadow .15s,background .15s;}
+[contenteditable]:focus{box-shadow:0 0 0 2px var(--accent);background:rgba(255,159,128,.06);}
+
+/* 토스트 */
+#toast{position:fixed;bottom:22px;right:22px;z-index:9999;background:var(--text);color:var(--panel);padding:9px 17px;border-radius:var(--radius);font-size:13px;font-weight:600;opacity:0;transform:translateY(8px);transition:all .25s;pointer-events:none;}
+#toast.show{opacity:1;transform:translateY(0);}
+</style>
+</head>
+<body>
+
+<!-- ── 툴바 ── -->
+<div id="topbar">
+  <span class="logo">💊 편집기 v3</span>
+  <div class="tb-sep"></div>
+  <button class="main-tab on" onclick="showMainTab('scenario',this)">📋 시나리오</button>
+  <button class="main-tab t-drug" onclick="showMainTab('drug',this)">💊 약품 사전</button>
+  <button class="main-tab t-drink" onclick="showMainTab('drink',this)">🥤 음료 사전</button>
+  <button class="main-tab t-quiz" onclick="showMainTab('quiz',this)">🎯 퀴즈</button>
+  <span id="edit-badge" class="edit-badge">✏️ 편집 중</span>
+  <div class="ml">
+    <button class="tb-btn" id="edit-toggle-btn" onclick="toggleEditMode()">✏️ 편집 모드</button>
+    <div class="tb-sep"></div>
+    <button class="tb-btn" id="undo-btn" onclick="undoAction()" disabled title="실행취소 Ctrl+Z">↩</button>
+    <button class="tb-btn" id="redo-btn" onclick="redoAction()" disabled title="다시실행 Ctrl+Y">↪</button>
+    <div class="tb-sep"></div>
+    <button class="tb-btn" onclick="triggerLoad()">📂 불러오기</button>
+    <button class="tb-btn primary" onclick="saveJSON()">💾 내보내기</button>
+    <input type="file" id="file-inp" accept=".json" style="display:none" onchange="loadJSON(this)">
+  </div>
+</div>
+
+<!-- ── 레이아웃 ── -->
+<div id="layout">
+
+  <!-- 사이드 네비 -->
+  <div id="sidenav"></div>
+
+  <!-- 메인 -->
+  <div id="main-area">
+
+    <!-- ══ 시나리오 패널 ══ -->
+    <div class="tab-panel on" id="panel-scenario">
+      <div class="subtab-bar">
+        <button class="subtab on" onclick="switchView('overview',this)">🗺 개요도</button>
+        <button class="subtab" onclick="switchView('detail',this)">📝 상세도</button>
+      </div>
+      <!-- 개요도 -->
+      <div class="sub-panel on" id="sub-overview">
+        <div id="ov-scroll"></div>
+      </div>
+      <!-- 상세도 -->
+      <div class="sub-panel" id="sub-detail">
+        <div id="scene-action-bar">
+          <button class="sa-btn" onclick="openAddModal('before')">＋ 앞에 추가</button>
+          <button class="sa-btn" onclick="openAddModal('after')">＋ 뒤에 추가</button>
+          <div class="sa-sep"></div>
+          <button class="sa-btn" id="ep-toggle-btn" onclick="toggleEpisode()">🔍 추리 에피소드</button>
+          <button class="sa-btn" onclick="openClueModal(-1)">＋ 단서 추가</button>
+          <div class="sa-sep"></div>
+          <button class="sa-btn danger" onclick="showDeleteConfirm()">🗑 장면 삭제</button>
+          <div class="sa-day-wrap">
+            <label>D-</label>
+            <input class="sa-inp" type="number" id="sa-day-inp" min="1" max="14" placeholder="14" onchange="updateSceneDay(this.value)">
+            <select class="sa-sel" id="sa-type-sel" onchange="updateSceneType(this.value)">
+              <option value="event">이벤트</option>
+              <option value="narration">나레이션</option>
+              <option value="exam">시험(퀴즈)</option>
+            </select>
+          </div>
+        </div>
+        <div id="detail-content"></div>
+      </div>
+    </div>
+
+    <!-- ══ 약품 사전 패널 ══ -->
+    <div class="tab-panel" id="panel-drug">
+      <div class="drug-panel-inner">
+        <div class="panel-header">
+          <h2>💊 약품 사전</h2>
+          <p>게임에서 사용되는 창작 약품 관리</p>
+          <button class="add-btn" onclick="openDrugModal(-1)">＋ 약품 추가</button>
+        </div>
+        <div class="drug-grid" id="drug-grid"></div>
+      </div>
+    </div>
+
+    <!-- ══ 퀴즈 패널 ══ -->
+    <div class="tab-panel" id="panel-drink">
+      <div class="drug-panel-inner">
+        <div class="panel-header">
+          <h2>🥤 음료 사전</h2>
+          <p>v15_추리 음료 선택 이미지 기준. JSON의 drinks.cvs / drinks.cafe로 저장됩니다.</p>
+          <button class="add-btn" onclick="openDrinkModal('cvs',-1)">+ 편의점 음료 추가</button>
+          <button class="add-btn blue" onclick="openDrinkModal('cafe',-1)">+ 카페 음료 추가</button>
+        </div>
+        <div class="subtab-bar" style="padding:0 0 12px;border:0;background:transparent;">
+          <button class="subtab on" id="drink-tab-cvs" onclick="switchDrinkTab('cvs',this)">편의점 음료</button>
+          <button class="subtab" id="drink-tab-cafe" onclick="switchDrinkTab('cafe',this)">카페 음료</button>
+        </div>
+        <div id="drink-reference"></div>
+        <div id="drink-grid" class="drug-grid"></div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="panel-quiz">
+      <div class="quiz-panel-inner">
+        <div class="panel-header">
+          <h2>🎯 D-Day 미니 퀴즈</h2>
+          <p>시험 당일 풀게 되는 7문항 — 객관식 4개 + 단답형 3개</p>
+          <button class="add-btn blue" onclick="openQuizModal(-1)">＋ 문항 추가</button>
+        </div>
+        <div id="quiz-list"></div>
+      </div>
+    </div>
+
+  </div><!-- #main-area -->
+</div><!-- #layout -->
+
+<!-- ── 장면 추가 모달 ── -->
+<div class="modal-overlay" id="modal-add" style="display:none" onclick="closeModalIf(event,'modal-add')">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <h3>장면 추가</h3>
+    <p class="modal-sub">새 시나리오 장면을 추가합니다</p>
+    <div class="mf-row">
+      <div class="mf"><label>D- (남은 일수)</label><input type="number" id="m-day" value="14" min="1" max="14"></div>
+      <div class="mf"><label>장면 유형</label>
+        <select id="m-type">
+          <option value="event">이벤트 (선택지 있음)</option>
+          <option value="narration">나레이션</option>
+          <option value="exam">시험 당일 (퀴즈)</option>
+        </select>
+      </div>
+    </div>
+    <div class="mf"><label>위치 (Location)</label><input type="text" id="m-loc" placeholder="📍 D-14 교문 앞 편의점"></div>
+    <div class="mf"><label>장면 제목</label><input type="text" id="m-title" placeholder="제목을 입력하세요"></div>
+    <div class="mf-row">
+      <div class="mf">
+        <label>화자 (Speaker)</label>
+        <select id="m-speaker-sel" onchange="onSpeakerSelChange()">
+          <option value="나레이터">나레이터</option>
+          <option value="{name}">{name} (주인공)</option>
+          <option value="민준">민준</option>
+          <option value="서연">서연</option>
+          <option value="하은">하은</option>
+          <option value="보건샘">보건샘</option>
+          <option value="__custom__">직접 입력…</option>
+        </select>
+        <input type="text" id="m-speaker-custom" placeholder="화자 이름 입력" style="display:none;margin-top:4px">
+        <div class="speaker-hint-badge" id="m-spk-hint">나레이터 · 3인칭 상황 묘사</div>
+      </div>
+      <div class="mf"><label>이모지</label><input type="text" id="m-emoji" value="🧑‍🎓" maxlength="4"></div>
+    </div>
+    <div class="mf"><label>상황 설명</label><textarea id="m-text" placeholder="3인칭으로 상황·배경 묘사. 감정 직접 서술 ✕"></textarea></div>
+    <div class="modal-row">
+      <button class="m-btn cancel" onclick="closeModal('modal-add')">취소</button>
+      <button class="m-btn ok" onclick="addScene()">장면 추가</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── 단서(아이템) 모달 ── -->
+<div class="modal-overlay" id="modal-clue" style="display:none" onclick="closeModalIf(event,'modal-clue')">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <h3 id="clue-modal-title">단서 추가</h3>
+    <p class="modal-sub">이 장면에서 학생이 사용할 수 있는 아이템·단서를 설정합니다</p>
+    <div class="mf"><label>아이템 유형</label>
+      <select id="cm-type" onchange="updateClueIcon()">
+        <option value="magnifier">🔍 돋보기 — 약 각인·작은 글씨 확대</option>
+        <option value="phone">📱 스마트폰 — 약학정보원 검색</option>
+        <option value="notebook">📓 복용 수첩 — 복용 시각·간격 확인</option>
+        <option value="guide">📋 성분표 카드 — 성분·함량·주의사항</option>
+        <option value="health">🩺 보건실 패스 — 보건샘 힌트 1회</option>
+        <option value="custom">🔎 직접 입력</option>
+      </select>
+    </div>
+    <div class="mf-row">
+      <div class="mf"><label>아이콘 이모지</label><input type="text" id="cm-icon" value="🔍" maxlength="4"></div>
+      <div class="mf"><label>버튼 라벨</label><input type="text" id="cm-label" placeholder="돋보기"></div>
+    </div>
+    <div class="mf"><label>팝업 제목</label><input type="text" id="cm-title" placeholder="통증싹싹캡슐 성분표 확대"></div>
+    <div class="mf"><label>팝업 내용 (학생에게 보여줄 단서)</label><textarea id="cm-body" placeholder="캡슐 옆면 작은 글씨&#10;'카페인무수물 50mg'" rows="4"></textarea></div>
+    <div class="mf"><label><input type="checkbox" id="cm-key"> 핵심 아이템 (이 단서를 확인해야 특정 선택지가 잠금 해제)</label></div>
+    <div class="modal-row">
+      <button class="m-btn cancel" onclick="closeModal('modal-clue')">취소</button>
+      <button class="m-btn ok-blue" id="clue-save-btn" onclick="saveClue()">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── 약품 모달 ── -->
+<div class="modal-overlay" id="modal-drug" style="display:none" onclick="closeModalIf(event,'modal-drug')">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <h3 id="drug-modal-title">약품 추가</h3>
+    <p class="modal-sub">게임에서 사용할 창작 약품 정보를 입력합니다</p>
+    <div class="mf-row">
+      <div class="mf"><label>약품 이름</label><input type="text" id="dm-name" placeholder="괜찮아정"></div>
+      <div class="mf"><label>이모지</label><input type="text" id="dm-emoji" value="⬜" maxlength="8"></div>
+    </div>
+    <div class="mf"><label>실제 성분명 (용량 포함)</label><input type="text" id="dm-ingredient" placeholder="아세트아미노펜 500mg"></div>
+    <div class="mf"><label>약 각인</label><input type="text" id="dm-engraving" placeholder="OK-500"></div>
+    <div class="mf"><label>주요 특징 (쉼표로 구분)</label><input type="text" id="dm-features" placeholder="공복 OK, 4~6시간 간격, 1일 최대 4,000mg"></div>
+    <div class="mf"><label>⚠️ 주의사항</label><textarea id="dm-caution" placeholder="4,000mg 초과 시 간 손상 위험" rows="2"></textarea></div>
+    <div class="mf"><label>시나리오 역할</label><input type="text" id="dm-role" placeholder="두통·발열 기본 선택지"></div>
+    <div class="modal-row">
+      <button class="m-btn cancel" onclick="closeModal('modal-drug')">취소</button>
+      <button class="m-btn ok-green" id="drug-save-btn" onclick="saveDrug()">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── 퀴즈 모달 ── -->
+<div class="modal-overlay" id="modal-drink" style="display:none" onclick="closeModalIf(event,'modal-drink')">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <h3 id="drink-modal-title">음료 추가</h3>
+    <p class="modal-sub">v15_추리 음료 선택 이미지와 카페인 계산에 쓰이는 정보를 입력합니다.</p>
+    <div class="mf-row">
+      <div class="mf"><label>음료 ID</label><input type="text" id="dmk-id" placeholder="energy"></div>
+      <div class="mf"><label>음료 이름</label><input type="text" id="dmk-name" placeholder="에너지드링크"></div>
+    </div>
+    <div class="mf-row">
+      <div class="mf"><label>제품명/영문명</label><input type="text" id="dmk-product" placeholder="THE KING ENERGY"></div>
+      <div class="mf"><label>용량</label><input type="text" id="dmk-volume" placeholder="355mL"></div>
+    </div>
+    <div class="mf-row">
+      <div class="mf"><label>아이콘 키</label><input type="text" id="dmk-icon" placeholder="energy / iced / mug"></div>
+      <div class="mf"><label>색상</label><input type="text" id="dmk-color" placeholder="#3b1f16"></div>
+    </div>
+    <div class="mf-row">
+      <div class="mf"><label>카페인 mg</label><input type="number" id="dmk-caffeine" value="0"></div>
+      <div class="mf"><label>좋은 선택 여부</label>
+        <select id="dmk-good">
+          <option value="false">주의 선택</option>
+          <option value="true">좋은 선택</option>
+        </select>
+      </div>
+    </div>
+    <div class="mf-row">
+      <div class="mf"><label>체력 변화</label><input type="number" id="dmk-health" value="0"></div>
+      <div class="mf"><label>카페인관리 변화</label><input type="number" id="dmk-cafestat" value="0"></div>
+    </div>
+    <div class="mf-row">
+      <div class="mf"><label>수면 변화</label><input type="number" id="dmk-sleep" value="0"></div>
+      <div class="mf"><label>판단력 변화</label><input type="number" id="dmk-judgment" value="0"></div>
+    </div>
+    <div class="mf-row cafe-only">
+      <div class="mf"><label>열량 kcal</label><input type="text" id="dmk-kcal" placeholder="10"></div>
+      <div class="mf"><label>당류 g</label><input type="text" id="dmk-sugar" placeholder="0"></div>
+    </div>
+    <div class="mf-row cafe-only">
+      <div class="mf"><label>단백질 g</label><input type="text" id="dmk-protein" placeholder="1"></div>
+      <div class="mf"><label>포화지방 g</label><input type="text" id="dmk-satfat" placeholder="0"></div>
+    </div>
+    <div class="mf-row cafe-only">
+      <div class="mf"><label>나트륨 mg</label><input type="text" id="dmk-sodium" placeholder="5"></div>
+      <div class="mf"><label>알레르기</label><input type="text" id="dmk-allergy" placeholder="-"></div>
+    </div>
+    <div class="mf"><label>설명</label><textarea id="dmk-desc" rows="3" placeholder="라벨을 확인하니 카페인 100mg..."></textarea></div>
+    <div class="modal-row">
+      <button class="m-btn cancel" onclick="closeModal('modal-drink')">취소</button>
+      <button class="m-btn ok-green" onclick="saveDrink()">저장</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-quiz" style="display:none" onclick="closeModalIf(event,'modal-quiz')">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <h3 id="quiz-modal-title">문항 추가</h3>
+    <p class="modal-sub">D-Day 미니 퀴즈 문항을 설정합니다</p>
+    <div class="mf-row">
+      <div class="mf"><label>문항 유형</label>
+        <select id="qm-type" onchange="toggleQuizFields()">
+          <option value="mc">객관식 (4지선다)</option>
+          <option value="sa">단답형</option>
+        </select>
+      </div>
+      <div class="mf"><label>연계 에피소드</label><input type="text" id="qm-ep" placeholder="D-6"></div>
+      <div class="mf"><label>힌트 약물 카드</label>
+        <select id="qm-hint-med">
+          <option value="ok">괜찮아정</option>
+          <option value="stop">아야스톱정</option>
+          <option value="combo">통증싹싹캡슐</option>
+          <option value="cold">감기뚝정</option>
+        </select>
+      </div>
+    </div>
+    <div class="mf"><label>문제 텍스트</label><textarea id="qm-q" placeholder="질문을 입력하세요" rows="2"></textarea></div>
+    <!-- 객관식 필드 -->
+    <div id="qm-mc-fields">
+      <div class="mf"><label>① 선택지 1</label><input type="text" id="qm-o0" placeholder="선택지 1"></div>
+      <div class="mf"><label>② 선택지 2</label><input type="text" id="qm-o1" placeholder="선택지 2"></div>
+      <div class="mf"><label>③ 선택지 3</label><input type="text" id="qm-o2" placeholder="선택지 3"></div>
+      <div class="mf"><label>④ 선택지 4</label><input type="text" id="qm-o3" placeholder="선택지 4"></div>
+      <div class="mf"><label>정답 번호 (1~4)</label><input type="number" id="qm-ans" value="1" min="1" max="4"></div>
+    </div>
+    <!-- 단답형 필드 -->
+    <div id="qm-sa-fields" style="display:none">
+      <div class="mf"><label>정답 (정확한 문자열)</label><input type="text" id="qm-answer" placeholder="4~6 또는 소염진통제"></div>
+      <div class="mf"><label>검증 방식</label>
+        <select id="qm-valid">
+          <option value="range_normalize">범위 정규화 (4~6 형태: 공백·쉼표 허용)</option>
+          <option value="exact">정확 일치</option>
+        </select>
+      </div>
+      <div class="mf"><label>힌트 방식</label>
+        <select id="qm-hint-type" onchange="toggleHintFields()">
+          <option value="popup">복약지도 팝업</option>
+          <option value="consonant">초성 힌트</option>
+          <option value="none">힌트 없음</option>
+        </select>
+      </div>
+      <div id="qm-hint-popup">
+        <div class="mf"><label>팝업 제목</label><input type="text" id="qm-hp-title" placeholder="아세트아미노펜 복약지도"></div>
+        <div class="mf"><label>팝업 내용</label><textarea id="qm-hp-body" placeholder="복용 간격: 4~6시간마다&#10;1일 최대 4,000mg" rows="4"></textarea></div>
+      </div>
+      <div id="qm-hint-con" style="display:none">
+        <div class="mf-row">
+          <div class="mf"><label>초성</label><input type="text" id="qm-con" placeholder="ㅅㅇㅈㅌㅈ"></div>
+          <div class="mf"><label>글자 수</label><input type="number" id="qm-len" value="5" min="1" max="10"></div>
+        </div>
+      </div>
+    </div>
+    <div class="mf"><label>해설</label><textarea id="qm-explain" placeholder="해설을 입력하세요" rows="2"></textarea></div>
+    <div class="modal-row">
+      <button class="m-btn cancel" onclick="closeModal('modal-quiz')">취소</button>
+      <button class="m-btn ok" id="quiz-save-btn" onclick="saveQuiz()">저장</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════
+// 1. 상수
+// ══════════════════════════════════════════
+const STATS = ['건강','지식','활력','판단력','수면','생활습관','카페인','사회성'];
+const CHOICE_FLAGS = ['labelChecked','helpedFriend','snsRisk','analgesic','fastingMed','comboMedCaffeine','recoveryPlan','minjunWarned','openDrink','noCaffeine','healthOffice'];
+const FLAG_LABELS = {labelChecked:'라벨확인',helpedFriend:'친구도움',snsRisk:'SNS위험',analgesic:'진통제복용',fastingMed:'공복복용',comboMedCaffeine:'카페인중복',recoveryPlan:'회복계획',minjunWarned:'민준경고',openDrink:'음료선택',noCaffeine:'카페인없음',healthOffice:'보건실방문'};
+const ITEM_TYPES = {
+  magnifier:{icon:'🔍',label:'돋보기'},
+  phone:{icon:'📱',label:'스마트폰'},
+  notebook:{icon:'📓',label:'복용 수첩'},
+  guide:{icon:'📋',label:'성분표'},
+  health:{icon:'🩺',label:'보건실 패스'},
+  custom:{icon:'🔎',label:'직접 입력'}
+};
+const TYPE_COLOR = {good:var_('green'),bad:var_('red'),mid:'#f4a261'};
+const TYPE_LABEL = {good:'✓ 올바른',bad:'✗ 위험',mid:'△ 절충'};
+const DAY_COLORS = {14:'#ff9f80',13:'#e76f51',12:'#f4a261',11:'#c084fc',10:'#5fc89a',9:'#5eadff',8:'#fb7185',7:'#facc15',6:'#34d399',5:'#a78bfa',4:'#f87171',3:'#60a5fa',2:'#4ade80',1:'#fbbf24',exam:'#38bdf8'};
+function var_(k){return getComputedStyle(document.documentElement).getPropertyValue('--'+k).trim()||'#888';}
+
+// ══════════════════════════════════════════
+// 2. 기본 데이터
+// ══════════════════════════════════════════
+const DEFAULT_DRUGS = [
+  {id:'ok',name:'괜찮아정',emoji:'⬜',ingredient:'아세트아미노펜 500mg',engraving:'OK-500',features:['공복 OK','4~6시간 간격','1일 최대 8정(4,000mg)'],caution:'4,000mg 초과 시 간 손상 위험',role:'두통·발열 기본 선택지'},
+  {id:'stop',name:'아야스톱정',emoji:'🔵',ingredient:'이부프로펜 200mg',engraving:'IBU-200',features:['소염 효과','생리통에 유리','식후 복용 필수'],caution:'공복 금지 — 위 점막 자극, 위출혈 위험',role:'생리통·근육통 에피소드 핵심 (D-11)'},
+  {id:'combo',name:'통증싹싹캡슐',emoji:'🔴🟡🟢',ingredient:'아세트아미노펜 300mg + IPA 150mg + 카페인무수물 50mg',engraving:'CAF-50mg',features:['복합 진통','카페인 50mg 숨어있음 ⚠️'],caution:'에너지드링크 병용 시 카페인 중복 위험!',role:'추리 에피소드 D-10 핵심'},
+  {id:'cold',name:'감기뚝정',emoji:'🟠',ingredient:'아세트아미노펜 300mg + 항히스타민제',engraving:'COLD-300',features:['종합 감기 완화','아세트아미노펜 포함'],caution:'괜찮아정과 병용 시 아세트아미노펜 중복 위험!',role:'성분 중복 에피소드 D-8 핵심'},
+  {id:'digest',name:'더부룩해소정',emoji:'🟣',ingredient:'소화효소 복합제',engraving:'DIG-EZ',features:['식후 복용 권장','더부룩함·소화불량 완화'],caution:'알레르기 반응 시 복용 중단',role:'공복 부작용 에피소드 보조'},
+  {id:'allergy',name:'재채기스톱정',emoji:'🟤',ingredient:'클로르페니라민 4mg',engraving:'STOP-4',features:['졸음 유발 주의 ⚠️','알레르기·콧물 완화'],caution:'복용 후 운전·집중 작업 주의. 졸음 부작용!',role:'졸음 부작용 에피소드 D-3 연계'},
+];
+
+const DEFAULT_QUIZ = [
+  {id:'q1',type:'mc',episodeRef:'D-6',question:'괜찮아정(아세트아미노펜)의 1일 최대 복용량은?',options:['1,000mg','2,000mg','4,000mg','8,000mg'],answerIdx:2,explanation:'아세트아미노펜 1일 최대 4,000mg 초과 시 간 손상 위험이 있어요. 500mg 기준 하루 최대 8정.',rewardCorrect:{지식:8,판단력:5},penaltyWrong:{지식:-3,판단력:-3}},
+  {id:'q2',type:'mc',episodeRef:'D-11',question:'아야스톱정(이부프로펜)을 먹으면 안 되는 상황은?',options:['식후 30분','물과 함께','공복 상태','자기 전'],answerIdx:2,explanation:'이부프로펜(NSAIDs 계열)은 위 점막을 직접 자극해요. 공복에 복용하면 위염·위출혈 위험이 높아집니다.',rewardCorrect:{지식:8,판단력:5},penaltyWrong:{지식:-3,판단력:-3}},
+  {id:'q3',type:'mc',episodeRef:'D-8',question:'아세트아미노펜 계열 약과 함께 먹으면 성분이 중복될 수 있는 약은?',options:['더부룩해소정','재채기스톱정','감기뚝정','아야스톱정'],answerIdx:2,explanation:'감기뚝정(종합감기약)에는 아세트아미노펜이 포함되어 있어요. 괜찮아정과 함께 먹으면 하루 최대량을 초과할 수 있습니다.',rewardCorrect:{지식:8,판단력:5},penaltyWrong:{지식:-3,판단력:-3}},
+  {id:'q4',type:'mc',episodeRef:'D-10',question:'통증싹싹캡슐(삼색 캡슐)에 숨어있는 성분 중 에너지드링크와 중복될 수 있는 것은?',options:['이부프로펜','항히스타민','카페인','비타민C'],answerIdx:2,explanation:'통증싹싹캡슐에는 카페인무수물 50mg이 들어있어요. 에너지드링크 카페인과 합산하면 청소년 권장량을 초과할 수 있습니다.',rewardCorrect:{지식:8,판단력:5},penaltyWrong:{지식:-3,판단력:-3}},
+  {id:'q5',type:'sa',episodeRef:'D-6',question:'괜찮아정(아세트아미노펜)은 한 번 먹고 나면 최소 몇 시간 ~ 최대 몇 시간 뒤에 다시 먹을 수 있을까? (예: 4~6)',answerRaw:'4~6',validationType:'range_normalize',hintType:'popup',hintPopupTitle:'아세트아미노펜 복약지도',hintPopupBody:'용법·용량\n• 1회 1정 (500mg)\n• 복용 간격: 4~6시간마다\n• 1일 최대 8정 (4,000mg)\n\n⚠️ 주의사항\n• 4,000mg 초과 시 간 손상 위험\n• 음주 중 복용 금지',rewardCorrect:{지식:12,판단력:10},rewardHintCorrect:{지식:8,판단력:5},penaltyWrong:{지식:-5,판단력:-5},penaltyHint:{판단력:-3},explanation:'아세트아미노펜은 4~6시간 간격으로 복용해야 합니다. 3시간 만에 재복용하면 혈중 농도가 과도하게 올라 간 손상 위험이 있어요.'},
+  {id:'q6',type:'sa',episodeRef:'D-8',question:'약의 성분·함량·복용법·주의사항이 적힌 약 포장 속 종이를 무엇이라고 하나요?',answerRaw:'첨부문서',validationType:'exact',hintType:'consonant',hintConsonant:'ㅊㅂㅁㅅ',hintLetterCount:4,rewardCorrect:{지식:12,판단력:10},rewardHintCorrect:{지식:8,판단력:5},penaltyWrong:{지식:-5,판단력:-5},penaltyHint:{판단력:-3},explanation:'첨부문서에는 약의 성분, 효능, 복용법, 주의사항이 모두 적혀있어요. 약을 먹기 전 반드시 확인하는 습관이 중요합니다.'},
+  {id:'q7',type:'sa',episodeRef:'D-11',question:'이부프로펜처럼 염증을 줄이는 진통 효과가 있는 약의 계열을 무엇이라고 하나요?',answerRaw:'소염진통제',validationType:'exact',hintType:'consonant',hintConsonant:'ㅅㅇㅈㅌㅈ',hintLetterCount:5,rewardCorrect:{지식:12,판단력:10},rewardHintCorrect:{지식:8,판단력:5},penaltyWrong:{지식:-5,판단력:-5},penaltyHint:{판단력:-3},explanation:'소염진통제(NSAIDs)는 염증을 억제하면서 통증을 줄여요. 아세트아미노펜과 달리 소염 효과가 있어 생리통·근육통에 더 효과적입니다.'},
+];
+
+const DEFAULT_SCENES = [
+  {id:'s1',day:14,loc:'📍 D-14 교문 앞 편의점',type:'event',title:'민준이의 제안',speaker:'민준',emoji:'😄',isEpisode:false,clues:[],
+   text:'민준이 편의점에서 나오며 손을 흔든다. "야, 시험 2주 전부터 긴장되지? 에너지드링크 하나 샀는데 너도 살래? 오전 버티려면 이거라도 마셔야 해."',
+   choices:[
+    {type:'bad',text:'🥤 편의점 냉장고에서 음료를 직접 고른다.',delta:{지식:2},requiresClue:null,flags:['openDrink'],note:'openDrink:"cvs"',result:{title:'첫 음료 선택',text:'오전은 조금 버틸 수 있을 것 같다.',followup:'선택한 음료의 카페인 양은 오늘 섭취량에 그대로 더해진다.'}},
+    {type:'good',text:'💧 "됐어, 이따 물 마실게." 민준의 시선을 견딘다.',delta:{판단력:3},requiresClue:null,flags:['noCaffeine'],note:'caffeineMg:0',result:{title:'어색한 거절',text:'민준이 "어, 진짜로?" 하며 쳐다봤다. 조금 어색했지만 당장은 아무 효과도 없는 선택처럼 느껴졌다.'}},
+  ]},
+  {id:'s2',day:13,loc:'📚 D-13 자습실',type:'event',title:'★ 주머니 속 감기뚝정',speaker:'{name}',emoji:'😣',isEpisode:true,requireCluesBeforeChoices:true,choiceSpeaker:'protagonist',clueGuideText:'각 힌트를 눌러 돋보기와 약학정보원 단서를 비교해 보세요',
+   clues:[
+    {itemType:'magnifier',icon:'🔍',label:'돋보기 확인',title:'알약 각인 확대',pillKey:'cold',body:'연한 주황색 오각형 알약 표면 각인: "COLD-300"',isKey:true},
+    {itemType:'phone',icon:'📱',label:'약학정보원',title:'약학정보원 모양 검색',pharmacySearch:true,body:'검색 결과 후보를 보고 돋보기로 확인한 각인과 직접 비교한다.',isKey:true},
+   ],
+   text:'자습실에서 몸이 으슬으슬하다. 주머니를 뒤져보니 오각형 알약이 하나 나온다. 아침에 가족이 "감기 기운 있으면 먹으라"고 챙겨준 약인데, 이름을 제대로 확인하지 못했다. 지금 머리도 아픈데 그냥 먹어도 되는 걸까? 약 표면에 각인이 있지만 작아서 잘 보이지 않는다.',
+   choices:[
+    {type:'good',text:'✅ 각인 COLD-300과 맞는 감기뚝정(감기약)을 고르고 보건실에서 확인한다.',delta:{지식:12,판단력:10},requiresClue:1,flags:['labelChecked'],note:'정답 약 선택',result:{title:'✅ 단서 조합 성공!',speaker:'보건샘',text:'보건샘은 약 표면의 COLD-300 각인과 성분표를 함께 확인해 주었다.\n감기뚝정(감기약)은 감기 증상 완화에 쓰이지만, 아세트아미노펜이 들어 있어 다른 두통약과 중복될 수 있다고 설명했다.\n모르는 약은 혼자 판단하지 않고 확인하는 것이 안전하다.'}},
+    {type:'bad',text:'💊 가족이 챙겨준 약이니 그냥 먹는다.',delta:{건강:-8,판단력:-10},requiresClue:null,flags:[],note:'미확인 복용',result:{title:'⚠️ 미확인 복용',text:'약 이름과 성분을 확인하지 않은 채 삼켰다. 지금 당장은 괜찮아 보여도, 오늘 다른 두통약을 먹게 되면 같은 성분이 겹칠 수 있다. 가족이 챙겨준 약이어도 복용 전에는 이름과 성분을 확인해야 한다.'}},
+    {type:'bad',text:'⬜ OK-500 각인처럼 보여 괜찮아정(두통약)을 고른다.',delta:{건강:-6,판단력:-12,지식:-4},requiresClue:1,flags:[],note:'오답 약 선택',result:{title:'⚠️ 각인 오판',speaker:'보건샘',text:'보건샘은 약 표면의 COLD-300 각인과 성분표를 함께 확인해 주었다.\n감기뚝정(감기약)은 감기 증상 완화에 쓰이지만, 아세트아미노펜이 들어 있어 다른 두통약과 중복될 수 있다고 설명했다.\n모르는 약은 혼자 판단하지 않고 확인하는 것이 안전하다.'}},
+    {type:'bad',text:'🔵 IBU-200 각인처럼 보여 아야스톱정(생리통약)을 고른다.',delta:{건강:-6,판단력:-12,지식:-4},requiresClue:1,flags:[],note:'오답 약 선택',result:{title:'⚠️ 각인 오판',speaker:'보건샘',text:'보건샘은 약 표면의 COLD-300 각인과 성분표를 함께 확인해 주었다.\n감기뚝정(감기약)은 감기 증상 완화에 쓰이지만, 아세트아미노펜이 들어 있어 다른 두통약과 중복될 수 있다고 설명했다.\n모르는 약은 혼자 판단하지 않고 확인하는 것이 안전하다.'}},
+  ]},
+  {id:'s3',day:12,loc:'🏫 D-12 보건 수업',type:'event',title:'성분표 읽기 실습',speaker:'보건샘',emoji:'🩺',isEpisode:false,clues:[],
+   text:'선생님이 종이를 한 장씩 나눠줬다. "이게 실제 약국에서 파는 감기뚝정이에요. 성분명, 함량, 복용법, 주의사항을 같이 읽어볼까요?"',
+   choices:[
+    {type:'good',text:'📋 성분표를 하나씩 짚어가며 읽는다.',delta:{지식:12,판단력:8},requiresClue:null,flags:['labelChecked'],note:'이후 성분 중복 에피소드에서 인식 보너스',result:{title:'✅ 성분표가 보이기 시작했다',text:'성분명, 함량, 복용 간격, 주의사항을 읽는 방법을 익혔다.'}},
+    {type:'good',text:'✋ "선생님, 이거 아세트아미노펜이 들어있는 거 맞아요?" 질문한다.',delta:{지식:15,판단력:5,사회성:5},requiresClue:null,flags:['labelChecked'],note:'최고 지식 보상',result:{title:'✅ 핵심 질문!',text:'질문 하나로 교실 전체가 성분 중복 위험을 함께 알게 됐다.'}},
+    {type:'bad',text:'😴 졸려서 대충 훑고 넘긴다.',delta:{지식:-3,수면:-3},requiresClue:null,flags:[],note:'',result:{title:'⚠️ 놓친 정보',text:'중요한 내용이 눈앞을 지나갔다. 다음번 성분 중복 에피소드에서 판단이 늦어질 수 있다.'}},
+  ]},
+  {id:'s4',day:11,loc:'🏃 D-11 체육관 앞',type:'event',title:'★ 생리통의 선택',speaker:'{name}',emoji:'😣',isEpisode:true,clueGuideText:'각 힌트를 눌러 스마트폰 검색 결과와 성분표 단서를 비교해 보세요',
+   clues:[
+    {itemType:'phone',icon:'📱',label:'스마트폰 확인',title:'스마트폰 검색 결과: 괜찮아정(두통약)',medicineKey:'ok',body:'괜찮아정(두통약)은 아세트아미노펜 500mg이다.\n소염 효과는 없지만 공복 복용이 가능하다.\n서연은 오늘 아침을 먹지 않은 상태라 식사 여부도 함께 확인해야 한다.',isKey:false},
+    {itemType:'guide',icon:'📋',label:'성분표 확인',title:'아야스톱정(생리통약)',medicineKey:'aya',body:'성분: 이부프로펜 200mg\n복용: 식후 즉시 / 1일 3회\n⚠️ 공복 복용 금지\n위 점막 자극 → 위염·위출혈 위험',isKey:true},
+   ],
+   text:'체육 시간 전, 서연이 얼굴이 창백하다. "배가 너무 아파. 사물함에 괜찮아정(두통약)밖에 없는데 생리통에도 먹어도 돼?" 오늘 아침 서연은 아무것도 못 먹었다.',
+   choices:[
+    {type:'good',text:'📋 스마트폰 검색 결과와 성분표를 비교하고, 식사 후 보건실에서 아야스톱정(생리통약) 복용 가능 여부를 확인한다.',delta:{건강:5,판단력:12},requiresClue:1,flags:['labelChecked'],note:'공복+이부프로펜 위험 인지 ← 스마트폰 검색과 성분표 카드 비교',result:{title:'✅ 확인 후 상담',text:'서연에게 먼저 음식을 조금 먹고 보건실에서 확인하자고 했다. 보건샘은 아침을 먹었는지 먼저 묻고, 생리통약은 식후 복용해야 위 부담을 줄일 수 있다고 설명했다. 필요하면 상태를 확인한 뒤 복용하도록 안내했다.'}},
+    {type:'good',text:'💊 괜찮아정(두통약)을 준다. 공복이라 이부프로펜보다 안전하다고 설명한다.',delta:{건강:3,판단력:8},requiresClue:null,flags:[],note:'차선책이지만 안전한 선택',result:{title:'✅ 안전한 차선책',text:'아세트아미노펜은 공복에도 위 자극이 적어 지금 상황에서 적절한 차선책이다.'}},
+    {type:'bad',text:'💊 아야스톱정(생리통약)을 바로 빌려준다.',delta:{건강:-10,판단력:-10},requiresClue:null,flags:[],note:'성분표 미확인 시 선택 가능',result:{title:'⚠️ 공복 복용!',text:'이부프로펜 공복 복용 → 속 쓰림·위 자극 부작용 발생. 성분표를 확인하지 않은 결과.'}},
+  ]},
+  {id:'s5',day:10,loc:'🏸 D-10 급식실 앞',type:'event',title:'★★ 삼색 캡슐의 비밀',speaker:'{name}',emoji:'💊',isEpisode:true,
+   clues:[
+    {itemType:'magnifier',icon:'🔍',label:'돋보기',title:'통증싹싹캡슐 확대',body:'캡슐 옆면 작은 글씨 (일반 시야로는 안 보임)\n→ "카페인무수물 50mg"\n→ 아세트아미노펜 300mg + IPA 150mg',isKey:true},
+    {itemType:'notebook',icon:'📓',label:'복용 수첩',title:'오늘 카페인 섭취 기록',body:'오늘 마신 음료: 에너지드링크 1캔\n카페인 함량: 100mg\n\n⚠️ 통증싹싹캡슐 추가 시:\n100mg + 50mg = 150mg\n청소년 권장량(50kg 기준): 125mg',isKey:false},
+   ],
+   text:'점심 후 두통이 온다. 가방에서 통증싹싹캡슐(삼색 캡슐)을 꺼냈다. 아까 에너지드링크도 한 캔 마셨는데… 먹어도 괜찮을까?',
+   choices:[
+    {type:'good',text:'🔍 돋보기로 확인 → "카페인무수물 50mg" 발견 → 합산 계산 후 복용하지 않는다.',delta:{지식:15,판단력:15},requiresClue:0,flags:['labelChecked'],note:'돋보기 필수 — 핵심 방탈출 장면',result:{title:'✅ 단서 발견!',text:'"CAF-50mg" 발견! 에너지드링크 100mg + 캡슐 50mg = 150mg. 권장량을 넘을 수 있어 복용을 멈췄다. 돋보기가 핵심이었다.'}},
+    {type:'bad',text:'💊 그냥 통증싹싹캡슐을 먹는다 (카페인 중복 무시).',delta:{건강:-15,카페인:-12,판단력:-10},requiresClue:null,flags:['analgesic','comboMedCaffeine'],note:'comboMedCaffeine:true',result:{title:'⚠️ 카페인 중복!',text:'합산 카페인 150mg. 두근거림·불안·두통 악화 부작용 발생. 돋보기로 확인했다면 피할 수 있었다.'}},
+    {type:'good',text:'💧 물 마시고 잠깐 눕는다.',delta:{건강:2,판단력:5},requiresClue:null,flags:[],note:'',result:{title:'✅ 비약물 선택',text:'완벽하진 않지만 카페인을 더 추가하지는 않았다.'}},
+  ]},
+  {id:'s6',day:9,loc:'📱 D-9 급식실',type:'event',title:'SNS 오남용 챌린지',speaker:'하은',emoji:'📱',isEpisode:false,clues:[],
+   text:'하은이 폰을 내밀었다. "야, 이거 봐봐. 누가 카페인이랑 진통제를 같이 먹는 걸 \'시험 꿀팁\'처럼 올렸어. 댓글도 많은데, 이거 위험한 거 아니야?"',
+   choices:[
+    {type:'good',text:'🔍 "진짜? 어떤 성분이야?" 폰을 당겨 성분을 직접 확인한다.',delta:{지식:6,판단력:3},requiresClue:null,flags:['labelChecked'],note:'labelChecked:true — 민준 말릴 근거 생성',result:{title:'✅ 직접 확인',text:'"이미 통증싹싹캡슐에 카페인 들어있잖아"라는 댓글을 발견했다. 성분 중복 위험을 알게 됐다.'}},
+    {type:'bad',text:'🤩 "진짜 효과 있나?" 하고 스크린샷을 저장한다.',delta:{판단력:-10},requiresClue:null,flags:['snsRisk'],note:'snsRisk:true — D-4 위험 선택지 활성화',result:{title:'⚠️ 위험한 저장',text:'지금은 호기심이지만 며칠 뒤 실제 선택지가 될 수 있다.'}},
+    {type:'good',text:'🚩 "위험할 것 같다." 신고 버튼을 누른다.',delta:{판단력:8,지식:5},requiresClue:null,flags:[],note:'',result:{title:'✅ 잘못된 정보 차단',text:'SNS의 위험한 복약 정보를 스스로 차단했다. 친구들의 안전에도 기여했다.'}},
+  ]},
+  {id:'s7',day:8,loc:'📚 D-8 도서관',type:'event',title:'★ 두 약의 겹치는 성분',speaker:'{name}',emoji:'📦',isEpisode:true,
+   clues:[
+    {itemType:'guide',icon:'📋',label:'성분표 2장 비교',title:'두 약 성분 나란히 비교',body:'감기뚝정\n→ 아세트아미노펜 300mg + 항히스타민\n\n괜찮아정\n→ 아세트아미노펜 500mg\n\n⚠️ 합산 = 800mg (1회)\n하루 3회 복용 시 = 2,400mg → 한계에 근접!',isKey:true},
+   ],
+   text:'감기에 걸려 아침에 감기뚝정(종합감기약)을 먹었다. 오후에 두통이 또 온다. 가방에서 괜찮아정을 꺼내려는데… 같이 먹어도 될까?',
+   choices:[
+    {type:'good',text:'📋 성분표 2장 비교 → 아세트아미노펜 중복 확인 → 안 먹기로 한다.',delta:{지식:15,판단력:15},requiresClue:0,flags:['labelChecked'],note:'성분표 필수 — 중복 감지',result:{title:'✅ 성분 중복 발견!',text:'두 약 모두 아세트아미노펜 포함. 합산하면 과다 복용 위험. 성분표 비교가 안전을 지켰다.'}},
+    {type:'bad',text:'💊 그냥 괜찮아정도 먹는다 (두통이 심하니까).',delta:{건강:-12,판단력:-10},requiresClue:null,flags:['analgesic'],note:'comboMedCaffeine은 아니지만 성분 중복',result:{title:'⚠️ 성분 중복!',text:'감기뚝정 300mg + 괜찮아정 500mg = 800mg. 반복 복용 시 1일 4,000mg 초과 위험.'}},
+    {type:'good',text:'🩺 보건실에 가서 물어본다.',delta:{지식:10,판단력:8},requiresClue:null,flags:['healthOffice'],note:'healthOffice:"fasting"',result:{title:'✅ 전문가 상담',text:'보건샘이 두 약 성분표를 함께 보며 중복 위험을 설명해 주셨다.'}},
+  ]},
+  {id:'s8',day:7,loc:'🪞 D-7 집 거울 앞',type:'event',title:'1주차 중간 점검',speaker:'나레이터',emoji:'📊',isEpisode:false,clues:[],
+   text:'7일이 지났다. 거울을 봤다. 눈 밑이 칙칙하고 아침부터 어깨가 무겁다. 지난 일주일의 선택이 몸에 남아있다.',
+   choices:[
+    {type:'good',text:'📓 복용 수첩에 지난 7일 선택을 정리하고 패턴을 분석한다.',delta:{판단력:10,지식:5},requiresClue:null,flags:['recoveryPlan'],note:'showReport:7',result:{title:'✅ 1주차 리포트',text:'무엇이 무너졌는지 적어보자 패턴이 보였다. 문제를 찾는 것 자체가 회복의 시작이다.'}},
+    {type:'good',text:'🔄 카페인을 줄이고 수면을 늘리기로 결심한다.',delta:{판단력:8,카페인:5,수면:5},requiresClue:null,flags:['recoveryPlan'],note:'recoveryPlan:true',result:{title:'✅ 회복 계획',text:'2주차에는 카페인과 수면 선택에서 회복 보너스가 붙을 준비가 됐다.'}},
+    {type:'bad',text:'😐 "이 정도면 괜찮지 않나?" 무시한다.',delta:{건강:-5,판단력:-4},requiresClue:null,flags:[],note:'',result:{title:'⚠️ 무시된 신호',text:'몸의 신호를 넘기면 신호는 사라지는 대신 더 크게 돌아올 수 있다.'}},
+  ]},
+  {id:'s9',day:6,loc:'🏥 D-6 보건실',type:'event',title:'★ 언제 다시 먹어도 될까?',speaker:'{name}',emoji:'⏱️',isEpisode:true,
+   clues:[
+    {itemType:'notebook',icon:'📓',label:'복용 수첩',title:'오늘 복용 기록',body:'오후 1시: 괜찮아정 1정 (500mg) 복용\n현재 시각: 오후 4시\n경과: 3시간\n\n→ 재복용 가능 시간: 오후 5~7시 (4~6시간 후)',isKey:true},
+    {itemType:'guide',icon:'📋',label:'괜찮아정 성분표',title:'괜찮아정 복용 간격 확인',body:'복용 간격: 4~6시간마다\n1일 최대 8정 (4,000mg)\n⚠️ 3시간 만에 재복용 → 혈중 농도 과다 위험',isKey:false},
+   ],
+   text:'오후 1시에 괜찮아정을 먹었다. 지금은 오후 4시. 두통이 아직 남아있다. 민준이 "3시간 됐으면 한 알 더 먹어도 되지 않아?" 라고 한다.',
+   choices:[
+    {type:'good',text:'📓 복용 수첩 확인 → 아직 4시간이 안 됐다, 거절한다.',delta:{건강:5,판단력:15},requiresClue:0,flags:[],note:'복용 수첩 필수',result:{title:'✅ 시간 확인!',text:'3시간은 아직 4~6시간 기준 미달. 수첩이 과다 복용을 막았다.'}},
+    {type:'bad',text:'💊 민준 말 믿고 한 알 더 먹는다.',delta:{건강:-12,판단력:-10},requiresClue:null,flags:['analgesic'],note:'3시간 재복용 위험',result:{title:'⚠️ 재복용 위험!',text:'3시간 만에 재복용하면 혈중 농도가 과도하게 올라간다. 간 손상 위험이 증가한다.'}},
+    {type:'good',text:'💧 물 마시고 30분 더 기다린다.',delta:{판단력:8},requiresClue:null,flags:[],note:'',result:{title:'✅ 기다리는 선택',text:'약이 아닌 방법으로 버티기로 했다. 4~6시간이 지나면 재복용이 가능하다.'}},
+  ]},
+  {id:'s10',day:5,loc:'🏫 D-5 교실',type:'event',title:'민준이를 구해줄까?',speaker:'하은',emoji:'📱',isEpisode:false,clues:[],
+   text:'하은이 조용히 다가온다. "민준이 오늘도 에너지드링크 마시고 밤새려고 한대. 심장 두근거린다는데 괜찮은 거야?"',
+   choices:[
+    {type:'good',text:'🚩 "두근거리면 그냥 넘기면 안 돼. 카페인 줄이고 자야 해."라고 말한다.',delta:{지식:8,판단력:10,사회성:5},requiresClue:null,flags:['helpedFriend','labelChecked'],note:'helpedFriend:true',result:{title:'✅ 위험 신호를 짚음',text:'민준에게 카페인을 더 마시는 대신 쉬어야 한다고 말했다.'}},
+    {type:'good',text:'🩺 민준을 보건샘에게 데려가자고 한다.',delta:{판단력:10,사회성:8},requiresClue:null,flags:['helpedFriend','healthOffice'],note:'healthOffice:"friend"',result:{title:'✅ 전문가 연결',text:'친구의 이상 신호를 혼자 판단하지 않고 보건샘에게 연결했다.'}},
+    {type:'bad',text:'😐 "그래? 괜찮대?" 관심 없이 넘긴다.',delta:{판단력:-5,사회성:-3},requiresClue:null,flags:[],note:'',result:{title:'⚠️ 놓친 신호',text:'두근거림을 가볍게 넘겼다.'}},
+  ]},
+  {id:'s11',day:4,loc:'🛒 D-4 편의점',type:'event',title:'★ 카페인 폭탄 해체',speaker:'{name}',emoji:'☕',isEpisode:true,
+   clues:[
+    {itemType:'magnifier',icon:'🔍',label:'돋보기',title:'에너지드링크 뒷면 확대',body:'에너지드링크 (355mL)\n카페인 함량: 100mg\n표시: "카페인 함유"',isKey:false},
+    {itemType:'phone',icon:'📱',label:'스마트폰 검색',title:'"청소년 카페인 하루 권장량" 검색',body:'청소년 카페인 권장량\n= 체중(kg) × 2.5mg 이하\n\n50kg 기준: 125mg 이하\n오늘 이미 섭취: 100mg (에너지드링크 1캔)\n통증싹싹캡슐 추가 시: +50mg → 총 150mg',isKey:true},
+   ],
+   text:'쉬는 시간이 되자 머리가 더 지끈거린다. 아침에 마신 에너지드링크 캔이 떠오르고, 가방 속 통증싹싹캡슐도 생각난다. 민준이 말한다. "그거 그냥 먹어. 두통엔 잘 듣잖아."',
+   choices:[
+    {type:'good',text:'📱 검색으로 카페인 합산 계산 → 150mg으로 권장량을 넘을 수 있어 먹지 않기로 결정.',delta:{지식:15,판단력:12},requiresClue:1,flags:['labelChecked'],note:'스마트폰 필수',result:{title:'✅ 계산 성공!',text:'100 + 50 = 150mg. 50kg 기준 권장량 125mg을 넘을 수 있다. 복용하지 않는 판단이 몸을 지켰다.'}},
+    {type:'bad',text:'💊 민준 말 듣고 그냥 먹는다.',delta:{건강:-15,카페인:-10,판단력:-10},requiresClue:null,flags:['analgesic','comboMedCaffeine'],note:'comboMedCaffeine:true',result:{title:'⚠️ 카페인 중복!',text:'합산 150mg. 두근거림·불안 부작용 발생 가능.'}},
+  ]},
+  {id:'s12',day:3,loc:'🏠 D-3 하굣길',type:'event',title:'서연의 카페 제안',speaker:'서연',emoji:'☕',isEpisode:false,clues:[],
+   text:'서연이 메시지를 보냈다. "카페 갈래? 카페 공부 분위기가 집보다 낫더라." 하굣길의 나는 아직 머리가 완전히 맑지는 않다.',
+   choices:[
+    {type:'bad',text:'☕ 서연과 카페에 가서 음료를 고른다.',delta:{지식:6,건강:-4,수면:-4},requiresClue:null,flags:['openDrink'],sceneAfterDrink:'scene_cafe',note:'openDrink:"cafe" / sleepHours:6',result:{title:'카페 공부',text:'카페 분위기는 집보다 집중이 잘 됐다.',followup:'하지만 내가 고른 음료의 카페인은 오늘 섭취량에 더해지고, 밤에 잠드는 시간을 흔들 수 있다.'}},
+    {type:'good',text:'🏠 "오늘은 집에서 할게." 카페에 가지 않고 집으로 간다.',delta:{지식:4,수면:5,사회성:-2},requiresClue:null,flags:[],note:'',result:{title:'✅ 수면 우선',text:'서연과 조금 어색해졌지만 오늘 밤은 일찍 정리할 수 있었다.'}},
+  ]},
+  {id:'s13',day:2,loc:'📚 D-2 독서실',type:'event',title:'마지막 밤샘의 유혹',speaker:'민준',emoji:'🌙',isEpisode:false,clues:[],
+   text:'민준이 독서실 책상에 에너지드링크를 올려놨다. "이번 주 마지막이야. 오늘만 밤새면 돼."',
+   choices:[
+    {type:'bad',text:'🥤 받아서 마신다. 새벽 2시까지 공부한다.',delta:{지식:10,건강:-12,수면:-12,카페인:-8},requiresClue:null,flags:['openDrink'],note:'sleepHour:26 / sleepHours:5',result:{title:'⚠️ 최후의 밤샘',text:'내일 시험 컨디션이 크게 흔들릴 수 있다.'}},
+    {type:'good',text:'🙅 "나는 이번엔 됐어." 거절한다.',delta:{판단력:8,사회성:-3,수면:5},requiresClue:null,flags:['noCaffeine'],note:'noCaffeine:true',result:{title:'✅ 마지막 절제',text:'민준은 살짝 서운해했다. 내일 시험 컨디션을 지켰다.'}},
+    {type:'good',text:'💬 "너도 많이 마시지 마. 시험 끝나고 쓰러지면 어떡해."',delta:{판단력:5,사회성:5},requiresClue:null,flags:['helpedFriend'],note:'minjunWarned:true',result:{title:'✅ 친구를 말림',text:'민준이 캔에서 손을 잠깐 멈췄다. 한 마디가 친구의 선택에 영향을 줬다.'}},
+  ]},
+  {id:'s14',day:1,loc:'🛌 D-1 집',type:'event',title:'시험 전날 루틴',speaker:'나레이터',emoji:'🌙',isEpisode:false,clues:[],
+   text:'D-1. 시험 전날 밤. 지금 어떤 선택을 하느냐에 따라 내일 시험지를 펼치는 순간의 컨디션이 달라진다.',
+   choices:[
+    {type:'good',text:'🛌 11시 30분에 잠든다. 8시간 수면을 확보한다.',delta:{건강:10,수면:10,판단력:8},requiresClue:null,flags:[],note:'sleepHour:23 / sleepHours:8',result:{title:'✅ 최선의 준비',text:'시험 전날 충분한 수면은 기억 정리와 컨디션 회복에 도움이 된다.'}},
+    {type:'bad',text:'💊☕ 약과 카페인을 함께 사용한다.',delta:{건강:-20,판단력:-15,수면:-15},requiresClue:null,flags:['analgesic','comboMedCaffeine'],note:'comboMedCaffeine / sleepHour:26',result:{title:'⚠️ 최악의 조합!',text:'약과 카페인을 함께 쓰면 성분 중복, 심장 두근거림, 불면, 부작용 위험이 높아진다.'}},
+    {type:'bad',text:'☕ 카페인만 마시며 새벽 2시까지 버틴다.',delta:{건강:-8,수면:-12,카페인:-8},requiresClue:null,flags:['openDrink'],note:'sleepHour:26 / openDrink:"cafe"',result:{title:'⚠️ 임시방편',text:'카페인 누적은 수면과 다음 날 컨디션을 해친다.'}},
+  ]},
+  {id:'s15',day:'exam',loc:'📝 D-Day 시험 당일',type:'exam',title:'미니 퀴즈 시작',speaker:'나레이터',emoji:'🎓',isEpisode:false,clues:[],
+   text:'14일이 여기까지 왔다. 시험지가 뒤집어진 채 책상 위에 있다. 지금 이 순간의 컨디션은 지난 2주 동안의 모든 선택이 만든 것이다. 이제 퀴즈로 배운 것을 확인해 보자.',
+   choices:[]},
+];
+
+// ══════════════════════════════════════════
+// 3. 상태
+// ══════════════════════════════════════════
+const DEFAULT_DRINKS = {
+  cvs:[
+    { id:'energy', name:'에너지드링크', product:'THE KING ENERGY', volume:'355mL', emoji:'🟢캔', icon:'energy', caffeine:100, delta:{health:-6,caffeine:-10,judgment:-4}, good:false, desc:'라벨을 확인하니 카페인 100mg. 짧게는 눈이 떠지지만 밤 수면을 밀어낼 수 있어요.' },
+    { id:'coffeeMilk', name:'커피우유', product:'우유팩 커피음료', volume:'300mL', emoji:'📦', icon:'pack', caffeine:115, delta:{health:-4,caffeine:-10,sleep:-4}, good:false, desc:'카페인 115mg. 우유팩 음료라도 커피가 들어가면 오늘 섭취량이 크게 늘어납니다.' },
+    { id:'cancoffee', name:'캔커피', product:'캔 모양 커피음료', volume:'200mL', emoji:'🔵캔', icon:'canblue', caffeine:81, delta:{health:-3,caffeine:-8}, good:false, desc:'카페인 81mg. 달달하고 그럴싸하지만 오늘 섭취량에 더해집니다.' },
+    { id:'vitamin', name:'비타민음료', product:'비타민 음료', volume:'100mL', emoji:'🟠병', icon:'bottle', caffeine:0, delta:{health:1,caffeine:3}, good:true, noCaffeine:true, desc:'카페인 0mg. 카페인 부담 없이 마실 수 있어요.' },
+    { id:'cola', name:'콜라', product:'탄산음료', volume:'355mL', emoji:'🔴캔', icon:'canred', caffeine:35, delta:{health:-2,caffeine:-4}, good:false, desc:'카페인 35mg. 커피보다 적지만 당분과 카페인이 함께 들어옵니다.' },
+    { id:'water', name:'물/이온음료', product:'생수 또는 이온음료', volume:'-', emoji:'💧', icon:'drop', caffeine:0, delta:{health:5,caffeine:6}, good:true, noCaffeine:true, desc:'카페인 0mg. 갈증이 날 때 부담 없이 마실 수 있어요.' },
+  ],
+  cafe:[
+    { id:'americano', name:'아이스 카페 아메리카노', english:'Iced Caffe Americano', volume:'355ml', kcal:'10', sugar:'0', protein:'1', satFat:'0', sodium:'5', allergy:'-', icon:'iced', color:'#3b1f16', caffeine:150, delta:{health:-6,caffeine:-16,judgment:-5}, good:false, desc:'진한 에스프레소에 정수물과 얼음을 더한 커피' },
+    { id:'latte', name:'카페라떼', english:'Cafe Latte', volume:'600ml', kcal:'160', sugar:'11', protein:'8', satFat:'5.2', sodium:'113', allergy:'우유', icon:'iced', color:'#c89a73', caffeine:168, delta:{health:-5,caffeine:-17,sleep:-6}, good:false, desc:'에스프레소에 우유가 더해진 부드러운 라떼' },
+    { id:'mixcoffee', name:'믹스커피', english:'Mix Coffee', volume:'600ml', kcal:'362', sugar:'16', protein:'2', satFat:'6.6', sodium:'31', allergy:'우유', icon:'iced', color:'#c7955d', caffeine:134, delta:{health:-6,caffeine:-14,sleep:-5}, good:false, desc:'인스턴트 커피 맛의 달콤한 믹스커피' },
+    { id:'peachtea', name:'복숭아아이스티', english:'Peach Iced Tea', volume:'600ml', kcal:'211', sugar:'40', protein:'-', satFat:'-', sodium:'21', allergy:'복숭아', icon:'iced', color:'#c2763a', caffeine:20, delta:{health:-2,caffeine:-2}, good:false, desc:'홍차에 달콤한 복숭아가 어우러진 아이스티' },
+    { id:'grapefruitblacktea', name:'허니자몽블랙티', english:'Honey Grapefruit Black Tea', volume:'600ml', kcal:'195', sugar:'46', protein:'-', satFat:'-', sodium:'39', allergy:'-', icon:'iced', color:'#d88434', caffeine:16, delta:{health:-2,caffeine:-2}, good:false, desc:'자몽과 블랙티가 섞인 달콤쌉쌀한 블렌딩티' },
+    { id:'earlgrey', name:'얼그레이', english:'Earl Grey Tea', volume:'600ml', kcal:'-', sugar:'0', protein:'0', satFat:'0.0', sodium:'0', allergy:'-', icon:'mug', color:'#b97831', caffeine:18, delta:{health:1,caffeine:-2,social:1}, good:true, desc:'베르가못 향이 은은한 클래식 티' },
+    { id:'greentea', name:'녹차', english:'Green Tea', volume:'600ml', kcal:'0', sugar:'0', protein:'0', satFat:'0.0', sodium:'0', allergy:'-', icon:'mug', color:'#8ec56b', caffeine:0, delta:{health:3,caffeine:3,social:2}, good:true, noCaffeine:true, desc:'떫은 맛을 줄이고 은은한 단맛을 살린 녹차' },
+    { id:'warmMilk', name:'따뜻한 우유', english:'Warm Milk', volume:'355ml', kcal:'210', sugar:'17', protein:'11', satFat:'5.0', sodium:'150', allergy:'우유', icon:'mug', color:'#fff3dc', caffeine:0, delta:{health:5,sleep:5,social:3}, good:true, noCaffeine:true, desc:'카페인이 없는 따뜻한 우유' },
+  ],
+  images:{cvs:'drink_menu_previews/convenience_drink_menu_energy100_old_coffee_milk.png',cafe:'drink_menu_previews/cafe_drink_menu_pretty_illustrated_centered.png'}
+};
+
+let SCENES = JSON.parse(JSON.stringify(DEFAULT_SCENES));
+let DRUGS  = JSON.parse(JSON.stringify(DEFAULT_DRUGS));
+let DRINKS = JSON.parse(JSON.stringify(DEFAULT_DRINKS));
+let QUIZ   = JSON.parse(JSON.stringify(DEFAULT_QUIZ));
+function applyQuizHintMedicineKeys(quiz=QUIZ){
+  const keys = ['ok','stop','cold','combo','ok','ok','stop'];
+  (quiz || []).forEach((q, i) => {
+    if (!q.hintMedicineKey) q.hintMedicineKey = keys[i] || 'ok';
+  });
+  return quiz;
+}
+applyQuizHintMedicineKeys(QUIZ);
+let currentIdx = 0;
+let editMode = false;
+let currentView = 'overview';
+let currentTab = 'scenario';
+let modified = new Set();
+
+// 편집 중 모달 임시 데이터
+let _editingClueIdx = -1; // -1 = 새로 추가
+let _editingDrugIdx = -1;
+let _editingDrinkType = 'cvs';
+let _editingDrinkIdx = -1;
+let currentDrinkTab = 'cvs';
+let _editingQuizIdx = -1;
+let _addModalPos = 'after';
+
+// 히스토리
+const HIST_MAX = 40;
+let _hist = [];
+let _histPtr = -1;
+let _skipSnap = false;
+
+function snapshot(desc) {
+  if (_skipSnap) return;
+  _hist = _hist.slice(0, _histPtr + 1);
+  _hist.push({ scenes: JSON.parse(JSON.stringify(SCENES)), drugs: JSON.parse(JSON.stringify(DRUGS)), drinks: JSON.parse(JSON.stringify(DRINKS)), quiz: JSON.parse(JSON.stringify(QUIZ)), modified: new Set(modified), idx: currentIdx, desc });
+  if (_hist.length > HIST_MAX) _hist.shift();
+  _histPtr = _hist.length - 1;
+  updateUndoRedoBtns();
+}
+
+function undoAction() {
+  if (_histPtr <= 0) return;
+  _histPtr--;
+  restoreSnap(_hist[_histPtr]);
+  toast('↩ ' + (_hist[_histPtr + 1]?.desc || ''));
+}
+function redoAction() {
+  if (_histPtr >= _hist.length - 1) return;
+  _histPtr++;
+  restoreSnap(_hist[_histPtr]);
+  toast('↪ ' + (_hist[_histPtr]?.desc || ''));
+}
+function restoreSnap(snap) {
+  _skipSnap = true;
+  SCENES = JSON.parse(JSON.stringify(snap.scenes));
+  DRUGS  = JSON.parse(JSON.stringify(snap.drugs));
+  DRINKS = JSON.parse(JSON.stringify(snap.drinks || DEFAULT_DRINKS));
+  QUIZ   = JSON.parse(JSON.stringify(snap.quiz));
+  applyQuizHintMedicineKeys(QUIZ);
+  modified = new Set(snap.modified);
+  currentIdx = Math.min(snap.idx, SCENES.length - 1);
+  _skipSnap = false;
+  renderAll();
+  updateUndoRedoBtns();
+}
+function updateUndoRedoBtns() {
+  const u = document.getElementById('undo-btn');
+  const r = document.getElementById('redo-btn');
+  const cu = _histPtr > 0, cr = _histPtr < _hist.length - 1;
+  u.disabled = !cu; u.style.opacity = cu ? 1 : .35;
+  r.disabled = !cr; r.style.opacity = cr ? 1 : .35;
+}
+
+// ══════════════════════════════════════════
+// 4. 탭 전환
+// ══════════════════════════════════════════
+function showMainTab(tab, btn) {
+  currentTab = tab;
+  document.querySelectorAll('.main-tab').forEach(b => b.classList.remove('on'));
+  if (btn) btn.classList.add('on');
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('on'));
+  document.getElementById('panel-' + tab).classList.add('on');
+  const nav = document.getElementById('sidenav');
+  nav.classList.toggle('hidden', tab !== 'scenario');
+  if (tab === 'scenario') { renderSidenav(); if (currentView === 'detail') renderDetail(currentIdx); else renderOverview(); }
+  else if (tab === 'drug') renderDrugPanel();
+  else if (tab === 'drink') renderDrinkPanel();
+  else if (tab === 'quiz') renderQuizPanel();
+}
+function switchView(id, btn) {
+  currentView = id;
+  document.querySelectorAll('.subtab').forEach(b => b.classList.remove('on'));
+  if (btn) btn.classList.add('on');
+  document.querySelectorAll('.sub-panel').forEach(p => p.classList.remove('on'));
+  document.getElementById('sub-' + id).classList.add('on');
+  if (id === 'detail') renderDetail(currentIdx);
+  else renderOverview();
+}
+
+// ══════════════════════════════════════════
+// 5. 편집 모드
+// ══════════════════════════════════════════
+function toggleEditMode() {
+  editMode = !editMode;
+  const btn = document.getElementById('edit-toggle-btn');
+  const badge = document.getElementById('edit-badge');
+  const bar = document.getElementById('scene-action-bar');
+  btn.textContent = editMode ? '✏️ 편집 종료' : '✏️ 편집 모드';
+  btn.className = editMode ? 'tb-btn edit-mode' : 'tb-btn';
+  badge.classList.toggle('show', editMode);
+  document.body.classList.toggle('edit-active', editMode);
+  bar.classList.toggle('show', editMode && currentTab === 'scenario' && currentView === 'detail');
+  if (currentTab === 'scenario') { if (currentView === 'detail') renderDetail(currentIdx); else renderOverview(); }
+  else if (currentTab === 'drug') renderDrugPanel();
+  else if (currentTab === 'drink') renderDrinkPanel();
+  else if (currentTab === 'quiz') renderQuizPanel();
+}
+
+// ══════════════════════════════════════════
+// 6. 사이드 네비
+// ══════════════════════════════════════════
+function renderSidenav() {
+  const nav = document.getElementById('sidenav');
+  const days = [...new Set(SCENES.map(s => s.day))];
+  let html = '';
+  days.forEach(d => {
+    const lbl = d === 'exam' ? '📝 D-Day 시험' : `D-${d}`;
+    html += `<div class="nav-section">${lbl}</div>`;
+    SCENES.filter(s => s.day === d).forEach(sc => {
+      const idx = SCENES.indexOf(sc);
+      const col = DAY_COLORS[sc.day] || '#aaa';
+      const isOn = idx === currentIdx;
+      const isMod = modified.has(sc.id);
+      const short = sc.title.replace(/[★★💊📱🩺📚🏃🏸⏱️☕📱📦🪞🛌📝🎓]/g, '').trim().slice(0, 14);
+      const epBadge = sc.isEpisode ? '<span class="nav-ep">추리</span>' : '';
+      html += `<div class="nav-item${isOn ? ' on' : ''}${isMod ? ' modified' : ''}" onclick="selectScene(${idx})">
+        <span class="nav-dot" style="background:${col}"></span>
+        <span class="nav-lbl">${short}</span>
+        ${epBadge}
+      </div>`;
+    });
+  });
+  if (editMode) html += `<div style="margin-top:8px;padding:4px"><button onclick="openAddModal('after')" style="width:100%;padding:6px 8px;border-radius:8px;border:1.5px dashed #c084fc;background:transparent;cursor:pointer;font-size:11px;color:#a855f7;font-family:inherit">＋ 새 장면 추가</button></div>`;
+  nav.innerHTML = html;
+}
+
+function selectScene(idx) {
+  currentIdx = idx;
+  renderSidenav();
+  if (currentView === 'detail') renderDetail(idx);
+  else renderOverview();
+}
+
+function selectSceneAndSwitch(idx) {
+  currentIdx = idx;
+  currentView = 'detail';
+  document.querySelectorAll('.subtab').forEach((b, i) => b.classList.toggle('on', i === 1));
+  document.querySelectorAll('.sub-panel').forEach(p => p.classList.remove('on'));
+  document.getElementById('sub-detail').classList.add('on');
+  document.getElementById('scene-action-bar').classList.toggle('show', editMode);
+  renderSidenav();
+  renderDetail(idx);
+}
+
+// ══════════════════════════════════════════
+// 7. 개요도
+// ══════════════════════════════════════════
+function renderOverview() {
+  const scroll = document.getElementById('ov-scroll');
+  const days = [...new Set(SCENES.map(s => s.day))];
+  let html = '<div style="padding-bottom:20px">';
+  html += `<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;font-size:11px;align-items:center;color:var(--sub)">
+    <span style="font-weight:700;color:var(--text)">범례</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--green);vertical-align:middle"></span> 올바른 선택</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--red);vertical-align:middle"></span> 위험 선택</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--yellow);vertical-align:middle"></span> 절충</span>
+    <span style="background:var(--blue-bg);color:#27375a;padding:1px 7px;border-radius:10px;font-weight:700">🔍 추리 에피소드</span>
+  </div>`;
+  days.forEach(d => {
+    const dayScenes = SCENES.filter(s => s.day === d);
+    const col = DAY_COLORS[d] || '#888';
+    const dayLbl = d === 'exam' ? 'D-Day 시험' : `D-${d} (시험 ${d}일 전)`;
+    html += `<div class="ov-day-group"><div class="ov-day-head" style="color:${col}">${dayLbl}</div><div class="ov-cards">`;
+    dayScenes.forEach((sc, si) => {
+      const idx = SCENES.indexOf(sc);
+      let mini = '';
+      (sc.choices || []).slice(0, 3).forEach(ch => {
+        const cls = ch.type === 'good' ? 'ovc-g' : ch.type === 'bad' ? 'ovc-b' : 'ovc-m';
+        mini += `<div class="ov-c-mini ${cls}">${ch.type === 'good' ? '✓' : ch.type === 'bad' ? '✗' : '△'} ${esc(ch.text.slice(0, 16))}</div>`;
+      });
+      const epBadge = sc.isEpisode ? `<div class="ov-ep-badge">🔍 추리 에피소드 · 단서 ${(sc.clues||[]).length}개</div>` : '';
+      html += `<div class="ov-card${idx === currentIdx ? ' on' : ''}" style="border-left-color:${col}" onclick="selectSceneAndSwitch(${idx})">
+        <div class="ov-card-type" style="color:${col}">${sc.type === 'narration' ? '나레이션' : sc.type === 'exam' ? '시험(퀴즈)' : '이벤트'}${modified.has(sc.id) ? ' ●' : ''}</div>
+        ${epBadge}
+        <div class="ov-card-title">${esc(sc.title)}</div>
+        <div class="ov-choices-mini">${mini}</div>
+      </div>`;
+      if (si < dayScenes.length - 1) html += `<div class="ov-arrow">→</div>`;
+    });
+    if (editMode) html += `<div class="ov-arrow"><button onclick="openAddAtDay('${d}')" style="padding:3px 10px;border-radius:20px;border:1.5px dashed #c084fc;background:transparent;cursor:pointer;font-size:11px;color:#a855f7;font-family:inherit">＋</button></div>`;
+    html += `</div></div>`;
+  });
+  html += '</div>';
+  scroll.innerHTML = html;
+}
+
+// ══════════════════════════════════════════
+// 8. 상세도
+// ══════════════════════════════════════════
+function renderDetail(idx) {
+  const sc = SCENES[idx];
+  const cont = document.getElementById('detail-content');
+  if (!sc) { cont.innerHTML = '<div style="padding:24px;color:var(--sub)">장면이 없습니다.</div>'; return; }
+  const bar = document.getElementById('scene-action-bar');
+  bar.classList.toggle('show', editMode);
+  const dayInp = document.getElementById('sa-day-inp');
+  const typeSel = document.getElementById('sa-type-sel');
+  const epBtn = document.getElementById('ep-toggle-btn');
+  if (dayInp) dayInp.value = sc.day === 'exam' ? 'exam' : sc.day;
+  if (typeSel) typeSel.value = sc.type;
+  if (epBtn) { epBtn.textContent = sc.isEpisode ? '🔍 추리 ON' : '🔍 추리 에피소드'; epBtn.className = 'sa-btn' + (sc.isEpisode ? ' ep-on' : ''); }
+
+  const typeBadge = sc.type === 'narration' ? 'sb-narr' : sc.type === 'exam' ? 'sb-exam' : 'sb-event';
+  const typeLabel = sc.type === 'narration' ? '나레이션' : sc.type === 'exam' ? '시험·퀴즈' : '이벤트';
+
+  const e = (f, v) => editMode ? `<div contenteditable="true" class="${f}" onblur="editField('${sc.id}','${f.replace('-field','').replace('-lbl','').replace('-text','')}',this.textContent)">${esc(v)}</div>` : `<div class="${f}">${esc(v)}</div>`;
+  const et = (v) => editMode ? `<div contenteditable="true" class="situation-box" onblur="editField('${sc.id}','text',this.textContent)">${esc(v)}</div><div class="hint-text">↑ 클릭하여 편집</div>` : `<div class="situation-box">${esc(v)}</div>`;
+
+  // 단서 목록
+  let cluesHTML = '';
+  if ((sc.clues || []).length > 0 || (editMode && sc.isEpisode)) {
+    const addCluBtn = editMode ? `<button class="sec-add-btn" onclick="openClueModal(-1)">＋ 단서 추가</button>` : '';
+    cluesHTML = `<div style="margin-bottom:16px"><div class="sec-lbl">🔍 추리 단서 · 아이템 ${addCluBtn}</div><div class="clue-list">`;
+    (sc.clues || []).forEach((cl, ci) => {
+      const editBtns = editMode ? `<div class="clue-actions"><button class="c-act" onclick="openClueModal(${ci})">편집</button><button class="c-act del" onclick="deleteClue(${ci})">삭제</button></div>` : '';
+      cluesHTML += `<div class="clue-card${cl.isKey ? ' key-item' : ''}">
+        <div class="clue-icon-w">${esc(cl.icon || '🔎')}</div>
+        <div class="clue-body"><div class="clue-lbl">${cl.isKey ? '🔑 핵심 아이템 (선택지 잠금 해제)' : ITEM_TYPES[cl.itemType]?.label || cl.label}</div>
+        <div class="clue-title">${esc(cl.title || '')}</div>
+        <div class="clue-content">${esc((cl.body || '').slice(0, 80))}${(cl.body||'').length > 80 ? '…' : ''}</div></div>
+        ${editBtns}
+      </div>`;
+    });
+    cluesHTML += '</div></div>';
+  }
+
+  // 선택지
+  let choicesHTML = '';
+  if (sc.type !== 'exam') {
+    const addBtn = editMode ? `<button class="sec-add-btn" onclick="addChoice(${idx})">＋ 선택지 추가</button>` : '';
+    choicesHTML = `<div class="choices-section"><div class="sec-lbl">선택지 ${addBtn}</div>`;
+    if (sc.type === 'narration') { choicesHTML += `<div style="font-size:12px;color:var(--sub);font-style:italic">나레이션 — 선택 없음</div>`; }
+    else { (sc.choices || []).forEach((ch, ci) => { choicesHTML += renderChoiceCard(idx, ci, ch, sc.clues || []); }); }
+    choicesHTML += '</div>';
+  } else {
+    choicesHTML = `<div style="padding:12px;background:var(--blue-bg);border-radius:var(--radius);border:2px solid var(--blue);font-size:12.5px;color:#27375a;font-weight:700">🎯 시험 당일 퀴즈 탭에서 문항을 관리하세요 → 상단 "퀴즈" 탭</div>`;
+  }
+
+  const confirmDel = `<div class="confirm-del" id="del-confirm" style="display:none">
+    <p>이 장면을 삭제하시겠습니까? 되돌릴 수 없습니다.</p>
+    <button class="cd-yes" onclick="confirmDeleteScene()">삭제</button>
+    <button class="cd-no" onclick="hideDeleteConfirm()">취소</button>
+  </div>`;
+
+  const navBtns = `<div class="nav-btns">
+    ${idx > 0 ? `<button class="nav-sc-btn" onclick="selectScene(${idx-1})">← 이전</button>` : ''}
+    ${idx < SCENES.length - 1 ? `<button class="nav-sc-btn" onclick="selectScene(${idx+1})">다음 →</button>` : ''}
+  </div>`;
+
+  cont.innerHTML = `
+    <div class="scene-hdr">
+      <div class="scene-emoji-wrap">${esc(sc.emoji || '🧑‍🎓')}</div>
+      <div class="scene-meta">
+        ${e('scene-loc-lbl','loc', sc.loc)}
+        ${e('scene-title-text','title', sc.title)}
+        <div class="scene-badges">
+          <span class="sbadge ${typeBadge}">${typeLabel}</span>
+          ${sc.isEpisode ? '<span class="sbadge sb-ep">🔍 추리 에피소드</span>' : ''}
+          ${(sc.clues||[]).length > 0 ? `<span class="sbadge" style="background:#f0f6ff;color:#27375a;border:1.5px solid #c0d4ff">단서 ${(sc.clues||[]).length}개</span>` : ''}
+        </div>
+      </div>
+    </div>
+    <div class="situation-wrap">
+      <div class="speaker-row">💬 <span style="font-weight:700">${esc(sc.speaker || '나레이터')}</span></div>
+      <div class="sec-lbl">상황 설명</div>
+      ${et(sc.text)}
+    </div>
+    ${cluesHTML}
+    ${choicesHTML}
+    ${confirmDel}
+    ${navBtns}
+  `;
+}
+
+function renderChoiceCard(scIdx, ci, ch, clues) {
+  const cardCls = ch.type === 'good' ? 'ch-good' : ch.type === 'bad' ? 'ch-bad' : 'ch-mid';
+  const selCls  = ch.type === 'good' ? 'cs-g' : ch.type === 'bad' ? 'cs-b' : 'cs-m';
+  const typeCtrl = editMode
+    ? `<select class="ct-sel ${selCls}" onchange="editChoiceType(${scIdx},${ci},this.value)">
+        <option value="good" ${ch.type==='good'?'selected':''}>✓ 올바른</option>
+        <option value="bad" ${ch.type==='bad'?'selected':''}>✗ 위험</option>
+        <option value="mid" ${ch.type==='mid'?'selected':''}>△ 절충</option>
+      </select>`
+    : `<span style="font-size:11px;font-weight:700;color:${ch.type==='good'?'var(--green)':ch.type==='bad'?'var(--red)':'#f4a261'}">${TYPE_LABEL[ch.type]}</span>`;
+
+  // 잠금 선택
+  const lockOpts = ['<option value="-1">🔓 잠금 없음</option>'].concat(
+    (clues || []).map((cl, i) => `<option value="${i}" ${ch.requiresClue===i?'selected':''}>${cl.icon} ${esc(cl.label)} 확인 필요</option>`)
+  ).join('');
+  const lockCtrl = editMode
+    ? `<select class="lock-sel" onchange="editChoiceField(${scIdx},${ci},'requiresClue',this.value === '-1' ? null : parseInt(this.value))">${lockOpts}</select>`
+    : (ch.requiresClue !== null && ch.requiresClue !== undefined ? `<span class="lock-badge">🔑 단서 ${ch.requiresClue + 1} 필요</span>` : '');
+
+  const delBtn = `<button class="del-ch-btn" onclick="deleteChoice(${scIdx},${ci})">삭제</button>`;
+  const txtField = editMode
+    ? `<div contenteditable="true" class="choice-text-field" onblur="editChoiceField(${scIdx},${ci},'text',this.textContent)">${esc(ch.text)}</div>`
+    : `<div class="choice-text-field">${esc(ch.text)}</div>`;
+
+  // 델타 칩
+  let deltaHTML = '<div class="delta-row">';
+  if (ch.delta) Object.entries(ch.delta).forEach(([k, v]) => {
+    if (v === 0) return;
+    const cls = v > 0 ? 'chip-p' : 'chip-m';
+    deltaHTML += editMode
+      ? `<span class="delta-chip ${cls} editable-chip" onclick="removeDelta(${scIdx},${ci},'${k}')" title="클릭으로 삭제">${k} ${v>0?'+':''}${v} ✕</span>`
+      : `<span class="delta-chip ${cls}">${k} ${v>0?'+':''}${v}</span>`;
+  });
+  if (editMode) deltaHTML += `<button class="add-delta-btn" onclick="showDeltaForm(${scIdx},${ci})">+ 능력치</button>`;
+  deltaHTML += '</div>';
+
+  const dfId = `df-${scIdx}-${ci}`;
+  const deltaForm = editMode ? `<div class="delta-form" id="${dfId}" style="display:none">
+    <select id="${dfId}-k">${STATS.map(s=>`<option>${s}</option>`).join('')}</select>
+    <input type="number" id="${dfId}-v" value="5">
+    <button onclick="addDelta(${scIdx},${ci},'${dfId}')">추가</button>
+  </div>` : '';
+
+  // 플래그
+  const chFlags = (ch.flags || []).filter(f => f);
+  const flagsDisplay = chFlags.length ? `<div class="flags-row">${chFlags.map(f=>`<span class="flag-chip">${FLAG_LABELS[f]||f}</span>`).join('')}</div>` : '';
+  const flagsEdit = editMode ? `<div class="flags-edit">
+    <div style="font-size:10px;font-weight:700;color:var(--sub2);margin-bottom:4px">특수 플래그:</div>
+    ${CHOICE_FLAGS.map(f => `<label><input type="checkbox" ${(ch.flags||[]).includes(f)?'checked':''} onchange="toggleFlag(${scIdx},${ci},'${f}',this.checked)"> ${FLAG_LABELS[f]||f}</label>`).join('')}
+  </div>` : '';
+
+  const noteField = editMode
+    ? `<div contenteditable="true" class="note-field" onblur="editChoiceField(${scIdx},${ci},'note',this.textContent)">📌 ${esc(ch.note||'')}</div>`
+    : (ch.note ? `<div class="note-field">📌 ${esc(ch.note)}</div>` : '');
+  const resultTitle = editMode
+    ? `<div contenteditable="true" class="result-title-f" onblur="editChoiceResultField(${scIdx},${ci},'title',this.textContent)">💬 ${esc(ch.result?.title||'')}</div>`
+    : (ch.result?.title ? `<div class="result-title-f">💬 ${esc(ch.result.title)}</div>` : '');
+  const hasLayerFields = ch.result && (ch.result.story !== undefined || ch.result.education !== undefined);
+  const resultText = editMode
+    ? (hasLayerFields
+        ? `<div class="result-field-label">📖 이야기 (선택 직후 일어난 일 · 과거형 1~2문장)</div>
+           <div contenteditable="true" class="result-story-f" placeholder="선택 직후 일어난 일. 과거형 1~2문장. 스토리만 (교육 내용 ✕)" onblur="editChoiceResultField(${scIdx},${ci},'story',this.textContent)">${esc(ch.result?.story||'')}</div>
+           <div class="result-field-label">🎓 학습 포인트 (왜 좋은/나쁜 선택인가 · ~해요/합니다 체)</div>
+           <div contenteditable="true" class="result-edu-f" placeholder="왜 좋은/나쁜 선택인지. 의약 수치·정보 포함 가능. ~해요/합니다 체" onblur="editChoiceResultField(${scIdx},${ci},'education',this.textContent)">${esc(ch.result?.education||'')}</div>`
+        : `<div contenteditable="true" class="result-text-f" onblur="editChoiceResultField(${scIdx},${ci},'text',this.textContent)">${esc(ch.result?.text||'')}</div>`)
+    : (hasLayerFields
+        ? `${ch.result.story ? `<div class="result-story-f">${esc(ch.result.story)}</div>` : ''}${ch.result.education ? `<div class="result-edu-f">${esc(ch.result.education)}</div>` : ''}`
+        : (ch.result?.text ? `<div class="result-text-f">${esc(ch.result.text)}</div>` : ''));
+
+  return `<div class="choice-card ${cardCls}">
+    <div class="choice-top">${typeCtrl}${lockCtrl}${delBtn}</div>
+    ${txtField}
+    ${deltaHTML}${deltaForm}
+    ${noteField}${resultTitle}${resultText}
+    ${flagsDisplay}${flagsEdit}
+  </div>`;
+}
+
+// ══════════════════════════════════════════
+// 9. 편집 액션
+// ══════════════════════════════════════════
+function markModified(id, desc) { modified.add(id); snapshot(desc); renderSidenav(); }
+function editField(id, field, val) {
+  const sc = SCENES.find(s => s.id === id); if (!sc || sc[field] === val) return;
+  sc[field] = val; markModified(id, field + ' 수정'); toast('저장됨');
+}
+function editChoiceField(scIdx, ci, field, val) {
+  const sc = SCENES[scIdx]; if (!sc || !sc.choices[ci]) return;
+  if (field === 'note') val = val.replace(/^📌\s*/, '');
+  if (field === 'requiresClue') val = val === null ? null : parseInt(val);
+  if (sc.choices[ci][field] === val) return;
+  sc.choices[ci][field] = val; markModified(sc.id, '선택지 수정'); toast('저장됨');
+}
+function editChoiceResultField(scIdx, ci, field, val) {
+  const sc = SCENES[scIdx]; if (!sc || !sc.choices[ci]) return;
+  if (field === 'title') val = val.replace(/^💬\s*/, '');
+  if (!sc.choices[ci].result) sc.choices[ci].result = {};
+  sc.choices[ci].result[field] = val; markModified(sc.id, '결과 수정'); toast('저장됨');
+}
+function editChoiceType(scIdx, ci, type) {
+  const sc = SCENES[scIdx]; if (!sc) return;
+  sc.choices[ci].type = type; markModified(sc.id, '선택지 유형 변경');
+  document.getElementById('detail-content').querySelectorAll('.choice-card')[ci]?.setAttribute('class', 'choice-card ch-' + type);
+  renderDetail(scIdx);
+}
+function toggleFlag(scIdx, ci, flag, checked) {
+  const ch = SCENES[scIdx]?.choices[ci]; if (!ch) return;
+  if (!ch.flags) ch.flags = [];
+  if (checked && !ch.flags.includes(flag)) ch.flags.push(flag);
+  if (!checked) ch.flags = ch.flags.filter(f => f !== flag);
+  markModified(SCENES[scIdx].id, '플래그 수정'); toast('저장됨');
+}
+function removeDelta(scIdx, ci, key) {
+  const ch = SCENES[scIdx]?.choices[ci]; if (!ch?.delta) return;
+  delete ch.delta[key]; markModified(SCENES[scIdx].id, '능력치 삭제');
+  renderDetail(scIdx);
+}
+function showDeltaForm(scIdx, ci) {
+  const el = document.getElementById(`df-${scIdx}-${ci}`);
+  if (el) el.style.display = el.style.display === 'none' ? 'flex' : 'none';
+}
+function addDelta(scIdx, ci, formId) {
+  const k = document.getElementById(formId + '-k')?.value;
+  const v = parseInt(document.getElementById(formId + '-v')?.value || 0);
+  if (!k || v === 0) return;
+  const ch = SCENES[scIdx]?.choices[ci]; if (!ch) return;
+  if (!ch.delta) ch.delta = {};
+  ch.delta[k] = (ch.delta[k] || 0) + v;
+  markModified(SCENES[scIdx].id, '능력치 추가');
+  renderDetail(scIdx);
+}
+function addChoice(scIdx) {
+  const sc = SCENES[scIdx]; if (!sc) return;
+  if (!sc.choices) sc.choices = [];
+  sc.choices.push({ type:'good', text:'새 선택지', delta:{}, requiresClue:null, flags:[], note:'', result:{title:'',text:''} });
+  markModified(sc.id, '선택지 추가');
+  renderDetail(scIdx);
+}
+function deleteChoice(scIdx, ci) {
+  const sc = SCENES[scIdx]; if (!sc) return;
+  sc.choices.splice(ci, 1); markModified(sc.id, '선택지 삭제');
+  renderDetail(scIdx);
+}
+
+// 에피소드 토글
+function toggleEpisode() {
+  const sc = SCENES[currentIdx]; if (!sc) return;
+  sc.isEpisode = !sc.isEpisode;
+  if (!sc.clues) sc.clues = [];
+  markModified(sc.id, '추리 에피소드 토글');
+  renderDetail(currentIdx); renderSidenav();
+}
+
+// 장면 DAY/유형 변경
+function updateSceneDay(val) {
+  const sc = SCENES[currentIdx]; if (!sc) return;
+  sc.day = val === 'exam' ? 'exam' : parseInt(val);
+  markModified(sc.id, 'DAY 변경'); renderSidenav();
+}
+function updateSceneType(val) {
+  const sc = SCENES[currentIdx]; if (!sc) return;
+  sc.type = val; markModified(sc.id, '유형 변경');
+  renderDetail(currentIdx);
+}
+
+// ══════════════════════════════════════════
+// 10. 단서(아이템) 편집
+// ══════════════════════════════════════════
+function openClueModal(clueIdx) {
+  _editingClueIdx = clueIdx;
+  const sc = SCENES[currentIdx];
+  const cl = clueIdx >= 0 ? (sc?.clues || [])[clueIdx] : null;
+  document.getElementById('clue-modal-title').textContent = clueIdx >= 0 ? '단서 편집' : '단서 추가';
+  document.getElementById('cm-type').value = cl?.itemType || 'magnifier';
+  document.getElementById('cm-icon').value = cl?.icon || '🔍';
+  document.getElementById('cm-label').value = cl?.label || '';
+  document.getElementById('cm-title').value = cl?.title || '';
+  document.getElementById('cm-body').value = cl?.body || '';
+  document.getElementById('cm-key').checked = cl?.isKey || false;
+  document.getElementById('modal-clue').style.display = 'flex';
+}
+function updateClueIcon() {
+  const t = document.getElementById('cm-type').value;
+  if (ITEM_TYPES[t]) document.getElementById('cm-icon').value = ITEM_TYPES[t].icon;
+}
+function saveClue() {
+  const sc = SCENES[currentIdx]; if (!sc) return;
+  if (!sc.clues) sc.clues = [];
+  const clue = {
+    itemType: document.getElementById('cm-type').value,
+    icon: document.getElementById('cm-icon').value.trim(),
+    label: document.getElementById('cm-label').value.trim(),
+    title: document.getElementById('cm-title').value.trim(),
+    body: document.getElementById('cm-body').value.trim(),
+    isKey: document.getElementById('cm-key').checked,
+  };
+  if (_editingClueIdx >= 0) sc.clues[_editingClueIdx] = clue;
+  else sc.clues.push(clue);
+  markModified(sc.id, '단서 저장');
+  closeModal('modal-clue');
+  renderDetail(currentIdx);
+}
+function deleteClue(ci) {
+  const sc = SCENES[currentIdx]; if (!sc?.clues) return;
+  sc.clues.splice(ci, 1); markModified(sc.id, '단서 삭제');
+  renderDetail(currentIdx);
+}
+
+// ══════════════════════════════════════════
+// 11. 장면 추가/삭제
+// ══════════════════════════════════════════
+function openAddModal(pos) { _addModalPos = pos; document.getElementById('modal-add').style.display = 'flex'; }
+function openAddAtDay(day) {
+  let lastIdx = -1;
+  SCENES.forEach((sc, i) => { if (String(sc.day) === String(day)) lastIdx = i; });
+  if (lastIdx >= 0) { currentIdx = lastIdx; renderSidenav(); }
+  _addModalPos = 'after';
+  document.getElementById('modal-add').style.display = 'flex';
+  setTimeout(() => { const inp = document.getElementById('m-day'); if (inp) inp.value = day; }, 50);
+}
+const SPEAKER_PLACEHOLDERS = {
+  '나레이터': '3인칭으로 상황·배경 묘사. 감정 직접 서술 ✕',
+  '{name}':   '1인칭으로 주인공 현재 감각·고민. "나는…" 형식',
+};
+function getSpeakerVal() {
+  const sel = document.getElementById('m-speaker-sel');
+  if (!sel) return '나레이터';
+  if (sel.value === '__custom__') {
+    return document.getElementById('m-speaker-custom').value.trim() || '나레이터';
+  }
+  return sel.value;
+}
+function onSpeakerSelChange() {
+  const sel = document.getElementById('m-speaker-sel');
+  const custom = document.getElementById('m-speaker-custom');
+  const hint = document.getElementById('m-spk-hint');
+  const textarea = document.getElementById('m-text');
+  const isCustom = sel.value === '__custom__';
+  custom.style.display = isCustom ? 'block' : 'none';
+  const sp = isCustom ? (custom.value.trim() || '') : sel.value;
+  if (hint) {
+    hint.className = 'speaker-hint-badge';
+    if (!sp || sp === '나레이터') {
+      hint.classList.add('sh-narrator');
+      hint.textContent = '나레이터 · 3인칭 상황 묘사';
+    } else if (sp === '{name}') {
+      hint.classList.add('sh-name');
+      hint.textContent = '주인공 내면 · 1인칭 감각·감정';
+    } else {
+      hint.classList.add('sh-npc');
+      hint.textContent = `NPC (${sp}) · 직접 발화`;
+    }
+  }
+  if (textarea) {
+    textarea.placeholder = SPEAKER_PLACEHOLDERS[sp]
+      || `직접 발화 형식. "대사" + 짧은 행동 묘사`;
+  }
+}
+
+function addScene() {
+  const day = document.getElementById('m-day').value;
+  const sc = {
+    id: 's' + Date.now(),
+    day: day === 'exam' ? 'exam' : parseInt(day),
+    loc: document.getElementById('m-loc').value.trim() || '📍 위치',
+    type: document.getElementById('m-type').value,
+    title: document.getElementById('m-title').value.trim() || '새 장면',
+    speaker: getSpeakerVal(),
+    emoji: document.getElementById('m-emoji').value.trim() || '🧑‍🎓',
+    isEpisode: false,
+    clues: [],
+    text: document.getElementById('m-text').value.trim() || '상황 설명을 입력하세요.',
+    choices: [],
+  };
+  const insertIdx = _addModalPos === 'before' ? currentIdx : currentIdx + 1;
+  SCENES.splice(insertIdx, 0, sc);
+  currentIdx = insertIdx;
+  markModified(sc.id, '장면 추가');
+  closeModal('modal-add');
+  renderAll();
+}
+function showDeleteConfirm() {
+  const el = document.getElementById('del-confirm');
+  if (el) el.style.display = 'flex';
+}
+function hideDeleteConfirm() {
+  const el = document.getElementById('del-confirm');
+  if (el) el.style.display = 'none';
+}
+function confirmDeleteScene() {
+  if (SCENES.length <= 1) { toast('마지막 장면은 삭제할 수 없습니다.'); return; }
+  const id = SCENES[currentIdx].id;
+  SCENES.splice(currentIdx, 1);
+  modified.delete(id);
+  currentIdx = Math.min(currentIdx, SCENES.length - 1);
+  snapshot('장면 삭제');
+  renderAll();
+}
+
+// ══════════════════════════════════════════
+// 12. 약품 사전
+// ══════════════════════════════════════════
+function renderDrugIcon(d){
+  const id = d?.id || '';
+  if(id === 'ok') return `
+    <div class="drug-pill-art pill-art-ok" aria-label="흰색 장방형 알약">
+      <span class="pill-shape pill-oblong"><span class="pill-mark">OK 500</span></span>
+    </div>`;
+  if(id === 'stop') return `
+    <div class="drug-pill-art pill-art-stop" aria-label="파란색 타원형 정제">
+      <span class="pill-shape pill-oval" style="--pill-a:#78b7ff;--pill-b:#336bd6;"><span class="pill-mark light">IBU</span></span>
+    </div>`;
+  if(id === 'combo') return `
+    <div class="drug-pill-art pill-art-combo" aria-label="한 알 안에 세 성분이 나뉜 삼색 복합 진통제">
+      <span class="pill-shape pill-capsule-combo"><span class="pill-mark">CAF</span></span>
+    </div>`;
+  if(id === 'cold') return `
+    <div class="drug-pill-art pill-art-cold" aria-label="주황색 오각형 감기약">
+      <span class="pill-shape pill-pentagon" style="--pill-a:#ff9f76;--pill-b:#f05a43;"><span class="pill-mark light">COLD</span></span>
+    </div>`;
+  if(id === 'digest') return `
+    <div class="drug-pill-art pill-art-digest" aria-label="보라색 마름모형 소화제">
+      <span class="pill-shape pill-diamond" style="--pill-a:#bda3ff;--pill-b:#7650ce;"><span class="pill-mark light">DIG</span></span>
+    </div>`;
+  if(id === 'allergy') return `
+    <div class="drug-pill-art pill-art-allergy" aria-label="갈색 분할선 원형 알레르기약">
+      <span class="pill-shape pill-round pill-score horizontal" style="--pill-a:#9a6370;--pill-b:#6d3d45;"><span class="pill-mark light">STOP</span></span>
+    </div>`;
+  return `<span aria-label="약품 아이콘">${esc(d?.emoji || '💊')}</span>`;
+}
+
+function drugDisplayName(d){
+  return d?.id === 'combo' ? '통증싹싹캡슐' : (d?.name || '');
+}
+
+function renderDrugPanel() {
+  const grid = document.getElementById('drug-grid'); if (!grid) return;
+  grid.innerHTML = DRUGS.map((d, i) => `
+    <div class="drug-card">
+      <div class="drug-card-top">
+        <div class="drug-emoji">${renderDrugIcon(d)}</div>
+        <div><div class="drug-name">${esc(drugDisplayName(d))}</div><div class="drug-ingr">${esc(d.ingredient)}</div></div>
+      </div>
+      <div class="drug-field"><div class="df-lbl">각인</div><div class="df-val" style="font-family:monospace">${esc(d.engraving||'-')}</div></div>
+      <div class="drug-field"><div class="df-lbl">주요 특징</div>
+        <div class="drug-chips">${(d.features||[]).map(f=>`<span class="drug-chip">${esc(f)}</span>`).join('')}</div>
+      </div>
+      <div class="drug-field"><div class="df-lbl">⚠️ 주의사항</div>
+        <div class="drug-chips"><span class="drug-chip caution">${esc(d.caution||'-')}</span></div>
+      </div>
+      <div class="drug-field"><div class="df-lbl">시나리오 역할</div><div class="df-val" style="font-size:11px;color:var(--sub)">${esc(d.role||'-')}</div></div>
+      <div class="drug-actions">
+        <button class="d-act edit" onclick="openDrugModal(${i})">✏️ 편집</button>
+        <button class="d-act del" onclick="deleteDrug(${i})">삭제</button>
+      </div>
+    </div>`).join('');
+}
+function openDrugModal(idx) {
+  _editingDrugIdx = idx;
+  const d = idx >= 0 ? DRUGS[idx] : null;
+  document.getElementById('drug-modal-title').textContent = idx >= 0 ? '약품 편집' : '약품 추가';
+  document.getElementById('dm-name').value = d ? drugDisplayName(d) : '';
+  document.getElementById('dm-emoji').value = d?.emoji || '💊';
+  document.getElementById('dm-ingredient').value = d?.ingredient || '';
+  document.getElementById('dm-engraving').value = d?.engraving || '';
+  document.getElementById('dm-features').value = (d?.features || []).join(', ');
+  document.getElementById('dm-caution').value = d?.caution || '';
+  document.getElementById('dm-role').value = d?.role || '';
+  document.getElementById('modal-drug').style.display = 'flex';
+}
+function saveDrug() {
+  const drug = {
+    id: _editingDrugIdx >= 0 ? DRUGS[_editingDrugIdx].id : 'd' + Date.now(),
+    name: document.getElementById('dm-name').value.trim(),
+    emoji: document.getElementById('dm-emoji').value.trim(),
+    ingredient: document.getElementById('dm-ingredient').value.trim(),
+    engraving: document.getElementById('dm-engraving').value.trim(),
+    features: document.getElementById('dm-features').value.split(',').map(s=>s.trim()).filter(Boolean),
+    caution: document.getElementById('dm-caution').value.trim(),
+    role: document.getElementById('dm-role').value.trim(),
+  };
+  if (_editingDrugIdx >= 0) DRUGS[_editingDrugIdx] = drug; else DRUGS.push(drug);
+  snapshot('약품 저장'); closeModal('modal-drug'); renderDrugPanel(); toast('약품 저장됨');
+}
+function deleteDrug(idx) {
+  if (!confirm(`"${DRUGS[idx].name}" 약품을 삭제하시겠습니까?`)) return;
+  DRUGS.splice(idx, 1); snapshot('약품 삭제'); renderDrugPanel(); toast('삭제됨');
+}
+
+// ══════════════════════════════════════════
+// 13. 퀴즈 편집
+// ══════════════════════════════════════════
+function renderQuizPanel() {
+  const list = document.getElementById('quiz-list'); if (!list) return;
+  list.innerHTML = QUIZ.map((q, i) => {
+    const typeBadge = q.type === 'mc' ? 'qtb-mc' : 'qtb-sa';
+    const typeLabel = q.type === 'mc' ? '객관식 4지선다' : '단답형';
+    let body = '';
+    if (q.type === 'mc') {
+      body = `<div class="q-options">${(q.options||[]).map((opt,oi)=>`<div class="q-opt${oi===q.answerIdx?' correct':''}">
+        <span class="q-opt-idx">${'①②③④'[oi]}</span><span class="q-opt-text">${esc(opt)}</span>${oi===q.answerIdx?'<span style="font-size:11px;font-weight:700;color:var(--green);margin-left:auto">✓ 정답</span>':''}
+      </div>`).join('')}</div>`;
+    } else {
+      const medHint = q.hintMedicineKey ? `약물 카드: ${q.hintMedicineKey}` : '약물 카드: 자동';
+      const hintText = q.hintType === 'popup'
+        ? `📋 복약지도 팝업: "${q.hintPopupTitle}"`
+        : q.hintType === 'consonant' ? `초성 힌트: ${q.hintConsonant} (${q.hintLetterCount}글자)` : '힌트 없음';
+      body = `<div class="q-answer-sa">정답: ${esc(q.answerRaw)} ${q.validationType==='range_normalize'?'(범위 정규화)':'(정확 일치)'}</div>
+        <div class="q-hint">💡 힌트: ${esc(medHint)} / ${esc(hintText)}</div>`;
+    }
+    const correctChips = Object.entries(q.rewardCorrect||{}).map(([k,v])=>`<span class="q-rchip plus">${k}+${v}</span>`).join('');
+    const wrongChips = Object.entries(q.penaltyWrong||{}).map(([k,v])=>`<span class="q-rchip minus">${k}${v}</span>`).join('');
+    const hintChips = q.penaltyHint ? Object.entries(q.penaltyHint).map(([k,v])=>`<span class="q-rchip hint">${k}${v}</span>`).join('') : '';
+    const rewards = `
+      ${correctChips ? `<span class="q-rchip-label">정답 시</span>${correctChips}` : ''}
+      ${wrongChips ? `<span class="q-rchip-label">오답 시</span>${wrongChips}` : ''}
+      ${hintChips ? `<span class="q-rchip-label">힌트 사용 시</span>${hintChips}` : ''}`;
+    return `<div class="quiz-card">
+      <div class="quiz-card-head">
+        <div class="qnum">Q${i+1}</div>
+        <div class="qmeta">
+          <span class="qtypebadge ${typeBadge}">${typeLabel}</span>
+          <div class="qtext">${esc(q.question)}</div>
+          <div class="q-ep-ref">연계: ${q.episodeRef||'-'}</div>
+          <div class="q-ep-ref">힌트 카드: ${esc(q.hintMedicineKey || '자동')}</div>
+        </div>
+      </div>
+      ${body}
+      <div class="q-explain">${esc(q.explanation||'')}</div>
+      <div class="q-rewards">${rewards}</div>
+      <div class="q-actions">
+        <button class="d-act edit" onclick="openQuizModal(${i})">✏️ 편집</button>
+        <button class="d-act del" onclick="deleteQuiz(${i})">삭제</button>
+        ${i > 0 ? `<button class="d-act" onclick="moveQuiz(${i},-1)">↑</button>` : ''}
+        ${i < QUIZ.length-1 ? `<button class="d-act" onclick="moveQuiz(${i},1)">↓</button>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+function openQuizModal(idx) {
+  _editingQuizIdx = idx;
+  const q = idx >= 0 ? QUIZ[idx] : null;
+  document.getElementById('quiz-modal-title').textContent = idx >= 0 ? '문항 편집' : '문항 추가';
+  document.getElementById('qm-type').value = q?.type || 'mc';
+  document.getElementById('qm-ep').value = q?.episodeRef || '';
+  document.getElementById('qm-hint-med').value = q?.hintMedicineKey || ['ok','stop','cold','combo','ok','ok','stop'][idx] || 'ok';
+  document.getElementById('qm-q').value = q?.question || '';
+  document.getElementById('qm-o0').value = q?.options?.[0] || '';
+  document.getElementById('qm-o1').value = q?.options?.[1] || '';
+  document.getElementById('qm-o2').value = q?.options?.[2] || '';
+  document.getElementById('qm-o3').value = q?.options?.[3] || '';
+  document.getElementById('qm-ans').value = (q?.answerIdx ?? 0) + 1;
+  document.getElementById('qm-answer').value = q?.answerRaw || '';
+  document.getElementById('qm-valid').value = q?.validationType || 'exact';
+  document.getElementById('qm-hint-type').value = q?.hintType || 'popup';
+  document.getElementById('qm-hp-title').value = q?.hintPopupTitle || '';
+  document.getElementById('qm-hp-body').value = q?.hintPopupBody || '';
+  document.getElementById('qm-con').value = q?.hintConsonant || '';
+  document.getElementById('qm-len').value = q?.hintLetterCount || 5;
+  document.getElementById('qm-explain').value = q?.explanation || '';
+  toggleQuizFields(); toggleHintFields();
+  document.getElementById('modal-quiz').style.display = 'flex';
+}
+function toggleQuizFields() {
+  const t = document.getElementById('qm-type').value;
+  document.getElementById('qm-mc-fields').style.display = t === 'mc' ? 'block' : 'none';
+  document.getElementById('qm-sa-fields').style.display = t === 'sa' ? 'block' : 'none';
+}
+function toggleHintFields() {
+  const t = document.getElementById('qm-hint-type').value;
+  document.getElementById('qm-hint-popup').style.display = t === 'popup' ? 'block' : 'none';
+  document.getElementById('qm-hint-con').style.display = t === 'consonant' ? 'block' : 'none';
+}
+function saveQuiz() {
+  const type = document.getElementById('qm-type').value;
+  const q = {
+    id: _editingQuizIdx >= 0 ? QUIZ[_editingQuizIdx].id : 'q' + Date.now(),
+    type,
+    episodeRef: document.getElementById('qm-ep').value.trim(),
+    hintMedicineKey: document.getElementById('qm-hint-med').value,
+    question: document.getElementById('qm-q').value.trim(),
+    explanation: document.getElementById('qm-explain').value.trim(),
+  };
+  if (type === 'mc') {
+    q.options = [0,1,2,3].map(i => document.getElementById('qm-o'+i).value.trim());
+    q.answerIdx = parseInt(document.getElementById('qm-ans').value) - 1;
+    q.rewardCorrect = {지식:8,판단력:5};
+    q.penaltyWrong = {지식:-3,판단력:-3};
+  } else {
+    q.answerRaw = document.getElementById('qm-answer').value.trim();
+    q.validationType = document.getElementById('qm-valid').value;
+    q.hintType = document.getElementById('qm-hint-type').value;
+    if (q.hintType === 'popup') {
+      q.hintPopupTitle = document.getElementById('qm-hp-title').value.trim();
+      q.hintPopupBody = document.getElementById('qm-hp-body').value.trim();
+    } else if (q.hintType === 'consonant') {
+      q.hintConsonant = document.getElementById('qm-con').value.trim();
+      q.hintLetterCount = parseInt(document.getElementById('qm-len').value);
+    }
+    q.rewardCorrect = {지식:12,판단력:10};
+    q.rewardHintCorrect = {지식:8,판단력:5};
+    q.penaltyWrong = {지식:-5,판단력:-5};
+    q.penaltyHint = {판단력:-3};
+  }
+  if (_editingQuizIdx >= 0) QUIZ[_editingQuizIdx] = q; else QUIZ.push(q);
+  snapshot('퀴즈 저장'); closeModal('modal-quiz'); renderQuizPanel(); toast('퀴즈 저장됨');
+}
+function deleteQuiz(idx) {
+  if (!confirm(`Q${idx+1} 문항을 삭제하시겠습니까?`)) return;
+  QUIZ.splice(idx, 1); snapshot('퀴즈 삭제'); renderQuizPanel(); toast('삭제됨');
+}
+function moveQuiz(idx, dir) {
+  const ni = idx + dir;
+  if (ni < 0 || ni >= QUIZ.length) return;
+  [QUIZ[idx], QUIZ[ni]] = [QUIZ[ni], QUIZ[idx]];
+  snapshot('퀴즈 순서 변경'); renderQuizPanel();
+}
+
+// ══════════════════════════════════════════
+// 14. 모달 유틸
+// ══════════════════════════════════════════
+function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+function closeModalIf(e, id) { if (e.target.id === id) closeModal(id); }
+
+// ══════════════════════════════════════════
+// 15. JSON 저장/불러오기
+// ══════════════════════════════════════════
+// ══════════════════════════════════════
+// v15_추리 음료 사전
+// ══════════════════════════════════════
+function switchDrinkTab(type, btn){
+  currentDrinkTab = type;
+  document.querySelectorAll('#panel-drink .subtab').forEach(b => b.classList.remove('on'));
+  if (btn) btn.classList.add('on');
+  renderDrinkPanel();
+}
+
+function drinkDeltaText(delta={}){
+  const labels = {health:'체력', caffeine:'카페인관리', sleep:'수면', judgment:'판단력', knowledge:'지식', social:'사회성'};
+  return Object.entries(delta).map(([k,v]) => `${labels[k] || k} ${v > 0 ? '+' : ''}${v}`).join(' · ') || '-';
+}
+
+function renderDrinkIcon(d){
+  const caf = Number(d.caffeine || 0);
+  const mg = `${caf}mg`;
+  const color = d.color || '#8b5e34';
+  const cafeLight = d.id === 'latte' || d.id === 'mixcoffee' ? '#f5dcc0' : d.id === 'peachtea' ? '#ffd986' : d.id === 'grapefruitblacktea' ? '#ffb071' : '#f3ead7';
+  if (d.icon === 'energy') return `<div class="drink-mini-icon"><div class="drink-mini-can">ENERGY<br>${mg}</div></div>`;
+  if (d.icon === 'pack') return `<div class="drink-mini-icon"><div class="drink-mini-pack">MILK<br>${mg}</div></div>`;
+  if (d.icon === 'canblue') return `<div class="drink-mini-icon"><div class="drink-mini-bluecan">COFFEE<br>${mg}</div></div>`;
+  if (d.icon === 'bottle') return `<div class="drink-mini-icon"><div class="drink-mini-bottle">VITA<br>${mg}</div></div>`;
+  if (d.icon === 'canred') return `<div class="drink-mini-icon"><div class="drink-mini-redcan">COLA<br>${mg}</div></div>`;
+  if (d.icon === 'drop') return `<div class="drink-mini-icon"><div class="drink-mini-drop">${mg}</div></div>`;
+  if (d.icon === 'mug') return `<div class="drink-mini-icon"><div class="drink-mini-tea" style="--drink-color:${esc(color)}"></div></div>`;
+  if (d.icon === 'iced') return `<div class="drink-mini-icon"><div class="drink-mini-cafe" style="--drink-color:${esc(color)};--drink-light:${esc(cafeLight)}"></div></div>`;
+  return `<div class="drink-mini-icon">🥤</div>`;
+}
+
+function renderDrinkPanel(){
+  const grid = document.getElementById('drink-grid');
+  if (!grid) return;
+  const type = currentDrinkTab || 'cvs';
+  const ref = document.getElementById('drink-reference');
+  document.querySelectorAll('#panel-drink .subtab').forEach(b => b.classList.remove('on'));
+  document.getElementById(`drink-tab-${type}`)?.classList.add('on');
+  if (ref) {
+    const img = DRINKS.images?.[type] || '';
+    ref.innerHTML = `
+      <div class="drink-ref-card">
+        <h3>${type === 'cvs' ? '편의점 음료 이미지 기준' : '카페 메뉴 음료 함량표시형식 기준'}</h3>
+        <p>${type === 'cvs' ? '우유팩, 캔, 병, 물방울 형태와 카페인 함량을 한눈에 확인합니다.' : '파스텔 음료 이미지와 제품 영양 정보를 한 카드에서 함께 확인합니다.'}</p>
+        ${img ? `<img src="${esc(img)}" alt="${type === 'cvs' ? '편의점 음료 이미지 기준' : '카페 메뉴 음료 함량표시형식 기준'}">` : ''}
+      </div>`;
+  }
+  const drinks = DRINKS[type] || [];
+  grid.innerHTML = drinks.map((d,i) => `
+    <div class="drug-card drink-card">
+      <div class="drug-card-top">
+        <div class="drug-emoji">${renderDrinkIcon(d)}</div>
+        <div>
+          <div class="drug-name">${esc(d.name)}</div>
+          <div class="drug-ingr">${esc(d.product || d.english || '')} · ${esc(d.volume || '')}</div>
+        </div>
+      </div>
+      <div><span class="drink-caf-pill ${Number(d.caffeine || 0) === 0 ? 'zero' : ''}">카페인 ${Number(d.caffeine || 0)}mg</span></div>
+      <div class="drink-data-grid">
+        <div class="drink-data-box"><b>제품/형태</b>${esc(d.product || d.english || '-')}</div>
+        <div class="drink-data-box"><b>용량</b>${esc(d.volume || '-')}</div>
+      </div>
+      <div class="drug-field"><div class="df-lbl">설명</div><div class="df-val" style="font-size:11px;color:var(--sub);line-height:1.6">${esc(d.desc || '-')}</div></div>
+      ${type === 'cafe' ? `
+        <table class="drink-nutri">
+          <tr><th>열량</th><th>당류</th><th>단백질</th><th>포화지방</th><th>나트륨</th><th>알레르기</th></tr>
+          <tr><td>${esc(d.kcal || '-')} kcal</td><td>${esc(d.sugar || '-')} g</td><td>${esc(d.protein || '-')} g</td><td>${esc(d.satFat || '-')} g</td><td>${esc(d.sodium || '-')} mg</td><td>${esc(d.allergy || '-')}</td></tr>
+        </table>` : ''}
+      <div class="drug-field"><div class="df-lbl">능력치 변화</div><div class="df-val" style="font-size:11px;color:var(--sub)">${esc(drinkDeltaText(d.delta))}</div></div>
+      <div class="drug-actions">
+        <button class="c-act" onclick="openDrinkModal('${type}',${i})">✏️ 편집</button>
+        <button class="c-act del" onclick="deleteDrink('${type}',${i})">삭제</button>
+      </div>
+    </div>`).join('');
+}
+
+function openDrinkModal(type, idx){
+  _editingDrinkType = type;
+  _editingDrinkIdx = idx;
+  const d = idx >= 0 ? DRINKS[type][idx] : {id:'',name:'',product:'',english:'',volume:'',icon:type === 'cafe' ? 'iced' : 'energy',color:'',caffeine:0,good:false,delta:{},desc:''};
+  document.getElementById('drink-modal-title').textContent = idx >= 0 ? '음료 편집' : '음료 추가';
+  document.getElementById('dmk-id').value = d.id || '';
+  document.getElementById('dmk-name').value = d.name || '';
+  document.getElementById('dmk-product').value = d.product || d.english || '';
+  document.getElementById('dmk-volume').value = d.volume || '';
+  document.getElementById('dmk-icon').value = d.icon || '';
+  document.getElementById('dmk-color').value = d.color || '';
+  document.getElementById('dmk-caffeine').value = Number(d.caffeine || 0);
+  document.getElementById('dmk-good').value = d.good ? 'true' : 'false';
+  document.getElementById('dmk-health').value = Number(d.delta?.health || 0);
+  document.getElementById('dmk-cafestat').value = Number(d.delta?.caffeine || 0);
+  document.getElementById('dmk-sleep').value = Number(d.delta?.sleep || 0);
+  document.getElementById('dmk-judgment').value = Number(d.delta?.judgment || 0);
+  document.getElementById('dmk-kcal').value = d.kcal || '';
+  document.getElementById('dmk-sugar').value = d.sugar || '';
+  document.getElementById('dmk-protein').value = d.protein || '';
+  document.getElementById('dmk-satfat').value = d.satFat || '';
+  document.getElementById('dmk-sodium').value = d.sodium || '';
+  document.getElementById('dmk-allergy').value = d.allergy || '';
+  document.getElementById('dmk-desc').value = d.desc || '';
+  document.querySelectorAll('.cafe-only').forEach(el => el.style.display = type === 'cafe' ? '' : 'none');
+  document.getElementById('modal-drink').style.display = 'flex';
+}
+
+function saveDrink(){
+  const type = _editingDrinkType || 'cvs';
+  const caffeine = Number(document.getElementById('dmk-caffeine').value || 0);
+  const delta = {
+    health:Number(document.getElementById('dmk-health').value || 0),
+    caffeine:Number(document.getElementById('dmk-cafestat').value || 0),
+    sleep:Number(document.getElementById('dmk-sleep').value || 0),
+    judgment:Number(document.getElementById('dmk-judgment').value || 0)
+  };
+  Object.keys(delta).forEach(k => { if(delta[k] === 0) delete delta[k]; });
+  const drink = {
+    id:document.getElementById('dmk-id').value.trim(),
+    name:document.getElementById('dmk-name').value.trim(),
+    volume:document.getElementById('dmk-volume').value.trim(),
+    icon:document.getElementById('dmk-icon').value.trim(),
+    caffeine,
+    delta,
+    good:document.getElementById('dmk-good').value === 'true',
+    noCaffeine:caffeine <= 0,
+    desc:document.getElementById('dmk-desc').value.trim()
+  };
+  if(type === 'cafe'){
+    drink.english = document.getElementById('dmk-product').value.trim();
+    drink.color = document.getElementById('dmk-color').value.trim();
+    drink.kcal = document.getElementById('dmk-kcal').value.trim();
+    drink.sugar = document.getElementById('dmk-sugar').value.trim();
+    drink.protein = document.getElementById('dmk-protein').value.trim();
+    drink.satFat = document.getElementById('dmk-satfat').value.trim();
+    drink.sodium = document.getElementById('dmk-sodium').value.trim();
+    drink.allergy = document.getElementById('dmk-allergy').value.trim() || '-';
+  } else {
+    drink.product = document.getElementById('dmk-product').value.trim();
+    drink.emoji = drink.icon === 'drop' ? '💧' : '🥤';
+  }
+  if(!drink.id || !drink.name){ alert('음료 ID와 이름은 필수입니다.'); return; }
+  if(_editingDrinkIdx >= 0) DRINKS[type][_editingDrinkIdx] = drink;
+  else DRINKS[type].push(drink);
+  currentDrinkTab = type;
+  snapshot('음료 저장');
+  closeModal('modal-drink');
+  renderDrinkPanel();
+  toast('음료 저장됨');
+}
+
+function deleteDrink(type, idx){
+  if(!confirm('음료를 삭제할까요?')) return;
+  DRINKS[type].splice(idx, 1);
+  snapshot('음료 삭제');
+  renderDrinkPanel();
+  toast('삭제됨');
+}
+
+function saveJSON() {
+  const data = { meta:{ title:'약, 알고 먹자!', version:'v15_추리-editor', savedAt:new Date().toISOString() }, scenes:SCENES, drugs:DRUGS, drinks:DRINKS, quiz:QUIZ };
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `health_game_data_${new Date().toISOString().slice(0,10)}.json`;
+  a.click(); toast('JSON 저장 완료');
+}
+function triggerLoad() { document.getElementById('file-inp').click(); }
+function loadJSON(input) {
+  const file = input.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (data.scenes) SCENES = data.scenes;
+      if (data.drugs)  DRUGS  = data.drugs;
+      if (data.drinks) DRINKS = data.drinks;
+      if (data.quiz)   QUIZ   = applyQuizHintMedicineKeys(data.quiz);
+      modified.clear(); currentIdx = 0;
+      snapshot('JSON 불러오기'); renderAll(); toast('불러오기 완료!');
+    } catch(err) { alert('JSON 파싱 오류: ' + err.message); }
+    input.value = '';
+  };
+  reader.readAsText(file);
+}
+
+// ══════════════════════════════════════════
+// 16. 유틸
+// ══════════════════════════════════════════
+function esc(str) {
+  if (str == null) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+let _toastTimer;
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('show');
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(() => el.classList.remove('show'), 1800);
+}
+function renderAll() {
+  renderSidenav();
+  if (currentView === 'detail') renderDetail(currentIdx); else renderOverview();
+  if (currentTab === 'drug') renderDrugPanel();
+  if (currentTab === 'drink') renderDrinkPanel();
+  if (currentTab === 'quiz') renderQuizPanel();
+}
+
+function syncV15ScenarioSeed() {
+  const seed = [
+    {id:'v15_d1_intro',day:14,loc:'📝 D-14 시험기간',type:'narration',title:'시험 기간 2주 전',speaker:'나레이터',emoji:'📝',isEpisode:false,clues:[],text:'시험 기간 2주 전. 아직 시험지는 멀리 있는 것 같지만, {name}의 하루에는 벌써 작은 선택들이 쌓이기 시작한다. 피곤함을 어떻게 버틸지, 약과 카페인을 어떻게 대할지에 따라 2주 뒤 컨디션이 달라질 것이다.',choices:[]},
+    {id:'v15_d1_energy_offer',day:14,loc:'🏪 D-14 교문 앞 편의점',type:'event',title:'민준의 에너지드링크 제안',speaker:'민준',emoji:'🥤',isEpisode:false,clues:[],text:'민준이 편의점에서 나오며 손을 흔든다. "야, 시험 2주 전부터 괜히 긴장되지? 에너지드링크 하나 샀는데 너도 살래? 오전 버티려면 이거라도 마셔야 해."',choices:[{type:'bad',text:'🥤 편의점 냉장고에서 음료를 직접 고른다.',delta:{지식:2},requiresClue:null,flags:['openDrink'],note:'openDrink:"cvs"',result:{title:'첫 음료 선택',text:'오전은 조금 버틸 수 있을 것 같다.',followup:'선택한 음료의 카페인 양은 오늘 섭취량에 그대로 더해진다.'}},{type:'good',text:'💧 "됐어, 이따 물 마실게." 민준의 시선을 견딘다.',delta:{판단력:3},requiresClue:null,flags:['noCaffeine'],note:'caffeineMg:0 / result.speaker:"민준"',result:{title:'어색한 거절',text:'"어, 진짜로?" 민준은 어깨를 으쓱하고 먼저 교실 쪽으로 걸어갔다. 조금 어색했지만, {name은} 카페인을 추가하지 않았다.'}}]},
+    {id:'v15_d1_night',day:14,loc:'🌙 D-14 내 방',type:'event',title:'오후 11시의 선택',speaker:'나레이터',emoji:'🌙',isEpisode:false,clues:[],text:'시험 기간 첫날부터 할 일이 많았다. 시계를 보니 오후 11시. 수학 문제집이 아직 반이 남아있다.',choices:[{type:'bad',text:'📚 문제집을 다 끝내고 새벽 1시에 잔다.',delta:{지식:10,건강:-8,수면:-8,판단력:-5},requiresClue:null,flags:[],note:'sleepHour:25 / sleepHours:6',result:{title:'완성된 문제집',text:'문제집은 끝냈다. 하지만 눈꺼풀이 무겁다.'}},{type:'good',text:'🛌 "오늘은 여기까지." 오후 11시 30분쯤 눕는다.',delta:{건강:6,수면:5,판단력:3},requiresClue:null,flags:[],note:'sleepHour:23 / sleepHours:7.5',result:{title:'미완성의 불안',text:'반쯤 남은 문제집이 눈에 밟혔다. 그래도 내일 아침에 다시 볼 힘은 남겨두었다.'}},{type:'bad',text:'☕ 카페인 음료를 고르고 새벽 3시까지 버틴다.',delta:{지식:12,건강:-15,수면:-15,카페인:-8},requiresClue:null,flags:['openDrink'],note:'openDrink:"cafe" / sleepHour:26',result:{title:'밤샘의 대가',text:'진도는 나갔다. 대신 새벽 공기가 차갑게 느껴졌다. 내일 아침 몸이 먼저 대답할 것이다.',followup:'수학 문제집은 더 많이 넘어갔다. 하지만 책상 위에 남은 빈 컵과 늦어진 시계가 내일 컨디션의 힌트처럼 보였다.'}}]},
+    {id:'v15_d2_class_headache',day:13,loc:'🏫 D-13 1교시',type:'event',title:'두통약을 검색하고 먹을까',speaker:'나레이터',emoji:'🔎',isEpisode:false,clues:[],text:'칠판 글씨가 흐릿하게 보인다. 어젯밤 늦게 잔 탓인지 눈꺼풀이 무겁고, 관자놀이도 지끈거린다. 옆자리 민준이 작게 속삭인다. "야, 카페인 없이 이거 버텨?"',choices:[{type:'bad',text:'☕ 쉬는 시간에 자판기/편의점 음료를 고른다.',delta:{지식:5,건강:-4,카페인:-7,수면:-4},requiresClue:null,flags:['openDrink'],note:'openDrink:"cvs"',result:{title:'버티는 힘',text:'눈은 떠졌다. 하지만 오늘도 카페인이 수업을 대신 밀어주는 느낌이 들었다.'}},{type:'good',text:'💧 물을 마시고 쉬는 시간에 잠깐 바람을 쐰다.',delta:{지식:-4,판단력:5,카페인:4},requiresClue:null,flags:['noCaffeine'],note:'caffeineMg:0',result:{title:'느린 버티기',text:'집중은 완벽하지 않았다. 그래도 바로 카페인에 기대는 습관은 만들지 않았다.'}},{type:'good',text:'💊 가방 속 두통약을 꺼내 상자 뒷면의 성분·복용법을 읽어본다.',delta:{건강:4,지식:8,판단력:6},requiresClue:null,flags:['labelChecked','analgesic'],note:'openOkMed:true / 괜찮아정 복약 정보 팝업 후 복용',result:{title:'복용 전 확인',text:'약 상자 뒷면에는 성분, 효능·효과, 용법·용량, 사용상의 주의사항이 적혀 있었다. {name은} 약을 바로 먹기 전에 오늘 이미 먹은 약이 있는지, 몇 시간 간격으로 먹어야 하는지 먼저 확인했다. 약은 이름보다 성분, 복용 간격, 주의사항을 확인하는 것이 중요하다.'}}]},
+    {id:'v15_d2_caffeine_bomb',day:13,loc:'🛒 D-13 편의점',type:'event',title:'★ 카페인 폭탄 해체',speaker:'{name}',emoji:'☕',isEpisode:true,clues:[{itemType:'magnifier',icon:'🔍',label:'캔 뒷면',title:'에너지드링크 뒷면 확대',body:'에너지드링크 (355mL)\n카페인 함량: 100mg\n표시: "카페인 함유"',isKey:false},{itemType:'phone',icon:'📱',label:'스마트폰',title:'청소년 카페인 하루 권장량 검색',body:'청소년 카페인 권장량\n= 체중(kg) × 2.5mg 이하\n\n50kg 기준: 125mg 이하\n오늘 이미 섭취: 100mg\n통증싹싹캡슐 추가 시: +50mg → 총 150mg',isKey:true}],text:'쉬는 시간이 되자 머리가 더 지끈거린다. 아침에 마신 에너지드링크 캔이 떠오르고, 가방 속 통증싹싹캡슐도 생각난다. 민준이 말한다. "그거 그냥 먹어. 두통엔 잘 듣잖아."',choices:[{type:'good',text:'📱 검색으로 카페인 합산을 계산하고 먹지 않기로 한다.',delta:{지식:15,판단력:12},requiresClue:1,flags:['labelChecked'],note:'skipIf: 에너지드링크를 마시지 않았으면 진행하지 않음',result:{title:'계산 성공',text:'100mg에 통증싹싹캡슐의 50mg을 더하면 150mg. 숫자로 보니 내 몸의 기준이 먼저 보였다.'}},{type:'bad',text:'💊 민준 말 듣고 그냥 먹는다.',delta:{건강:-15,카페인:-10,판단력:-10},requiresClue:null,flags:['analgesic','comboMedCaffeine'],note:'caffeineMg:50',result:{title:'카페인 중복',text:'잠깐의 효과 뒤에 불안한 두근거림이 따라왔다.'}}]},
+  ];
+  seed.forEach((scene, idx) => { SCENES[idx] = scene; });
+}
+
+// ══════════════════════════════════════════
+// 17. 키보드 단축키
+// ══════════════════════════════════════════
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) { e.preventDefault(); undoAction(); }
+  if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.shiftKey && e.key === 'z'))) { e.preventDefault(); redoAction(); }
+  if ((e.ctrlKey || e.metaKey) && e.key === 's') { e.preventDefault(); saveJSON(); }
+});
+
+// ══════════════════════════════════════════
+// 18. 초기화
+// ══════════════════════════════════════════
+(function init() {
+  syncV15ScenarioSeed();
+  snapshot('초기 로드');
+  renderSidenav();
+  renderOverview();
+  renderDrugPanel();
+  renderDrinkPanel();
+  renderQuizPanel();
+})();
+</script>
+</body>
+</html>
