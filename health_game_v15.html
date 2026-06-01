@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
@@ -206,6 +206,36 @@ select option{background:var(--panel);}
 .result-section.narrator .result-body{color:#4b5563;}
 .next-btn{margin-top:14px;display:none;}
 .next-btn.show{display:inline-flex;}
+.mini-quiz{display:grid;gap:12px;margin-top:4px;}
+.mini-quiz-meta{font-family:'Jua',sans-serif;color:#e76642;font-size:.86rem;}
+.mini-quiz-q{font-size:.95rem;line-height:1.7;font-weight:900;color:#38291f;}
+.mini-quiz-options{display:grid;gap:8px;}
+.mini-quiz-option{border:2px solid #f1d3b8;background:#fff;border-radius:12px;
+  padding:11px 13px;text-align:left;font-weight:900;color:#3f2d24;cursor:pointer;line-height:1.55;}
+.mini-quiz-option:disabled{cursor:default;opacity:.78;}
+.mini-quiz-answer-row{display:flex;gap:8px;align-items:center;}
+.mini-quiz-input{flex:1;min-width:0;border:2px solid #f1d3b8;border-radius:12px;
+  padding:11px 12px;font-weight:900;color:#3f2d24;background:#fff;font-size:.9rem;}
+.mini-quiz-actions{display:flex;gap:8px;flex-wrap:wrap;}
+.mini-quiz-small{border:2px solid #f1d3b8;background:#fffdf7;border-radius:12px;
+  padding:9px 12px;font-weight:900;color:#7e6655;cursor:pointer;}
+.mini-quiz-note{border-left:4px solid #ff967d;background:#fff8ef;border-radius:10px;
+  padding:10px 12px;font-size:.84rem;line-height:1.65;font-weight:800;color:#5b4032;white-space:pre-line;}
+.mini-quiz-result{border:2px solid #f1d3b8;background:#fff;border-radius:12px;
+  padding:11px 12px;font-size:.86rem;line-height:1.65;font-weight:900;color:#3f2d24;white-space:pre-line;}
+.mini-quiz-result.good{border-color:#82d9ae;background:#f0fff6;color:#155f3b;}
+.mini-quiz-result.bad{border-color:#f0a7a7;background:#fff1f1;color:#8a2b2b;}
+.quiz-hint-modal{position:fixed;inset:0;z-index:260;display:none;align-items:center;justify-content:center;
+  padding:18px;background:rgba(56,41,31,.28);backdrop-filter:blur(4px);}
+.quiz-hint-modal.show{display:flex;}
+.quiz-hint-sheet{width:min(430px,94vw);max-height:86vh;overflow:auto;background:#fffdf7;
+  border:2px solid #ebc7a9;border-radius:18px;padding:16px;box-shadow:0 24px 60px rgba(92,61,40,.24);}
+.quiz-hint-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;}
+.quiz-hint-title{font-family:'Jua',sans-serif;color:#e76642;font-size:1.04rem;}
+.quiz-hint-close{border:2px solid #ebc7a9;background:#fff8ef;color:#7e6655;border-radius:999px;
+  padding:6px 12px;font-weight:900;cursor:pointer;}
+.quiz-hint-note{border-left:4px solid #ff967d;background:#fff8ef;border-radius:10px;
+  padding:10px 12px;font-size:.84rem;line-height:1.65;font-weight:800;color:#5b4032;white-space:pre-line;}
 
 /* 능력치 변화 팝업 */
 .delta-pop{position:absolute;pointer-events:none;z-index:8;
@@ -480,6 +510,7 @@ body{background:
   z-index:3;
 }
 #screen-student .scene-char{
+  z-index:7;
   font-size:4.4rem;
   margin-bottom:0;
   display:flex;
@@ -544,6 +575,7 @@ body{background:
 #screen-student .scene-char.scene-duo .scene-actor.right img{height:326px;}
 #screen-student .scene-char.scene-duo .actor-name{
   position:absolute;
+  z-index:8;
   top:86px;
   padding:5px 9px;
   border:2px solid rgba(255,159,128,.62);
@@ -556,13 +588,13 @@ body{background:
   white-space:nowrap;
   box-shadow:0 8px 18px rgba(92,61,42,.12);
 }
-#screen-student .scene-char.scene-duo .scene-actor.left .actor-name{left:50%;transform:translateX(-50%);}
-#screen-student .scene-char.scene-duo .scene-actor.right .actor-name{right:20px;}
+#screen-student .scene-char.scene-duo .scene-actor.left .actor-name{left:0;transform:translateX(-48%);}
+#screen-student .scene-char.scene-duo .scene-actor.right .actor-name{right:0;transform:translateX(34%);}
 #screen-student .scene-char.scene-duo .scene-actor.left .actor-name{top:54px;}
 #screen-student .scene-char.scene-duo .scene-actor.right .actor-name{top:78px;}
 .scene-name-tag{
   position:absolute;
-  z-index:6;
+  z-index:9;
   left:50%;
   top:72px;
   transform:translateX(58px);
@@ -586,7 +618,7 @@ body{background:
   left:12px;
   right:12px;
   bottom:10px;
-  z-index:5;
+  z-index:10;
   display:flex;
   justify-content:space-between;
   pointer-events:none;
@@ -628,7 +660,7 @@ body{background:
   left:50%;
   bottom:82px;
   transform:translateX(-50%);
-  z-index:6;
+  z-index:8;
   border:2px solid #f1d3b8;
   border-radius:999px;
   background:rgba(255,253,247,.92);
@@ -818,7 +850,7 @@ body{background:
 .drug-pill-art{width:46px;height:46px;position:relative;display:block;filter:drop-shadow(0 5px 7px rgba(126,102,85,.18));}
 .pill-shape{position:absolute;display:block;box-shadow:inset 5px 6px 10px rgba(255,255,255,.62),inset -5px -6px 10px rgba(71,44,28,.12),0 4px 7px rgba(126,102,85,.16);}
 .pill-shape::after{content:"";position:absolute;left:18%;top:13%;width:34%;height:20%;border-radius:50%;background:rgba(255,255,255,.62);filter:blur(.5px);}
-.pill-oblong{left:50%;top:50%;width:36px;height:18px;border-radius:999px;background:linear-gradient(145deg,#fffef8,#e9edf2);transform:translate(-50%,-50%);}
+.pill-oblong{left:50%;top:50%;width:42px;height:19px;border-radius:999px;background:linear-gradient(145deg,#fffef8,#e9edf2);transform:translate(-50%,-50%);}
 .pill-oval{left:50%;top:50%;width:34px;height:22px;border-radius:999px;background:linear-gradient(145deg,var(--pill-a),var(--pill-b));transform:translate(-50%,-50%);}
 .pill-round{left:50%;top:50%;width:30px;height:30px;border-radius:50%;background:linear-gradient(145deg,var(--pill-a),var(--pill-b));transform:translate(-50%,-50%);}
 .pill-pentagon{left:50%;top:50%;width:30px;height:30px;clip-path:polygon(50% 0,96% 36%,78% 100%,22% 100%,4% 36%);background:linear-gradient(145deg,var(--pill-a),var(--pill-b));transform:translate(-50%,-50%);}
@@ -827,7 +859,7 @@ body{background:
 .pill-score.horizontal::before{content:"";position:absolute;left:13%;right:13%;top:50%;height:2px;border-radius:99px;background:rgba(255,255,255,.42);box-shadow:1px 0 1px rgba(80,50,35,.10);transform:translateY(-50%);}
 .pill-capsule-combo{left:50%;top:50%;width:38px;height:19px;border-radius:999px;overflow:hidden;background:linear-gradient(90deg,#f65f78 0 34%,#ffd45e 34% 67%,#75e4cf 67% 100%);transform:translate(-50%,-50%);}
 .pill-capsule-combo::before{content:"";position:absolute;inset:0;border-radius:999px;background:linear-gradient(145deg,rgba(255,255,255,.55),rgba(255,255,255,0) 42%,rgba(80,45,30,.13));}
-.pill-mark{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Jua',sans-serif;font-size:8px;color:rgba(74,58,46,.46);letter-spacing:.02em;text-shadow:0 1px 0 rgba(255,255,255,.65);}
+.pill-mark{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Jua',sans-serif;font-size:7px;color:rgba(74,58,46,.46);letter-spacing:0;text-shadow:0 1px 0 rgba(255,255,255,.65);white-space:nowrap;}
 .pill-mark.light{color:rgba(255,255,255,.82);}
 .drug-dict-name{font-family:'Jua',sans-serif;font-size:1.08rem;color:#38291f;}
 .drug-dict-ingr{font-size:.82rem;color:#7e6655;font-weight:800;margin-top:2px;}
@@ -1413,7 +1445,7 @@ body{background:
   display:none;
   align-items:flex-start;
   justify-content:center;
-  padding:92px 10px 12px;
+  padding:42px 10px max(12px, env(safe-area-inset-bottom));
   background:rgba(255,246,235,.50);
 }
 .choice-modal.show{display:flex;}
@@ -1425,7 +1457,7 @@ body{background:
 }
 .choice-sheet{
   width:min(430px,100%);
-  max-height:calc(100dvh - 112px);
+  max-height:calc(100dvh - 58px);
   overflow-y:auto;
   border:2px solid rgba(255,159,128,.48);
   border-radius:22px;
@@ -1795,6 +1827,8 @@ body{background:
   #screen-student .scene-char.scene-duo .actor-name{font-size:.7rem;}
   #screen-student .scene-char.scene-duo .scene-actor.left .actor-name{top:46px;}
   #screen-student .scene-char.scene-duo .scene-actor.right .actor-name{top:66px;}
+  #screen-student .scene-char.scene-duo .scene-actor.left .actor-name{left:0;transform:translateX(-34%);}
+  #screen-student .scene-char.scene-duo .scene-actor.right .actor-name{right:0;transform:translateX(24%);}
   #screen-student .scene-name-tag{top:60px;transform:translateX(48px);}
   #screen-student .stat-row{min-height:46px;}
   #screen-student .stat-row label span{font-size:.62rem;}
@@ -1845,10 +1879,10 @@ body{background:
     padding-bottom:18px;
   }
   .choice-modal{
-    padding:126px 10px 14px;
+    padding:24px 10px max(10px, env(safe-area-inset-bottom));
   }
   .choice-sheet{
-    max-height:64dvh;
+    max-height:calc(100dvh - 34px);
   }
 }
 
@@ -2212,6 +2246,17 @@ body{background:
     </div>
     <div class="choice-question" id="choice-question"></div>
     <div class="choice-modal-list" id="choice-modal-list"></div>
+  </div>
+</div>
+
+<!-- ══ 미니 퀴즈 힌트 팝업 ══ -->
+<div class="quiz-hint-modal" id="quiz-hint-modal" onclick="closeMiniQuizHint(event)">
+  <div class="quiz-hint-sheet" onclick="event.stopPropagation()">
+    <div class="quiz-hint-top">
+      <div class="quiz-hint-title" id="quiz-hint-title">힌트</div>
+      <button class="quiz-hint-close" type="button" onclick="closeMiniQuizHint()">닫기</button>
+    </div>
+    <div id="quiz-hint-body"></div>
   </div>
 </div>
 
@@ -2599,6 +2644,57 @@ const DEFAULT_DATA = {
     {key:'judgment',label:'🟢 판단력',color:'#58c4a0'},
     {key:'social',label:'🟣 사회성',color:'#c084fc'},
   ],
+  quiz:[
+    {id:'q1', type:'mc', episodeRef:'D-6',
+      question:'괜찮아정(아세트아미노펜)의 하루 최대 복용량은?',
+      options:['1,000mg','2,000mg','4,000mg','8,000mg'], answerIdx:2,
+      hintMedicineKey:'ok',
+      explanation:'아세트아미노펜은 하루 최대 4,000mg을 넘기면 간 손상 위험이 커져요.',
+      rewardCorrect:{knowledge:8,judgment:5}, penaltyWrong:{knowledge:-3,judgment:-3}},
+    {id:'q2', type:'mc', episodeRef:'D-11',
+      question:'아야스톱(이부프로펜)을 바로 먹기 위험한 상황은?',
+      options:['식후 30분','물과 함께','공복 상태','자기 전'], answerIdx:2,
+      hintMedicineKey:'aya',
+      explanation:'이부프로펜 같은 NSAIDs 계열은 공복에 먹으면 위를 자극할 수 있어요.',
+      rewardCorrect:{knowledge:8,judgment:5}, penaltyWrong:{knowledge:-3,judgment:-3}},
+    {id:'q3', type:'mc', episodeRef:'D-8',
+      question:'괜찮아정과 함께 먹으면 아세트아미노펜 성분이 중복될 수 있는 약은?',
+      options:['비타민 음료','식염수','종합감기약','아야스톱'], answerIdx:2,
+      hintMedicineKey:'cold',
+      explanation:'종합감기약에는 아세트아미노펜이 들어 있을 수 있어 성분표를 비교해야 해요.',
+      rewardCorrect:{knowledge:8,judgment:5}, penaltyWrong:{knowledge:-3,judgment:-3}},
+    {id:'q4', type:'mc', episodeRef:'D-10',
+      question:'통증싹싹캡슐 성분 중 에너지드링크와 중복 위험을 만드는 것은?',
+      options:['이부프로펜','디펜히드라민','카페인무수물','비타민C'], answerIdx:2,
+      hintMedicineKey:'caf',
+      explanation:'통증싹싹캡슐의 카페인무수물 50mg은 음료 카페인과 합산해야 해요.',
+      rewardCorrect:{knowledge:8,judgment:5}, penaltyWrong:{knowledge:-3,judgment:-3}},
+    {id:'q5', type:'sa', episodeRef:'D-6',
+      question:'괜찮아정은 한 번 먹은 뒤 최소 몇 시간에서 최대 몇 시간 간격으로 다시 먹을 수 있을까? (예: 4~6)',
+      answerRaw:'4~6', validationType:'range_normalize',
+      hintMedicineKey:'ok',
+      hintType:'popup', hintPopupTitle:'복용 간격 힌트',
+      hintPopupBody:'괜찮아정은 보통 4~6시간 간격으로 복용해요.',
+      rewardCorrect:{knowledge:12,judgment:10}, rewardHintCorrect:{knowledge:8,judgment:5},
+      penaltyWrong:{knowledge:-5,judgment:-5}, penaltyHint:{judgment:-3},
+      explanation:'아세트아미노펜은 4~6시간 간격을 지켜야 과다 복용 위험을 줄일 수 있어요.'},
+    {id:'q6', type:'sa', episodeRef:'D-8',
+      question:'약의 성분, 효능, 복용법, 주의사항이 함께 적힌 종이를 무엇이라고 할까?',
+      answerRaw:'첨부문서', validationType:'exact',
+      hintMedicineKey:'ok',
+      hintType:'consonant', hintConsonant:'ㅊㅂㅁㅅ', hintLetterCount:4,
+      rewardCorrect:{knowledge:12,judgment:10}, rewardHintCorrect:{knowledge:8,judgment:5},
+      penaltyWrong:{knowledge:-5,judgment:-5}, penaltyHint:{judgment:-3},
+      explanation:'첨부문서는 약을 먹기 전 확인해야 하는 성분, 용법, 주의사항을 담고 있어요.'},
+    {id:'q7', type:'sa', episodeRef:'D-11',
+      question:'이부프로펜처럼 염증을 줄이고 통증을 완화하는 약 계열을 무엇이라고 할까?',
+      answerRaw:'소염진통제', validationType:'exact',
+      hintMedicineKey:'aya',
+      hintType:'consonant', hintConsonant:'ㅅㅇㅈㅌㅈ', hintLetterCount:5,
+      rewardCorrect:{knowledge:12,judgment:10}, rewardHintCorrect:{knowledge:8,judgment:5},
+      penaltyWrong:{knowledge:-5,judgment:-5}, penaltyHint:{judgment:-3},
+      explanation:'소염진통제(NSAIDs)는 통증과 염증을 줄이지만 공복 복용 등 주의할 점이 있어요.'},
+  ],
   scenarios:[
     {
       type:'narration', location:'🏫 등교길', scene:'scene_classroom', emoji:'🧑‍🎓',
@@ -2781,6 +2877,31 @@ function caffeineClues(){
     {type:'medicine', icon:'💊', label:'약 성분표', title:'통증싹싹캡슐 성분표', facts:['유효성분: 아세트아미노펜 300mg', 'IPA 150mg', '카페인무수물 50mg']}
   ];
 }
+function normalizeStatDeltaKeys(delta){
+  const map = {
+    '건강':'health', '체력':'health',
+    '지식':'knowledge',
+    '카페인':'caffeine', '카페인관리':'caffeine',
+    '수면':'sleep', '컨디션':'sleep',
+    '판단':'judgment', '판단력':'judgment',
+    '사회':'social', '사회성':'social',
+  };
+  const normalized = {};
+  Object.entries(delta || {}).forEach(([key, value]) => {
+    const statKey = map[key] || key;
+    normalized[statKey] = value;
+  });
+  return normalized;
+}
+function normalizeQuizData(quiz){
+  return (Array.isArray(quiz) ? quiz : []).map(q => ({
+    ...q,
+    rewardCorrect: normalizeStatDeltaKeys(q.rewardCorrect),
+    rewardHintCorrect: normalizeStatDeltaKeys(q.rewardHintCorrect),
+    penaltyWrong: normalizeStatDeltaKeys(q.penaltyWrong),
+    penaltyHint: normalizeStatDeltaKeys(q.penaltyHint),
+  }));
+}
 function upgradeGameData(data){
   if(!data || !Array.isArray(data.scenarios)) return data;
   const tempFollowups = data.scenarios.filter(s => s && s.tempFollowup);
@@ -2788,6 +2909,10 @@ function upgradeGameData(data){
   Object.entries(DEFAULT_DATA.images).forEach(([key, value]) => {
     if (!data.images[key]) data.images[key] = value;
   });
+  if (!Array.isArray(data.quiz) || !data.quiz.length) {
+    data.quiz = JSON.parse(JSON.stringify(DEFAULT_DATA.quiz || []));
+  }
+  data.quiz = normalizeQuizData(data.quiz);
   data.stats=[
     {key:'health',label:'🔴 체력',color:'#e76f51'},
     {key:'knowledge',label:'🟡 지식',color:'#facc15'},
@@ -2831,6 +2956,7 @@ function closeAllOverlays(){
     if(el) el.style.display='none';
   });
   document.getElementById('clue-modal')?.classList.remove('show');
+  document.getElementById('quiz-hint-modal')?.classList.remove('show');
   const choiceModal=document.getElementById('choice-modal');
   if(choiceModal) choiceModal.classList.remove('show','collapsed');
   const choiceList=document.getElementById('choice-modal-list');
@@ -3044,10 +3170,10 @@ const CVS_DRINKS = [
     desc:'라벨을 확인하니 카페인 100mg. 짧게는 눈이 떠지지만 밤 수면을 밀어낼 수 있어요.' },
   { id:'coffeeMilk', name:'커피우유', product:'우유팩 커피음료', volume:'300mL', emoji:'📦', icon:'pack', caffeine:115,
     delta:{health:-4, caffeine:-10, sleep:-4}, good:false,
-    desc:'카페인 115mg. 우유팩 음료라도 커피가 들어가면 오늘 총량에 크게 쌓입니다.' },
+    desc:'카페인 115mg. 우유팩 음료라도 커피가 들어가면 오늘 섭취량이 크게 늘어납니다.' },
   { id:'cancoffee', name:'캔커피', product:'캔 모양 커피음료', volume:'200mL', emoji:'🔵캔', icon:'canblue', caffeine:81,
     delta:{health:-3, caffeine:-8}, good:false,
-    desc:'카페인 81mg. 달달하고 그럴싸하지만 오늘 총량에 쌓입니다.' },
+    desc:'카페인 81mg. 달달하고 그럴싸하지만 오늘 섭취량에 더해집니다.' },
   { id:'vitamin', name:'비타민음료', product:'비타민 음료', volume:'100mL', emoji:'🟠병', icon:'bottle', caffeine:0,
     delta:{health:1, caffeine:3}, good:true, noCaffeine:true,
     desc:'카페인 0mg. 카페인 부담 없이 마실 수 있어요.' },
@@ -3359,14 +3485,14 @@ function epTricolorCapsule(day){
     title:'★★ 삼색 캡슐의 비밀', isEpisode:true,
     dynamicText:()=>`점심 후 두통이 온다. 가방에서 통증싹싹캡슐(삼색 캡슐)을 꺼냈다. ${todayCaffeineLabel()}. 캡슐에도 카페인이 들어 있을까? 먹기 전에 약 정보를 확인해야 한다.`,
     clues:[
-      {itemType:'magnifier', icon:'🔍', label:'약 정보', title:'통증싹싹캡슐 정보', body:'통증싹싹캡슐\n성분: 아세트아미노펜 300mg + IPA 150mg + 카페인무수물 50mg\n각인: CAF-50mg (돋보기 필요)\n주요 특징: 복합 진통 / 카페인 50mg 숨어있음\n주의: 에너지드링크 병용 시 카페인 중복 위험', isKey:true},
+      {itemType:'magnifier', icon:'🔍', label:'약 정보', title:'통증싹싹캡슐 정보', body:'통증싹싹캡슐\n성분: 아세트아미노펜 300mg + IPA 150mg + 카페인무수물 50mg\n각인: CAF-50mg\n주요 특징: 복합 진통 / 카페인 50mg 숨어있음\n주의: 에너지드링크 병용 시 카페인 중복 위험', isKey:true},
       {itemType:'notebook', icon:'📓', label:'복용 수첩', title:'오늘 카페인 섭취 기록', dynamicBody:tricolorNotebookBody}
     ],
   choices:[
     {text:'🔍 돋보기로 숨은 카페인 50mg을 확인하고 복용하지 않는다.', good:true, requiresClue:0, labelChecked:true, delta:{knowledge:15,judgment:15},
       result:{title:'단서 발견', story:'작은 글씨 속 카페인무수물 50mg을 찾았다. 캡슐은 다시 가방 안으로 들어갔다.', education:'복합 진통제에는 카페인이 들어 있을 수 있다. 에너지드링크와 합산해서 하루 총량을 봐야 한다.'}},
       {text:'💊 통증싹싹캡슐 정보를 확인했지만 그냥 먹는다.', good:false, requiresClue:0, analgesic:true, comboMedCaffeine:true, caffeineMg:50, delta:{health:-10,caffeine:-8,judgment:-10},
-        result:{title:'카페인 추가', story:'두통은 잠깐 줄었지만 통증싹싹캡슐의 카페인 50mg이 오늘 총량에 더해졌다.', education:'이전에 카페인을 마셨다면 중복 위험이 커지고, 마시지 않았더라도 복합 진통제의 카페인은 오늘 총량에 포함된다.'}},
+        result:{title:'카페인 추가', story:'두통은 잠깐 줄었지만 통증싹싹캡슐의 카페인 50mg이 오늘 섭취량에 더해졌다.', education:'이전에 카페인을 마셨다면 중복 위험이 커지고, 마시지 않았더라도 복합 진통제의 카페인은 오늘 섭취량에 포함된다.'}},
       {text:'💧 물 마시고 잠깐 눕는다.', good:true, delta:{health:2,judgment:5},
         result:{title:'비약물 선택', story:'통증이 바로 사라지진 않았지만 더 많은 성분을 몸에 넣지는 않았다.', education:'가벼운 두통은 수분 섭취와 휴식으로 먼저 지켜볼 수 있다.'}},
     ]};
@@ -3461,7 +3587,7 @@ function buildFourteenDayScenarios(){
       text:'민준이 편의점에서 나오며 손을 흔든다. "야, 시험 2주 전부터 괜히 긴장되지? 에너지드링크 하나 샀는데 너도 살래? 오전 버티려면 이거라도 마셔야 해."',
       choices:[
         {text:'🥤 편의점 냉장고에서 음료를 직접 고른다.', good:false, openDrink:'cvs', delta:{knowledge:2},
-          result:{title:'첫 음료 선택', text:'오전은 조금 버틸 수 있을 것 같다. 어떤 음료를 골랐는지가 오늘 총량에 남는다.'}},
+          result:{title:'첫 음료 선택', text:'오전은 조금 버틸 수 있을 것 같다.', followup:'선택한 음료의 카페인 양은 오늘 섭취량에 그대로 더해진다.'}},
         {text:'💧 "됐어, 이따 물 마실게." 민준의 시선을 견딘다.', good:true, caffeineMg:0, noCaffeine:true, delayed:{judgment:5}, delta:{judgment:3},
           result:{title:'어색한 거절', speaker:'민준', dialog:'"어, 진짜로?"\n민준은 어깨를 으쓱하고 먼저 교실 쪽으로 걸어갔다. 조금 어색했지만, {name은} 카페인을 추가하지 않았다.'}},
       ]},
@@ -3475,7 +3601,7 @@ function buildFourteenDayScenarios(){
         {text:'📱 문제집을 덮고 폰을 보다가 잠든다.', good:false, sleepHour:24, sleepHours:6.5, delta:{health:-3,sleep:-5,judgment:-4},
           result:{title:'늦어진 잠', text:'잠깐만 보려던 화면이 40분을 가져갔다. 쉬는 것 같았지만 몸은 쉬지 못했다.'}},
         {text:'☕ 카페인 음료를 고르고 새벽 3시까지 버틴다.', good:false, openDrink:'cafe', sleepHour:26, sleepHours:4, delta:{knowledge:12,health:-15,sleep:-15,caffeine:-8},
-          result:{title:'밤샘의 대가', text:'진도는 나갔다. 대신 새벽 공기가 차갑게 느껴졌다. 내일 아침 몸이 먼저 대답할 것이다.'}},
+          result:{title:'밤샘의 대가', text:'진도는 나갔다. 대신 새벽 공기가 차갑게 느껴졌다. 내일 아침 몸이 먼저 대답할 것이다.', followup:'수학 문제집은 더 많이 넘어갔다. 하지만 책상 위에 남은 빈 컵과 늦어진 시계가 내일 컨디션의 힌트처럼 보였다.'}},
     ]},
     {type:'event', day:2, location:'🏫 DAY 2 1교시', scene:'scene_classroom', speaker:'나레이터',
       text:'칠판 글씨가 흐릿하게 보인다. 어젯밤 늦게 잔 탓인지 눈꺼풀이 무겁고, 관자놀이도 지끈거린다. 옆자리 민준이 작게 속삭인다. "야, 카페인 없이 이거 버텨?"',
@@ -3494,7 +3620,7 @@ function buildFourteenDayScenarios(){
       text:'오늘은 어제보다 숙제가 적다. 하지만 낮에 집중을 못 했더니 복습이 밀려있다.',
       choices:[
         {text:'📚 밀린 복습을 끝내고 새벽 1시에 잔다.', good:false, sleepHour:25, sleepHours:6, delta:{knowledge:8,health:-7,sleep:-7},
-          result:{title:'밀린 복습 처리', text:'복습은 끝났다. 대신 몸은 어제와 같은 방식으로 다시 밀렸다.'}},
+          result:{title:'밀린 복습 처리', text:'복습은 끝났다. 하지만 잠이 부족해서 다음 날 아침 몸이 더 무겁게 느껴졌다.'}},
         {text:'🛌 핵심만 보고 오후 11시 30분에 잔다.', good:true, sleepHour:23, sleepHours:7.5, delta:{knowledge:3,health:5,sleep:5,judgment:3},
           result:{title:'남겨둔 체력', text:'완벽하진 않지만 내일 집중할 만큼의 체력은 남겼다.'}},
         {text:'📱 친구들 공부 인증을 보다가 자정 반에 잠든다.', good:false, sleepHour:24, sleepHours:6.5, delta:{sleep:-5,judgment:-5,social:1},
@@ -3525,14 +3651,14 @@ function buildFourteenDayScenarios(){
           result:{title:'직접 확인', text:'카페인과 일부 진통제 성분이 겹칠 수 있다는 설명을 찾았다. DAY 5에서 누군가를 말릴 근거가 생겼다.'}},
       ]},
     epMenstrualPain(3),
-    {type:'narration', day:3, location:'🏠 DAY 3 귀가 중', scene:'scene_commute', speaker:'나레이터',
-      text:'두통이 완전히 가시진 않았지만 조금은 나아졌다. 집으로 향하는 길에 서연에게서 문자가 왔다.'},
-    {type:'event', day:3, location:'☕ DAY 3 동네 카페', scene:'scene_cafe', speaker:'서연',
-      text:'서연이 문자를 보냈다. "카페 왔는데 같이 공부할래? 분위기가 집보다 나아." 카페 안은 따뜻하고 조용하다. 아직 머리가 완전히 맑지는 않다.',
+    {type:'narration', day:3, location:'🏠 DAY 3 하굣길', scene:'scene_commute', speaker:'나레이터',
+      text:'두통이 완전히 가시진 않았지만 조금은 나아졌다. 집으로 향하는 길, 내 휴대폰에 서연의 문자가 도착했다.'},
+    {type:'event', day:3, location:'🏠 DAY 3 하굣길', scene:'scene_commute', speaker:'서연',
+      text:'서연이 메시지를 보냈다. "카페 갈래? 카페 공부 분위기가 집보다 낫더라." 하굣길의 나는 아직 머리가 완전히 맑지는 않다.',
       choices:[
-        {text:'☕ 카페 메뉴에서 마실 것을 직접 고른다.', good:false, openDrink:'cafe', sleepHour:25, sleepHours:6, delta:{knowledge:6,health:-4,sleep:-4},
-          result:{title:'카페 공부', text:'카페 분위기 덕분에 공부는 잘 됐다. 어떤 메뉴를 골랐는지가 오늘 밤 잠드는 시간을 흔든다.'}},
-        {text:'🏠 "오늘은 집에서 할게."', good:true, caffeineMg:0, noCaffeine:true, sleepHours:8, delta:{knowledge:4,social:-3,sleep:5},
+        {text:'☕ 서연과 카페에 가서 음료를 고른다.', good:false, openDrink:'cafe', sceneAfterDrink:'scene_cafe', sleepHour:25, sleepHours:6, delta:{knowledge:6,health:-4,sleep:-4},
+          result:{title:'카페 공부', text:'카페 분위기는 집보다 집중이 잘 됐다.', followup:'하지만 내가 고른 음료의 카페인은 오늘 섭취량에 더해지고, 밤에 잠드는 시간을 흔들 수 있다.'}},
+        {text:'🏠 "오늘은 집에서 할게." 카페에 가지 않고 집으로 간다.', good:true, caffeineMg:0, noCaffeine:true, sleepHours:8, delta:{knowledge:4,social:-3,sleep:5},
           result:{title:'어색하지만 편한 밤', text:'서연과 조금 어색해졌지만 집에서는 일찍 정리할 수 있었다.'}},
       ]},
     {type:'event', day:4, location:'🏫 DAY 4 등교 중', scene:'scene_commute', speaker:'나레이터',
@@ -3615,20 +3741,20 @@ function buildFourteenDayScenarios(){
         {text:'🛌 "그냥 자자. 내일 일찍 하자."', good:true, sleepHour:23, sleepHours:8, delta:{health:10,sleep:10,judgment:8},
           result:{title:'중단하는 용기', text:'불안했지만 책을 덮었다. DAY 10 컨디션은 이 선택을 기억할 것이다.'}},
       ]},
-    {type:'event', day:10, location:'🌙 DAY 10 시험 전날 밤', scene:'scene_bedroom', speaker:'나레이터',
-      text:'내일이 시험이다. 지금 자면 8시간을 잘 수 있다. 하지만 아직 한 단원이 남았다. 카페인을 마시면 3시간을 더 할 수 있을 것 같다.',
+    {type:'event', day:10, location:'🌙 D-5 밤', scene:'scene_bedroom', speaker:'나레이터',
+      text:'시험까지 아직 닷새가 남았다. 지금 무리하면 진도는 나가겠지만, 몸이 회복할 시간은 줄어든다. 아직 한 단원이 남아 있고, 카페인을 마시면 3시간은 더 할 수 있을 것 같다.',
       choices:[
         {text:'☕ 카페인 음료를 고르고 새벽 3시까지 공부한다.', good:false, openDrink:'cafe', sleepHour:26, sleepHours:4, delta:{knowledge:15,health:-20,sleep:-18,caffeine:-10},
           result:{title:'많이 봤지만 흐릿함', text:'공부량은 늘었다. 하지만 실전에서 기억을 꺼낼 컨디션은 크게 낮아졌다.'}},
         {text:'🥤 편의점 음료를 고르고 새벽 2시까지 버틴다.', good:false, openDrink:'cvs', sleepHour:26, sleepHours:5, delta:{knowledge:10,health:-12,sleep:-12,caffeine:-8},
-          result:{title:'부분적으로 남은 공부', text:'조금 더 봤다. 대신 몸은 시험 전날 밤을 회복이 아니라 버티기로 보냈다.'}},
+          result:{title:'부분적으로 남은 공부', text:'조금 더 봤다. 대신 몸은 회복이 아니라 버티는 쪽으로 기울었다.'}},
         {text:'🛌 오후 11시에 바로 잔다.', good:true, sleepHour:23, sleepHours:8, delta:{health:12,sleep:15,judgment:8},
           result:{title:'기억 정리', text:'한 단원은 남았다. 하지만 아는 것을 제대로 꺼낼 힘을 남겼다.'}},
         {text:'📚 한 단원만 보고 자정에 잔다.', good:true, sleepHour:24, sleepHours:7, delta:{knowledge:5,health:3,sleep:3,judgment:3},
           result:{title:'균형 잡힌 마무리', text:'완벽하지 않지만 공부와 수면 사이에서 무너지지 않는 선을 골랐다.'}},
       ]},
-    {type:'narration', day:11, location:'📝 DAY 11 시험장', scene:'scene_exam', speaker:'나레이터',
-      text:'시험지를 받아들었다. 어젯밤의 선택이 손끝에 남아있다. 공부한 내용이 떠오를 듯 사라지기도 하고, 어떤 문제는 생각보다 선명하게 보이기도 한다.',
+    {type:'narration', day:11, location:'📝 D-4 실전 연습', scene:'scene_exam', speaker:'나레이터',
+      text:'실전처럼 시간을 재고 문제를 풀어본다. 어젯밤의 선택이 손끝에 남아있다. 공부한 내용이 떠오를 듯 사라지기도 하고, 어떤 문제는 생각보다 선명하게 보이기도 한다.',
       choices:null},
     {type:'event', day:12, location:'🏫 DAY 12 쉬는 시간', scene:'scene_classroom', speaker:'서연',
       text:'서연이 조용히 말했다. "민준이 오늘 보건실 갔어. 시험 기간에 에너지드링크를 너무 많이 마셔서 심장이 두근거린대."',
@@ -3640,8 +3766,8 @@ function buildFourteenDayScenarios(){
         {text:'🩺 "같이 보건실 가볼까, 보건샘한테 물어보자."', good:true, helpedFriend:true, healthOffice:'friend', delta:{judgment:10,social:8},
           result:{title:'보건실로 이동', text:'민준과 함께 보건실에 가서 증상을 이야기해 보기로 했다.'}},
       ]},
-    {type:'event', day:13, location:'🌙 DAY 13 독서실 복도', scene:'scene_library', speaker:'민준',
-      text:'마지막 시험 전날. 민준이 말했다. "야, 오늘만 버티면 돼. 한 캔만 더 마시자." 솔직히 요즘 마셔도 예전만큼 효과가 없는 것 같기도 하다.',
+    {type:'event', day:13, location:'🌙 D-1 독서실 복도', scene:'scene_library', speaker:'민준',
+      text:'시험 전날. 민준이 말했다. "야, 오늘만 버티면 돼. 한 캔만 더 마시자." 솔직히 요즘 마셔도 예전만큼 효과가 없는 것 같기도 하다.',
       choices:[
         {text:'🥤 "그래, 마지막이잖아." 음료를 고른다.', good:false, openDrink:'cvs', sleepHours:6, delta:{health:-8,caffeine:-6,sleep:-8},
           result:{title:'마지막이라는 말', text:'마지막이라는 말은 편했다. 하지만 몸은 마지막인지 아닌지 구분하지 않는다.'}},
@@ -3652,9 +3778,9 @@ function buildFourteenDayScenarios(){
         {text:'🤔 "조금만 마실게." 메뉴에서 덜 부담스러운 걸 고른다.', good:false, openDrink:'cvs', sleepHours:7, delta:{health:-3,caffeine:-2,sleep:-3,judgment:1},
           result:{title:'절충의 한계', text:'전부는 아니지만 카페인은 들어왔다. 반만 마셔도 총량에는 더해진다.'}},
       ]},
-    {type:'narration', day:14, location:'📝 DAY 14 최종 시험 당일', scene:'scene_exam', speaker:'나레이터',
-      text:'14일이 여기까지 왔다. 시험지가 뒤집어진 채 책상 위에 있다. 지금 이 순간의 컨디션은 지난 2주 동안의 모든 선택이 만든 것이다.',
-      choices:null},
+    {type:'exam', day:'exam', location:'📝 D-Day 최종 시험 당일', scene:'scene_exam', speaker:'나레이터',
+      text:'14일이 여기까지 왔다. 시험지가 뒤집어진 채 책상 위에 있다. 지금 이 순간의 컨디션은 지난 2주 동안의 모든 선택이 만든 것이다. 이제 미니 퀴즈로 배운 것을 확인해 보자.',
+      choices:[]},
     {type:'ending'}
   ];
 }
@@ -3731,7 +3857,7 @@ function applyPendingDrinkChoice(choice, options={}){
   return choice.result?.text || '';
 }
 
-function formatDrinkResultText(drink, reactionText, overLimit){
+function formatDrinkResultText(drink, reactionText, overLimit, followupText=''){
   const max = G.caffeineMax || Math.round((G.weight || 60) * 2.5);
   const now = G.caffeineToday || 0;
   const productLine = [drink.product || drink.english || drink.name, drink.volume].filter(Boolean).join(' · ');
@@ -3747,6 +3873,9 @@ function formatDrinkResultText(drink, reactionText, overLimit){
   }
   if(reactionText){
     lines.push('', `[${selfInnerLabel()}]`, reactionText);
+  }
+  if(followupText){
+    lines.push('', '[나레이터]', followupText);
   }
   return lines.join('\n');
 }
@@ -3884,6 +4013,13 @@ function renderSceneCharacters(sc){
     scNameTag.style.display='';
     scNameTag.textContent=sceneCharacterDisplayName(sc, charSlot);
   }
+}
+
+function setSceneVisual(sceneKey, scenarioOverride=null){
+  const sa=document.getElementById('scene-area');
+  if(!sa) return;
+  const sc = scenarioOverride || DB.gameData.scenarios[G.scene] || {};
+  loadSceneBackgroundFirst(sa, sceneKey, () => renderSceneCharacters({...sc, scene:sceneKey}));
 }
 
 function loadSceneBackgroundFirst(sa, sceneKey, onReady){
@@ -4054,7 +4190,19 @@ function medicineInfo(key) {
       art:'<span class="pill-shape pill-oval" style="--pill-a:#83b7ff;--pill-b:#3264d7;"><span class="pill-mark light">IBU</span></span>',
       facts:['소염진통제로 생리통에 도움이 될 수 있다.','식후 복용이 원칙이며 공복 복용은 피한다.','위 점막 자극이나 위출혈 위험이 있어 복용 조건을 확인해야 한다.'],
       chips:['소염 효과','생리통에 도움','식후 복용 필수'],
-      caution:'공복 복용 금지 - 위 점막 자극, 위출혈 위험'
+      caution:'공복 복용 금지 - 위 점막 자극, 위출혈 위험',
+      role:'생리통·근육통 에피소드 핵심'
+    },
+    caf: {
+      title:'통증싹싹캡슐 복약 정보',
+      name:'통증싹싹캡슐',
+      ingredient:'아세트아미노펜 300mg + IPA 150mg + 카페인무수물 50mg',
+      engraving:'CAF-50mg',
+      art:'<span class="pill-shape pill-capsule-combo"><span class="pill-mark">CAF</span></span>',
+      facts:['복합 진통제로 여러 성분이 함께 들어 있다.','카페인무수물 50mg이 들어 있어 음료 카페인과 합산해야 한다.','에너지드링크나 커피를 마신 날에는 카페인 중복 위험이 커진다.'],
+      chips:['복합 진통','카페인 50mg 포함','음료 카페인과 합산'],
+      caution:'에너지드링크 병용 시 카페인 중복 위험',
+      role:'카페인 중복 추리 에피소드 핵심'
     },
     cold: {
       title:'감기뚝정 복약 정보',
@@ -4064,9 +4212,13 @@ function medicineInfo(key) {
       art:'<span class="pill-shape pill-pentagon" style="--pill-a:#ffb6a5;--pill-b:#ff725e;"><span class="pill-mark light">COLD</span></span>',
       facts:['각인 COLD-300과 약학정보원 검색 결과가 일치한다.','아세트아미노펜 성분이 들어 있는 종합감기약이다.','괜찮아정(두통약)과 함께 먹으면 아세트아미노펜 성분이 중복될 수 있다.'],
       chips:['종합 감기 완화','아세트아미노펜 포함','성분 중복 주의'],
-      caution:'괜찮아정과 병용 시 아세트아미노펜 중복 위험'
+      caution:'괜찮아정과 병용 시 아세트아미노펜 중복 위험',
+      role:'성분 중복 에피소드 핵심'
     }
   };
+  list.combo = list.caf;
+  list.stop = list.aya;
+  list.ok.role = '두통·발열 기본 선택지';
   return list[key] || list.ok;
 }
 
@@ -4086,7 +4238,7 @@ function renderMedicineInfoCard(key) {
         </div>
       </div>
       <div class="drug-dict-field">
-        <div class="drug-dict-label">각인 (돋보기 확인)</div>
+        <div class="drug-dict-label">각인</div>
         <div class="drug-dict-value" style="font-family:monospace;">${escapeHtml(info.engraving)}</div>
       </div>
       <div class="drug-dict-field">
@@ -4100,6 +4252,10 @@ function renderMedicineInfoCard(key) {
         <div class="drug-chip-row">
           <span class="drug-chip caution">${escapeHtml(info.caution)}</span>
         </div>
+      </div>
+      <div class="drug-dict-field">
+        <div class="drug-dict-label">시나리오 역할</div>
+        <div class="drug-dict-value">${escapeHtml(info.role || '복약 판단 힌트')}</div>
       </div>
     </div>`;
 }
@@ -4372,7 +4528,7 @@ function resultSectionType(label) {
   return 'npc';
 }
 
-function renderResultContent(text, fallbackLabel='') {
+function resultSectionsFromText(text, fallbackLabel='') {
   const raw = normalizeStoryText(text || '');
   const lines = raw.split(/\n/);
   const sections = [];
@@ -4399,6 +4555,10 @@ function renderResultContent(text, fallbackLabel='') {
     sections[0].label = fallbackLabel;
   }
 
+  return sections;
+}
+
+function renderResultSections(sections) {
   return sections.map(section => {
     const body = section.body.join('\n').trim();
     if(!section.label){
@@ -4411,6 +4571,111 @@ function renderResultContent(text, fallbackLabel='') {
         <div class="result-body">${escapeHtml(body)}</div>
       </div>`;
   }).join('');
+}
+
+function renderResultContent(text, fallbackLabel='') {
+  return renderResultSections(resultSectionsFromText(text, fallbackLabel));
+}
+
+function resetResultNextButton(label='다음 →') {
+  const btn = document.getElementById('next-btn');
+  if(!btn) return;
+  btn.textContent = label;
+  btn.onclick = nextScene;
+  window._resultReveal = null;
+}
+
+function advanceResultReveal() {
+  const state = window._resultReveal;
+  if(!state) {
+    nextScene();
+    return;
+  }
+  if(state.idx < state.sections.length - 1) {
+    state.idx += 1;
+    document.getElementById('r-text').innerHTML = renderResultSections(state.sections.slice(0, state.idx + 1));
+    document.getElementById('next-btn').textContent = state.idx === state.sections.length - 1 ? '다음 →' : '다음 →';
+    return;
+  }
+  resetResultNextButton();
+  nextScene();
+}
+
+function advanceDialogResultReveal() {
+  const state = window._dialogResultReveal;
+  if(!state) {
+    nextScene();
+    return;
+  }
+  if(!_typing.done) {
+    onDialogTap();
+    return;
+  }
+  if(state.idx < state.sections.length - 1) {
+    state.idx += 1;
+    showDialogResultSection(state);
+    return;
+  }
+  window._dialogResultReveal = null;
+  resetResultNextButton();
+  nextScene();
+}
+
+function dialogResultSectionText(section) {
+  const body = (section?.body || []).join('\n').trim();
+  if(!section?.label || String(section.label).includes('속마음') || String(section.label).includes('나레이터')) {
+    return body;
+  }
+  return `[${section.label}]\n${body}`;
+}
+
+function dialogResultSpeaker(state, section) {
+  if(!section?.label) return state.title || '나레이터';
+  if(state.idx === 0 && state.title) return state.title;
+  return section.label;
+}
+
+function showDialogResultSection(state) {
+  const section = state.sections[state.idx] || { label:'', body:[''] };
+  document.getElementById('d-spk').textContent = normalizeStoryText(dialogResultSpeaker(state, section));
+  document.getElementById('next-btn').classList.remove('show');
+  if(String(section.label || '').includes('음료 정보')) {
+    document.getElementById('d-txt').innerHTML = renderResultSections([section]);
+    clearTypingState(_typing);
+    _typing.done = true;
+    setSkipVisible('dialog-skip', false);
+    hideNextArrow();
+    document.getElementById('next-btn').classList.add('show');
+    if(state.idx >= state.sections.length - 1 && state.onComplete && !state.completeCalled) {
+      state.completeCalled = true;
+      state.onComplete();
+    }
+    return;
+  }
+  startTyping(splitSentences(dialogResultSectionText(section)), () => {
+    document.getElementById('next-btn').classList.add('show');
+    if(state.idx >= state.sections.length - 1 && state.onComplete && !state.completeCalled) {
+      state.completeCalled = true;
+      state.onComplete();
+    }
+  });
+}
+
+function showDialogResult(title, text, onComplete, options={}) {
+  clearTypingState(_typing);
+  clearTypingState(_resultTyping);
+  hideNextArrow();
+  hideResultArrow();
+  setSkipVisible('dialog-skip', false);
+  setSkipVisible('result-skip', false);
+  resetResultNextButton();
+  document.getElementById('result-box').classList.remove('show');
+  const sections = resultSectionsFromText(text || '', options.fallbackLabel || '');
+  window._dialogResultReveal = { title:normalizeStoryText(title || '나레이터'), sections, idx:0, onComplete:onComplete || null, completeCalled:false };
+  document.getElementById('next-btn').onclick = advanceDialogResultReveal;
+  showDialogResultSection(window._dialogResultReveal);
+  G.answered = true;
+  saveGameState();
 }
 
 function resultLayerText(result) {
@@ -4434,7 +4699,7 @@ function clearTypingState(state) {
 function renderTypingText(targetId, past, current) {
   const target = document.getElementById(targetId);
   if (!target) return;
-  target.innerHTML = `<span class="dialog-current">${escapeHtml(current)}</span>`;
+  target.innerHTML = `<span class="dialog-current">${escapeHtml(current).replace(/\n/g, '<br>')}</span>`;
 }
 
 function clearTextSelection(){
@@ -4679,6 +4944,13 @@ function renderChoices(sc) {
 
 function showChoicesOrNext() {
   const sc = DB.gameData.scenarios[G.scene];
+  if (sc?.type === 'exam') {
+    const btn = document.getElementById('next-btn');
+    btn.textContent = '퀴즈 시작 →';
+    btn.onclick = startMiniQuiz;
+    btn.classList.add('show');
+    return;
+  }
   if (!sc || !sc.choices || sc.type === 'narration') {
     document.getElementById('next-btn').classList.add('show');
     return;
@@ -4718,8 +4990,16 @@ function showTypedResult(title, text, onComplete, options={}) {
   clearTypingState(_resultTyping);
   hideResultArrow();
   setSkipVisible('result-skip', false);
+  resetResultNextButton();
+  const sections = resultSectionsFromText(text || '', options.fallbackLabel || '');
   document.getElementById('r-title').textContent = normalizeStoryText(title || '');
-  document.getElementById('r-text').innerHTML = renderResultContent(text || '', options.fallbackLabel || '');
+  if(sections.length > 1) {
+    window._resultReveal = { sections, idx:0 };
+    document.getElementById('r-text').innerHTML = renderResultSections([sections[0]]);
+    document.getElementById('next-btn').onclick = advanceResultReveal;
+  } else {
+    document.getElementById('r-text').innerHTML = renderResultSections(sections);
+  }
   document.getElementById('result-box').classList.add('show');
   document.getElementById('next-btn').classList.add('show');
   G.answered = true;
@@ -4740,15 +5020,8 @@ function choiceResultDialog(result={}) {
 function showChoiceResult(ch, sc, onComplete) {
   const result = ch.result || {};
   const text = choiceResultDialog(result);
-  document.getElementById('result-box').classList.remove('show');
-  document.getElementById('next-btn').classList.remove('show');
-  document.getElementById('d-spk').textContent = choiceResultSpeaker(sc, result);
-  G.answered = true;
-  saveGameState();
-  startTyping(splitSentences(text), () => {
-    document.getElementById('next-btn').classList.add('show');
-    if (onComplete) onComplete();
-  });
+  const title = result.title || choiceResultSpeaker(sc, result);
+  showDialogResult(title, text, onComplete);
 }
 
 function selfInnerLabel(){
@@ -4781,11 +5054,28 @@ function formatNamePlaceholders(text) {
   const name = G.name || '학생';
   const batchim = hasFinalConsonant(name);
   return String(text || '')
-    .replace(/\{name은\}|\{name는\}/g, name + (batchim ? '은' : '는'))
-    .replace(/\{name이\}|\{name가\}/g, name + (batchim ? '이' : '가'))
-    .replace(/\{name을\}|\{name를\}/g, name + (batchim ? '을' : '를'))
-    .replace(/\{name과\}|\{name와\}/g, name + (batchim ? '과' : '와'))
+    .replace(/\{name\}\(은\)는|\{이름\}\(은\)는/g, name + (batchim ? '은' : '는'))
+    .replace(/\{name\}\(이\)가|\{이름\}\(이\)가/g, name + (batchim ? '이' : '가'))
+    .replace(/\{name\}\(을\)를|\{이름\}\(을\)를/g, name + (batchim ? '을' : '를'))
+    .replace(/\{name\}\(과\)와|\{이름\}\(과\)와/g, name + (batchim ? '과' : '와'))
+    .replace(/\{name은\}|\{name는\}|\{이름은\}|\{이름는\}/g, name + (batchim ? '은' : '는'))
+    .replace(/\{name이\}|\{name가\}|\{이름이\}|\{이름가\}/g, name + (batchim ? '이' : '가'))
+    .replace(/\{name을\}|\{name를\}|\{이름을\}|\{이름를\}/g, name + (batchim ? '을' : '를'))
+    .replace(/\{name과\}|\{name와\}|\{이름과\}|\{이름와\}/g, name + (batchim ? '과' : '와'))
+    .replace(/\{이름\}/g, name)
     .replace(/\{name\}/g, name);
+}
+
+function playerNameWithParticle(pair='은는') {
+  const name = G.name || '학생';
+  const batchim = hasFinalConsonant(name);
+  const particles = {
+    은는: batchim ? '은' : '는',
+    이가: batchim ? '이' : '가',
+    을를: batchim ? '을' : '를',
+    과와: batchim ? '과' : '와'
+  };
+  return name + (particles[pair] || particles.은는);
 }
 
 const STATE_HISTORY_LIMIT = 80;
@@ -4894,6 +5184,8 @@ function renderScene(idx){
   clearTypingState(_resultTyping);
   hideNextArrow();
   hideResultArrow();
+  window._dialogResultReveal = null;
+  resetResultNextButton();
   G.answered=false;
   document.getElementById('result-box').classList.remove('show');
   document.getElementById('next-btn').classList.remove('show');
@@ -4903,10 +5195,13 @@ function renderScene(idx){
   }
   G.currentDay=day; G.day=day;
   document.getElementById('hud-name').textContent=`${G.name}(나)`;
-  document.getElementById('s-day').textContent=`${day}일차`;
+  const dayText = day === 'exam' ? 'D-Day' : `${day}일차`;
+  document.getElementById('s-day').textContent=dayText;
   const hudLocation = formatHudLocation(sc.location);
   const dday = ddayLabel(sc, day);
-  document.getElementById('hud-day').textContent=dday ? `${day}일차 · ${dday} 시험기간` : (hudLocation ? `${day}일차 · ${hudLocation}` : `${day}일차`);
+  document.getElementById('hud-day').textContent=day === 'exam'
+    ? 'D-Day · 최종 시험'
+    : (dday ? `${dayText} · ${dday} 시험기간` : (hudLocation ? `${dayText} · ${hudLocation}` : dayText));
   updateCaffeineHud();
   document.getElementById('scene-loc').textContent=sc.location||'📍 교실';
   const epBadge=document.getElementById('episode-badge');
@@ -5025,10 +5320,12 @@ function sceneSkippedAt(idx){
   return !!(sc?.skipIf && sc.skipIf());
 }
 function prevScene(){
-  if((G.scene || 0) <= 0) return;
   hideChoices();
   clearTypingState(_typing);
   clearTypingState(_resultTyping);
+  window._dialogResultReveal = null;
+  window._resultReveal = null;
+  resetResultNextButton();
   const last = Array.isArray(G.sceneHistory) ? G.sceneHistory.pop() : null;
   if (last?.state && restoreGameStateSnapshot(last.state)) {
     closeAllOverlays();
@@ -5037,11 +5334,210 @@ function prevScene(){
     saveGameState();
     return;
   }
+  if((G.scene || 0) <= 0) return;
   let target = Math.max(0, (G.scene || 0) - 1);
   while(target > 0 && sceneSkippedAt(target)) target--;
   G.scene = target;
   G.answered = false;
   renderScene(G.scene);
+}
+
+// ══════════════════════════════════════
+// D-Day 미니 시험
+// ══════════════════════════════════════
+let _miniQuizState = { active:false, idx:0, correct:0, hinted:{}, historyPushed:false };
+
+function miniQuizList() {
+  const list = DB.gameData.quiz || DEFAULT_DATA.quiz || [];
+  return Array.isArray(list) ? list : [];
+}
+
+function startMiniQuiz() {
+  hideChoices();
+  clearTypingState(_typing);
+  clearTypingState(_resultTyping);
+  hideNextArrow();
+  hideResultArrow();
+  document.getElementById('result-box').classList.remove('show');
+  document.getElementById('next-btn').classList.remove('show');
+  if (!_miniQuizState.historyPushed) pushSceneHistory('miniQuiz');
+  _miniQuizState = { active:true, idx:0, correct:0, hinted:{}, historyPushed:true };
+  showMiniQuizQuestion();
+}
+
+function normalizeMiniQuizAnswer(value) {
+  return String(value || '')
+    .toLowerCase()
+    .replace(/\s+/g, '')
+    .replace(/[()（）.,·ㆍ]/g, '')
+    .trim();
+}
+
+function isMiniQuizCorrect(q, answer) {
+  if (!q) return false;
+  if (q.type === 'mc') return Number(answer) === Number(q.answerIdx);
+  const normalized = normalizeMiniQuizAnswer(answer);
+  const raw = normalizeMiniQuizAnswer(q.answerRaw);
+  if (q.validationType === 'range_normalize') {
+    return /4/.test(normalized) && /6/.test(normalized);
+  }
+  if (raw === '소염진통제') {
+    return ['소염진통제','비스테로이드성소염진통제','nsaids','엔세이드','엔세이즈'].includes(normalized);
+  }
+  return normalized === raw;
+}
+
+function miniQuizHintText(q) {
+  if (!q) return '';
+  if (q.hintType === 'consonant') {
+    return `힌트: 초성 ${q.hintConsonant || ''}${q.hintLetterCount ? ` (${q.hintLetterCount}글자)` : ''}`;
+  }
+  return `${q.hintPopupTitle || '힌트'}\n${q.hintPopupBody || ''}`.trim();
+}
+
+function miniQuizHintMedicineKey(q) {
+  if (q?.hintMedicineKey) return q.hintMedicineKey;
+  const text = `${q?.question || ''} ${q?.explanation || ''}`;
+  if (/통증싹싹|카페인무수물|에너지드링크/.test(text)) return 'caf';
+  if (/아야스톱|이부프로펜|소염진통|NSAIDs|생리통/.test(text)) return 'aya';
+  if (/감기뚝|종합감기|COLD/.test(text)) return 'cold';
+  return 'ok';
+}
+
+function showMiniQuizHint() {
+  const q = miniQuizList()[_miniQuizState.idx];
+  if (!q) return;
+  if (!_miniQuizState.hinted[q.id]) {
+    _miniQuizState.hinted[q.id] = true;
+    applyDelta(q.penaltyHint || {});
+  }
+  const key = miniQuizHintMedicineKey(q);
+  const info = medicineInfo(key);
+  const modal = document.getElementById('quiz-hint-modal');
+  document.getElementById('quiz-hint-title').textContent = info.title || '약물 힌트';
+  const note = miniQuizHintText(q);
+  document.getElementById('quiz-hint-body').innerHTML = `
+    ${renderMedicineInfoCard(key)}
+    ${note ? `<div class="quiz-hint-note">${escapeHtml(note)}</div>` : ''}`;
+  modal?.classList.add('show');
+  const btn = document.getElementById('mini-quiz-hint-btn');
+  if (btn) btn.textContent = '힌트 확인 완료';
+  saveGameState();
+}
+
+function closeMiniQuizHint(event) {
+  event?.stopPropagation?.();
+  document.getElementById('quiz-hint-modal')?.classList.remove('show');
+}
+
+function miniQuizQuestionHtml(q, idx, total) {
+  const meta = `${q.episodeRef ? q.episodeRef + ' · ' : ''}문항 ${idx + 1} / ${total}`;
+  if (q.type === 'mc') {
+    return `
+      <div class="mini-quiz">
+        <div class="mini-quiz-meta">${escapeHtml(meta)}</div>
+        <div class="mini-quiz-q">${escapeHtml(q.question)}</div>
+        <div class="mini-quiz-options">
+          ${(q.options || []).map((opt, i) => `
+            <button class="mini-quiz-option" onclick="answerMiniQuiz(${i})">
+              ${String.fromCharCode(9312 + i)} ${escapeHtml(opt)}
+            </button>`).join('')}
+        </div>
+        <div class="mini-quiz-actions">
+          <button class="mini-quiz-small" id="mini-quiz-hint-btn" onclick="showMiniQuizHint()">약물 힌트</button>
+        </div>
+      </div>`;
+  }
+  return `
+    <div class="mini-quiz">
+      <div class="mini-quiz-meta">${escapeHtml(meta)}</div>
+      <div class="mini-quiz-q">${escapeHtml(q.question)}</div>
+      <div class="mini-quiz-answer-row">
+        <input class="mini-quiz-input" id="mini-quiz-answer" autocomplete="off" placeholder="정답 입력">
+        <button class="mini-quiz-small" onclick="answerMiniQuiz(document.getElementById('mini-quiz-answer').value)">확인</button>
+      </div>
+      <div class="mini-quiz-actions">
+        <button class="mini-quiz-small" id="mini-quiz-hint-btn" onclick="showMiniQuizHint()">약물 힌트</button>
+      </div>
+    </div>`;
+}
+
+function showMiniQuizQuestion() {
+  const quiz = miniQuizList();
+  const q = quiz[_miniQuizState.idx];
+  if (!q) {
+    finishMiniQuiz();
+    return;
+  }
+  document.getElementById('d-spk').textContent = `미니 퀴즈 Q${_miniQuizState.idx + 1}`;
+  document.getElementById('d-txt').innerHTML = miniQuizQuestionHtml(q, _miniQuizState.idx, quiz.length);
+  document.getElementById('next-btn').classList.remove('show');
+  const input = document.getElementById('mini-quiz-answer');
+  if (input) {
+    input.focus();
+    input.onkeydown = event => {
+      if (event.key === 'Enter') answerMiniQuiz(input.value);
+    };
+  }
+  saveGameState();
+}
+
+function answerMiniQuiz(answer) {
+  const quiz = miniQuizList();
+  const q = quiz[_miniQuizState.idx];
+  if (!q) return;
+  const correct = isMiniQuizCorrect(q, answer);
+  const usedHint = !!_miniQuizState.hinted[q.id];
+  if (correct) _miniQuizState.correct += 1;
+  applyDelta(correct
+    ? (usedHint ? (q.rewardHintCorrect || q.rewardCorrect || {}) : (q.rewardCorrect || {}))
+    : (q.penaltyWrong || {}));
+
+  document.querySelectorAll('.mini-quiz-option, .mini-quiz-small, .mini-quiz-input').forEach(el => {
+    el.disabled = true;
+  });
+
+  const result = document.createElement('div');
+  result.className = `mini-quiz-result ${correct ? 'good' : 'bad'}`;
+  result.textContent = `${correct ? '정답!' : '오답.'} ${q.explanation || ''}`;
+  document.querySelector('.mini-quiz')?.appendChild(result);
+
+  const btn = document.getElementById('next-btn');
+  btn.textContent = _miniQuizState.idx >= quiz.length - 1 ? '결과 보기 →' : '다음 문제 →';
+  btn.onclick = nextMiniQuizQuestion;
+  btn.classList.add('show');
+  saveGameState();
+}
+
+function nextMiniQuizQuestion() {
+  const quiz = miniQuizList();
+  _miniQuizState.idx += 1;
+  resetResultNextButton();
+  if (_miniQuizState.idx >= quiz.length) {
+    finishMiniQuiz();
+    return;
+  }
+  showMiniQuizQuestion();
+}
+
+function finishMiniQuiz() {
+  const total = miniQuizList().length || 0;
+  const correct = _miniQuizState.correct || 0;
+  _miniQuizState.active = false;
+  const rate = total ? Math.round((correct / total) * 100) : 0;
+  const finalDelta = rate >= 85 ? {knowledge:8, judgment:8, health:5}
+    : rate >= 60 ? {knowledge:5, judgment:3}
+    : {judgment:-3};
+  applyDelta(finalDelta);
+  const comment = rate >= 85
+    ? '배운 내용을 아주 안정적으로 꺼냈다. 오늘의 컨디션도 마지막 선택을 도와줬다.'
+    : rate >= 60
+      ? '중요한 기준은 기억해냈다. 헷갈린 부분은 다시 확인하면 된다.'
+      : '헷갈린 문항이 많았다. 약은 기억에만 기대지 말고 성분표와 설명서를 다시 확인해야 한다.';
+  showDialogResult(
+    `미니 퀴즈 결과 ${correct}/${total}`,
+    `[선택 결과]\n${comment}\n\n[학습 포인트]\n아세트아미노펜 복용 간격, 공복 복용 주의, 카페인 중복, 첨부문서 확인이 이번 시뮬레이션의 핵심이었다.`
+  );
 }
 
 // ══════════════════════════════════════
@@ -5129,62 +5625,62 @@ function drawEndMsg(){
     ending = 'complex';
     title  = '😵 복합 위험형';
     color  = '#ef4444';
-    msg    = `${G.name}은(는) 카페인이 들어있는 음료와 카페인 성분이 포함된 진통제를 함께 선택한 경우가 있었어요. 성분을 확인하는 습관 하나가 이런 상황을 막아줘요.`;
+    msg    = `${playerNameWithParticle()} 카페인이 들어있는 음료와 카페인 성분이 포함된 진통제를 함께 선택한 경우가 있었어요. 성분을 확인하는 습관 하나가 이런 상황을 막아줘요.`;
 
   } else if (analgesics >= 3 || fasting >= 1) {
     ending = 'medicine';
     title  = '💊 진통제 반복형';
     color  = '#f59e0b';
-    msg    = `${G.name}은(는) 두통이 생길 때마다 약을 찾는 패턴이 생겼어요. 약은 증상을 줄여주지만 원인을 없애주진 않아요. 특히 공복 복용은 위장 자극 위험을 키웁니다.`;
+    msg    = `${playerNameWithParticle()} 두통이 생길 때마다 약을 찾는 패턴이 생겼어요. 약은 증상을 줄여주지만 원인을 없애주진 않아요. 특히 공복 복용은 위장 자극 위험을 키웁니다.`;
 
   } else if (avgCaffeine >= 80 || (avgSleep && avgSleep <= 6.5)) {
     ending = 'caffeine';
     title  = '⚠️ 카페인 의존형';
     color  = '#f97316';
-    msg    = `${G.name}은(는) 시험 기간 동안 카페인에 많이 기대었어요. 단기적으로 버틸 수는 있지만, 내성이 쌓이면 같은 효과를 위해 더 많은 양을 찾게 됩니다.`;
+    msg    = `${playerNameWithParticle()} 시험 기간 동안 카페인에 많이 기대었어요. 단기적으로 버틸 수는 있지만, 내성이 쌓이면 같은 효과를 위해 더 많은 양을 찾게 됩니다.`;
 
   } else if (avgCaffeine <= 50 && (!avgSleep || avgSleep >= 7) && combo === 0) {
     ending = 'balanced';
     title  = '🌟 균형형';
     color  = '#5fc89a';
-    msg    = `${G.name}은(는) 단기 효과보다 장기 컨디션을 더 자주 선택했어요. 카페인 의존 없이 시험을 마친 건 쉽지 않은 일이에요.`;
+    msg    = `${playerNameWithParticle()} 단기 효과보다 장기 컨디션을 더 자주 선택했어요. 카페인 의존 없이 시험을 마친 건 쉽지 않은 일이에요.`;
 
   } else if (allHigh && avg >= 70) {
     ending = 'leader';
     title  = '🌟 건강한 리더';
     color  = '#5fc89a';
-    msg    = `${G.name}은(는) 14일 동안 균형 잡힌 선택을 이어갔습니다. 수면, 카페인 관리, 올바른 복약까지 모든 영역에서 고른 모습을 보였어요. 균형이 진짜 건강이에요!`;
+    msg    = `${playerNameWithParticle()} 14일 동안 균형 잡힌 선택을 이어갔습니다. 수면, 카페인 관리, 올바른 복약까지 모든 영역에서 고른 모습을 보였어요. 균형이 진짜 건강이에요!`;
 
   } else if (highOutlier) {
     ending = 'skewed';
     title  = '⚠️ 한쪽으로 치우친 습관';
     color  = '#f59e0b';
     const highStat = stats.filter(s => s.value >= 85)[0];
-    msg    = `${G.name}은(는) ${highStat.label} 영역은 뛰어났지만, ${min.label} 영역이 부족했어요. 공부만큼 건강도 균형 있게 챙겨봐요!`;
+    msg    = `${playerNameWithParticle()} ${highStat.label} 영역은 뛰어났지만, ${min.label} 영역이 부족했어요. 공부만큼 건강도 균형 있게 챙겨봐요!`;
 
   } else if (sleep <= 40 && health <= 40) {
     ending = 'fatigue';
     title  = '😓 누적 피로형';
     color  = '#5eadff';
-    msg    = `${G.name}은(는) 수면과 체력이 모두 낮아졌어요. 14일 동안 잠을 제때 자지 못한 선택들이 쌓인 결과예요. 잠이 보약이에요!`;
+    msg    = `${playerNameWithParticle()} 수면과 체력이 모두 낮아졌어요. 14일 동안 잠을 제때 자지 못한 선택들이 쌓인 결과예요. 잠이 보약이에요!`;
 
   } else if (caffeine <= 40 && judgment <= 40) {
     ending = 'danger';
     title  = '🚨 위험 신호';
     color  = '#ef4444';
-    msg    = `${G.name}은(는) 카페인 관리와 판단력 모두 위험 수준이에요. 충동적인 선택이 반복되면 건강에 큰 영향을 줄 수 있어요. 지금이라도 어른께 도움을 요청해 보세요.`;
+    msg    = `${playerNameWithParticle()} 카페인 관리와 판단력 모두 위험 수준이에요. 충동적인 선택이 반복되면 건강에 큰 영향을 줄 수 있어요. 지금이라도 어른께 도움을 요청해 보세요.`;
 
   } else if (avg >= 60) {
     ending = 'effort';
     title  = '✅ 노력파';
     color  = '#a78bfa';
-    msg    = `${G.name}은(는) 전반적으로 잘 해냈지만, ${min.label} 영역(${min.value}점)을 더 챙기면 더 좋아질 거예요. 조금만 더 균형을 맞춰봐요!`;
+    msg    = `${playerNameWithParticle()} 전반적으로 잘 해냈지만, ${min.label} 영역(${min.value}점)을 더 챙기면 더 좋아질 거예요. 조금만 더 균형을 맞춰봐요!`;
 
   } else {
     ending = 'normal';
     title  = '😐 더 해볼 수 있어요';
     color  = '#8b949e';
-    msg    = `${G.name}은(는) 평균 ${avg}점. 가장 낮은 영역은 ${min.label}(${min.value}점)이에요. 약 복용법 확인, 수면 관리, 카페인 조절을 함께 실천해 봐요.`;
+    msg    = `${playerNameWithParticle()} 평균 ${avg}점. 가장 낮은 영역은 ${min.label}(${min.value}점)이에요. 약 복용법 확인, 수면 관리, 카페인 조절을 함께 실천해 봐요.`;
   }
 
   document.getElementById('ending-title').style.color = color;
@@ -5508,10 +6004,13 @@ function selectDrink(type, drinkId) {
   const reactionText = applyPendingDrinkChoice(pending, {skipCaffeineDelta:true});
   updateCaffeineHud();
   const overLimit = G.caffeineToday > max;
+  if (pending?.sceneAfterDrink) {
+    setSceneVisual(pending.sceneAfterDrink, sc);
+  }
 
-  showTypedResult(
+  showDialogResult(
     pending?.result?.title || (drink.good ? `✅ ${drink.name} 선택` : `⚠️ ${drink.name} 선택`),
-    formatDrinkResultText(drink, reactionText, overLimit)
+    formatDrinkResultText(drink, reactionText, overLimit, pending?.result?.followup || '')
   );
 }
 
@@ -5617,7 +6116,7 @@ function selectSleep(hour) {
 
   updateStatBars();
 
-  showTypedResult(`${opt.emoji} ${opt.label} 취침`,
+  showDialogResult(`${opt.emoji} ${opt.label} 취침`,
     `체력 +${opt.recovery} 회복. ${opt.note}\n` +
     `아침 7시 기상 기준 ${opt.sleepAmount} 수면입니다. ${opt.why}\n` +
     (hour >= 24 ? '⚠️ 내일 수업에 영향을 줄 수 있어요.' : '')
@@ -5908,7 +6407,7 @@ function finishPrescription() {
             : total >= 1  ? `✅ ${total}문제 정답. 조금 더 꼼꼼하게 읽어봐요.`
             :               '❌ 모두 틀렸습니다. 처방전은 꼭 꼼꼼히 읽어야 해요.';
 
-  showTypedResult(`처방전 퀴즈 ${total}/3`, msg);
+  showDialogResult(`처방전 퀴즈 ${total}/3`, msg);
 }
 
 // ══════════════════════════════════════
@@ -5952,7 +6451,7 @@ function selectNpcChoice(idx) {
   if (!ch) return;
   pushSceneHistory('npc');
   applyDelta(ch.delta || {});
-  showTypedResult(ch.result.title, ch.result.text);
+  showDialogResult(ch.result.title, ch.result.text);
 }
 
 // ══════════════════════════════════════
@@ -5973,7 +6472,7 @@ function selectSns(action) {
   };
   const r = results[action];
   applyDelta(r.delta);
-  showTypedResult(r.title, r.text);
+  showDialogResult(r.title, r.text);
 }
 
 // ══════════════════════════════════════
