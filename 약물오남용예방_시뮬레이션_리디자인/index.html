@@ -509,9 +509,10 @@
     .scene-area {
       display: grid;
       grid-template-rows: auto auto auto;
+      align-content: start;
       width: 100%;
       min-width: 0;
-      min-height: 720px;
+      min-height: 0;
       overflow: hidden;
     }
 
@@ -578,9 +579,9 @@
       width: 100%;
       max-width: 100%;
       min-width: 0;
-      aspect-ratio: 16 / 10;
-      min-height: 520px;
-      max-height: 680px;
+      height: clamp(340px, 48vh, 460px);
+      min-height: 0;
+      max-height: none;
       overflow: hidden;
       border-bottom: 1px solid var(--line);
       background: linear-gradient(180deg, #dfeafe 0%, #f5f8ff 100%);
@@ -638,7 +639,7 @@
     .scene-character {
       display: block;
       width: auto;
-      max-height: 520px;
+      max-height: 360px;
       object-fit: contain;
       object-position: bottom center;
       pointer-events: none;
@@ -646,18 +647,22 @@
     }
 
     .scene-visual.is-fullbody .scene-character {
-      max-height: 520px;
+      max-height: 360px;
     }
 
     .scene-visual.is-closeup .scene-character {
-      max-height: 560px;
+      max-height: 390px;
     }
 
     .scene-visual.is-healthroom .scene-character {
-      max-height: 500px;
+      max-height: 360px;
     }
 
     .scene-visual.is-investigation {
+      height: auto;
+      aspect-ratio: 16 / 9;
+      min-height: 520px;
+      max-height: 680px;
       background: #f3efe8;
     }
 
@@ -706,6 +711,11 @@
     .scene-skip-btn:focus-visible {
       background: rgba(255, 255, 255, 0.26);
       outline: none;
+    }
+
+    .scene-skip-btn[hidden],
+    .scene-skip-btn.is-hidden {
+      display: none;
     }
 
     .scene-hotspot-layer {
@@ -959,20 +969,21 @@
       position: relative;
       z-index: auto;
       display: grid;
-      gap: 12px;
-      padding: 16px 20px 20px;
+      gap: 10px;
+      padding: 12px 18px 18px;
     }
 
     .choice-list {
       counter-reset: choice;
       display: grid;
-      gap: 12px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
     }
 
     .choice-btn {
       position: relative;
-      min-height: 56px;
-      padding: 16px 18px 16px 52px;
+      min-height: 52px;
+      padding: 14px 14px 14px 48px;
       border: 1px solid var(--line);
       border-radius: 12px;
       background: rgba(255, 255, 255, 0.94);
@@ -989,8 +1000,8 @@
       counter-increment: choice;
       content: counter(choice);
       position: absolute;
-      top: 16px;
-      left: 16px;
+      top: 14px;
+      left: 14px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -1761,6 +1772,7 @@
       }
 
       .scene-visual {
+        height: auto;
         aspect-ratio: 4 / 3.35;
         min-height: 300px;
         max-height: none;
@@ -1789,6 +1801,10 @@
       .scene-actions {
         gap: 8px;
         padding: 12px 12px 16px;
+      }
+
+      .choice-list {
+        grid-template-columns: 1fr;
       }
 
       .dialogue-text {
@@ -2844,6 +2860,13 @@
       });
     };
 
+    const setSkipButtonVisible = (visible) => {
+      const skipButton = $("#skipTypingBtn");
+      if (!skipButton) return;
+      skipButton.hidden = !visible;
+      skipButton.classList.toggle("is-hidden", !visible);
+    };
+
     const stopTypewriter = (forceComplete = false) => {
       const textEl = $(".dialogue-text");
 
@@ -2859,6 +2882,7 @@
 
       state.typing.isTyping = false;
       disableChoicesWhileTyping(false);
+      setSkipButtonVisible(false);
     };
 
     const startTypewriter = (text, speed = state.typing.speed) => {
@@ -2866,13 +2890,21 @@
       if (!textEl) return;
 
       stopTypewriter(false);
+      const fullText = text || "";
+      if (!fullText) {
+        textEl.textContent = "";
+        setSkipButtonVisible(false);
+        return;
+      }
+
       state.typing.isTyping = true;
-      state.typing.fullText = text || "";
+      state.typing.fullText = fullText;
       state.typing.displayedText = "";
       textEl.textContent = "";
 
       let index = 0;
       disableChoicesWhileTyping(true);
+      setSkipButtonVisible(true);
 
       state.typing.timer = setInterval(() => {
         if (index >= state.typing.fullText.length) {
