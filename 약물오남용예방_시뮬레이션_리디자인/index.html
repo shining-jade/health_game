@@ -793,6 +793,10 @@
     }
 
     .witness-card {
+      display: grid;
+      grid-template-columns: 86px minmax(0, 1fr);
+      gap: 12px;
+      align-items: center;
       padding: 12px;
       border: 1px solid rgba(37, 99, 235, 0.16);
       border-radius: 8px;
@@ -816,6 +820,20 @@
       background: #f0fdf8;
     }
 
+    .witness-card__image {
+      width: 86px;
+      aspect-ratio: 4 / 3;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      border-radius: 8px;
+      background: #eef4fb;
+      object-fit: cover;
+      object-position: center top;
+    }
+
+    .witness-card__body {
+      min-width: 0;
+    }
+
     .witness-card__top {
       display: flex;
       align-items: center;
@@ -835,6 +853,7 @@
     }
 
     .witness-card__text {
+      display: block;
       margin: 0;
       color: #334155;
       font-size: 0.9rem;
@@ -2245,6 +2264,15 @@
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
+      .witness-card {
+        grid-template-columns: 72px minmax(0, 1fr);
+        gap: 10px;
+      }
+
+      .witness-card__image {
+        width: 72px;
+      }
+
       .dialogue-text {
         font-size: 16px;
       }
@@ -3237,13 +3265,19 @@
       const cards = witnesses
         .map((witness) => {
           const checked = sceneState.completedItems.includes(witness.id);
+          const imageHtml = witness.image
+            ? `<img class="witness-card__image" src="${escapeHtml(witness.image)}" alt="${escapeHtml(witness.alt || `${witness.name} 증언 이미지`)}" />`
+            : "";
           return `
             <button class="witness-card${checked ? " is-checked" : ""}" type="button" data-witness-id="${escapeHtml(witness.id)}" aria-pressed="${checked ? "true" : "false"}">
-              <span class="witness-card__top">
-                <span class="witness-card__name">${escapeHtml(witness.name)}</span>
-                <span class="witness-card__role">${escapeHtml(witness.label || "")}</span>
+              ${imageHtml}
+              <span class="witness-card__body">
+                <span class="witness-card__top">
+                  <span class="witness-card__name">${escapeHtml(witness.name)}</span>
+                  <span class="witness-card__role">${escapeHtml(witness.label || "")}</span>
+                </span>
+                <span class="witness-card__text">${escapeHtml(witness.preview || witness.text || "")}</span>
               </span>
-              <p class="witness-card__text">${escapeHtml(witness.preview || witness.text || "")}</p>
             </button>
           `;
         })
