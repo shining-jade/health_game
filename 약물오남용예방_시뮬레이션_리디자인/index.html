@@ -3145,7 +3145,8 @@
       if (!state.investigation[scene.id]) {
         state.investigation[scene.id] = {
           foundHotspots: [],
-          foundCoreClues: []
+          foundCoreClues: [],
+          passNotified: false
         };
       }
       return state.investigation[scene.id];
@@ -3228,7 +3229,6 @@
       if (!clueId) return;
       if (!state.unlockedClues.includes(clueId)) {
         state.unlockedClues.push(clueId);
-        showFeedbackMessage(`새 단서 확보: ${getClueTitle(clueId)}`);
       }
     };
 
@@ -3656,7 +3656,6 @@
 
         if (!state.unlockedClues.includes(hotspot.clueId)) {
           state.unlockedClues.push(hotspot.clueId);
-          showFeedbackMessage(`새 단서 확보: ${getClueTitle(hotspot.clueId)}`);
         }
 
         openClueDetailModal(hotspot.clueId, hotspot.foundText, hotspot.label);
@@ -3665,12 +3664,9 @@
         openClueDetailModal(null, hotspot.foundText, hotspot.label);
       }
 
-      if (hotspot.foundText) {
-        showFeedbackMessage(hotspot.foundText);
-      }
-
       updateInvestigationUi(scene);
-      if (canPassInvestigation(scene)) {
+      if (canPassInvestigation(scene) && !sceneState.passNotified) {
+        sceneState.passNotified = true;
         showFeedbackMessage("충분히 살펴봤습니다. 이제 단서를 바탕으로 상황을 정리해보세요.");
       }
       if ($("#memoModal")?.classList.contains("is-open")) {
@@ -3847,6 +3843,7 @@
     const showFeedbackMessage = (message) => {
       const feedbackArea = $(".bottom-feedback");
       if (!feedbackArea || !message) return;
+      feedbackArea.replaceChildren();
 
       const card = document.createElement("div");
       card.className = "feedback-card";
@@ -3861,7 +3858,6 @@
       (scene.cluesUnlock || []).forEach((clueId) => {
         if (!state.unlockedClues.includes(clueId)) {
           state.unlockedClues.push(clueId);
-          showFeedbackMessage(`새 단서 확보: ${getClueTitle(clueId)}`);
         }
       });
     };
