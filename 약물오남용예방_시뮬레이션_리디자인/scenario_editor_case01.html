@@ -485,7 +485,7 @@
 
     .flow-canvas {
       position: relative;
-      min-width: 1280px;
+      min-width: 0;
       min-height: 760px;
       padding: 34px;
     }
@@ -613,6 +613,160 @@
       font-weight: 800;
     }
 
+    .flow-focus {
+      display: grid;
+      grid-template-columns: minmax(260px, 0.82fr) minmax(360px, 1.18fr);
+      gap: 14px;
+      align-items: start;
+    }
+
+    .flow-source,
+    .flow-route,
+    .flow-destination,
+    .flow-index-card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.96);
+      box-shadow: 0 12px 26px rgba(22, 34, 51, 0.08);
+    }
+
+    .flow-source {
+      position: sticky;
+      top: 74px;
+      padding: 16px;
+      border-width: 2px;
+      border-color: var(--primary);
+    }
+
+    .flow-source h3,
+    .flow-route h3,
+    .flow-index-card h3 {
+      margin: 0 0 8px;
+      font-size: 16px;
+    }
+
+    .flow-source__text {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-weight: 800;
+      line-height: 1.6;
+    }
+
+    .flow-routes {
+      display: grid;
+      gap: 12px;
+    }
+
+    .flow-route {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto minmax(180px, 0.8fr);
+      gap: 10px;
+      align-items: stretch;
+      padding: 12px;
+      border-left: 5px solid var(--primary);
+    }
+
+    .flow-route:hover {
+      border-color: var(--primary);
+      background: #fff;
+    }
+
+    .flow-choice {
+      display: grid;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .flow-choice__label {
+      color: var(--primary);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .flow-choice__text {
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 900;
+      line-height: 1.5;
+    }
+
+    .flow-arrow {
+      display: grid;
+      place-items: center;
+      min-width: 58px;
+      color: var(--primary);
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .flow-arrow::before {
+      content: "→";
+      display: grid;
+      place-items: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      background: var(--primary-soft);
+      font-size: 22px;
+    }
+
+    .flow-destination {
+      display: grid;
+      gap: 5px;
+      padding: 10px;
+      text-align: left;
+    }
+
+    .flow-destination.is-missing {
+      border-color: #efb0b0;
+      background: var(--red-soft);
+      color: var(--red);
+    }
+
+    .flow-destination__title {
+      font-weight: 900;
+      line-height: 1.35;
+    }
+
+    .flow-destination__id {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+      word-break: break-all;
+    }
+
+    .flow-route-actions {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .flow-index {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .flow-index-card {
+      padding: 12px;
+      text-align: left;
+    }
+
+    .flow-index-card.is-active {
+      border-color: var(--primary);
+      background: var(--primary-soft);
+    }
+
+    .flow-index-card p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.45;
+    }
+
     .export-drawer {
       display: none;
       position: fixed;
@@ -688,11 +842,24 @@
       }
 
       .flow-canvas {
-        min-width: 980px;
+        min-width: 0;
       }
 
       .flow-grid {
         grid-template-columns: repeat(3, 240px);
+      }
+
+      .flow-focus,
+      .flow-route {
+        grid-template-columns: 1fr;
+      }
+
+      .flow-arrow {
+        min-height: 28px;
+      }
+
+      .flow-arrow::before {
+        content: "↓";
       }
     }
   </style>
@@ -899,32 +1066,80 @@
 
     const renderFlowMap = () => {
       const allScenes = scenes().map(({ scene }) => scene);
+      const currentScene = getSelectedScene() || allScenes[0];
+      const sceneMap = getSceneMap();
       $("#editor").innerHTML = `
         <section class="flow-board">
           <div class="flow-toolbar">
-            <strong>선택지 흐름지도</strong>
+            <strong>선택지 이동 확인</strong>
             <span class="badge">장면 ${allScenes.length}개</span>
             <span class="badge">선택지 ${allScenes.reduce((sum, scene) => sum + (scene.choices || []).length, 0)}개</span>
-            <button class="btn" type="button" data-action="fit-flow">처음 위치로</button>
+            <span class="hint">왼쪽 장면의 각 선택지가 어디로 이동하는지 바로 확인하세요.</span>
           </div>
-          <div class="flow-wrap" id="flowWrap">
-            <div class="flow-canvas" id="flowCanvas">
-              <svg class="flow-svg" id="flowSvg" aria-hidden="true">
-                <defs>
-                  <marker id="arrowHead" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
-                    <path d="M 0 0 L 10 4 L 0 8 z" fill="rgba(56, 103, 214, 0.72)"></path>
-                  </marker>
-                </defs>
-              </svg>
-              <div class="flow-grid">
-                ${allScenes.map((scene) => flowNode(scene)).join("") || "<p class='flow-empty'>표시할 장면이 없습니다.</p>"}
+          <div class="flow-wrap">
+            <div class="flow-canvas">
+              <div class="flow-focus">
+                <article class="flow-source">
+                  <span class="badge">${escapeHtml(currentScene.stepLabel || "-")}</span>
+                  <h3>${escapeHtml(currentScene.title || currentScene.id)}</h3>
+                  <p class="flow-destination__id">${escapeHtml(currentScene.id)}</p>
+                  <p class="flow-source__text">${escapeHtml(currentScene.dialogue?.text || "")}</p>
+                  <div class="flow-route-actions">
+                    <button class="mini-btn green" type="button" data-action="edit-selected-scene">이 장면 문구 수정</button>
+                  </div>
+                </article>
+                <div class="flow-routes">
+                  ${(currentScene.choices || []).length
+                    ? currentScene.choices.map((choice, index) => flowRoute(choice, index, sceneMap)).join("")
+                    : "<p class='flow-empty'>이 장면에는 선택지가 없습니다.</p>"}
+                </div>
+              </div>
+              <div class="flow-index">
+                ${allScenes.map((scene) => `
+                  <button class="flow-index-card${scene.id === selectedSceneId ? " is-active" : ""}" type="button" data-flow-node="${escapeHtml(scene.id)}">
+                    <span class="badge">${escapeHtml(scene.stepLabel || "-")}</span>
+                    <h3>${escapeHtml(scene.title || scene.id)}</h3>
+                    <p>${escapeHtml(truncate(scene.dialogue?.text || "", 58))}</p>
+                  </button>
+                `).join("")}
               </div>
             </div>
           </div>
         </section>
       `;
       renderPreview();
-      window.requestAnimationFrame(drawFlowLines);
+    };
+
+    const flowRoute = (choice, index, sceneMap) => {
+      const destination = choice.nextSceneId ? sceneMap.get(choice.nextSceneId) : null;
+      const destinationHtml = destination
+        ? `
+          <button class="flow-destination" type="button" data-flow-node="${escapeHtml(destination.id)}">
+            <span class="badge">${escapeHtml(destination.stepLabel || "-")}</span>
+            <span class="flow-destination__title">${escapeHtml(destination.title || destination.id)}</span>
+            <span class="flow-destination__id">${escapeHtml(destination.id)}</span>
+          </button>
+        `
+        : `
+          <div class="flow-destination is-missing">
+            <span class="flow-destination__title">연결된 장면을 찾을 수 없음</span>
+            <span class="flow-destination__id">${escapeHtml(choice.nextSceneId || "nextSceneId 없음")}</span>
+          </div>
+        `;
+      return `
+        <article class="flow-route">
+          <div class="flow-choice">
+            <span class="flow-choice__label">선택지 ${index + 1}</span>
+            <span class="flow-choice__text">${escapeHtml(choice.text || "선택지 문구 없음")}</span>
+            <span class="flow-destination__id">choice id: ${escapeHtml(choice.id || "-")}</span>
+            <div class="flow-route-actions">
+              <button class="mini-btn green" type="button" data-action="edit-choice" data-choice-index="${index}">이 선택지 문항 수정</button>
+            </div>
+          </div>
+          <div class="flow-arrow" aria-hidden="true"></div>
+          ${destinationHtml}
+        </article>
+      `;
     };
 
     const flowNode = (scene) => {
@@ -1325,11 +1540,15 @@
         if (action === "move-choice-up") moveChoice(index, -1);
         if (action === "move-choice-down") moveChoice(index, 1);
         if (action === "duplicate-scene") duplicateScene();
-        if (action === "fit-flow") {
-          const wrap = $("#flowWrap");
-          if (wrap) {
-            wrap.scrollTo({ left: 0, top: 0, behavior: "smooth" });
-          }
+        if (action === "edit-selected-scene" || action === "edit-choice") {
+          activeView = "edit";
+          renderAll();
+          window.requestAnimationFrame(() => {
+            const target = action === "edit-choice"
+              ? document.querySelector(`[data-choice-index="${index}"]`)
+              : document.querySelector(".card");
+            target?.scrollIntoView({ behavior: "smooth", block: "center" });
+          });
         }
         return;
       }
