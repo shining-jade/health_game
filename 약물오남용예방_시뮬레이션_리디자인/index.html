@@ -3080,6 +3080,9 @@
 
     const getInteractionFoundCount = (scene) => {
       const sceneState = getInteractionState(scene);
+      if (scene?.interaction?.type === "witnessInterview") {
+        return sceneState?.completedItems?.length || 0;
+      }
       return sceneState?.foundCoreItems?.length || 0;
     };
 
@@ -3090,7 +3093,7 @@
 
     const getInteractionProgressText = (scene) => {
       if (!scene?.interaction) return "";
-      const label = scene.interaction.progressLabel || "핵심 정보";
+      const label = scene.interaction.progressLabel || "확인한 정보";
       const found = getInteractionFoundCount(scene);
       const total = scene.interaction.requiredItems?.length || getInteractionRequiredCount(scene);
       const need = getInteractionRequiredCount(scene);
@@ -3101,7 +3104,7 @@
 
     const getInvestigationProgressText = (scene) => {
       if (!scene?.investigation) return "";
-      const label = scene.investigation.progressLabel || "핵심 단서";
+      const label = scene.investigation.progressLabel || "확인한 단서";
       const found = getInvestigationFoundCount(scene);
       const total = getInvestigationRequiredClues(scene).length;
       const need = getInvestigationRequiredCount(scene);
@@ -3279,9 +3282,9 @@
       if (witness.isCore && !sceneState.foundCoreItems.includes(witness.id)) {
         sceneState.foundCoreItems.push(witness.id);
         unlockInteractionClue(witness.clueId);
-        showFeedbackMessage(witness.memo || "쓸모 있는 증언을 확보했습니다.");
+        showFeedbackMessage("들은 내용을 기록했습니다.");
       } else if (!witness.isCore) {
-        showFeedbackMessage(witness.falseHint || "흥미롭지만 직접 단서는 아닌 것 같습니다.");
+        showFeedbackMessage(witness.falseHint || "들은 내용을 기록했습니다.");
       }
 
       updateInteractionUi(scene);
@@ -3336,7 +3339,7 @@
       const isSuccess = keywords.some((keyword) => query.includes(keyword));
       if (isSuccess) {
         sceneState.searchComplete = true;
-        sceneState.lastMessage = scene.interaction.successMessage || "검색 결과에서 핵심 정보를 확인했습니다.";
+        sceneState.lastMessage = scene.interaction.successMessage || "검색 결과를 확인했습니다.";
         if (!sceneState.foundCoreItems.includes(scene.interaction.requiredItems?.[0] || "search")) {
           sceneState.foundCoreItems.push(scene.interaction.requiredItems?.[0] || "search");
         }
@@ -3481,7 +3484,7 @@
 
       updateInvestigationUi(scene);
       if (canPassInvestigation(scene)) {
-        showFeedbackMessage("핵심 단서가 충분합니다. 이제 단서를 바탕으로 상황을 정리해보세요.");
+        showFeedbackMessage("충분히 살펴봤습니다. 이제 단서를 바탕으로 상황을 정리해보세요.");
       }
       if ($("#memoModal")?.classList.contains("is-open")) {
         renderMemoModal();
@@ -3767,7 +3770,7 @@
         imageEl.classList.add("is-hidden");
         categoryEl.textContent = "조사 정보";
         titleEl.textContent = fallbackTitle || "단서 아님";
-        textEl.textContent = fallbackText || "직접 연결되는 단서는 없어 보입니다.";
+        textEl.textContent = fallbackText || "지금은 더 비교해볼 정보가 필요합니다.";
         memoBtn.hidden = true;
       }
 
@@ -4178,7 +4181,7 @@
       state.isTransitioning = true;
 
       const {
-        title = "핵심 단서를 확보했습니다",
+        title = "정보를 확인했습니다",
         text = "찾은 단서를 바탕으로 상황을 정리합니다.",
         delay = 900
       } = options;
@@ -4402,7 +4405,7 @@
         if (choice?.requiresInvestigation || choice?.requiresInteraction) {
           const transition = scene?.investigation?.transition || scene?.interaction?.transition || choice.transition || {};
           proceedToNextSceneWithTransition(choiceButton.dataset.nextScene, {
-            title: transition.title || "핵심 단서를 확보했습니다",
+            title: transition.title || "정보를 확인했습니다",
             text: transition.text || "찾은 단서를 바탕으로 상황을 정리합니다.",
             delay: transition.delay || 900
           });

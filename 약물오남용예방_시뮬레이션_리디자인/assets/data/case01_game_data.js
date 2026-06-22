@@ -232,7 +232,9 @@ window.gameData = {
             }
           },
           choices: [
-            { id: "to_interview", text: "친구들의 증언을 모은다", nextSceneId: "case01_scene02_interview" }
+            { id: "to_interview", text: "친구들에게 오늘 있었던 일을 묻는다", nextSceneId: "case01_scene02_interview" },
+            { id: "to_interview_alt", text: "쉬는 시간에 민재를 본 사람을 찾는다", nextSceneId: "case01_scene02_interview" },
+            { id: "to_interview_note", text: "주변 기억부터 차근차근 모은다", nextSceneId: "case01_scene02_interview" }
           ],
           actions: [
             { id: "openMemo", text: "메모에 정리" },
@@ -258,15 +260,15 @@ window.gameData = {
             right: { visible: false }
           },
           speaker: null,
-          tags: ["인터뷰", "맥거핀", "정보 선별"],
+          tags: ["인터뷰", "기억 비교", "상황 확인"],
           dialogue: {
             name: "조사",
-            text: "친구들의 말 속에는 쓸모 있는 정보와 헛다리 정보가 섞여 있습니다. 민재의 약 복용 방식과 관련 있는 증언을 골라보세요."
+            text: "친구들이 기억하는 장면을 하나씩 들어보세요. 같은 하루를 봤어도 사람마다 떠올리는 장면은 다를 수 있습니다."
           },
           casePanel: {
             symptoms: ["손 떨림", "창백한 얼굴", "집중 저하"],
             facts: ["민재는 수면 부족이라고 말함", "친구들이 서로 다른 기억을 갖고 있음"],
-            unknowns: ["음료와 약 복용이 실제로 연결되는지", "일상적인 말 중 무엇이 핵심 단서인지"],
+            unknowns: ["민재가 오늘 어디에서 무엇을 했는지", "서로 다른 기억이 같은 상황을 가리키는지"],
             progress: {
               cluesFound: 0,
               cluesTotal: 10,
@@ -279,8 +281,22 @@ window.gameData = {
           choices: [
             {
               id: "to_scene03",
-              text: "책상과 가방 주변을 조사한다",
-              lockedText: "핵심 증언을 더 찾아보세요",
+              text: "책상 위 물건을 살펴본다",
+              lockedText: "친구들의 기억을 조금 더 들어보세요",
+              nextSceneId: "case01_scene03",
+              requiresInteraction: true
+            },
+            {
+              id: "to_scene03_bag",
+              text: "가방 주변을 확인한다",
+              lockedText: "친구들의 기억을 조금 더 들어보세요",
+              nextSceneId: "case01_scene03",
+              requiresInteraction: true
+            },
+            {
+              id: "to_scene03_compare",
+              text: "들은 내용을 메모하고 물건과 비교한다",
+              lockedText: "친구들의 기억을 조금 더 들어보세요",
               nextSceneId: "case01_scene03",
               requiresInteraction: true
             }
@@ -293,16 +309,16 @@ window.gameData = {
           cluesUnlock: [],
           interaction: {
             type: "witnessInterview",
-            progressLabel: "핵심 증언",
-            requiredItems: ["jiwoo", "haeun"],
-            minRequiredCount: 2,
+            progressLabel: "들은 이야기",
+            requiredItems: ["minwoo", "jiwoo", "seoyeon", "haeun"],
+            minRequiredCount: 4,
             eyebrow: "단서 찾기 인터뷰",
             title: "친구 네 명에게 말 걸기",
-            description: "농구, 급식, 음료수, 아침 행동이 뒤섞여 있습니다. 민재의 약 복용과 직접 연결되는 말을 찾아보세요.",
-            emptyMessage: "친구 이름을 눌러 증언을 확인하세요. 모든 말이 단서는 아닙니다.",
+            description: "친구들이 본 장면을 차례대로 들어보고, 나중에 물건 단서와 비교해볼 내용을 메모해두세요.",
+            emptyMessage: "친구 이름을 눌러 이야기를 들어보세요.",
             transition: {
-              title: "핵심 증언을 확보했습니다",
-              text: "음료수와 약 복용이 반복해서 언급됩니다. 이제 물건 단서로 확인해봅니다.",
+              title: "친구들의 이야기를 들었습니다",
+              text: "들은 내용을 바로 결론 내리지 말고, 주변 물건과 맞춰봅니다.",
               delay: 900
             },
             witnesses: [
@@ -313,13 +329,13 @@ window.gameData = {
                 preview: "농구공을 너무 많이 던져서 손에 힘이 풀린 거 아닐까?",
                 text: "민재? 걔 아까 2교시 끝나고 체육관 뒤에서 농구 엄청 열심히 하던데? 오늘 레이업 슛 수행평가라 자기 목숨 걸었다고 그랬어. 손 떠는 거 그거 그냥 농구공 너무 많이 던져서 손에 힘 풀린 거 아니야? 나도 저번에 하루 종일 피구하고 나니까 밥숟가락도 못 들겠더라.",
                 isCore: false,
-                falseHint: "농구 이야기는 그럴듯하지만 약 복용과 직접 연결되지는 않습니다."
+                falseHint: "민우의 기억을 기록했습니다. 다른 친구들의 말과도 비교해보세요."
               },
               {
                 id: "jiwoo",
                 name: "지우",
-                label: "음료수 복용 습관",
-                preview: "약 먹을 때 정수기까지 안 가고 음료수로 삼킨 적이 있어.",
+                label: "며칠 전 기억",
+                preview: "며칠 전 감기약 먹을 때 봤던 장면이 있어.",
                 text: "민재 알약 먹을 때 말이야, 걔 귀찮다고 정수기까지 절대 안 가. 며칠 전에도 감기약 먹을 때 보니까 책상에 마시다 남은 탄산음료로 그냥 꿀꺽 삼키더라고. 내가 '야, 약을 왜 그런 거랑 먹냐?' 그랬더니 민재가 '어차피 배 들어가면 다 똑같은 액체인데 뭔 상관이야, 쓴맛도 안 나고 개이득이지' 하면서 웃어넘겼어.",
                 isCore: true,
                 clueId: "witness_jiwoo",
@@ -328,17 +344,17 @@ window.gameData = {
               {
                 id: "seoyeon",
                 name: "서연",
-                label: "급식과 단 음식",
+                label: "점심시간 기억",
                 preview: "매운 급식 때문에 배가 아프거나 당 떨어진 거 아닐까?",
                 text: "민재 오늘 4교시 내내 배고프다고 징징대던데? 어제 밤새 시험공부 하느라 저녁도 제대로 못 먹었대. 아까 점심 급식에 매운 제육볶음 나왔잖아. 그거 너무 매워서 위가 아프거나, 배고파서 당 떨어져서 부들부들 떠는 거 아닐까? 매점 가서 초코바 하나 먹이면 바로 나을걸?",
                 isCore: false,
-                falseHint: "급식 이야기는 가능한 추측이지만 현재 핵심 단서로 보기 어렵습니다."
+                falseHint: "서연의 기억을 기록했습니다. 다른 친구들의 말과도 비교해보세요."
               },
               {
                 id: "haeun",
                 name: "하은",
-                label: "아침 행동 목격",
-                preview: "아침에 감기약 봉지와 아메리카노를 같이 들고 있었어.",
+                label: "아침 매점 앞 기억",
+                preview: "아침에 매점 앞에서 민재를 봤던 일이 있어.",
                 text: "오늘 아침에 매점 앞에서 민재 만났거든? 손에 감기약 봉지를 들고 있길래 감기 걸렸냐고 물어봤지. 그랬더니 걔가 '어제 밤새워서 너무 졸린데, 생수 대신 잠 깨게 테이크아웃 아메리카노 사서 이걸로 약 먹어야겠다' 하면서 킬킬거리더라고. 내가 그때 말렸어야 했는데...",
                 isCore: true,
                 clueId: "witness_haeun",
@@ -347,8 +363,8 @@ window.gameData = {
             ]
           },
           memoHints: [
-            "친구들의 말을 진짜 단서와 헛다리 단서로 나눠 적어보세요.",
-            "반복해서 등장하는 공통 키워드가 무엇인지 표시해보세요."
+            "친구마다 말한 시간, 장소, 행동을 따로 적어보세요.",
+            "아직 결론을 내리지 말고 나중에 물건 단서와 비교해보세요."
           ]
         },
         {
@@ -387,7 +403,21 @@ window.gameData = {
             {
               id: "to_scene04",
               text: "음료 라벨을 자세히 확인한다",
-              lockedText: "핵심 단서를 더 찾아보세요",
+              lockedText: "책상과 가방을 조금 더 살펴보세요",
+              nextSceneId: "case01_scene03_scan",
+              requiresInvestigation: true
+            },
+            {
+              id: "to_scene04_medicine",
+              text: "약 봉투와 음료를 나란히 놓고 본다",
+              lockedText: "책상과 가방을 조금 더 살펴보세요",
+              nextSceneId: "case01_scene03_scan",
+              requiresInvestigation: true
+            },
+            {
+              id: "to_scene04_memo",
+              text: "확인한 물건을 메모한 뒤 다음으로 간다",
+              lockedText: "책상과 가방을 조금 더 살펴보세요",
               nextSceneId: "case01_scene03_scan",
               requiresInvestigation: true
             }
@@ -399,13 +429,13 @@ window.gameData = {
           cluesShown: ["medicine_bag", "note", "energy_drink"],
           cluesUnlock: [],
           investigation: {
-            progressLabel: "핵심 단서",
+            progressLabel: "확인한 물건",
             requiredClues: ["medicine_bag", "note", "energy_drink"],
             minRequiredCount: 2,
             nextSceneId: "case01_scene03_scan",
             transition: {
-              title: "핵심 단서를 확보했습니다",
-              text: "약 봉투와 음료 정황을 확인했습니다. 이제 음료 라벨을 더 자세히 살펴봅니다.",
+              title: "물건을 충분히 살펴봤습니다",
+              text: "확인한 물건 중 더 자세히 봐야 할 부분을 이어서 살펴봅니다.",
               delay: 1000
             },
             hotspots: [
@@ -462,13 +492,13 @@ window.gameData = {
                 y: 1.2,
                 width: 10.9,
                 height: 32.0,
-                foundText: "물병이다. 사건과 직접 관련된 단서는 없어 보인다."
+                foundText: "물병이다. 비어 있는지, 언제 마셨는지는 아직 알 수 없다."
               }
             ]
           },
           memoHints: [
             "핫스팟을 눌러 확인한 사실과 아직 추측인 내용을 나눠 적어보세요.",
-            "핵심 단서 2개 이상을 찾으면 다음 분석으로 이동할 수 있습니다."
+            "물건을 충분히 살펴본 뒤 다음 분석으로 이동할 수 있습니다."
           ]
         },
         {
@@ -491,8 +521,8 @@ window.gameData = {
           },
           casePanel: {
             symptoms: ["손 떨림", "창백한 얼굴", "집중 저하"],
-            facts: ["민재가 아메리카노로 약을 먹으려 했다는 증언", "카페인 음료 정황이 있음"],
-            unknowns: ["컵 음료의 카페인 양", "감기약 성분에도 카페인이 있는지"],
+            facts: ["아침에 들고 있던 음료에 대한 기억이 있음", "책상 주변에서 음료 정황이 보임"],
+            unknowns: ["컵에 어떤 표시가 있는지", "표시된 내용이 민재 상태와 관련 있는지"],
             progress: {
               cluesFound: 5,
               cluesTotal: 10,
@@ -505,7 +535,21 @@ window.gameData = {
           choices: [
             {
               id: "to_search",
-              text: "감기약 성분을 검색한다",
+              text: "약 봉투의 성분명을 확인한다",
+              lockedText: "라벨의 숨은 표시를 확인하세요",
+              nextSceneId: "case01_scene03_search",
+              requiresInteraction: true
+            },
+            {
+              id: "to_search_compare",
+              text: "라벨에서 본 내용을 메모하고 검색한다",
+              lockedText: "라벨의 숨은 표시를 확인하세요",
+              nextSceneId: "case01_scene03_search",
+              requiresInteraction: true
+            },
+            {
+              id: "to_search_question",
+              text: "모르는 성분이 있는지 찾아본다",
               lockedText: "라벨의 숨은 표시를 확인하세요",
               nextSceneId: "case01_scene03_search",
               requiresInteraction: true
@@ -524,22 +568,22 @@ window.gameData = {
             minRequiredCount: 1,
             clueId: "coffee_label",
             eyebrow: "돋보기 분석",
-            title: "검은 라벨의 작은 글씨 찾기",
-            description: "컵 뒷면의 검은 라벨 주변을 마우스로 천천히 문질러 숨어 있는 카페인 표시를 밝혀내세요.",
+            title: "검은 라벨의 작은 글씨 확인",
+            description: "컵 뒷면의 검은 라벨 주변을 마우스로 천천히 훑어 작은 글씨를 확인하세요.",
             itemLabel: "TAKEOUT AMERICANO",
             hiddenText: "[고카페인 함유: 총 150mg]",
             emptyMessage: "검은 라벨 아래쪽을 천천히 훑어보세요. 작은 글씨가 숨어 있습니다.",
             successMessage: "커피 컵 라벨에서 고카페인 함유 150mg 표시를 확인했습니다.",
             revealZone: { xMin: 54, xMax: 96, yMin: 52, yMax: 94 },
             transition: {
-              title: "카페인 표시를 확인했습니다",
-              text: "음료의 카페인만으로 끝나지 않을 수 있습니다. 감기약 성분도 확인해봅니다.",
+              title: "작은 표시를 확인했습니다",
+              text: "표시된 내용을 메모하고, 약 봉투에 적힌 낯선 성분도 확인해봅니다.",
               delay: 900
             }
           },
           memoHints: [
             "라벨에서 확인한 수치와 민재의 증상을 연결해보세요.",
-            "음료만이 아니라 약 성분도 같이 확인해야 하는 이유를 적어보세요."
+            "아직 모르는 성분명이나 확인해야 할 질문을 적어보세요."
           ]
         },
         {
@@ -558,12 +602,12 @@ window.gameData = {
           tags: ["검색", "무수카페인", "건강문해력"],
           dialogue: {
             name: "검색",
-            text: "감기약 봉투에서 보이는 성분명을 검색해보세요. 모르는 단어를 직접 확인하는 것도 중요한 조사입니다."
+            text: "감기약 봉투에서 낯선 성분명을 찾아 검색해보세요. 모르는 단어를 직접 확인하는 것도 중요한 조사입니다."
           },
           casePanel: {
             symptoms: ["손 떨림", "창백한 얼굴", "집중 저하"],
             facts: ["커피 컵에서 고카페인 표시를 확인함", "감기약 봉투가 있음"],
-            unknowns: ["감기약 속 성분이 카페인 섭취와 겹치는지"],
+            unknowns: ["약 봉투에 적힌 낯선 성분이 어떤 역할을 하는지"],
             progress: {
               cluesFound: 6,
               cluesTotal: 10,
@@ -576,8 +620,22 @@ window.gameData = {
           choices: [
             {
               id: "to_receipt",
-              text: "구매 기록을 확인한다",
-              lockedText: "무수카페인을 검색해보세요",
+              text: "영수증을 확인해 시간대를 본다",
+              lockedText: "약 봉투의 성분명을 검색해보세요",
+              nextSceneId: "case01_scene04",
+              requiresInteraction: true
+            },
+            {
+              id: "to_receipt_compare",
+              text: "검색 결과와 구매 기록을 비교한다",
+              lockedText: "약 봉투의 성분명을 검색해보세요",
+              nextSceneId: "case01_scene04",
+              requiresInteraction: true
+            },
+            {
+              id: "to_receipt_timeline",
+              text: "오늘 하루 시간순서를 맞춰본다",
+              lockedText: "약 봉투의 성분명을 검색해보세요",
               nextSceneId: "case01_scene04",
               requiresInteraction: true
             }
@@ -596,21 +654,21 @@ window.gameData = {
             clueId: "anhydrous_caffeine",
             eyebrow: "인게임 검색",
             title: "감기약 성분 백과사전",
-            description: "민재의 약 봉투에서 확인한 성분을 검색하세요. 핵심 검색어는 '무수카페인'입니다.",
-            placeholder: "검색어 입력 예: 무수카페인",
-            successKeywords: ["무수카페인", "감기약", "카페인"],
+            description: "민재의 약 봉투에서 눈에 띄는 낯선 성분명을 검색하세요.",
+            placeholder: "약 봉투에 적힌 성분명 입력",
+            successKeywords: ["무수카페인"],
             emptyMessage: "검색어를 입력하면 약 성분 설명이 표시됩니다.",
             successMessage: "[검색 결과] 무수카페인은 일부 종합감기약에 들어갈 수 있는 고농축 카페인 성분입니다. 커피 등 고카페인 음료와 겹치면 두근거림, 손 떨림, 불안감이 심해질 수 있습니다.",
-            failMessage: "'{query}'에 대한 결정적 검색 결과가 없습니다. 약 봉투의 성분명인 무수카페인을 정확히 검색해보세요.",
+            failMessage: "'{query}'에 대한 결과만으로는 판단하기 어렵습니다. 약 봉투에 적힌 낯선 성분명을 다시 확인해보세요.",
             transition: {
               title: "약 성분 정보를 확인했습니다",
-              text: "음료와 약 성분이 겹칠 수 있다는 가능성이 생겼습니다. 남은 단서로 섭취 양상을 확인합니다.",
+              text: "검색 결과를 메모해두고, 오늘 민재가 언제 무엇을 샀는지도 이어서 확인합니다.",
               delay: 900
             }
           },
           memoHints: [
-            "검색 결과에서 카페인과 관련된 핵심 문장을 적어보세요.",
-            "왜 약과 음료를 따로 보지 않고 함께 봐야 하는지 정리해보세요."
+            "검색 결과에서 새로 알게 된 내용을 자기 말로 적어보세요.",
+            "이 정보가 다른 단서와 어떻게 이어질 수 있을지 질문 형태로 적어보세요."
           ]
         },
         {
@@ -645,7 +703,9 @@ window.gameData = {
             }
           },
           choices: [
-            { id: "to_scene05", text: "메신저 대화를 확인한다", nextSceneId: "case01_scene05" }
+            { id: "to_scene05", text: "메신저 대화를 확인한다", nextSceneId: "case01_scene05" },
+            { id: "to_scene05_time", text: "구매 시간과 대화 내용을 비교한다", nextSceneId: "case01_scene05" },
+            { id: "to_scene05_memo", text: "영수증 내용을 메모하고 다음 단서를 본다", nextSceneId: "case01_scene05" }
           ],
           actions: [
             { id: "openInventory", text: "단서 확인" },
@@ -690,7 +750,9 @@ window.gameData = {
             }
           },
           choices: [
-            { id: "to_scene06", text: "보건실에서 원인을 정리한다", nextSceneId: "case01_scene06" }
+            { id: "to_scene06", text: "보건실에서 상태를 확인한다", nextSceneId: "case01_scene06" },
+            { id: "to_scene06_symptom", text: "증상과 단서를 함께 들고 보건실로 간다", nextSceneId: "case01_scene06" },
+            { id: "to_scene06_help", text: "혼자 결론내리지 않고 도움을 요청한다", nextSceneId: "case01_scene06" }
           ],
           actions: [
             { id: "openInventory", text: "단서 확인" },
@@ -735,7 +797,9 @@ window.gameData = {
             }
           },
           choices: [
-            { id: "to_scene07", text: "안전한 대응을 정리한다", nextSceneId: "case01_scene07" }
+            { id: "to_scene07", text: "민재의 상태 변화를 다시 묻는다", nextSceneId: "case01_scene07" },
+            { id: "to_scene07_news", text: "보건소식지 내용을 메모하고 정리한다", nextSceneId: "case01_scene07" },
+            { id: "to_scene07_response", text: "다음에 할 안전한 행동을 정리한다", nextSceneId: "case01_scene07" }
           ],
           actions: [
             { id: "openInventory", text: "단서 확인" },
@@ -801,7 +865,9 @@ window.gameData = {
             }
           },
           choices: [
-            { id: "to_result", text: "사건 해결 결과 보기", nextSceneId: "case01_result" }
+            { id: "to_result", text: "내 추리를 정리하고 결과를 본다", nextSceneId: "case01_result" },
+            { id: "to_result_memo", text: "근거를 한 번 더 확인하고 결과를 본다", nextSceneId: "case01_result" },
+            { id: "to_result_safety", text: "안전한 대응까지 적고 결과를 본다", nextSceneId: "case01_result" }
           ],
           actions: [
             { id: "openMemo", text: "메모에 정리" },
@@ -835,13 +901,13 @@ window.gameData = {
           name: "보건샘",
           text: "피곤함을 버티기 위한 작은 선택도, 약 복용과 수면 부족이 겹치면 더 위험해질 수 있어요. 몸의 이상 신호를 가볍게 넘기지 말고, 혼자 판단하지 않는 것이 중요해요."
         },
-        summary: "민재의 상태는 수면 부족, 감기약 복용, 고카페인 커피, 감기약 속 무수카페인 가능성, 반복된 카페인 음료 섭취가 겹쳐 나타난 결과였다. 친구들의 증언 속 헛다리 단서를 걸러내며, 약과 음료를 함께 확인해야 한다는 점을 알게 되었다.",
+        summary: "민재의 상태는 수면 부족, 감기약 복용, 고카페인 커피, 감기약 속 무수카페인 가능성, 반복된 카페인 음료 섭취가 겹쳐 나타난 결과였다. 플레이어는 친구들의 서로 다른 기억, 물건 단서, 검색 결과를 비교하며 약과 음료를 함께 확인해야 한다는 점을 알게 되었다.",
         keyClues: ["지우의 증언", "하은의 증언", "감기약 봉투", "커피 컵 카페인 표시", "무수카페인 검색 결과", "보건소식지: 자율신경계", "편의점 영수증", "메신저 캡처"],
         learningPoints: [
           "카페인 섭취는 한 번보다 반복과 누적이 중요하다.",
           "약 복용, 수면 부족, 카페인 섭취는 따로 보지 말고 함께 봐야 한다.",
           "교감신경이 과하게 활성화되면 심박수 증가, 빠른 호흡, 손 떨림 같은 반응이 나타날 수 있다.",
-          "친구들의 말이나 인터넷 정보는 쓸모 있는 근거와 추측을 구분해서 확인해야 한다.",
+          "친구들의 말이나 인터넷 정보는 바로 결론내리지 말고 다른 근거와 비교해 확인해야 한다.",
           "몸의 이상 신호를 괜찮다고 넘기면 안 된다."
         ],
         safetyTips: [
@@ -866,7 +932,7 @@ window.gameData = {
           { id: "restart", text: "처음 장면으로 돌아가기", nextSceneId: "case01_scene01" }
         ],
         actions: [
-          { id: "openInventory", text: "핵심 단서 다시 보기" },
+          { id: "openInventory", text: "확인한 단서 다시 보기" },
           { id: "openWorksheet", text: "활동지 연결" }
         ],
         cluesShown: ["witness_jiwoo", "witness_haeun", "medicine_bag", "note", "energy_drink", "coffee_label", "anhydrous_caffeine", "health_newsletter", "receipt", "chat_capture"],
