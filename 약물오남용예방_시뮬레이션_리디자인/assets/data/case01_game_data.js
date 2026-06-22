@@ -415,7 +415,7 @@ window.gameData = {
                 id: "seoyeon",
                 name: "서연",
                 label: "점심시간 기억",
-                image: "./assets/images/clues/case01/clue_case01_witness_seoyeon_face_imagegen.webp",
+                image: "./assets/images/clues/case01/clue_case01_witness_seoyeon_lunchtray_imagegen.webp",
                 preview: "점심시간에 민재가 급식실에서 한 말을 들었어.",
                 text: "점심시간에 급식실에서 민재랑 같은 줄에 서 있었어. 민재가 '어제 늦게 자서 그런지 입맛이 별로 없다'고 말했고, 밥은 조금 남겼어. 매운 반찬은 거의 손대지 않았고, 식판을 반납한 뒤에는 매점 쪽을 한 번 쳐다보다가 교실로 올라갔어.",
                 isCore: false,
