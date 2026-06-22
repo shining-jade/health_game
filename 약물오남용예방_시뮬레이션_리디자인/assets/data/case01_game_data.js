@@ -84,6 +84,56 @@ window.gameData = {
       alt: "카페인 음료 캔 단서",
       summary: "카페인 표시를 확인해야 하는 음료",
       detail: "책상 주변에 카페인 음료 캔이 놓여 있다. 한 번 마신 것인지, 반복해서 마신 것인지는 더 확인이 필요하다."
+    },
+    witness_jiwoo: {
+      id: "witness_jiwoo",
+      title: "지우의 증언",
+      category: "관찰 기록",
+      location: "교실",
+      image: "./assets/images/characters/case01/npc_jiwoo_worried_imagegen.webp",
+      alt: "걱정스럽게 증언하는 지우",
+      summary: "민재가 물 대신 음료수로 약을 먹는 습관이 있다는 증언",
+      detail: "지우는 민재가 정수기까지 가기 귀찮다며 마시다 남은 탄산음료로 감기약을 삼킨 적이 있다고 말했다. 약을 물이 아닌 음료와 함께 먹는 습관이 있었던 셈이다."
+    },
+    witness_haeun: {
+      id: "witness_haeun",
+      title: "하은의 증언",
+      category: "관찰 기록",
+      location: "매점 앞",
+      image: "./assets/images/clues/case01/clue_case01_chat_capture_imagegen.webp",
+      alt: "아침 행동을 떠올리게 하는 증언 단서",
+      summary: "오늘 아침 민재가 아메리카노로 감기약을 먹으려 했다는 목격담",
+      detail: "하은은 민재가 감기약 봉지를 들고 있었고, 생수 대신 잠을 깨려고 테이크아웃 아메리카노로 약을 먹겠다고 말한 장면을 봤다고 증언했다."
+    },
+    coffee_label: {
+      id: "coffee_label",
+      title: "커피 컵 카페인 표시",
+      category: "물리 단서",
+      location: "책상 위 컵 라벨",
+      image: "./assets/images/clues/case01/clue_case01_energy_drink_imagegen.webp",
+      alt: "카페인 표시를 확인한 커피 컵 라벨",
+      summary: "숨은 표시에서 고카페인 150mg을 확인함",
+      detail: "돋보기로 컵 라벨을 확인하자 고카페인 함유 표시가 보였다. 민재가 약을 먹을 때 함께 마신 음료에도 상당한 카페인이 들어 있었다."
+    },
+    anhydrous_caffeine: {
+      id: "anhydrous_caffeine",
+      title: "무수카페인 검색 결과",
+      category: "참고 정보",
+      location: "인게임 검색",
+      image: "./assets/images/clues/case01/clue_case01_medicine_bag_imagegen.webp",
+      alt: "감기약 성분 검색 단서",
+      summary: "감기약에도 카페인 성분이 숨어 있을 수 있다는 검색 결과",
+      detail: "검색 결과 무수카페인은 수분이 없는 고농축 카페인 성분이며, 일부 종합감기약에 포함될 수 있다. 커피 등 고카페인 음료와 겹치면 두근거림, 손 떨림 같은 불편이 심해질 수 있다."
+    },
+    health_newsletter: {
+      id: "health_newsletter",
+      title: "보건소식지: 자율신경계",
+      category: "참고 정보",
+      location: "보건실 벽면",
+      image: "./assets/images/backgrounds/case01/bg_case01_scene04_healthroom_imagegen.webp",
+      alt: "보건실 벽에 붙은 자율신경계 보건소식지",
+      summary: "교감신경과 부교감신경을 엑셀과 브레이크로 설명한 소식지",
+      detail: "보건소식지는 교감신경을 몸의 부스터, 부교감신경을 몸의 브레이크로 설명한다. 민재의 심박수 증가와 호흡 곤란은 교감신경이 과하게 활성화된 상태와 연결해볼 수 있다."
     }
   },
 
@@ -127,7 +177,7 @@ window.gameData = {
             unknowns: ["민재의 상태를 악화시킨 주요 원인", "오늘 먹거나 마신 것"],
             progress: {
               cluesFound: 0,
-              cluesTotal: 5,
+              cluesTotal: 10,
               statementsFound: 1,
               statementsTotal: 4,
               hypothesesFound: 0,
@@ -136,7 +186,7 @@ window.gameData = {
           },
           choices: [
             { id: "to_scene02", text: "민재에게 직접 상태를 묻는다", nextSceneId: "case01_scene02" },
-            { id: "to_scene03", text: "주변 물건을 먼저 살펴본다", nextSceneId: "case01_scene03" },
+            { id: "to_interview", text: "주변 친구들에게 먼저 묻는다", nextSceneId: "case01_scene02_interview" },
             { id: "to_scene02b", text: "지우에게 더 자세한 상황을 묻는다", nextSceneId: "case01_scene02" }
           ],
           actions: [
@@ -174,7 +224,7 @@ window.gameData = {
             unknowns: ["수면 부족만으로 설명할 수 있는지", "약이나 음료 섭취가 있었는지"],
             progress: {
               cluesFound: 0,
-              cluesTotal: 5,
+              cluesTotal: 10,
               statementsFound: 2,
               statementsTotal: 4,
               hypothesesFound: 1,
@@ -182,7 +232,7 @@ window.gameData = {
             }
           },
           choices: [
-            { id: "to_scene03", text: "책상과 가방 주변을 조사한다", nextSceneId: "case01_scene03" }
+            { id: "to_interview", text: "친구들의 증언을 모은다", nextSceneId: "case01_scene02_interview" }
           ],
           actions: [
             { id: "openMemo", text: "메모에 정리" },
@@ -196,10 +246,116 @@ window.gameData = {
           ]
         },
         {
+          id: "case01_scene02_interview",
+          title: "친구들의 증언",
+          stepLabel: "장면 3",
+          phase: "증언 수집",
+          location: "교실",
+          background: "./assets/images/backgrounds/case01/bg_case01_scene01_classroom_imagegen.webp",
+          backgroundAlt: "친구들에게 민재의 행동을 물어보는 교실 장면",
+          actors: {
+            left: { visible: false },
+            right: { visible: false }
+          },
+          speaker: null,
+          tags: ["인터뷰", "맥거핀", "정보 선별"],
+          dialogue: {
+            name: "조사",
+            text: "친구들의 말 속에는 쓸모 있는 정보와 헛다리 정보가 섞여 있습니다. 민재의 약 복용 방식과 관련 있는 증언을 골라보세요."
+          },
+          casePanel: {
+            symptoms: ["손 떨림", "창백한 얼굴", "집중 저하"],
+            facts: ["민재는 수면 부족이라고 말함", "친구들이 서로 다른 기억을 갖고 있음"],
+            unknowns: ["음료와 약 복용이 실제로 연결되는지", "일상적인 말 중 무엇이 핵심 단서인지"],
+            progress: {
+              cluesFound: 0,
+              cluesTotal: 10,
+              statementsFound: 2,
+              statementsTotal: 4,
+              hypothesesFound: 1,
+              hypothesesTotal: 3
+            }
+          },
+          choices: [
+            {
+              id: "to_scene03",
+              text: "책상과 가방 주변을 조사한다",
+              lockedText: "핵심 증언을 더 찾아보세요",
+              nextSceneId: "case01_scene03",
+              requiresInteraction: true
+            }
+          ],
+          actions: [
+            { id: "openMemo", text: "메모에 정리" },
+            { id: "openQuestion", text: "핵심 질문" }
+          ],
+          cluesShown: ["witness_jiwoo", "witness_haeun"],
+          cluesUnlock: [],
+          interaction: {
+            type: "witnessInterview",
+            progressLabel: "핵심 증언",
+            requiredItems: ["jiwoo", "haeun"],
+            minRequiredCount: 2,
+            eyebrow: "단서 찾기 인터뷰",
+            title: "친구 네 명에게 말 걸기",
+            description: "농구, 급식, 음료수, 아침 행동이 뒤섞여 있습니다. 민재의 약 복용과 직접 연결되는 말을 찾아보세요.",
+            emptyMessage: "친구 이름을 눌러 증언을 확인하세요. 모든 말이 단서는 아닙니다.",
+            transition: {
+              title: "핵심 증언을 확보했습니다",
+              text: "음료수와 약 복용이 반복해서 언급됩니다. 이제 물건 단서로 확인해봅니다.",
+              delay: 900
+            },
+            witnesses: [
+              {
+                id: "minwoo",
+                name: "민우",
+                label: "체육 수행평가",
+                preview: "농구공을 너무 많이 던져서 손에 힘이 풀린 거 아닐까?",
+                text: "민재? 걔 아까 2교시 끝나고 체육관 뒤에서 농구 엄청 열심히 하던데? 오늘 레이업 슛 수행평가라 자기 목숨 걸었다고 그랬어. 손 떠는 거 그거 그냥 농구공 너무 많이 던져서 손에 힘 풀린 거 아니야? 나도 저번에 하루 종일 피구하고 나니까 밥숟가락도 못 들겠더라.",
+                isCore: false,
+                falseHint: "농구 이야기는 그럴듯하지만 약 복용과 직접 연결되지는 않습니다."
+              },
+              {
+                id: "jiwoo",
+                name: "지우",
+                label: "음료수 복용 습관",
+                preview: "약 먹을 때 정수기까지 안 가고 음료수로 삼킨 적이 있어.",
+                text: "민재 알약 먹을 때 말이야, 걔 귀찮다고 정수기까지 절대 안 가. 며칠 전에도 감기약 먹을 때 보니까 책상에 마시다 남은 탄산음료로 그냥 꿀꺽 삼키더라고. 내가 '야, 약을 왜 그런 거랑 먹냐?' 그랬더니 민재가 '어차피 배 들어가면 다 똑같은 액체인데 뭔 상관이야, 쓴맛도 안 나고 개이득이지' 하면서 웃어넘겼어.",
+                isCore: true,
+                clueId: "witness_jiwoo",
+                memo: "지우의 증언: 민재는 물 대신 음료수로 약을 먹는 습관이 있었다."
+              },
+              {
+                id: "seoyeon",
+                name: "서연",
+                label: "급식과 단 음식",
+                preview: "매운 급식 때문에 배가 아프거나 당 떨어진 거 아닐까?",
+                text: "민재 오늘 4교시 내내 배고프다고 징징대던데? 어제 밤새 시험공부 하느라 저녁도 제대로 못 먹었대. 아까 점심 급식에 매운 제육볶음 나왔잖아. 그거 너무 매워서 위가 아프거나, 배고파서 당 떨어져서 부들부들 떠는 거 아닐까? 매점 가서 초코바 하나 먹이면 바로 나을걸?",
+                isCore: false,
+                falseHint: "급식 이야기는 가능한 추측이지만 현재 핵심 단서로 보기 어렵습니다."
+              },
+              {
+                id: "haeun",
+                name: "하은",
+                label: "아침 행동 목격",
+                preview: "아침에 감기약 봉지와 아메리카노를 같이 들고 있었어.",
+                text: "오늘 아침에 매점 앞에서 민재 만났거든? 손에 감기약 봉지를 들고 있길래 감기 걸렸냐고 물어봤지. 그랬더니 걔가 '어제 밤새워서 너무 졸린데, 생수 대신 잠 깨게 테이크아웃 아메리카노 사서 이걸로 약 먹어야겠다' 하면서 킬킬거리더라고. 내가 그때 말렸어야 했는데...",
+                isCore: true,
+                clueId: "witness_haeun",
+                memo: "하은의 증언: 오늘 아침 민재는 아메리카노로 감기약을 먹으려 했다."
+              }
+            ]
+          },
+          memoHints: [
+            "친구들의 말을 진짜 단서와 헛다리 단서로 나눠 적어보세요.",
+            "반복해서 등장하는 공통 키워드가 무엇인지 표시해보세요."
+          ]
+        },
+        {
           id: "case01_scene03",
           type: "investigation",
           title: "책상과 가방 조사",
-          stepLabel: "장면 3",
+          stepLabel: "장면 4",
           phase: "조사",
           location: "교실",
           background: "./assets/images/backgrounds/case01/bg_case01_scene02_desk_imagegen.webp",
@@ -217,11 +373,11 @@ window.gameData = {
           casePanel: {
             symptoms: ["손 떨림", "창백한 얼굴"],
             facts: ["감기약 봉투가 있음", "수면 부족 메모가 있음", "카페인 음료 캔이 있음"],
-            unknowns: ["약을 언제 먹었는지", "음료를 몇 번 마셨는지"],
+            unknowns: ["약을 언제 먹었는지", "음료에 카페인이 얼마나 들어 있었는지"],
             progress: {
               cluesFound: 3,
-              cluesTotal: 5,
-              statementsFound: 2,
+              cluesTotal: 10,
+              statementsFound: 4,
               statementsTotal: 4,
               hypothesesFound: 1,
               hypothesesTotal: 3
@@ -230,9 +386,9 @@ window.gameData = {
           choices: [
             {
               id: "to_scene04",
-              text: "다음 분석으로 이동한다",
+              text: "음료 라벨을 자세히 확인한다",
               lockedText: "핵심 단서를 더 찾아보세요",
-              nextSceneId: "case01_scene04",
+              nextSceneId: "case01_scene03_scan",
               requiresInvestigation: true
             }
           ],
@@ -246,10 +402,10 @@ window.gameData = {
             progressLabel: "핵심 단서",
             requiredClues: ["medicine_bag", "note", "energy_drink"],
             minRequiredCount: 2,
-            nextSceneId: "case01_scene04",
+            nextSceneId: "case01_scene03_scan",
             transition: {
               title: "핵심 단서를 확보했습니다",
-              text: "약 복용, 카페인 섭취, 생활 정황을 바탕으로 상황을 정리합니다.",
+              text: "약 봉투와 음료 정황을 확인했습니다. 이제 음료 라벨을 더 자세히 살펴봅니다.",
               delay: 1000
             },
             hotspots: [
@@ -316,9 +472,151 @@ window.gameData = {
           ]
         },
         {
+          id: "case01_scene03_scan",
+          title: "커피 컵 라벨 스캔",
+          stepLabel: "장면 5",
+          phase: "성분 확인",
+          location: "단서 보기",
+          background: "./assets/images/backgrounds/case01/bg_case01_scene03_clueview.webp",
+          backgroundAlt: "단서 라벨을 확대해 확인하는 장면",
+          actors: {
+            left: { visible: false },
+            right: { visible: false }
+          },
+          speaker: null,
+          tags: ["돋보기", "카페인 표시", "성분 확인"],
+          dialogue: {
+            name: "분석",
+            text: "하은의 증언이 맞다면 컵 라벨에 중요한 표시가 있을 수 있습니다. 검은 라벨 주변을 자세히 살펴보세요."
+          },
+          casePanel: {
+            symptoms: ["손 떨림", "창백한 얼굴", "집중 저하"],
+            facts: ["민재가 아메리카노로 약을 먹으려 했다는 증언", "카페인 음료 정황이 있음"],
+            unknowns: ["컵 음료의 카페인 양", "감기약 성분에도 카페인이 있는지"],
+            progress: {
+              cluesFound: 5,
+              cluesTotal: 10,
+              statementsFound: 4,
+              statementsTotal: 4,
+              hypothesesFound: 2,
+              hypothesesTotal: 3
+            }
+          },
+          choices: [
+            {
+              id: "to_search",
+              text: "감기약 성분을 검색한다",
+              lockedText: "라벨의 숨은 표시를 확인하세요",
+              nextSceneId: "case01_scene03_search",
+              requiresInteraction: true
+            }
+          ],
+          actions: [
+            { id: "openInventory", text: "단서 확인" },
+            { id: "openMemo", text: "메모에 정리" }
+          ],
+          cluesShown: ["energy_drink", "coffee_label"],
+          cluesUnlock: [],
+          interaction: {
+            type: "labelScan",
+            progressLabel: "라벨 정보",
+            requiredItems: ["coffee_label"],
+            minRequiredCount: 1,
+            clueId: "coffee_label",
+            eyebrow: "돋보기 분석",
+            title: "검은 라벨의 작은 글씨 찾기",
+            description: "컵 뒷면의 검은 라벨 주변을 마우스로 천천히 문질러 숨어 있는 카페인 표시를 밝혀내세요.",
+            itemLabel: "TAKEOUT AMERICANO",
+            hiddenText: "[고카페인 함유: 총 150mg]",
+            emptyMessage: "검은 라벨 아래쪽을 천천히 훑어보세요. 작은 글씨가 숨어 있습니다.",
+            successMessage: "커피 컵 라벨에서 고카페인 함유 150mg 표시를 확인했습니다.",
+            revealZone: { xMin: 54, xMax: 96, yMin: 52, yMax: 94 },
+            transition: {
+              title: "카페인 표시를 확인했습니다",
+              text: "음료의 카페인만으로 끝나지 않을 수 있습니다. 감기약 성분도 확인해봅니다.",
+              delay: 900
+            }
+          },
+          memoHints: [
+            "라벨에서 확인한 수치와 민재의 증상을 연결해보세요.",
+            "음료만이 아니라 약 성분도 같이 확인해야 하는 이유를 적어보세요."
+          ]
+        },
+        {
+          id: "case01_scene03_search",
+          title: "약 성분 인터넷 검색",
+          stepLabel: "장면 6",
+          phase: "성분 검색",
+          location: "휴대폰 검색",
+          background: "./assets/images/backgrounds/case01/bg_case01_scene03_clueview.webp",
+          backgroundAlt: "휴대폰으로 감기약 성분을 검색하는 장면",
+          actors: {
+            left: { visible: false },
+            right: { visible: false }
+          },
+          speaker: null,
+          tags: ["검색", "무수카페인", "건강문해력"],
+          dialogue: {
+            name: "검색",
+            text: "감기약 봉투에서 보이는 성분명을 검색해보세요. 모르는 단어를 직접 확인하는 것도 중요한 조사입니다."
+          },
+          casePanel: {
+            symptoms: ["손 떨림", "창백한 얼굴", "집중 저하"],
+            facts: ["커피 컵에서 고카페인 표시를 확인함", "감기약 봉투가 있음"],
+            unknowns: ["감기약 속 성분이 카페인 섭취와 겹치는지"],
+            progress: {
+              cluesFound: 6,
+              cluesTotal: 10,
+              statementsFound: 4,
+              statementsTotal: 4,
+              hypothesesFound: 2,
+              hypothesesTotal: 3
+            }
+          },
+          choices: [
+            {
+              id: "to_receipt",
+              text: "구매 기록을 확인한다",
+              lockedText: "무수카페인을 검색해보세요",
+              nextSceneId: "case01_scene04",
+              requiresInteraction: true
+            }
+          ],
+          actions: [
+            { id: "openInventory", text: "단서 확인" },
+            { id: "openMemo", text: "메모에 정리" }
+          ],
+          cluesShown: ["medicine_bag", "anhydrous_caffeine"],
+          cluesUnlock: [],
+          interaction: {
+            type: "medicineSearch",
+            progressLabel: "검색 결과",
+            requiredItems: ["anhydrous_caffeine"],
+            minRequiredCount: 1,
+            clueId: "anhydrous_caffeine",
+            eyebrow: "인게임 검색",
+            title: "감기약 성분 백과사전",
+            description: "민재의 약 봉투에서 확인한 성분을 검색하세요. 핵심 검색어는 '무수카페인'입니다.",
+            placeholder: "검색어 입력 예: 무수카페인",
+            successKeywords: ["무수카페인", "감기약", "카페인"],
+            emptyMessage: "검색어를 입력하면 약 성분 설명이 표시됩니다.",
+            successMessage: "[검색 결과] 무수카페인은 일부 종합감기약에 들어갈 수 있는 고농축 카페인 성분입니다. 커피 등 고카페인 음료와 겹치면 두근거림, 손 떨림, 불안감이 심해질 수 있습니다.",
+            failMessage: "'{query}'에 대한 결정적 검색 결과가 없습니다. 약 봉투의 성분명인 무수카페인을 정확히 검색해보세요.",
+            transition: {
+              title: "약 성분 정보를 확인했습니다",
+              text: "음료와 약 성분이 겹칠 수 있다는 가능성이 생겼습니다. 남은 단서로 섭취 양상을 확인합니다.",
+              delay: 900
+            }
+          },
+          memoHints: [
+            "검색 결과에서 카페인과 관련된 핵심 문장을 적어보세요.",
+            "왜 약과 음료를 따로 보지 않고 함께 봐야 하는지 정리해보세요."
+          ]
+        },
+        {
           id: "case01_scene04",
           title: "반복된 구매 기록",
-          stepLabel: "장면 4",
+          stepLabel: "장면 7",
           phase: "단서 확인",
           location: "단서 보기",
           background: "./assets/images/backgrounds/case01/bg_case01_scene02_desk_imagegen.webp",
@@ -338,9 +636,9 @@ window.gameData = {
             facts: ["카페인 음료를 한 번만 산 것이 아님", "반복 섭취 정황이 있음"],
             unknowns: ["왜 반복해서 마셨을까?", "약 복용과 겹친 영향이 있었을까?"],
             progress: {
-              cluesFound: 3,
-              cluesTotal: 5,
-              statementsFound: 2,
+              cluesFound: 7,
+              cluesTotal: 10,
+              statementsFound: 4,
               statementsTotal: 4,
               hypothesesFound: 2,
               hypothesesTotal: 3
@@ -363,7 +661,7 @@ window.gameData = {
         {
           id: "case01_scene05",
           title: "버티려 했던 이유",
-          stepLabel: "장면 5",
+          stepLabel: "장면 8",
           phase: "디지털 단서",
           location: "단서 보기",
           background: "./assets/images/backgrounds/case01/bg_case01_scene02_desk_imagegen.webp",
@@ -383,9 +681,9 @@ window.gameData = {
             facts: ["민재는 피로와 압박감을 느끼고 있었다", "버티기 위해 음료를 찾았을 가능성이 있다"],
             unknowns: ["약 복용, 수면 부족, 카페인이 함께 영향을 주었는지"],
             progress: {
-              cluesFound: 5,
-              cluesTotal: 5,
-              statementsFound: 3,
+              cluesFound: 8,
+              cluesTotal: 10,
+              statementsFound: 4,
               statementsTotal: 4,
               hypothesesFound: 3,
               hypothesesTotal: 3
@@ -408,7 +706,7 @@ window.gameData = {
         {
           id: "case01_scene06",
           title: "보건실에서 정리",
-          stepLabel: "장면 6",
+          stepLabel: "장면 9",
           phase: "대응",
           location: "보건실",
           background: "./assets/images/backgrounds/case01/bg_case01_scene04_healthroom_imagegen.webp",
@@ -425,11 +723,11 @@ window.gameData = {
           },
           casePanel: {
             symptoms: ["손 떨림", "창백한 얼굴", "집중 저하"],
-            facts: ["수면 부족", "감기약 복용", "카페인 반복 섭취 정황"],
-            unknowns: ["다음에 같은 상황이 생기면 어떻게 대응할지"],
+            facts: ["수면 부족", "감기약 복용", "고카페인 커피", "감기약 속 무수카페인 가능성", "카페인 반복 섭취 정황"],
+            unknowns: ["민재의 심박수와 호흡 곤란이 어떤 몸의 반응인지", "다음에 같은 상황이 생기면 어떻게 대응할지"],
             progress: {
-              cluesFound: 5,
-              cluesTotal: 5,
+              cluesFound: 9,
+              cluesTotal: 10,
               statementsFound: 4,
               statementsTotal: 4,
               hypothesesFound: 3,
@@ -443,17 +741,38 @@ window.gameData = {
             { id: "openInventory", text: "단서 확인" },
             { id: "openWorksheet", text: "활동지 연결" }
           ],
-          cluesShown: [],
+          cluesShown: ["health_newsletter"],
           cluesUnlock: [],
+          interaction: {
+            type: "healthNewsletter",
+            progressLabel: "보건소식",
+            requiredItems: ["health_newsletter"],
+            minRequiredCount: 1,
+            clueId: "health_newsletter",
+            successMessage: "보건소식지에서 자율신경계 힌트를 확인했습니다.",
+            memo: "보건소식지 분석: 민재의 빈맥·호흡 곤란 증상은 교감신경(부스터)이 과흥분된 상태와 일치한다.",
+            newsletter: {
+              badge: "보건소식",
+              objectLabel: "보건소식지 열기",
+              objectTitle: "우리 몸의 비밀, 자율신경계",
+              title: "이번 달의 보건소식: 우리 몸의 비밀, 자율신경계!",
+              lead: "우리 몸에는 의지와 상관없이 스스로 조절되는 자율신경계가 있습니다. 여기에는 몸을 깨우는 부스터와 몸을 쉬게 하는 브레이크가 함께 작동합니다.",
+              sympatheticTitle: "교감신경: 엑셀 / 부스터",
+              sympatheticText: "위급한 상황이나 스트레스를 받을 때 몸을 흥분시키는 신경입니다. 활성화되면 심장이 쿵쾅거리고, 숨이 가빠지며, 동공이 커지고 땀이 납니다. 카페인을 과다 섭취하면 엑셀 페달이 끝까지 밟힌 것처럼 몸이 과하게 흥분할 수 있습니다.",
+              parasympatheticTitle: "부교감신경: 브레이크 / 휴식",
+              parasympatheticText: "에너지를 아끼고 몸을 편안하게 안정시키는 신경입니다. 심장을 안정시키고, 소화를 돕고, 깊은 수면으로 회복하게 합니다.",
+              monologue: "민재의 지금 증상인 심박수 증가와 호흡 곤란은 교감신경이라는 엑셀 페달이 과하게 밟힌 상태와 닮아 있어. 무언가가 민재의 몸을 극도로 흥분시킨 게 틀림없어!"
+            }
+          },
           memoHints: [
-            "단서들을 바탕으로 실제 원인을 조합해보세요.",
+            "보건실 벽의 보건소식지를 읽고 민재 증상과 연결해보세요.",
             "한 가지 원인만이 아니라 여러 요인이 함께 작용했는지 생각해보세요."
           ]
         },
         {
           id: "case01_scene07",
           title: "민재의 말",
-          stepLabel: "장면 7",
+          stepLabel: "장면 10",
           phase: "정리",
           location: "보건실",
           background: "./assets/images/backgrounds/case01/bg_case01_scene04_healthroom_imagegen.webp",
@@ -473,8 +792,8 @@ window.gameData = {
             facts: ["복합 원인 가능성을 확인함", "도움 요청이 안전한 대응임을 확인함"],
             unknowns: ["활동지에 근거를 어떻게 설명할지"],
             progress: {
-              cluesFound: 5,
-              cluesTotal: 5,
+              cluesFound: 10,
+              cluesTotal: 10,
               statementsFound: 4,
               statementsTotal: 4,
               hypothesesFound: 3,
@@ -516,11 +835,13 @@ window.gameData = {
           name: "보건샘",
           text: "피곤함을 버티기 위한 작은 선택도, 약 복용과 수면 부족이 겹치면 더 위험해질 수 있어요. 몸의 이상 신호를 가볍게 넘기지 말고, 혼자 판단하지 않는 것이 중요해요."
         },
-        summary: "민재의 상태는 수면 부족, 감기약 복용, 반복된 카페인 음료 섭취가 겹쳐 나타난 결과였다. 민재는 피곤함을 버티려다 여러 선택이 겹쳐 몸 상태가 더 나빠질 수 있다는 점을 알게 되었다.",
-        keyClues: ["감기약 봉투", "메모지", "카페인 음료 캔", "편의점 영수증", "메신저 캡처"],
+        summary: "민재의 상태는 수면 부족, 감기약 복용, 고카페인 커피, 감기약 속 무수카페인 가능성, 반복된 카페인 음료 섭취가 겹쳐 나타난 결과였다. 친구들의 증언 속 헛다리 단서를 걸러내며, 약과 음료를 함께 확인해야 한다는 점을 알게 되었다.",
+        keyClues: ["지우의 증언", "하은의 증언", "감기약 봉투", "커피 컵 카페인 표시", "무수카페인 검색 결과", "보건소식지: 자율신경계", "편의점 영수증", "메신저 캡처"],
         learningPoints: [
           "카페인 섭취는 한 번보다 반복과 누적이 중요하다.",
           "약 복용, 수면 부족, 카페인 섭취는 따로 보지 말고 함께 봐야 한다.",
+          "교감신경이 과하게 활성화되면 심박수 증가, 빠른 호흡, 손 떨림 같은 반응이 나타날 수 있다.",
+          "친구들의 말이나 인터넷 정보는 쓸모 있는 근거와 추측을 구분해서 확인해야 한다.",
           "몸의 이상 신호를 괜찮다고 넘기면 안 된다."
         ],
         safetyTips: [
@@ -530,11 +851,11 @@ window.gameData = {
         ],
         casePanel: {
           symptoms: ["손 떨림", "창백한 얼굴", "집중 저하"],
-          facts: ["수면 부족", "감기약 복용", "카페인 반복 섭취", "보건실 확인"],
+          facts: ["수면 부족", "감기약 복용", "물 대신 음료수로 복용한 습관", "고카페인 커피", "무수카페인 검색 결과", "카페인 반복 섭취", "보건실 확인"],
           unknowns: ["다음 상황에서 스스로 어떤 질문을 던질지"],
           progress: {
-            cluesFound: 5,
-            cluesTotal: 5,
+            cluesFound: 10,
+            cluesTotal: 10,
             statementsFound: 4,
             statementsTotal: 4,
             hypothesesFound: 3,
@@ -548,8 +869,8 @@ window.gameData = {
           { id: "openInventory", text: "핵심 단서 다시 보기" },
           { id: "openWorksheet", text: "활동지 연결" }
         ],
-        cluesShown: ["medicine_bag", "note", "receipt", "chat_capture", "energy_drink"],
-        cluesUnlock: ["medicine_bag", "note", "receipt", "chat_capture", "energy_drink"]
+        cluesShown: ["witness_jiwoo", "witness_haeun", "medicine_bag", "note", "energy_drink", "coffee_label", "anhydrous_caffeine", "health_newsletter", "receipt", "chat_capture"],
+        cluesUnlock: ["witness_jiwoo", "witness_haeun", "medicine_bag", "note", "energy_drink", "coffee_label", "anhydrous_caffeine", "health_newsletter", "receipt", "chat_capture"]
       }
     },
     {

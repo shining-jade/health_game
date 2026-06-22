@@ -725,6 +725,330 @@
       pointer-events: none;
     }
 
+    .scene-interaction-layer {
+      position: absolute;
+      inset: clamp(16px, 2.6vw, 30px);
+      z-index: 5;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    .scene-visual.has-interaction .scene-interaction-layer {
+      display: flex;
+    }
+
+    .scene-visual.has-newsletter .scene-interaction-layer {
+      display: block;
+    }
+
+    .interaction-panel {
+      width: min(980px, 100%);
+      max-height: calc(100% - 12px);
+      overflow: auto;
+      padding: clamp(14px, 2vw, 22px);
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      border-radius: 8px;
+      background: rgba(248, 251, 255, 0.94);
+      box-shadow: 0 24px 80px rgba(15, 23, 42, 0.24);
+      pointer-events: auto;
+    }
+
+    .interaction-panel__header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+
+    .interaction-panel__eyebrow {
+      margin: 0 0 5px;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    .interaction-panel__title {
+      margin: 0;
+      font-size: clamp(1.05rem, 1.7vw, 1.35rem);
+      letter-spacing: 0;
+    }
+
+    .interaction-panel__desc {
+      margin: 6px 0 0;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .witness-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .witness-card {
+      padding: 12px;
+      border: 1px solid rgba(37, 99, 235, 0.16);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--text);
+      text-align: left;
+      cursor: pointer;
+      transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+    }
+
+    .witness-card:hover,
+    .witness-card:focus-visible {
+      border-color: rgba(37, 99, 235, 0.5);
+      box-shadow: 0 10px 26px rgba(37, 99, 235, 0.12);
+      transform: translateY(-1px);
+      outline: none;
+    }
+
+    .witness-card.is-checked {
+      border-color: rgba(18, 184, 134, 0.64);
+      background: #f0fdf8;
+    }
+
+    .witness-card__top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .witness-card__name {
+      font-weight: 900;
+    }
+
+    .witness-card__role {
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    .witness-card__text {
+      margin: 0;
+      color: #334155;
+      font-size: 0.9rem;
+      line-height: 1.55;
+    }
+
+    .interaction-note {
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      background: #eff6ff;
+      color: #1e3a8a;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .scan-stage {
+      display: grid;
+      grid-template-columns: minmax(220px, 0.9fr) minmax(260px, 1fr);
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    .scan-target {
+      position: relative;
+      min-height: 220px;
+      overflow: hidden;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #171717, #3f3f46);
+      user-select: none;
+      cursor: crosshair;
+    }
+
+    .scan-target__item {
+      position: absolute;
+      inset: 18px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      background: linear-gradient(150deg, #f8fafc 0%, #dbeafe 44%, #111827 45%, #111827 100%);
+      color: #0f172a;
+      font-weight: 900;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.45);
+    }
+
+    .scan-target__hidden {
+      position: absolute;
+      right: 20px;
+      bottom: 28px;
+      max-width: 54%;
+      padding: 8px;
+      border-radius: 6px;
+      background: rgba(0, 0, 0, 0.8);
+      color: transparent;
+      font-size: 0.78rem;
+      line-height: 1.35;
+    }
+
+    .scan-target.is-found .scan-target__hidden {
+      color: #fbbf24;
+    }
+
+    .scan-glass {
+      position: absolute;
+      width: 86px;
+      height: 86px;
+      border: 3px solid #fff;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.18);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.32);
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      display: none;
+    }
+
+    .scan-target.is-active .scan-glass {
+      display: block;
+    }
+
+    .phone-search {
+      display: grid;
+      gap: 10px;
+      padding: 14px;
+      border: 4px solid #111827;
+      border-radius: 22px;
+      background: #fff;
+      box-shadow: inset 0 0 0 1px #dbeafe;
+    }
+
+    .phone-search__bar {
+      display: flex;
+      gap: 8px;
+    }
+
+    .phone-search__bar input {
+      min-width: 0;
+      flex: 1;
+      padding: 10px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font: inherit;
+    }
+
+    .phone-search__result {
+      min-height: 118px;
+      padding: 12px;
+      border-radius: 8px;
+      background: #f8fafc;
+      color: #334155;
+      font-size: 0.9rem;
+      line-height: 1.55;
+    }
+
+    .newsletter-object {
+      position: absolute;
+      top: 13%;
+      right: 7%;
+      width: min(170px, 28vw);
+      min-height: 120px;
+      padding: 12px;
+      border: 3px solid #ff922b;
+      border-radius: 8px;
+      background: #fff7ed;
+      color: #9a3412;
+      box-shadow: 0 14px 34px rgba(15, 23, 42, 0.2);
+      pointer-events: auto;
+      cursor: pointer;
+      text-align: left;
+      transform: rotate(-1deg);
+      transition: transform 160ms ease, box-shadow 160ms ease;
+    }
+
+    .newsletter-object:hover,
+    .newsletter-object:focus-visible {
+      transform: rotate(0deg) translateY(-2px);
+      box-shadow: 0 18px 42px rgba(15, 23, 42, 0.26);
+      outline: none;
+    }
+
+    .newsletter-object__label {
+      display: block;
+      margin-bottom: 8px;
+      color: #c2410c;
+      font-size: 0.78rem;
+      font-weight: 900;
+    }
+
+    .newsletter-object__title {
+      display: block;
+      color: #7c2d12;
+      font-size: 0.98rem;
+      font-weight: 900;
+      line-height: 1.25;
+    }
+
+    .newsletter-popup {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 16px;
+      background: rgba(15, 23, 42, 0.42);
+      pointer-events: auto;
+    }
+
+    .newsletter-popup__card {
+      width: min(560px, 100%);
+      max-height: 100%;
+      overflow: auto;
+      padding: clamp(18px, 2.4vw, 26px);
+      border: 4px solid #ff922b;
+      border-radius: 8px;
+      background: #fff;
+      box-shadow: 0 22px 70px rgba(15, 23, 42, 0.32);
+    }
+
+    .newsletter-popup__title {
+      margin: 0 0 12px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #fed7aa;
+      color: #c2410c;
+      font-size: clamp(1.1rem, 2vw, 1.45rem);
+      letter-spacing: 0;
+    }
+
+    .newsletter-popup__lead {
+      margin: 0 0 14px;
+      color: #475569;
+      line-height: 1.6;
+    }
+
+    .newsletter-info {
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      line-height: 1.55;
+    }
+
+    .newsletter-info.is-boost {
+      border-left: 4px solid #fa5252;
+      background: #fff5f5;
+    }
+
+    .newsletter-info.is-rest {
+      border-left: 4px solid #12b886;
+      background: #e6fcf5;
+    }
+
+    .newsletter-monologue {
+      margin: 14px 0;
+      padding: 12px;
+      border-radius: 8px;
+      background: #eff6ff;
+      color: #1e3a8a;
+      line-height: 1.55;
+      font-weight: 800;
+    }
+
     .scene-hotspot {
       position: absolute;
       min-width: 44px;
@@ -1941,6 +2265,26 @@
     }
 
     @media (max-width: 560px) {
+      .scene-interaction-layer {
+        inset: 10px;
+      }
+
+      .witness-grid,
+      .scan-stage {
+        grid-template-columns: 1fr;
+      }
+
+      .phone-search__bar {
+        flex-direction: column;
+      }
+
+      .newsletter-object {
+        top: 8%;
+        right: 5%;
+        width: min(150px, 40vw);
+        min-height: 104px;
+      }
+
       .top-title__main {
         font-size: 17px;
       }
@@ -2191,6 +2535,7 @@
           <img class="scene-bg" src="./assets/images/backgrounds/case01/bg_case01_scene01_classroom_imagegen.webp" alt="시험기간 오후 교실 배경" />
           <div class="scene-overlay"></div>
           <div class="scene-hotspot-layer" aria-label="조사 핫스팟"></div>
+          <div class="scene-interaction-layer" aria-label="상호작용 조사"></div>
           <div class="scene-visual__tags"></div>
           <div class="dialogue-box">
             <span class="dialogue-speaker">지우</span>
@@ -2439,6 +2784,7 @@
       unlockedClues: [],
       viewedClues: [],
       investigation: {},
+      interactions: {},
       activeInventoryCategory: "all",
       activeMemoTab: "facts",
       activeClueDetailId: null,
@@ -2614,6 +2960,7 @@
       state.unlockedClues = [];
       state.viewedClues = [];
       state.investigation = {};
+      state.interactions = {};
       state.activeInventoryCategory = "all";
       state.activeMemoTab = "facts";
       state.memo = {
@@ -2713,6 +3060,45 @@
       return getInvestigationFoundCount(scene) >= getInvestigationRequiredCount(scene);
     };
 
+    const getInteractionState = (scene) => {
+      if (!scene?.interaction) return null;
+      if (!state.interactions[scene.id]) {
+        state.interactions[scene.id] = {
+          completedItems: [],
+          foundCoreItems: [],
+          lastMessage: "",
+          searchComplete: false,
+          scanComplete: false,
+          newsletterOpen: false,
+          newsletterRead: false
+        };
+      }
+      return state.interactions[scene.id];
+    };
+
+    const getInteractionRequiredCount = (scene) => scene?.interaction?.minRequiredCount || scene?.interaction?.requiredItems?.length || 1;
+
+    const getInteractionFoundCount = (scene) => {
+      const sceneState = getInteractionState(scene);
+      return sceneState?.foundCoreItems?.length || 0;
+    };
+
+    const canPassInteraction = (scene) => {
+      if (!scene?.interaction) return true;
+      return getInteractionFoundCount(scene) >= getInteractionRequiredCount(scene);
+    };
+
+    const getInteractionProgressText = (scene) => {
+      if (!scene?.interaction) return "";
+      const label = scene.interaction.progressLabel || "핵심 정보";
+      const found = getInteractionFoundCount(scene);
+      const total = scene.interaction.requiredItems?.length || getInteractionRequiredCount(scene);
+      const need = getInteractionRequiredCount(scene);
+      return found >= need
+        ? `${label} ${found} / ${total} 확보 · 다음 단계 가능`
+        : `${label} ${found} / ${total} 확보 · ${need}개 이상 찾으면 다음 단계 가능`;
+    };
+
     const getInvestigationProgressText = (scene) => {
       if (!scene?.investigation) return "";
       const label = scene.investigation.progressLabel || "핵심 단서";
@@ -2722,6 +3108,283 @@
       return found >= need
         ? `${label} ${found} / ${total} 발견 · 다음 분석 가능`
         : `${label} ${found} / ${total} 발견 · ${need}개 이상 찾으면 다음 분석 가능`;
+    };
+
+    const unlockInteractionClue = (clueId) => {
+      if (!clueId) return;
+      if (!state.unlockedClues.includes(clueId)) {
+        state.unlockedClues.push(clueId);
+        showFeedbackMessage(`새 단서 확보: ${getClueTitle(clueId)}`);
+      }
+    };
+
+    const renderWitnessInteraction = (scene, sceneState) => {
+      const witnesses = scene.interaction?.witnesses || [];
+      const cards = witnesses
+        .map((witness) => {
+          const checked = sceneState.completedItems.includes(witness.id);
+          return `
+            <button class="witness-card${checked ? " is-checked" : ""}" type="button" data-witness-id="${escapeHtml(witness.id)}" aria-pressed="${checked ? "true" : "false"}">
+              <span class="witness-card__top">
+                <span class="witness-card__name">${escapeHtml(witness.name)}</span>
+                <span class="witness-card__role">${escapeHtml(witness.label || "")}</span>
+              </span>
+              <p class="witness-card__text">${escapeHtml(witness.preview || witness.text || "")}</p>
+            </button>
+          `;
+        })
+        .join("");
+
+      return `
+        <div class="interaction-panel">
+          <div class="interaction-panel__header">
+            <div>
+              <p class="interaction-panel__eyebrow">${escapeHtml(scene.interaction.eyebrow || "증언 수집")}</p>
+              <h3 class="interaction-panel__title">${escapeHtml(scene.interaction.title || scene.title)}</h3>
+              <p class="interaction-panel__desc">${escapeHtml(scene.interaction.description || "")}</p>
+            </div>
+          </div>
+          <div class="witness-grid">${cards}</div>
+          <p class="interaction-note">${escapeHtml(sceneState.lastMessage || scene.interaction.emptyMessage || "친구를 선택해 증언을 확인하세요.")}</p>
+        </div>
+      `;
+    };
+
+    const renderScanInteraction = (scene, sceneState) => {
+      const foundClass = sceneState.scanComplete ? " is-found" : "";
+      return `
+        <div class="interaction-panel">
+          <div class="interaction-panel__header">
+            <div>
+              <p class="interaction-panel__eyebrow">${escapeHtml(scene.interaction.eyebrow || "라벨 분석")}</p>
+              <h3 class="interaction-panel__title">${escapeHtml(scene.interaction.title || scene.title)}</h3>
+              <p class="interaction-panel__desc">${escapeHtml(scene.interaction.description || "")}</p>
+            </div>
+          </div>
+          <div class="scan-stage">
+            <div class="scan-target${foundClass}" data-scan-target>
+              <div class="scan-target__item">${escapeHtml(scene.interaction.itemLabel || "TAKEOUT AMERICANO")}</div>
+              <div class="scan-target__hidden">${escapeHtml(scene.interaction.hiddenText || "고카페인 함유")}</div>
+              <div class="scan-glass" data-scan-glass></div>
+            </div>
+            <div class="interaction-note">
+              ${escapeHtml(sceneState.lastMessage || scene.interaction.emptyMessage || "검은 라벨 주변을 마우스로 문질러 숨은 표시를 확인하세요.")}
+            </div>
+          </div>
+        </div>
+      `;
+    };
+
+    const renderSearchInteraction = (scene, sceneState) => {
+      return `
+        <div class="interaction-panel">
+          <div class="interaction-panel__header">
+            <div>
+              <p class="interaction-panel__eyebrow">${escapeHtml(scene.interaction.eyebrow || "약 성분 검색")}</p>
+              <h3 class="interaction-panel__title">${escapeHtml(scene.interaction.title || scene.title)}</h3>
+              <p class="interaction-panel__desc">${escapeHtml(scene.interaction.description || "")}</p>
+            </div>
+          </div>
+          <div class="phone-search">
+            <div class="phone-search__bar">
+              <input type="text" data-search-input placeholder="${escapeHtml(scene.interaction.placeholder || "검색어 입력")}" value="${escapeHtml(sceneState.query || "")}" />
+              <button class="sub-btn primary-btn" type="button" data-search-submit>검색</button>
+            </div>
+            <div class="phone-search__result" data-search-result>${sceneState.lastMessage ? escapeHtml(sceneState.lastMessage) : escapeHtml(scene.interaction.emptyMessage || "검색어를 입력하세요.")}</div>
+          </div>
+        </div>
+      `;
+    };
+
+    const renderNewsletterInteraction = (scene, sceneState) => {
+      const newsletter = scene.interaction?.newsletter || {};
+      const popup = sceneState.newsletterOpen ? `
+        <div class="newsletter-popup" role="dialog" aria-modal="true" aria-labelledby="newsletterTitle">
+          <article class="newsletter-popup__card">
+            <h3 class="newsletter-popup__title" id="newsletterTitle">${escapeHtml(newsletter.title || "이번 달의 보건소식")}</h3>
+            <p class="newsletter-popup__lead">${escapeHtml(newsletter.lead || "")}</p>
+            <section class="newsletter-info is-boost">
+              <strong>${escapeHtml(newsletter.sympatheticTitle || "교감신경")}</strong><br>
+              ${escapeHtml(newsletter.sympatheticText || "")}
+            </section>
+            <section class="newsletter-info is-rest">
+              <strong>${escapeHtml(newsletter.parasympatheticTitle || "부교감신경")}</strong><br>
+              ${escapeHtml(newsletter.parasympatheticText || "")}
+            </section>
+            <p class="newsletter-monologue">${escapeHtml(newsletter.monologue || "")}</p>
+            <button class="sub-btn primary-btn" type="button" data-newsletter-close>내용 확인 완료</button>
+          </article>
+        </div>
+      ` : "";
+
+      return `
+        <button class="newsletter-object" type="button" data-newsletter-open aria-label="${escapeHtml(newsletter.objectLabel || "보건소식지 열기")}">
+          <span class="newsletter-object__label">${escapeHtml(newsletter.badge || "보건소식")}</span>
+          <span class="newsletter-object__title">${escapeHtml(newsletter.objectTitle || "자율신경계 안내")}</span>
+        </button>
+        ${popup}
+      `;
+    };
+
+    const renderInteractionLayer = (scene) => {
+      const layer = $(".scene-interaction-layer");
+      const visualEl = $(".scene-visual");
+      if (!layer || !visualEl) return;
+
+      if (!scene?.interaction) {
+        layer.innerHTML = "";
+        visualEl.classList.remove("has-interaction", "has-newsletter");
+        return;
+      }
+
+      const sceneState = getInteractionState(scene);
+      visualEl.classList.add("has-interaction");
+      visualEl.classList.toggle("has-newsletter", scene.interaction.type === "healthNewsletter");
+
+      if (scene.interaction.type === "witnessInterview") {
+        layer.innerHTML = renderWitnessInteraction(scene, sceneState);
+      } else if (scene.interaction.type === "labelScan") {
+        layer.innerHTML = renderScanInteraction(scene, sceneState);
+      } else if (scene.interaction.type === "medicineSearch") {
+        layer.innerHTML = renderSearchInteraction(scene, sceneState);
+      } else if (scene.interaction.type === "healthNewsletter") {
+        layer.innerHTML = renderNewsletterInteraction(scene, sceneState);
+      } else {
+        layer.innerHTML = "";
+        visualEl.classList.remove("has-interaction", "has-newsletter");
+      }
+    };
+
+    const updateInteractionUi = (scene) => {
+      renderInteractionLayer(scene);
+      renderChoices(scene);
+      if (state.typing.isTyping) disableChoicesWhileTyping(true);
+      renderCasePanel(scene);
+      renderInventory();
+      $(".scene-progress").textContent = getInteractionProgressText(scene) || `진행 단계: ${scene.phase}`;
+      $("[data-top-progress]").textContent = getInteractionProgressText(scene) || `조사 ${scene.casePanel?.progress?.cluesFound || 0} / ${scene.casePanel?.progress?.cluesTotal || 0}`;
+    };
+
+    const handleWitnessClick = (witnessId) => {
+      const scene = getCurrentScene();
+      const witness = scene?.interaction?.witnesses?.find((item) => item.id === witnessId);
+      const sceneState = getInteractionState(scene);
+      if (!witness || !sceneState) return;
+
+      if (!sceneState.completedItems.includes(witness.id)) {
+        sceneState.completedItems.push(witness.id);
+      }
+      sceneState.lastMessage = `${witness.name}: "${witness.text}"`;
+
+      if (witness.isCore && !sceneState.foundCoreItems.includes(witness.id)) {
+        sceneState.foundCoreItems.push(witness.id);
+        unlockInteractionClue(witness.clueId);
+        showFeedbackMessage(witness.memo || "쓸모 있는 증언을 확보했습니다.");
+      } else if (!witness.isCore) {
+        showFeedbackMessage(witness.falseHint || "흥미롭지만 직접 단서는 아닌 것 같습니다.");
+      }
+
+      updateInteractionUi(scene);
+    };
+
+    const handleScanMove = (event) => {
+      const scene = getCurrentScene();
+      if (scene?.interaction?.type !== "labelScan") return;
+      const target = event.target.closest("[data-scan-target]");
+      if (!target) return;
+
+      const glass = target.querySelector("[data-scan-glass]");
+      const rect = target.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+      if (glass) {
+        glass.style.left = `${x}px`;
+        glass.style.top = `${y}px`;
+      }
+      target.classList.add("is-active");
+
+      const zone = scene.interaction.revealZone || { xMin: 58, xMax: 96, yMin: 54, yMax: 92 };
+      const xPercent = (x / rect.width) * 100;
+      const yPercent = (y / rect.height) * 100;
+      if (xPercent >= zone.xMin && xPercent <= zone.xMax && yPercent >= zone.yMin && yPercent <= zone.yMax) {
+        const sceneState = getInteractionState(scene);
+        if (!sceneState.scanComplete) {
+          sceneState.scanComplete = true;
+          sceneState.lastMessage = scene.interaction.successMessage || "숨은 카페인 표시를 확인했습니다.";
+          sceneState.foundCoreItems.push(scene.interaction.requiredItems?.[0] || "scan");
+          unlockInteractionClue(scene.interaction.clueId);
+          showFeedbackMessage(sceneState.lastMessage);
+          updateInteractionUi(scene);
+        }
+      }
+    };
+
+    const handleScanLeave = (event) => {
+      const target = event.target.closest("[data-scan-target]");
+      target?.classList.remove("is-active");
+    };
+
+    const handleSearchSubmit = () => {
+      const scene = getCurrentScene();
+      if (scene?.interaction?.type !== "medicineSearch") return;
+      const sceneState = getInteractionState(scene);
+      const input = $("[data-search-input]");
+      const query = input?.value?.trim() || "";
+      sceneState.query = query;
+
+      const keywords = scene.interaction.successKeywords || [];
+      const isSuccess = keywords.some((keyword) => query.includes(keyword));
+      if (isSuccess) {
+        sceneState.searchComplete = true;
+        sceneState.lastMessage = scene.interaction.successMessage || "검색 결과에서 핵심 정보를 확인했습니다.";
+        if (!sceneState.foundCoreItems.includes(scene.interaction.requiredItems?.[0] || "search")) {
+          sceneState.foundCoreItems.push(scene.interaction.requiredItems?.[0] || "search");
+        }
+        unlockInteractionClue(scene.interaction.clueId);
+        showFeedbackMessage("검색 결과에서 결정적 단서를 찾았습니다.");
+      } else {
+        sceneState.lastMessage = scene.interaction.failMessage?.replace("{query}", query || "빈 검색어") || "검색어를 더 정확히 입력해보세요.";
+        showFeedbackMessage("검색어를 다시 생각해보세요.");
+      }
+
+      updateInteractionUi(scene);
+      $("[data-search-input]")?.focus();
+    };
+
+    const addLearningMemo = (text) => {
+      if (!text) return;
+      if (!state.memo.learned.includes(text)) {
+        state.memo.learned.push(text);
+      }
+    };
+
+    const openNewsletterHint = () => {
+      const scene = getCurrentScene();
+      if (scene?.interaction?.type !== "healthNewsletter") return;
+      const sceneState = getInteractionState(scene);
+      sceneState.newsletterOpen = true;
+      if (!sceneState.newsletterRead) {
+        sceneState.newsletterRead = true;
+        sceneState.lastMessage = scene.interaction.successMessage || "보건소식지를 읽고 핵심 개념을 확인했습니다.";
+        if (!sceneState.foundCoreItems.includes(scene.interaction.requiredItems?.[0] || "newsletter")) {
+          sceneState.foundCoreItems.push(scene.interaction.requiredItems?.[0] || "newsletter");
+        }
+        unlockInteractionClue(scene.interaction.clueId);
+        addLearningMemo(scene.interaction.memo || "보건소식지 분석: 민재의 빈맥과 호흡 곤란은 교감신경이 과하게 활성화된 상태와 연결된다.");
+        showFeedbackMessage(sceneState.lastMessage);
+      }
+      updateInteractionUi(scene);
+    };
+
+    const closeNewsletterHint = () => {
+      const scene = getCurrentScene();
+      if (scene?.interaction?.type !== "healthNewsletter") return;
+      const sceneState = getInteractionState(scene);
+      sceneState.newsletterOpen = false;
+      updateInteractionUi(scene);
+      if ($("#memoModal")?.classList.contains("is-open")) {
+        renderMemoModal();
+      }
     };
 
     const renderHotspots = (scene) => {
@@ -2828,13 +3491,16 @@
     const renderChoices = (scene) => {
       $(".choice-list").innerHTML = (scene.choices || [])
         .map((choice) => {
-          const isLocked = Boolean(choice.requiresInvestigation && !canPassInvestigation(scene));
-          const hint = isLocked ? getInvestigationProgressText(scene) : "";
+          const isInvestigationLocked = Boolean(choice.requiresInvestigation && !canPassInvestigation(scene));
+          const isInteractionLocked = Boolean(choice.requiresInteraction && !canPassInteraction(scene));
+          const isLocked = isInvestigationLocked || isInteractionLocked;
+          const hint = isLocked ? getInvestigationProgressText(scene) || getInteractionProgressText(scene) : "";
           const lockedAttrs = isLocked ? ` disabled data-investigation-locked="true"` : ` data-investigation-locked="false"`;
           const requiresAttr = choice.requiresInvestigation ? ` data-requires-investigation="true"` : ` data-requires-investigation="false"`;
+          const interactionAttr = choice.requiresInteraction ? ` data-requires-interaction="true"` : ` data-requires-interaction="false"`;
           const choiceAttr = choice.id ? ` data-choice-id="${escapeHtml(choice.id)}"` : "";
           return `
-          <button class="choice-btn" type="button" data-next-scene="${escapeHtml(choice.nextSceneId)}"${choiceAttr}${requiresAttr}${lockedAttrs}>
+          <button class="choice-btn" type="button" data-next-scene="${escapeHtml(choice.nextSceneId)}"${choiceAttr}${requiresAttr}${interactionAttr}${lockedAttrs}>
             <span class="choice-btn__label">${escapeHtml(isLocked ? choice.lockedText || choice.text : choice.text)}</span>
             ${hint ? `<span class="choice-btn__hint">${escapeHtml(hint)}</span>` : ""}
           </button>
@@ -2933,6 +3599,12 @@
       if (scene.investigation) {
         progress.cluesFound = getInvestigationFoundCount(scene);
         progress.cluesTotal = getInvestigationRequiredClues(scene).length;
+      }
+      if (scene.interaction) {
+        const interactionFound = getInteractionFoundCount(scene);
+        const total = Math.max(progress.cluesTotal || 0, scene.interaction.requiredItems?.length || getInteractionRequiredCount(scene));
+        progress.cluesFound = Math.min(total, (progress.cluesFound || 0) + interactionFound);
+        progress.cluesTotal = Math.max(progress.cluesTotal || 0, scene.interaction.requiredItems?.length || getInteractionRequiredCount(scene));
       }
       const html = `
         <div class="question-box">
@@ -3536,18 +4208,18 @@
       $(".top-title__main").textContent = currentEpisode.title;
       $("[data-top-location]").textContent = scene.location;
       $("[data-top-phase]").textContent = scene.phase;
-      $("[data-top-progress]").textContent = getInvestigationProgressText(scene) || `조사 ${scene.casePanel?.progress?.cluesFound || 0} / ${scene.casePanel?.progress?.cluesTotal || 0}`;
+      $("[data-top-progress]").textContent = getInvestigationProgressText(scene) || getInteractionProgressText(scene) || `조사 ${scene.casePanel?.progress?.cluesFound || 0} / ${scene.casePanel?.progress?.cluesTotal || 0}`;
 
       $(".scene-step").textContent = scene.stepLabel;
       $(".scene-title").textContent = scene.title;
-      $(".scene-progress").textContent = getInvestigationProgressText(scene) || `진행 단계: ${scene.phase}`;
+      $(".scene-progress").textContent = getInvestigationProgressText(scene) || getInteractionProgressText(scene) || `진행 단계: ${scene.phase}`;
 
       const bg = $(".scene-bg");
       bg.src = scene.background;
       bg.alt = scene.backgroundAlt || scene.title;
 
       const visualEl = $(".scene-visual");
-      visualEl?.classList.remove("is-fullbody", "is-closeup", "is-healthroom", "is-investigation");
+      visualEl?.classList.remove("is-fullbody", "is-closeup", "is-healthroom", "is-investigation", "has-interaction", "has-newsletter");
       visualEl?.classList.add(
         scene.sceneVisualClass ||
         (scene.investigation ? "is-investigation" : (scene.background?.includes("healthroom") ? "is-healthroom" : "is-fullbody"))
@@ -3559,6 +4231,7 @@
 
       renderActors(scene);
       renderHotspots(scene);
+      renderInteractionLayer(scene);
       renderTags(scene);
       renderChoices(scene);
       renderDialogue(scene);
@@ -3661,6 +4334,30 @@
         return;
       }
 
+      const witnessButton = event.target.closest("[data-witness-id]");
+      if (witnessButton) {
+        handleWitnessClick(witnessButton.dataset.witnessId);
+        return;
+      }
+
+      const searchButton = event.target.closest("[data-search-submit]");
+      if (searchButton) {
+        handleSearchSubmit();
+        return;
+      }
+
+      const newsletterOpenButton = event.target.closest("[data-newsletter-open]");
+      if (newsletterOpenButton) {
+        openNewsletterHint();
+        return;
+      }
+
+      const newsletterCloseButton = event.target.closest("[data-newsletter-close]");
+      if (newsletterCloseButton) {
+        closeNewsletterHint();
+        return;
+      }
+
       const saveMemoButton = event.target.closest("#saveMemoBtn");
       if (saveMemoButton) {
         saveCurrentMemoTab(true);
@@ -3702,8 +4399,8 @@
 
         const scene = getCurrentScene();
         const choice = (scene?.choices || []).find((item) => item.id === choiceButton.dataset.choiceId);
-        if (choice?.requiresInvestigation) {
-          const transition = scene?.investigation?.transition || choice.transition || {};
+        if (choice?.requiresInvestigation || choice?.requiresInteraction) {
+          const transition = scene?.investigation?.transition || scene?.interaction?.transition || choice.transition || {};
           proceedToNextSceneWithTransition(choiceButton.dataset.nextScene, {
             title: transition.title || "핵심 단서를 확보했습니다",
             text: transition.text || "찾은 단서를 바탕으로 상황을 정리합니다.",
@@ -3728,7 +4425,25 @@
       }
     });
 
+    document.addEventListener("pointermove", (event) => {
+      if (event.target.closest("[data-scan-target]")) {
+        handleScanMove(event);
+      }
+    });
+
+    document.addEventListener("pointerleave", (event) => {
+      if (event.target.closest?.("[data-scan-target]")) {
+        handleScanLeave(event);
+      }
+    }, true);
+
     document.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" && event.target.matches?.("[data-search-input]")) {
+        event.preventDefault();
+        handleSearchSubmit();
+        return;
+      }
+
       const startCard = event.target.closest?.("[data-start-episode]");
       if (startCard && (event.key === "Enter" || event.key === " ")) {
         event.preventDefault();
