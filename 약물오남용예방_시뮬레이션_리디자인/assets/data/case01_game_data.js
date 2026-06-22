@@ -90,7 +90,7 @@ window.gameData = {
       title: "지우의 증언",
       category: "관찰 기록",
       location: "교실",
-      image: "./assets/images/characters/case01/npc_jiwoo_worried_imagegen.webp",
+      image: "./assets/images/clues/case01/clue_case01_witness_jiwoo_face_imagegen.webp",
       alt: "걱정스럽게 증언하는 지우",
       summary: "며칠 전 민재가 약을 먹던 장면에 대한 지우의 기억",
       detail: "지우: \"며칠 전에도 감기약 먹을 때 보니까 책상에 마시다 남은 탄산음료로 그냥 꿀꺽 삼키더라고. 내가 '야, 약을 왜 그런 거랑 먹냐?' 그랬더니 민재가 '어차피 배 들어가면 다 똑같은 액체인데 뭔 상관이야' 하면서 웃어넘겼어.\""
@@ -100,7 +100,7 @@ window.gameData = {
       title: "하은의 증언",
       category: "관찰 기록",
       location: "매점 앞",
-      image: "./assets/images/characters/case01/npc_jiwoo_worried_imagegen.webp",
+      image: "./assets/images/clues/case01/clue_case01_witness_haeun_face_imagegen.webp",
       alt: "아침 행동을 떠올리게 하는 증언 단서",
       summary: "오늘 아침 매점 앞에서 민재를 봤다는 하은의 기억",
       detail: "하은: \"오늘 아침에 매점 앞에서 민재 만났거든? 손에 감기약 봉지를 들고 있길래 감기 걸렸냐고 물어봤지. 그랬더니 걔가 '어제 밤새워서 너무 졸린데, 생수 대신 잠 깨게 테이크아웃 아메리카노 사서 이걸로 약 먹어야겠다'고 했어.\""
