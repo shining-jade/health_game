@@ -128,6 +128,12 @@
       color: var(--red);
     }
 
+    .btn.is-active {
+      border-color: var(--primary);
+      background: var(--primary-soft);
+      color: var(--primary);
+    }
+
     .status {
       min-width: 145px;
       color: var(--muted);
@@ -440,6 +446,173 @@
       font-weight: 900;
     }
 
+    .flow-board {
+      display: grid;
+      gap: 12px;
+      min-height: calc(100vh - 120px);
+    }
+
+    .flow-toolbar {
+      position: sticky;
+      top: 0;
+      z-index: 8;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.96);
+      box-shadow: var(--shadow);
+    }
+
+    .flow-toolbar strong {
+      margin-right: auto;
+    }
+
+    .flow-wrap {
+      overflow: auto;
+      min-height: 680px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background:
+        linear-gradient(rgba(215, 225, 240, 0.42) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(215, 225, 240, 0.42) 1px, transparent 1px),
+        #fbfdff;
+      background-size: 28px 28px;
+      box-shadow: var(--shadow);
+    }
+
+    .flow-canvas {
+      position: relative;
+      min-width: 1280px;
+      min-height: 760px;
+      padding: 34px;
+    }
+
+    .flow-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: visible;
+    }
+
+    .flow-grid {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: repeat(4, 250px);
+      grid-auto-rows: minmax(132px, auto);
+      gap: 82px 56px;
+      align-items: start;
+    }
+
+    .flow-node {
+      min-height: 132px;
+      padding: 12px;
+      border: 2px solid var(--line);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.96);
+      color: var(--text);
+      text-align: left;
+      box-shadow: 0 12px 26px rgba(22, 34, 51, 0.08);
+    }
+
+    .flow-node:hover,
+    .flow-node.is-active {
+      border-color: var(--primary);
+      box-shadow: 0 14px 32px rgba(56, 103, 214, 0.18);
+    }
+
+    .flow-node.is-dirty {
+      box-shadow: inset 5px 0 0 var(--amber), 0 12px 26px rgba(22, 34, 51, 0.08);
+    }
+
+    .flow-node__head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .flow-node__title {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .flow-node__dialogue {
+      display: -webkit-box;
+      min-height: 42px;
+      overflow: hidden;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.45;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+    }
+
+    .flow-node__choices {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 10px;
+    }
+
+    .flow-chip {
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      padding: 3px 7px;
+      border-radius: 999px;
+      background: var(--primary-soft);
+      color: var(--primary);
+      font-size: 10px;
+      font-weight: 900;
+    }
+
+    .flow-missing {
+      border-color: #efb0b0;
+      background: var(--red-soft);
+      color: var(--red);
+    }
+
+    .flow-line {
+      fill: none;
+      stroke: rgba(56, 103, 214, 0.62);
+      stroke-width: 2.2;
+      marker-end: url(#arrowHead);
+    }
+
+    .flow-line.is-selected {
+      stroke: rgba(22, 131, 95, 0.9);
+      stroke-width: 3;
+    }
+
+    .flow-label {
+      paint-order: stroke;
+      stroke: #fff;
+      stroke-width: 5px;
+      stroke-linejoin: round;
+      fill: #334155;
+      font-size: 11px;
+      font-weight: 800;
+      pointer-events: none;
+    }
+
+    .flow-empty {
+      padding: 28px;
+      color: var(--muted);
+      font-weight: 800;
+    }
+
     .export-drawer {
       display: none;
       position: fixed;
@@ -513,6 +686,14 @@
       .grid.three {
         grid-template-columns: 1fr;
       }
+
+      .flow-canvas {
+        min-width: 980px;
+      }
+
+      .flow-grid {
+        grid-template-columns: repeat(3, 240px);
+      }
     }
   </style>
 </head>
@@ -524,6 +705,8 @@
         <span>대사 · 선택지 · 사건 패널 수정</span>
       </div>
       <div class="top-actions">
+        <button class="btn is-active" type="button" id="editViewBtn">편집</button>
+        <button class="btn" type="button" id="flowViewBtn">흐름지도</button>
         <button class="btn" type="button" id="saveDraftBtn">임시저장</button>
         <button class="btn" type="button" id="loadDraftBtn">임시저장 불러오기</button>
         <button class="btn green" type="button" id="downloadBtn">수정본 다운로드</button>
@@ -572,6 +755,7 @@
     const originalData = structuredClone(window.gameData);
     let data = structuredClone(window.gameData);
     let selectedSceneId = data.episodes[0]?.scenes[0]?.id || "";
+    let activeView = "edit";
     const dirtySceneIds = new Set();
 
     const $ = (selector) => document.querySelector(selector);
@@ -590,6 +774,7 @@
       dirtySceneIds.add(sceneId);
       updateStatus();
       renderSceneList();
+      if (activeView === "flow") window.requestAnimationFrame(drawFlowLines);
     };
 
     const updateStatus = (message) => {
@@ -625,6 +810,11 @@
     };
 
     const renderEditor = () => {
+      if (activeView === "flow") {
+        renderFlowMap();
+        return;
+      }
+
       const scene = getSelectedScene();
       if (!scene) {
         $("#editor").innerHTML = "<p>편집할 장면이 없습니다.</p>";
@@ -698,6 +888,102 @@
         </section>
       `;
       renderPreview();
+    };
+
+    const getSceneMap = () => new Map(scenes().map(({ scene }) => [scene.id, scene]));
+
+    const truncate = (value = "", length = 26) => {
+      const text = String(value).replace(/\s+/g, " ").trim();
+      return text.length > length ? `${text.slice(0, length - 1)}…` : text;
+    };
+
+    const renderFlowMap = () => {
+      const allScenes = scenes().map(({ scene }) => scene);
+      $("#editor").innerHTML = `
+        <section class="flow-board">
+          <div class="flow-toolbar">
+            <strong>선택지 흐름지도</strong>
+            <span class="badge">장면 ${allScenes.length}개</span>
+            <span class="badge">선택지 ${allScenes.reduce((sum, scene) => sum + (scene.choices || []).length, 0)}개</span>
+            <button class="btn" type="button" data-action="fit-flow">처음 위치로</button>
+          </div>
+          <div class="flow-wrap" id="flowWrap">
+            <div class="flow-canvas" id="flowCanvas">
+              <svg class="flow-svg" id="flowSvg" aria-hidden="true">
+                <defs>
+                  <marker id="arrowHead" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+                    <path d="M 0 0 L 10 4 L 0 8 z" fill="rgba(56, 103, 214, 0.72)"></path>
+                  </marker>
+                </defs>
+              </svg>
+              <div class="flow-grid">
+                ${allScenes.map((scene) => flowNode(scene)).join("") || "<p class='flow-empty'>표시할 장면이 없습니다.</p>"}
+              </div>
+            </div>
+          </div>
+        </section>
+      `;
+      renderPreview();
+      window.requestAnimationFrame(drawFlowLines);
+    };
+
+    const flowNode = (scene) => {
+      const choices = scene.choices || [];
+      return `
+        <button class="flow-node${scene.id === selectedSceneId ? " is-active" : ""}${dirtySceneIds.has(scene.id) ? " is-dirty" : ""}" type="button" data-flow-node="${escapeHtml(scene.id)}">
+          <span class="flow-node__head">
+            <span class="badge">${escapeHtml(scene.stepLabel || "-")}</span>
+            <span class="flow-node__title">${escapeHtml(scene.title || scene.id)}</span>
+          </span>
+          <span class="flow-node__dialogue">${escapeHtml(scene.dialogue?.text || "")}</span>
+          <span class="flow-node__choices">
+            ${choices.length ? choices.map((choice) => `<span class="flow-chip">${escapeHtml(truncate(choice.text, 18))}</span>`).join("") : "<span class='flow-chip flow-missing'>선택지 없음</span>"}
+          </span>
+        </button>
+      `;
+    };
+
+    const drawFlowLines = () => {
+      const svg = $("#flowSvg");
+      const canvas = $("#flowCanvas");
+      if (!svg || !canvas) return;
+
+      const marker = svg.querySelector("defs")?.outerHTML || "";
+      const sceneMap = getSceneMap();
+      const canvasRect = canvas.getBoundingClientRect();
+      const edges = [];
+
+      scenes().forEach(({ scene }) => {
+        (scene.choices || []).forEach((choice, index) => {
+          if (!choice.nextSceneId || !sceneMap.has(choice.nextSceneId)) return;
+          const from = canvas.querySelector(`[data-flow-node="${CSS.escape(scene.id)}"]`);
+          const to = canvas.querySelector(`[data-flow-node="${CSS.escape(choice.nextSceneId)}"]`);
+          if (!from || !to) return;
+
+          const fromRect = from.getBoundingClientRect();
+          const toRect = to.getBoundingClientRect();
+          const start = {
+            x: fromRect.left - canvasRect.left + fromRect.width,
+            y: fromRect.top - canvasRect.top + 44 + index * 16
+          };
+          const end = {
+            x: toRect.left - canvasRect.left,
+            y: toRect.top - canvasRect.top + Math.min(toRect.height - 22, 48 + index * 7)
+          };
+          const dx = Math.max(80, Math.abs(end.x - start.x) * 0.42);
+          const c1 = { x: start.x + dx, y: start.y };
+          const c2 = { x: end.x - dx, y: end.y };
+          const selected = scene.id === selectedSceneId || choice.nextSceneId === selectedSceneId;
+          const labelX = (start.x + end.x) / 2;
+          const labelY = (start.y + end.y) / 2 - 8;
+          edges.push(`
+            <path class="flow-line${selected ? " is-selected" : ""}" d="M ${start.x} ${start.y} C ${c1.x} ${c1.y}, ${c2.x} ${c2.y}, ${end.x} ${end.y}"></path>
+            <text class="flow-label" x="${labelX}" y="${labelY}">${escapeHtml(truncate(choice.text, 22))}</text>
+          `);
+        });
+      });
+
+      svg.innerHTML = `${marker}${edges.join("")}`;
     };
 
     const field = (label, path, value = "", type = "text", disabled = false, span = "") => {
@@ -996,6 +1282,8 @@
     const renderAll = () => {
       renderSceneList();
       renderEditor();
+      $("#editViewBtn").classList.toggle("is-active", activeView === "edit");
+      $("#flowViewBtn").classList.toggle("is-active", activeView === "flow");
       updateStatus();
     };
 
@@ -1021,6 +1309,13 @@
         return;
       }
 
+      const flowNode = event.target.closest("[data-flow-node]");
+      if (flowNode) {
+        selectedSceneId = flowNode.dataset.flowNode;
+        renderAll();
+        return;
+      }
+
       const actionButton = event.target.closest("[data-action]");
       if (actionButton) {
         const action = actionButton.dataset.action;
@@ -1030,10 +1325,24 @@
         if (action === "move-choice-up") moveChoice(index, -1);
         if (action === "move-choice-down") moveChoice(index, 1);
         if (action === "duplicate-scene") duplicateScene();
+        if (action === "fit-flow") {
+          const wrap = $("#flowWrap");
+          if (wrap) {
+            wrap.scrollTo({ left: 0, top: 0, behavior: "smooth" });
+          }
+        }
         return;
       }
     });
 
+    $("#editViewBtn").addEventListener("click", () => {
+      activeView = "edit";
+      renderAll();
+    });
+    $("#flowViewBtn").addEventListener("click", () => {
+      activeView = "flow";
+      renderAll();
+    });
     $("#saveDraftBtn").addEventListener("click", saveDraft);
     $("#loadDraftBtn").addEventListener("click", loadDraft);
     $("#downloadBtn").addEventListener("click", downloadJs);
@@ -1043,6 +1352,9 @@
     $("#copyExportBtn").addEventListener("click", async () => {
       await navigator.clipboard.writeText($("#exportText").value);
       updateStatus("내보내기 내용 복사됨");
+    });
+    window.addEventListener("resize", () => {
+      if (activeView === "flow") window.requestAnimationFrame(drawFlowLines);
     });
 
     renderAll();
