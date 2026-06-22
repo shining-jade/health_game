@@ -211,7 +211,6 @@
 
     .episode-chip,
     .episode-mini-chip,
-    .scene-tag,
     .clue-chip {
       display: inline-flex;
       align-items: center;
@@ -579,7 +578,7 @@
       width: 100%;
       max-width: 100%;
       min-width: 0;
-      height: clamp(340px, 48vh, 460px);
+      height: clamp(520px, 66vh, 720px);
       min-height: 0;
       max-height: none;
       overflow: hidden;
@@ -659,10 +658,9 @@
     }
 
     .scene-visual.is-investigation {
-      height: auto;
-      aspect-ratio: 16 / 9;
-      min-height: 520px;
-      max-height: 680px;
+      height: clamp(520px, 66vh, 720px);
+      min-height: 0;
+      max-height: none;
       background: #f3efe8;
     }
 
@@ -1330,27 +1328,6 @@
       border-color: #b9cbff;
       background: var(--primary);
       color: #fff;
-    }
-
-    .scene-visual__tags {
-      position: absolute;
-      top: 18px;
-      left: 24px;
-      z-index: 5;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      max-width: calc(100% - 48px);
-    }
-
-    .scene-visual.has-interaction .scene-visual__tags {
-      display: none;
-    }
-
-    .scene-tag {
-      padding: 7px 10px;
-      background: rgba(255, 255, 255, 0.92);
-      font-size: 12px;
     }
 
     .dialogue-box {
@@ -2214,8 +2191,8 @@
 
       .scene-visual {
         height: auto;
-        aspect-ratio: 4 / 3.35;
-        min-height: 300px;
+        aspect-ratio: auto;
+        min-height: 620px;
         max-height: none;
       }
 
@@ -2664,7 +2641,6 @@
           <div class="scene-overlay"></div>
           <div class="scene-hotspot-layer" aria-label="조사 핫스팟"></div>
           <div class="scene-interaction-layer" aria-label="상호작용 조사"></div>
-          <div class="scene-visual__tags"></div>
           <div class="dialogue-box">
             <span class="dialogue-speaker">지우</span>
             <div class="dialogue-box__row">
@@ -3151,12 +3127,6 @@
             </div>
           `;
         })
-        .join("");
-    };
-
-    const renderTags = (scene) => {
-      $(".scene-visual__tags").innerHTML = (scene.tags || [])
-        .map((tag) => `<span class="scene-tag">${escapeHtml(tag)}</span>`)
         .join("");
     };
 
@@ -4438,7 +4408,6 @@
       renderActors(scene);
       renderHotspots(scene);
       renderInteractionLayer(scene);
-      renderTags(scene);
       renderChoices(scene);
       renderDialogue(scene);
       renderCasePanel(scene);
