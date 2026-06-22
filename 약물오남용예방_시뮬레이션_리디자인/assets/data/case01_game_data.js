@@ -92,28 +92,28 @@ window.gameData = {
       location: "교실",
       image: "./assets/images/characters/case01/npc_jiwoo_worried_imagegen.webp",
       alt: "걱정스럽게 증언하는 지우",
-      summary: "민재가 물 대신 음료수로 약을 먹는 습관이 있다는 증언",
-      detail: "지우는 민재가 정수기까지 가기 귀찮다며 마시다 남은 탄산음료로 감기약을 삼킨 적이 있다고 말했다. 약을 물이 아닌 음료와 함께 먹는 습관이 있었던 셈이다."
+      summary: "며칠 전 민재가 약을 먹던 장면에 대한 지우의 기억",
+      detail: "지우: \"며칠 전에도 감기약 먹을 때 보니까 책상에 마시다 남은 탄산음료로 그냥 꿀꺽 삼키더라고. 내가 '야, 약을 왜 그런 거랑 먹냐?' 그랬더니 민재가 '어차피 배 들어가면 다 똑같은 액체인데 뭔 상관이야' 하면서 웃어넘겼어.\""
     },
     witness_haeun: {
       id: "witness_haeun",
       title: "하은의 증언",
       category: "관찰 기록",
       location: "매점 앞",
-      image: "./assets/images/clues/case01/clue_case01_chat_capture_imagegen.webp",
+      image: "./assets/images/characters/case01/npc_jiwoo_worried_imagegen.webp",
       alt: "아침 행동을 떠올리게 하는 증언 단서",
-      summary: "오늘 아침 민재가 아메리카노로 감기약을 먹으려 했다는 목격담",
-      detail: "하은은 민재가 감기약 봉지를 들고 있었고, 생수 대신 잠을 깨려고 테이크아웃 아메리카노로 약을 먹겠다고 말한 장면을 봤다고 증언했다."
+      summary: "오늘 아침 매점 앞에서 민재를 봤다는 하은의 기억",
+      detail: "하은: \"오늘 아침에 매점 앞에서 민재 만났거든? 손에 감기약 봉지를 들고 있길래 감기 걸렸냐고 물어봤지. 그랬더니 걔가 '어제 밤새워서 너무 졸린데, 생수 대신 잠 깨게 테이크아웃 아메리카노 사서 이걸로 약 먹어야겠다'고 했어.\""
     },
     coffee_label: {
       id: "coffee_label",
-      title: "커피 컵 카페인 표시",
+      title: "에너지 음료 성분표",
       category: "물리 단서",
-      location: "책상 위 컵 라벨",
+      location: "책상 옆 음료 캔",
       image: "./assets/images/clues/case01/clue_case01_energy_drink_imagegen.webp",
-      alt: "카페인 표시를 확인한 커피 컵 라벨",
+      alt: "카페인 표시를 확인한 에너지 음료 캔",
       summary: "숨은 표시에서 고카페인 150mg을 확인함",
-      detail: "돋보기로 컵 라벨을 확인하자 고카페인 함유 표시가 보였다. 민재가 약을 먹을 때 함께 마신 음료에도 상당한 카페인이 들어 있었다."
+      detail: "돋보기로 에너지 음료 캔의 작은 성분표를 확인하자 고카페인 함유 표시가 보였다. 어느 시점에 마셨는지, 다른 단서와 함께 비교가 필요하다."
     },
     anhydrous_caffeine: {
       id: "anhydrous_caffeine",
@@ -508,7 +508,7 @@ window.gameData = {
           phase: "성분 확인",
           location: "단서 보기",
           background: "./assets/images/backgrounds/case01/bg_case01_scene03_clueview.webp",
-          backgroundAlt: "단서 라벨을 확대해 확인하는 장면",
+          backgroundAlt: "에너지 음료 캔의 성분표를 확대해 확인하는 장면",
           actors: {
             left: { visible: false },
             right: { visible: false }
@@ -517,12 +517,12 @@ window.gameData = {
           tags: ["돋보기", "카페인 표시", "성분 확인"],
           dialogue: {
             name: "분석",
-            text: "하은의 증언이 맞다면 컵 라벨에 중요한 표시가 있을 수 있습니다. 검은 라벨 주변을 자세히 살펴보세요."
+            text: "책상 옆에서 발견한 에너지 음료 캔의 성분표를 자세히 살펴보세요."
           },
           casePanel: {
             symptoms: ["손 떨림", "창백한 얼굴", "집중 저하"],
-            facts: ["아침에 들고 있던 음료에 대한 기억이 있음", "책상 주변에서 음료 정황이 보임"],
-            unknowns: ["컵에 어떤 표시가 있는지", "표시된 내용이 민재 상태와 관련 있는지"],
+            facts: ["책상 주변에서 음료 캔이 발견됨", "캔 앞면에는 에너지 음료라고 적혀 있음"],
+            unknowns: ["캔 성분표에 어떤 내용이 적혀 있는지", "표시된 내용이 민재 상태와 관련 있는지"],
             progress: {
               cluesFound: 5,
               cluesTotal: 10,
@@ -568,13 +568,14 @@ window.gameData = {
             minRequiredCount: 1,
             clueId: "coffee_label",
             eyebrow: "돋보기 분석",
-            title: "검은 라벨의 작은 글씨 확인",
-            description: "컵 뒷면의 검은 라벨 주변을 마우스로 천천히 훑어 작은 글씨를 확인하세요.",
-            itemLabel: "TAKEOUT AMERICANO",
+            title: "에너지 음료 캔 성분표 확인",
+            description: "캔 아래쪽의 작은 성분표 주변을 마우스로 천천히 훑어보세요.",
+            image: "./assets/images/clues/case01/clue_case01_energy_drink_imagegen.webp",
+            itemLabel: "ENERGY DRINK",
             hiddenText: "[고카페인 함유: 총 150mg]",
-            emptyMessage: "검은 라벨 아래쪽을 천천히 훑어보세요. 작은 글씨가 숨어 있습니다.",
-            successMessage: "커피 컵 라벨에서 고카페인 함유 150mg 표시를 확인했습니다.",
-            revealZone: { xMin: 54, xMax: 96, yMin: 52, yMax: 94 },
+            emptyMessage: "캔 아래쪽 성분표 주변을 천천히 훑어보세요. 작은 글씨가 숨어 있습니다.",
+            successMessage: "에너지 음료 캔 성분표에서 고카페인 함유 150mg 표시를 확인했습니다.",
+            revealZone: { xMin: 38, xMax: 68, yMin: 55, yMax: 92 },
             transition: {
               title: "작은 표시를 확인했습니다",
               text: "표시된 내용을 메모하고, 약 봉투에 적힌 낯선 성분도 확인해봅니다.",

@@ -674,10 +674,12 @@
       top: 0;
       right: auto;
       bottom: auto;
-      left: 0;
-      width: 100%;
-      height: auto;
+      left: 50%;
+      width: auto;
+      max-width: 100%;
+      height: 100%;
       aspect-ratio: 16 / 9;
+      transform: translateX(-50%);
     }
 
     .scene-visual.is-healthroom .scene-actor--left {
@@ -861,27 +863,35 @@
       min-height: 220px;
       overflow: hidden;
       border-radius: 8px;
-      background: linear-gradient(135deg, #171717, #3f3f46);
+      background: #eef4fb;
       user-select: none;
       cursor: crosshair;
     }
 
     .scan-target__item {
       position: absolute;
-      inset: 18px;
+      inset: 12px;
       display: grid;
       place-items: center;
       border-radius: 8px;
-      background: linear-gradient(150deg, #f8fafc 0%, #dbeafe 44%, #111827 45%, #111827 100%);
+      background: #f8fbff;
       color: #0f172a;
       font-weight: 900;
       box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.45);
     }
 
+    .scan-target__image {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      pointer-events: none;
+    }
+
     .scan-target__hidden {
       position: absolute;
-      right: 20px;
-      bottom: 28px;
+      left: 50%;
+      bottom: 24px;
+      transform: translateX(-50%);
       max-width: 54%;
       padding: 8px;
       border-radius: 6px;
@@ -3267,7 +3277,11 @@
           </div>
           <div class="scan-stage">
             <div class="scan-target${foundClass}" data-scan-target>
-              <div class="scan-target__item">${escapeHtml(scene.interaction.itemLabel || "TAKEOUT AMERICANO")}</div>
+              <div class="scan-target__item">
+                ${scene.interaction.image
+                  ? `<img class="scan-target__image" src="${escapeHtml(scene.interaction.image)}" alt="${escapeHtml(scene.interaction.itemLabel || "음료 캔")}" />`
+                  : escapeHtml(scene.interaction.itemLabel || "TAKEOUT AMERICANO")}
+              </div>
               <div class="scan-target__hidden">${escapeHtml(scene.interaction.hiddenText || "고카페인 함유")}</div>
               <div class="scan-glass" data-scan-glass></div>
             </div>
