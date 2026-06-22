@@ -638,7 +638,7 @@
     .scene-character {
       display: block;
       width: auto;
-      max-height: 360px;
+      max-height: clamp(500px, 64vh, 690px);
       object-fit: contain;
       object-position: bottom center;
       pointer-events: none;
@@ -646,15 +646,15 @@
     }
 
     .scene-visual.is-fullbody .scene-character {
-      max-height: 360px;
+      max-height: clamp(500px, 64vh, 690px);
     }
 
     .scene-visual.is-closeup .scene-character {
-      max-height: 390px;
+      max-height: clamp(520px, 68vh, 720px);
     }
 
     .scene-visual.is-healthroom .scene-character {
-      max-height: 360px;
+      max-height: clamp(500px, 64vh, 690px);
     }
 
     .scene-visual.is-investigation {
@@ -3128,7 +3128,7 @@
           if (hasSpeaker && !isSpeaking) return "";
           const speakingClass = isSpeaking ? " is-speaking" : "";
           const actorStateClass = isSpeaking ? " is-active-speaker" : "";
-          const imageSrc = mobileSceneMedia.matches && character.mobileImage ? character.mobileImage : character.image;
+          const imageSrc = character.mobileImage || character.image;
           const sideLabel = position === "left" ? "좌측" : "우측";
           return `
             <div class="scene-actor scene-actor--${position}${actorStateClass}" aria-label="${sideLabel} 캐릭터 ${escapeHtml(character.name)}">
