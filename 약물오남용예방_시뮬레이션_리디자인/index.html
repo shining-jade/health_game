@@ -3373,7 +3373,7 @@
               <strong>${escapeHtml(newsletter.parasympatheticTitle || "부교감신경")}</strong><br>
               ${escapeHtml(newsletter.parasympatheticText || "")}
             </section>
-            <p class="newsletter-monologue">${escapeHtml(newsletter.monologue || "")}</p>
+            ${newsletter.monologue ? `<p class="newsletter-monologue">${escapeHtml(newsletter.monologue)}</p>` : ""}
             <button class="sub-btn primary-btn" type="button" data-newsletter-close>내용 확인 완료</button>
           </article>
         </div>

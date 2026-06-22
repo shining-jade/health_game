@@ -129,11 +129,11 @@ window.gameData = {
       id: "health_newsletter",
       title: "보건소식지: 자율신경계",
       category: "참고 정보",
-      location: "보건실 벽면",
-      image: "./assets/images/backgrounds/case01/bg_case01_scene04_healthroom_imagegen.webp",
-      alt: "보건실 벽에 붙은 자율신경계 보건소식지",
+      location: "교실 게시판",
+      image: "./assets/images/backgrounds/case01/bg_case01_scene01_classroom_imagegen.webp",
+      alt: "교실 게시판에 붙은 자율신경계 보건소식지",
       summary: "교감신경과 부교감신경을 엑셀과 브레이크로 설명한 소식지",
-      detail: "보건소식지는 교감신경을 몸의 부스터, 부교감신경을 몸의 브레이크로 설명한다. 민재의 심박수 증가와 호흡 곤란은 교감신경이 과하게 활성화된 상태와 연결해볼 수 있다."
+      detail: "보건소식지는 교감신경을 몸의 부스터, 부교감신경을 몸의 브레이크로 설명한다. 긴장, 스트레스, 각성 상태에서 몸이 어떻게 반응하는지 이해하는 데 참고할 수 있다."
     }
   },
 
@@ -187,6 +187,7 @@ window.gameData = {
           choices: [
             { id: "to_scene02", text: "민재에게 직접 상태를 묻는다", nextSceneId: "case01_scene02" },
             { id: "to_interview", text: "주변 친구들에게 먼저 묻는다", nextSceneId: "case01_scene02_interview" },
+            { id: "look_around_classroom", text: "주변을 둘러본다", nextSceneId: "case01_scene01_newsletter" },
             { id: "to_scene02b", text: "지우에게 더 자세한 상황을 묻는다", nextSceneId: "case01_scene02" }
           ],
           actions: [
@@ -198,6 +199,73 @@ window.gameData = {
           memoHints: [
             "민재에게 보인 이상 징후 2가지를 적어보세요.",
             "처음 떠오른 원인을 적되, 아직 확인된 사실과 추측을 나눠보세요."
+          ]
+        },
+        {
+          id: "case01_scene01_newsletter",
+          title: "교실 게시판 확인",
+          stepLabel: "장면 1",
+          phase: "주변 관찰",
+          location: "교실",
+          background: "./assets/images/backgrounds/case01/bg_case01_scene01_classroom_imagegen.webp",
+          backgroundAlt: "시험기간 오후 교실 게시판을 둘러보는 장면",
+          actors: {
+            left: { visible: false },
+            right: { visible: false }
+          },
+          speaker: null,
+          tags: [],
+          dialogue: {
+            name: "조사",
+            text: "교실 게시판과 주변 환경을 천천히 살펴보세요. 사건과 바로 관련 있어 보이지 않는 정보도 나중에 생각을 정리할 때 도움이 될 수 있습니다."
+          },
+          casePanel: {
+            symptoms: ["손 떨림", "창백한 얼굴", "집중 저하"],
+            facts: ["교실 게시판에 보건소식지가 붙어 있음"],
+            unknowns: ["민재의 상태를 설명하려면 어떤 정보가 더 필요한지", "오늘 먹거나 마신 것"],
+            progress: {
+              cluesFound: 1,
+              cluesTotal: 10,
+              statementsFound: 1,
+              statementsTotal: 4,
+              hypothesesFound: 0,
+              hypothesesTotal: 3
+            }
+          },
+          choices: [
+            { id: "to_scene02_after_news", text: "민재에게 직접 상태를 묻는다", nextSceneId: "case01_scene02", requiresInteraction: true },
+            { id: "to_interview_after_news", text: "주변 친구들에게 먼저 묻는다", nextSceneId: "case01_scene02_interview", requiresInteraction: true },
+            { id: "to_scene02b_after_news", text: "지우에게 더 자세한 상황을 묻는다", nextSceneId: "case01_scene02", requiresInteraction: true }
+          ],
+          actions: [
+            { id: "openQuestion", text: "핵심 질문" },
+            { id: "openMemo", text: "메모에 정리" }
+          ],
+          cluesShown: ["health_newsletter"],
+          cluesUnlock: [],
+          interaction: {
+            type: "healthNewsletter",
+            progressLabel: "보건소식",
+            requiredItems: ["health_newsletter"],
+            minRequiredCount: 1,
+            clueId: "health_newsletter",
+            successMessage: "보건소식지 내용을 확인했습니다.",
+            memo: "보건소식지 기록: 교감신경은 몸을 깨우고, 부교감신경은 몸을 쉬게 하는 자율신경계의 두 축이다.",
+            newsletter: {
+              badge: "보건소식",
+              objectLabel: "보건소식지 열기",
+              objectTitle: "우리 몸의 비밀, 자율신경계",
+              title: "이번 달의 보건소식: 우리 몸의 비밀, 자율신경계!",
+              lead: "우리 몸에는 의지와 상관없이 스스로 조절되는 자율신경계가 있습니다. 여기에는 몸을 깨우는 부스터와 몸을 쉬게 하는 브레이크가 함께 작동합니다.",
+              sympatheticTitle: "교감신경: 엑셀 / 부스터",
+              sympatheticText: "위급한 상황이나 스트레스를 받을 때 몸을 흥분시키는 신경입니다. 활성화되면 심장이 쿵쾅거리고, 숨이 가빠지며, 동공이 커지고 땀이 납니다. 카페인을 과다 섭취하면 엑셀 페달이 끝까지 밟힌 것처럼 몸이 과하게 흥분할 수 있습니다.",
+              parasympatheticTitle: "부교감신경: 브레이크 / 휴식",
+              parasympatheticText: "에너지를 아끼고 몸을 편안하게 안정시키는 신경입니다. 심장을 안정시키고, 소화를 돕고, 깊은 수면으로 회복하게 합니다."
+            }
+          },
+          memoHints: [
+            "보건소식지에는 어떤 몸의 조절 원리가 적혀 있는지 적어보세요.",
+            "아직 사건의 원인으로 단정하지 말고, 참고할 배경지식으로 따로 표시해두세요."
           ]
         },
         {
@@ -826,7 +894,7 @@ window.gameData = {
           casePanel: {
             symptoms: ["손 떨림", "창백한 얼굴", "집중 저하"],
             facts: ["수면 부족", "감기약 복용", "고카페인 커피", "감기약 속 무수카페인 가능성", "카페인 반복 섭취 정황"],
-            unknowns: ["민재의 심박수와 호흡 곤란이 어떤 몸의 반응인지", "다음에 같은 상황이 생기면 어떻게 대응할지"],
+            unknowns: ["민재의 몸이 예민하게 반응한 과정을 어떻게 설명할지", "다음에 같은 상황이 생기면 어떻게 대응할지"],
             progress: {
               cluesFound: 9,
               cluesTotal: 10,
@@ -838,38 +906,17 @@ window.gameData = {
           },
           choices: [
             { id: "to_scene07", text: "민재의 상태 변화를 다시 묻는다", nextSceneId: "case01_scene07" },
-            { id: "to_scene07_news", text: "보건소식지 내용을 메모하고 정리한다", nextSceneId: "case01_scene07" },
+            { id: "to_scene07_review", text: "확인한 단서를 차분히 정리한다", nextSceneId: "case01_scene07" },
             { id: "to_scene07_response", text: "다음에 할 안전한 행동을 정리한다", nextSceneId: "case01_scene07" }
           ],
           actions: [
             { id: "openInventory", text: "단서 확인" },
             { id: "openWorksheet", text: "활동지 연결" }
           ],
-          cluesShown: ["health_newsletter"],
+          cluesShown: [],
           cluesUnlock: [],
-          interaction: {
-            type: "healthNewsletter",
-            progressLabel: "보건소식",
-            requiredItems: ["health_newsletter"],
-            minRequiredCount: 1,
-            clueId: "health_newsletter",
-            successMessage: "보건소식지에서 자율신경계 힌트를 확인했습니다.",
-            memo: "보건소식지 분석: 민재의 빈맥·호흡 곤란 증상은 교감신경(부스터)이 과흥분된 상태와 일치한다.",
-            newsletter: {
-              badge: "보건소식",
-              objectLabel: "보건소식지 열기",
-              objectTitle: "우리 몸의 비밀, 자율신경계",
-              title: "이번 달의 보건소식: 우리 몸의 비밀, 자율신경계!",
-              lead: "우리 몸에는 의지와 상관없이 스스로 조절되는 자율신경계가 있습니다. 여기에는 몸을 깨우는 부스터와 몸을 쉬게 하는 브레이크가 함께 작동합니다.",
-              sympatheticTitle: "교감신경: 엑셀 / 부스터",
-              sympatheticText: "위급한 상황이나 스트레스를 받을 때 몸을 흥분시키는 신경입니다. 활성화되면 심장이 쿵쾅거리고, 숨이 가빠지며, 동공이 커지고 땀이 납니다. 카페인을 과다 섭취하면 엑셀 페달이 끝까지 밟힌 것처럼 몸이 과하게 흥분할 수 있습니다.",
-              parasympatheticTitle: "부교감신경: 브레이크 / 휴식",
-              parasympatheticText: "에너지를 아끼고 몸을 편안하게 안정시키는 신경입니다. 심장을 안정시키고, 소화를 돕고, 깊은 수면으로 회복하게 합니다.",
-              monologue: "민재의 지금 증상인 심박수 증가와 호흡 곤란은 교감신경이라는 엑셀 페달이 과하게 밟힌 상태와 닮아 있어. 무언가가 민재의 몸을 극도로 흥분시킨 게 틀림없어!"
-            }
-          },
           memoHints: [
-            "보건실 벽의 보건소식지를 읽고 민재 증상과 연결해보세요.",
+            "확인한 증상, 먹거나 마신 것, 약 성분 정보를 나눠서 정리해보세요.",
             "한 가지 원인만이 아니라 여러 요인이 함께 작용했는지 생각해보세요."
           ]
         },
