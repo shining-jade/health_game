@@ -918,6 +918,7 @@
     let data = structuredClone(window.gameData);
     let selectedSceneId = data.episodes[0]?.scenes[0]?.id || "";
     let activeView = "edit";
+    let returnToFlow = false;
     const dirtySceneIds = new Set();
 
     const $ = (selector) => document.querySelector(selector);
@@ -983,6 +984,17 @@
       }
 
       $("#editor").innerHTML = `
+        ${returnToFlow ? `
+          <section class="card">
+            <div class="card-head">
+              <div>
+                <h2>흐름지도에서 수정 중</h2>
+                <p class="hint">문구를 고친 뒤 이전 흐름지도 화면으로 돌아가 선택지가 어디로 이어지는지 다시 확인하세요.</p>
+              </div>
+              <button class="btn primary" type="button" data-action="return-flow">흐름지도로 돌아가기</button>
+            </div>
+          </section>
+        ` : ""}
         <section class="card">
           <div class="card-head">
             <div>
@@ -1409,7 +1421,7 @@
     };
 
     const saveDraft = () => {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ data, selectedSceneId, dirtySceneIds: [...dirtySceneIds] }));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ data, selectedSceneId, activeView, returnToFlow, dirtySceneIds: [...dirtySceneIds] }));
       updateStatus("임시저장 완료");
     };
 
@@ -1422,6 +1434,8 @@
       const draft = JSON.parse(raw);
       data = draft.data;
       selectedSceneId = draft.selectedSceneId || selectedSceneId;
+      activeView = draft.activeView || "edit";
+      returnToFlow = Boolean(draft.returnToFlow);
       dirtySceneIds.clear();
       (draft.dirtySceneIds || []).forEach((id) => dirtySceneIds.add(id));
       renderAll();
@@ -1432,6 +1446,8 @@
       if (!confirm("현재 편집 내용을 버리고 처음 상태로 되돌릴까요?")) return;
       data = structuredClone(originalData);
       selectedSceneId = data.episodes[0]?.scenes[0]?.id || "";
+      activeView = "edit";
+      returnToFlow = false;
       dirtySceneIds.clear();
       renderAll();
     };
@@ -1483,6 +1499,7 @@
         if (action === "move-choice-down") moveChoice(index, 1);
         if (action === "duplicate-scene") duplicateScene();
         if (action === "edit-selected-scene" || action === "edit-choice") {
+          returnToFlow = true;
           activeView = "edit";
           renderAll();
           window.requestAnimationFrame(() => {
@@ -1492,15 +1509,22 @@
             target?.scrollIntoView({ behavior: "smooth", block: "center" });
           });
         }
+        if (action === "return-flow") {
+          returnToFlow = false;
+          activeView = "flow";
+          renderAll();
+        }
         return;
       }
     });
 
     $("#editViewBtn").addEventListener("click", () => {
+      returnToFlow = false;
       activeView = "edit";
       renderAll();
     });
     $("#flowViewBtn").addEventListener("click", () => {
+      returnToFlow = false;
       activeView = "flow";
       renderAll();
     });
