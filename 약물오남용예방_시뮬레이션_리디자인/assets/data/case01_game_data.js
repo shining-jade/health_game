@@ -117,13 +117,13 @@ window.gameData = {
     },
     anhydrous_caffeine: {
       id: "anhydrous_caffeine",
-      title: "무수카페인 검색 결과",
+      title: "약품 사전 기록",
       category: "참고 정보",
-      location: "인게임 검색",
+      location: "약품 사전",
       image: "./assets/images/clues/case01/clue_case01_medicine_bag_imagegen.webp",
-      alt: "감기약 성분 검색 단서",
-      summary: "감기약에도 카페인 성분이 숨어 있을 수 있다는 검색 결과",
-      detail: "검색 결과 무수카페인은 수분이 없는 고농축 카페인 성분이며, 일부 종합감기약에 포함될 수 있다. 커피 등 고카페인 음료와 겹치면 두근거림, 손 떨림 같은 불편이 심해질 수 있다."
+      alt: "약품 이름과 성분을 비교한 약품 사전 기록",
+      summary: "약 이름, 성분명, 각인, 주의사항을 비교한 기록",
+      detail: "약품 사전에서 여러 약의 이름과 성분을 비교했다. 일부 감기약 카드에는 아세트아미노펜, 항히스타민제와 함께 무수카페인 성분이 표시되어 있었다."
     },
     health_newsletter: {
       id: "health_newsletter",
@@ -588,28 +588,28 @@ window.gameData = {
         },
         {
           id: "case01_scene03_search",
-          title: "약 성분 인터넷 검색",
+          title: "약품 사전 확인",
           stepLabel: "장면 6",
-          phase: "성분 검색",
-          location: "휴대폰 검색",
+          phase: "성분 비교",
+          location: "약품 사전",
           background: "./assets/images/backgrounds/case01/bg_case01_scene03_clueview.webp",
-          backgroundAlt: "휴대폰으로 감기약 성분을 검색하는 장면",
+          backgroundAlt: "약품 사전에서 약 이름과 성분을 비교하는 장면",
           actors: {
             left: { visible: false },
             right: { visible: false }
           },
           speaker: null,
-          tags: ["검색", "무수카페인", "건강문해력"],
+          tags: ["약품 사전", "성분 비교", "건강문해력"],
           dialogue: {
-            name: "검색",
-            text: "감기약 봉투에서 낯선 성분명을 찾아 검색해보세요. 모르는 단어를 직접 확인하는 것도 중요한 조사입니다."
+            name: "약품 사전",
+            text: "약봉투에 적힌 이름과 사전의 약품 카드를 비교해보세요. 약 이름, 성분명, 각인, 주의사항을 함께 보면 더 많은 정보를 얻을 수 있습니다."
           },
           casePanel: {
             symptoms: ["손 떨림", "창백한 얼굴", "집중 저하"],
             facts: ["커피 컵에서 고카페인 표시를 확인함", "감기약 봉투가 있음"],
-            unknowns: ["약 봉투에 적힌 낯선 성분이 어떤 역할을 하는지"],
+            unknowns: ["감기약 이름과 사전 카드가 일치하는지", "성분명 중 낯선 것이 있는지"],
             progress: {
-              cluesFound: 6,
+              cluesFound: 3,
               cluesTotal: 10,
               statementsFound: 4,
               statementsTotal: 4,
@@ -621,21 +621,21 @@ window.gameData = {
             {
               id: "to_receipt",
               text: "영수증을 확인해 시간대를 본다",
-              lockedText: "약 봉투의 성분명을 검색해보세요",
+              lockedText: "약품 카드를 더 비교해보세요",
               nextSceneId: "case01_scene04",
               requiresInteraction: true
             },
             {
               id: "to_receipt_compare",
-              text: "검색 결과와 구매 기록을 비교한다",
-              lockedText: "약 봉투의 성분명을 검색해보세요",
+              text: "약품 사전 기록과 구매 기록을 비교한다",
+              lockedText: "약품 카드를 더 비교해보세요",
               nextSceneId: "case01_scene04",
               requiresInteraction: true
             },
             {
               id: "to_receipt_timeline",
               text: "오늘 하루 시간순서를 맞춰본다",
-              lockedText: "약 봉투의 성분명을 검색해보세요",
+              lockedText: "약품 카드를 더 비교해보세요",
               nextSceneId: "case01_scene04",
               requiresInteraction: true
             }
@@ -648,27 +648,66 @@ window.gameData = {
           cluesUnlock: [],
           interaction: {
             type: "medicineSearch",
-            progressLabel: "검색 결과",
-            requiredItems: ["anhydrous_caffeine"],
-            minRequiredCount: 1,
+            progressLabel: "확인한 약품",
+            requiredItems: ["ok500", "ibu200", "cold300", "dig_ez"],
+            minRequiredCount: 4,
             clueId: "anhydrous_caffeine",
-            eyebrow: "인게임 검색",
-            title: "감기약 성분 백과사전",
-            description: "민재의 약 봉투에서 눈에 띄는 낯선 성분명을 검색하세요.",
-            placeholder: "약 봉투에 적힌 성분명 입력",
-            successKeywords: ["무수카페인"],
-            emptyMessage: "검색어를 입력하면 약 성분 설명이 표시됩니다.",
-            successMessage: "[검색 결과] 무수카페인은 일부 종합감기약에 들어갈 수 있는 고농축 카페인 성분입니다. 커피 등 고카페인 음료와 겹치면 두근거림, 손 떨림, 불안감이 심해질 수 있습니다.",
-            failMessage: "'{query}'에 대한 결과만으로는 판단하기 어렵습니다. 약 봉투에 적힌 낯선 성분명을 다시 확인해보세요.",
+            eyebrow: "약품 사전",
+            title: "약 이름과 성분 비교",
+            description: "약봉투에 적힌 이름, 알약 각인, 성분명을 사전 카드와 비교해보세요.",
+            emptyMessage: "약품 카드를 눌러 이름, 성분, 각인, 주의사항을 확인하세요.",
+            medicines: [
+              {
+                id: "ok500",
+                name: "괜찮아정",
+                ingredients: "아세트아미노펜 500mg",
+                imprint: "OK-500",
+                category: "해열진통제",
+                features: ["공복 OK", "4-6시간 간격", "1일 최대 8정"],
+                warning: "4,000mg 초과 시 간 손상 위험",
+                note: "통증과 열을 낮추는 약입니다. 카페인 성분은 표시되어 있지 않습니다."
+              },
+              {
+                id: "ibu200",
+                name: "아이소통정",
+                ingredients: "이부프로펜 200mg",
+                imprint: "IBU-200",
+                category: "소염진통제",
+                features: ["소염 효과", "식후 복용 권장", "위장 자극 주의"],
+                warning: "공복 복용 시 속쓰림이 생길 수 있음",
+                note: "염증과 통증을 줄이는 약입니다. 민재의 약봉투 이름과는 다르게 보입니다."
+              },
+              {
+                id: "cold300",
+                name: "감기뚝정",
+                ingredients: "아세트아미노펜 300mg + 클로르페니라민 2mg + 무수카페인 30mg",
+                imprint: "COLD-300",
+                category: "종합감기약",
+                features: ["감기 증상 완화", "항히스타민제 포함", "무수카페인 포함"],
+                warning: "졸음, 두근거림, 카페인 음료와의 중복 섭취 주의",
+                note: "약봉투의 이름과 각인이 비슷합니다. 성분명 중 무수카페인이 함께 적혀 있습니다.",
+                clueId: "anhydrous_caffeine"
+              },
+              {
+                id: "dig_ez",
+                name: "더부룩해소정",
+                ingredients: "소화효소 복합제",
+                imprint: "DIG-EZ",
+                category: "소화제",
+                features: ["식후 복용 권장", "소화불량 완화"],
+                warning: "알레르기 반응 시 복용 중단",
+                note: "소화 증상에 쓰는 약입니다. 감기약 봉투와는 이름과 각인이 다릅니다."
+              }
+            ],
             transition: {
-              title: "약 성분 정보를 확인했습니다",
-              text: "검색 결과를 메모해두고, 오늘 민재가 언제 무엇을 샀는지도 이어서 확인합니다.",
+              title: "약품 정보를 비교했습니다",
+              text: "약 이름과 성분을 메모해두고, 오늘 민재가 언제 무엇을 샀는지도 이어서 확인합니다.",
               delay: 900
             }
           },
           memoHints: [
-            "검색 결과에서 새로 알게 된 내용을 자기 말로 적어보세요.",
-            "이 정보가 다른 단서와 어떻게 이어질 수 있을지 질문 형태로 적어보세요."
+            "약 이름, 각인, 성분명 중 일치하는 정보를 적어보세요.",
+            "낯선 성분명이 다른 단서와 어떻게 이어질 수 있을지 질문 형태로 적어보세요."
           ]
         },
         {
@@ -901,8 +940,8 @@ window.gameData = {
           name: "보건샘",
           text: "피곤함을 버티기 위한 작은 선택도, 약 복용과 수면 부족이 겹치면 더 위험해질 수 있어요. 몸의 이상 신호를 가볍게 넘기지 말고, 혼자 판단하지 않는 것이 중요해요."
         },
-        summary: "민재의 상태는 수면 부족, 감기약 복용, 고카페인 커피, 감기약 속 무수카페인 가능성, 반복된 카페인 음료 섭취가 겹쳐 나타난 결과였다. 플레이어는 친구들의 서로 다른 기억, 물건 단서, 검색 결과를 비교하며 약과 음료를 함께 확인해야 한다는 점을 알게 되었다.",
-        keyClues: ["지우의 증언", "하은의 증언", "감기약 봉투", "커피 컵 카페인 표시", "무수카페인 검색 결과", "보건소식지: 자율신경계", "편의점 영수증", "메신저 캡처"],
+        summary: "민재의 상태는 수면 부족, 감기약 복용, 고카페인 커피, 감기약 속 무수카페인 가능성, 반복된 카페인 음료 섭취가 겹쳐 나타난 결과였다. 플레이어는 친구들의 서로 다른 기억, 물건 단서, 약품 사전 기록을 비교하며 약과 음료를 함께 확인해야 한다는 점을 알게 되었다.",
+        keyClues: ["지우의 증언", "하은의 증언", "감기약 봉투", "커피 컵 카페인 표시", "약품 사전 기록", "보건소식지: 자율신경계", "편의점 영수증", "메신저 캡처"],
         learningPoints: [
           "카페인 섭취는 한 번보다 반복과 누적이 중요하다.",
           "약 복용, 수면 부족, 카페인 섭취는 따로 보지 말고 함께 봐야 한다.",
@@ -917,7 +956,7 @@ window.gameData = {
         ],
         casePanel: {
           symptoms: ["손 떨림", "창백한 얼굴", "집중 저하"],
-          facts: ["수면 부족", "감기약 복용", "물 대신 음료수로 복용한 습관", "고카페인 커피", "무수카페인 검색 결과", "카페인 반복 섭취", "보건실 확인"],
+          facts: ["수면 부족", "감기약 복용", "물 대신 음료수로 복용한 습관", "고카페인 커피", "약품 사전 기록", "카페인 반복 섭취", "보건실 확인"],
           unknowns: ["다음 상황에서 스스로 어떤 질문을 던질지"],
           progress: {
             cluesFound: 10,

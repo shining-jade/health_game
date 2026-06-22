@@ -944,6 +944,115 @@
       line-height: 1.55;
     }
 
+    .medicine-dictionary {
+      display: grid;
+      gap: 12px;
+    }
+
+    .medicine-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .medicine-card {
+      display: grid;
+      gap: 10px;
+      padding: 12px;
+      border: 2px solid #fed7aa;
+      border-radius: 8px;
+      background: #fffdf7;
+      color: var(--text);
+      text-align: left;
+      cursor: pointer;
+      transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+    }
+
+    .medicine-card:hover,
+    .medicine-card:focus-visible {
+      border-color: #fb923c;
+      box-shadow: 0 12px 30px rgba(251, 146, 60, 0.15);
+      transform: translateY(-1px);
+      outline: none;
+    }
+
+    .medicine-card.is-checked {
+      border-color: #60a5fa;
+      background: #eff6ff;
+    }
+
+    .medicine-card__top {
+      display: grid;
+      grid-template-columns: 52px minmax(0, 1fr);
+      gap: 10px;
+      align-items: center;
+    }
+
+    .medicine-pill {
+      display: grid;
+      place-items: center;
+      width: 52px;
+      height: 48px;
+      border: 2px solid #fed7aa;
+      border-radius: 12px;
+      background: #fff7ed;
+      color: #9a3412;
+      font-size: 0.72rem;
+      font-weight: 900;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.75);
+    }
+
+    .medicine-card__name {
+      margin: 0 0 3px;
+      font-size: 0.98rem;
+      font-weight: 900;
+      letter-spacing: 0;
+    }
+
+    .medicine-card__ingredient {
+      margin: 0;
+      color: #475569;
+      font-size: 0.82rem;
+      font-weight: 800;
+      line-height: 1.35;
+    }
+
+    .medicine-card__meta {
+      display: grid;
+      gap: 5px;
+      color: #475569;
+      font-size: 0.78rem;
+      line-height: 1.35;
+    }
+
+    .medicine-card__chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+
+    .medicine-chip {
+      padding: 4px 7px;
+      border: 1px solid #fed7aa;
+      border-radius: 999px;
+      background: #fff7ed;
+      color: #9a3412;
+      font-size: 0.72rem;
+      font-weight: 800;
+    }
+
+    .medicine-detail {
+      min-height: 104px;
+      padding: 12px;
+      border: 1px solid #bfdbfe;
+      border-radius: 8px;
+      background: #eff6ff;
+      color: #1e3a8a;
+      font-size: 0.9rem;
+      line-height: 1.55;
+      white-space: pre-line;
+    }
+
     .newsletter-object {
       position: absolute;
       top: 13%;
@@ -2131,6 +2240,10 @@
         grid-template-columns: 1fr;
       }
 
+      .medicine-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
       .dialogue-text {
         font-size: 16px;
       }
@@ -2270,7 +2383,8 @@
       }
 
       .witness-grid,
-      .scan-stage {
+      .scan-stage,
+      .medicine-grid {
         grid-template-columns: 1fr;
       }
 
@@ -3083,6 +3197,9 @@
       if (scene?.interaction?.type === "witnessInterview") {
         return sceneState?.completedItems?.length || 0;
       }
+      if (scene?.interaction?.type === "medicineSearch" && scene?.interaction?.medicines?.length) {
+        return sceneState?.completedItems?.length || 0;
+      }
       return sceneState?.foundCoreItems?.length || 0;
     };
 
@@ -3179,6 +3296,50 @@
     };
 
     const renderSearchInteraction = (scene, sceneState) => {
+      const medicines = scene.interaction?.medicines || [];
+      if (medicines.length) {
+        const cards = medicines
+          .map((medicine) => {
+            const checked = sceneState.completedItems.includes(medicine.id);
+            const features = (medicine.features || [])
+              .map((feature) => `<span class="medicine-chip">${escapeHtml(feature)}</span>`)
+              .join("");
+            return `
+              <button class="medicine-card${checked ? " is-checked" : ""}" type="button" data-medicine-id="${escapeHtml(medicine.id)}" aria-pressed="${checked ? "true" : "false"}">
+                <span class="medicine-card__top">
+                  <span class="medicine-pill">${escapeHtml(medicine.imprint || "PILL")}</span>
+                  <span>
+                    <span class="medicine-card__name">${escapeHtml(medicine.name)}</span>
+                    <span class="medicine-card__ingredient">${escapeHtml(medicine.ingredients)}</span>
+                  </span>
+                </span>
+                <span class="medicine-card__meta">
+                  <span>각인: ${escapeHtml(medicine.imprint || "확인 필요")}</span>
+                  <span>분류: ${escapeHtml(medicine.category || "일반의약품")}</span>
+                </span>
+                <span class="medicine-card__chips">${features}</span>
+              </button>
+            `;
+          })
+          .join("");
+
+        return `
+          <div class="interaction-panel">
+            <div class="interaction-panel__header">
+              <div>
+                <p class="interaction-panel__eyebrow">${escapeHtml(scene.interaction.eyebrow || "약품 사전")}</p>
+                <h3 class="interaction-panel__title">${escapeHtml(scene.interaction.title || scene.title)}</h3>
+                <p class="interaction-panel__desc">${escapeHtml(scene.interaction.description || "")}</p>
+              </div>
+            </div>
+            <div class="medicine-dictionary">
+              <div class="medicine-grid">${cards}</div>
+              <div class="medicine-detail">${sceneState.lastMessage ? escapeHtml(sceneState.lastMessage) : escapeHtml(scene.interaction.emptyMessage || "약품 카드를 눌러 정보를 확인하세요.")}</div>
+            </div>
+          </div>
+        `;
+      }
+
       return `
         <div class="interaction-panel">
           <div class="interaction-panel__header">
@@ -3352,6 +3513,34 @@
 
       updateInteractionUi(scene);
       $("[data-search-input]")?.focus();
+    };
+
+    const handleMedicineClick = (medicineId) => {
+      const scene = getCurrentScene();
+      if (scene?.interaction?.type !== "medicineSearch") return;
+      const medicine = scene.interaction?.medicines?.find((item) => item.id === medicineId);
+      const sceneState = getInteractionState(scene);
+      if (!medicine || !sceneState) return;
+
+      if (!sceneState.completedItems.includes(medicine.id)) {
+        sceneState.completedItems.push(medicine.id);
+      }
+
+      const notes = [
+        `${medicine.name} (${medicine.ingredients})`,
+        `각인 ${medicine.imprint || "확인 필요"} · ${medicine.category || "일반의약품"}`,
+        medicine.warning ? `주의: ${medicine.warning}` : "",
+        medicine.note || ""
+      ].filter(Boolean);
+      sceneState.lastMessage = notes.join("\n");
+
+      if (medicine.clueId && !sceneState.foundCoreItems.includes(medicine.id)) {
+        sceneState.foundCoreItems.push(medicine.id);
+        unlockInteractionClue(medicine.clueId);
+      }
+
+      showFeedbackMessage("약품 정보를 기록했습니다.");
+      updateInteractionUi(scene);
     };
 
     const addLearningMemo = (text) => {
@@ -4346,6 +4535,12 @@
       const searchButton = event.target.closest("[data-search-submit]");
       if (searchButton) {
         handleSearchSubmit();
+        return;
+      }
+
+      const medicineButton = event.target.closest("[data-medicine-id]");
+      if (medicineButton) {
+        handleMedicineClick(medicineButton.dataset.medicineId);
         return;
       }
 
