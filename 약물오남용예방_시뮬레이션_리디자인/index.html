@@ -727,7 +727,7 @@
 
     .scene-interaction-layer {
       position: absolute;
-      inset: clamp(16px, 2.6vw, 30px);
+      inset: clamp(16px, 2.6vw, 30px) clamp(16px, 2.6vw, 30px) 118px;
       z-index: 5;
       display: none;
       align-items: center;
@@ -739,13 +739,17 @@
       display: flex;
     }
 
+    .scene-visual.has-interaction:not(.has-newsletter) {
+      height: clamp(520px, 66vh, 720px);
+    }
+
     .scene-visual.has-newsletter .scene-interaction-layer {
       display: block;
     }
 
     .interaction-panel {
       width: min(980px, 100%);
-      max-height: calc(100% - 12px);
+      max-height: calc(100% - 40px);
       overflow: auto;
       padding: clamp(14px, 2vw, 22px);
       border: 1px solid rgba(255, 255, 255, 0.24);
@@ -1337,6 +1341,10 @@
       flex-wrap: wrap;
       gap: 8px;
       max-width: calc(100% - 48px);
+    }
+
+    .scene-visual.has-interaction .scene-visual__tags {
+      display: none;
     }
 
     .scene-tag {
@@ -2211,6 +2219,12 @@
         max-height: none;
       }
 
+      .scene-visual.has-interaction:not(.has-newsletter) {
+        height: auto;
+        aspect-ratio: auto;
+        min-height: 620px;
+      }
+
       .scene-progress {
         flex-basis: 46%;
         max-width: 46%;
@@ -2379,7 +2393,7 @@
 
     @media (max-width: 560px) {
       .scene-interaction-layer {
-        inset: 10px;
+        inset: 10px 10px 118px;
       }
 
       .witness-grid,

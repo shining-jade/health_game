@@ -260,7 +260,7 @@ window.gameData = {
             right: { visible: false }
           },
           speaker: null,
-          tags: ["인터뷰", "기억 비교", "상황 확인"],
+          tags: [],
           dialogue: {
             name: "조사",
             text: "친구들이 기억하는 장면을 하나씩 들어보세요. 같은 하루를 봤어도 사람마다 떠올리는 장면은 다를 수 있습니다."
