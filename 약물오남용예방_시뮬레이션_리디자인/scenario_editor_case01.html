@@ -471,23 +471,19 @@
     }
 
     .flow-wrap {
-      overflow: auto;
-      min-height: 680px;
+      overflow: visible;
+      min-height: 0;
       border: 1px solid var(--line);
       border-radius: var(--radius);
-      background:
-        linear-gradient(rgba(215, 225, 240, 0.42) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(215, 225, 240, 0.42) 1px, transparent 1px),
-        #fbfdff;
-      background-size: 28px 28px;
+      background: #fff;
       box-shadow: var(--shadow);
     }
 
     .flow-canvas {
       position: relative;
       min-width: 0;
-      min-height: 760px;
-      padding: 34px;
+      min-height: 0;
+      padding: 16px;
     }
 
     .flow-svg {
@@ -615,8 +611,8 @@
 
     .flow-focus {
       display: grid;
-      grid-template-columns: minmax(260px, 0.82fr) minmax(360px, 1.18fr);
-      gap: 14px;
+      grid-template-columns: 1fr;
+      gap: 12px;
       align-items: start;
     }
 
@@ -631,8 +627,7 @@
     }
 
     .flow-source {
-      position: sticky;
-      top: 74px;
+      position: static;
       padding: 16px;
       border-width: 2px;
       border-color: var(--primary);
@@ -659,7 +654,7 @@
 
     .flow-route {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) auto minmax(180px, 0.8fr);
+      grid-template-columns: minmax(0, 1.15fr) 52px minmax(220px, 0.85fr);
       gap: 10px;
       align-items: stretch;
       padding: 12px;
@@ -941,7 +936,6 @@
       dirtySceneIds.add(sceneId);
       updateStatus();
       renderSceneList();
-      if (activeView === "flow") window.requestAnimationFrame(drawFlowLines);
     };
 
     const updateStatus = (message) => {
@@ -1074,7 +1068,7 @@
             <strong>선택지 이동 확인</strong>
             <span class="badge">장면 ${allScenes.length}개</span>
             <span class="badge">선택지 ${allScenes.reduce((sum, scene) => sum + (scene.choices || []).length, 0)}개</span>
-            <span class="hint">왼쪽 장면의 각 선택지가 어디로 이동하는지 바로 확인하세요.</span>
+            <span class="hint">왼쪽 장면 목록에서 장면을 고르면, 그 장면의 선택지 이동만 보여줍니다.</span>
           </div>
           <div class="flow-wrap">
             <div class="flow-canvas">
@@ -1093,15 +1087,6 @@
                     ? currentScene.choices.map((choice, index) => flowRoute(choice, index, sceneMap)).join("")
                     : "<p class='flow-empty'>이 장면에는 선택지가 없습니다.</p>"}
                 </div>
-              </div>
-              <div class="flow-index">
-                ${allScenes.map((scene) => `
-                  <button class="flow-index-card${scene.id === selectedSceneId ? " is-active" : ""}" type="button" data-flow-node="${escapeHtml(scene.id)}">
-                    <span class="badge">${escapeHtml(scene.stepLabel || "-")}</span>
-                    <h3>${escapeHtml(scene.title || scene.id)}</h3>
-                    <p>${escapeHtml(truncate(scene.dialogue?.text || "", 58))}</p>
-                  </button>
-                `).join("")}
               </div>
             </div>
           </div>
@@ -1156,49 +1141,6 @@
           </span>
         </button>
       `;
-    };
-
-    const drawFlowLines = () => {
-      const svg = $("#flowSvg");
-      const canvas = $("#flowCanvas");
-      if (!svg || !canvas) return;
-
-      const marker = svg.querySelector("defs")?.outerHTML || "";
-      const sceneMap = getSceneMap();
-      const canvasRect = canvas.getBoundingClientRect();
-      const edges = [];
-
-      scenes().forEach(({ scene }) => {
-        (scene.choices || []).forEach((choice, index) => {
-          if (!choice.nextSceneId || !sceneMap.has(choice.nextSceneId)) return;
-          const from = canvas.querySelector(`[data-flow-node="${CSS.escape(scene.id)}"]`);
-          const to = canvas.querySelector(`[data-flow-node="${CSS.escape(choice.nextSceneId)}"]`);
-          if (!from || !to) return;
-
-          const fromRect = from.getBoundingClientRect();
-          const toRect = to.getBoundingClientRect();
-          const start = {
-            x: fromRect.left - canvasRect.left + fromRect.width,
-            y: fromRect.top - canvasRect.top + 44 + index * 16
-          };
-          const end = {
-            x: toRect.left - canvasRect.left,
-            y: toRect.top - canvasRect.top + Math.min(toRect.height - 22, 48 + index * 7)
-          };
-          const dx = Math.max(80, Math.abs(end.x - start.x) * 0.42);
-          const c1 = { x: start.x + dx, y: start.y };
-          const c2 = { x: end.x - dx, y: end.y };
-          const selected = scene.id === selectedSceneId || choice.nextSceneId === selectedSceneId;
-          const labelX = (start.x + end.x) / 2;
-          const labelY = (start.y + end.y) / 2 - 8;
-          edges.push(`
-            <path class="flow-line${selected ? " is-selected" : ""}" d="M ${start.x} ${start.y} C ${c1.x} ${c1.y}, ${c2.x} ${c2.y}, ${end.x} ${end.y}"></path>
-            <text class="flow-label" x="${labelX}" y="${labelY}">${escapeHtml(truncate(choice.text, 22))}</text>
-          `);
-        });
-      });
-
-      svg.innerHTML = `${marker}${edges.join("")}`;
     };
 
     const field = (label, path, value = "", type = "text", disabled = false, span = "") => {
@@ -1572,10 +1514,6 @@
       await navigator.clipboard.writeText($("#exportText").value);
       updateStatus("내보내기 내용 복사됨");
     });
-    window.addEventListener("resize", () => {
-      if (activeView === "flow") window.requestAnimationFrame(drawFlowLines);
-    });
-
     renderAll();
   </script>
 </body>
