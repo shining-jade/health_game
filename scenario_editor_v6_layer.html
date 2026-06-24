@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>약, 알고 먹자! — 시나리오 편집기 v3</title>
+<title>약, 알고 먹자! — 시나리오 편집기 v4</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700;900&display=swap');
 :root{
@@ -378,7 +378,7 @@ html,body{height:100%;overflow:hidden;font-family:'Noto Sans KR',sans-serif;back
 
 <!-- ── 툴바 ── -->
 <div id="topbar">
-  <span class="logo">💊 편집기 v3</span>
+  <span class="logo">💊 편집기 v4</span>
   <div class="tb-sep"></div>
   <button class="main-tab on" onclick="showMainTab('scenario',this)">📋 시나리오</button>
   <button class="main-tab t-drug" onclick="showMainTab('drug',this)">💊 약품 사전</button>
@@ -568,7 +568,7 @@ html,body{height:100%;overflow:hidden;font-family:'Noto Sans KR',sans-serif;back
     <div class="mf"><label>약 각인</label><input type="text" id="dm-engraving" placeholder="OK-500"></div>
     <div class="mf"><label>주요 특징 (쉼표로 구분)</label><input type="text" id="dm-features" placeholder="공복 OK, 4~6시간 간격, 1일 최대 4,000mg"></div>
     <div class="mf"><label>⚠️ 주의사항</label><textarea id="dm-caution" placeholder="4,000mg 초과 시 간 손상 위험" rows="2"></textarea></div>
-    <div class="mf"><label>시나리오 역할</label><input type="text" id="dm-role" placeholder="두통·발열 기본 선택지"></div>
+    <div class="mf"><label>관리 메모</label><input type="text" id="dm-role" placeholder="수업용 메모(선택)"></div>
     <div class="modal-row">
       <button class="m-btn cancel" onclick="closeModal('modal-drug')">취소</button>
       <button class="m-btn ok-green" id="drug-save-btn" onclick="saveDrug()">저장</button>
@@ -607,7 +607,7 @@ html,body{height:100%;overflow:hidden;font-family:'Noto Sans KR',sans-serif;back
       <div class="mf"><label>카페인관리 변화</label><input type="number" id="dmk-cafestat" value="0"></div>
     </div>
     <div class="mf-row">
-      <div class="mf"><label>수면 변화</label><input type="number" id="dmk-sleep" value="0"></div>
+      <div class="mf"><label>컨디션 변화</label><input type="number" id="dmk-sleep" value="0"></div>
       <div class="mf"><label>판단력 변화</label><input type="number" id="dmk-judgment" value="0"></div>
     </div>
     <div class="mf-row cafe-only">
@@ -701,7 +701,7 @@ html,body{height:100%;overflow:hidden;font-family:'Noto Sans KR',sans-serif;back
 // ══════════════════════════════════════════
 // 1. 상수
 // ══════════════════════════════════════════
-const STATS = ['건강','지식','활력','판단력','수면','생활습관','카페인','사회성'];
+const STATS = ['건강','지식','카페인관리','컨디션','판단력','사회성'];
 const CHOICE_FLAGS = ['labelChecked','helpedFriend','snsRisk','analgesic','fastingMed','comboMedCaffeine','recoveryPlan','minjunWarned','openDrink','noCaffeine','healthOffice'];
 const FLAG_LABELS = {labelChecked:'라벨확인',helpedFriend:'친구도움',snsRisk:'SNS위험',analgesic:'진통제복용',fastingMed:'공복복용',comboMedCaffeine:'카페인중복',recoveryPlan:'회복계획',minjunWarned:'민준경고',openDrink:'음료선택',noCaffeine:'카페인없음',healthOffice:'보건실방문'};
 const ITEM_TYPES = {
@@ -740,128 +740,1026 @@ const DEFAULT_QUIZ = [
 ];
 
 const DEFAULT_SCENES = [
-  {id:'s1',day:14,loc:'📍 D-14 교문 앞 편의점',type:'event',title:'민준이의 제안',speaker:'민준',emoji:'😄',isEpisode:false,clues:[],
-   text:'민준이 편의점에서 나오며 손을 흔든다. "야, 시험 2주 전부터 긴장되지? 에너지드링크 하나 샀는데 너도 살래? 오전 버티려면 이거라도 마셔야 해."',
-   choices:[
-    {type:'bad',text:'🥤 편의점 냉장고에서 음료를 직접 고른다.',delta:{지식:2},requiresClue:null,flags:['openDrink'],note:'openDrink:"cvs"',result:{title:'첫 음료 선택',text:'오전은 조금 버틸 수 있을 것 같다.',followup:'선택한 음료의 카페인 양은 오늘 섭취량에 그대로 더해진다.'}},
-    {type:'good',text:'💧 "됐어, 이따 물 마실게." 민준의 시선을 견딘다.',delta:{판단력:3},requiresClue:null,flags:['noCaffeine'],note:'caffeineMg:0',result:{title:'어색한 거절',text:'민준이 "어, 진짜로?" 하며 쳐다봤다. 조금 어색했지만 당장은 아무 효과도 없는 선택처럼 느껴졌다.'}},
-  ]},
-  {id:'s2',day:13,loc:'📚 D-13 자습실',type:'event',title:'★ 주머니 속 감기뚝정',speaker:'{name}',emoji:'😣',isEpisode:true,requireCluesBeforeChoices:true,choiceSpeaker:'protagonist',clueGuideText:'각 힌트를 눌러 돋보기와 약학정보원 단서를 비교해 보세요',
-   clues:[
-    {itemType:'magnifier',icon:'🔍',label:'돋보기 확인',title:'알약 각인 확대',pillKey:'cold',body:'연한 주황색 오각형 알약 표면 각인: "COLD-300"',isKey:true},
-    {itemType:'phone',icon:'📱',label:'약학정보원',title:'약학정보원 모양 검색',pharmacySearch:true,body:'검색 결과 후보를 보고 돋보기로 확인한 각인과 직접 비교한다.',isKey:true},
-   ],
-   text:'자습실에서 몸이 으슬으슬하다. 주머니를 뒤져보니 오각형 알약이 하나 나온다. 아침에 가족이 "감기 기운 있으면 먹으라"고 챙겨준 약인데, 이름을 제대로 확인하지 못했다. 지금 머리도 아픈데 그냥 먹어도 되는 걸까? 약 표면에 각인이 있지만 작아서 잘 보이지 않는다.',
-   choices:[
-    {type:'good',text:'✅ 각인 COLD-300과 맞는 감기뚝정(감기약)을 고르고 보건실에서 확인한다.',delta:{지식:12,판단력:10},requiresClue:1,flags:['labelChecked'],note:'정답 약 선택',result:{title:'✅ 단서 조합 성공!',speaker:'보건샘',text:'보건샘은 약 표면의 COLD-300 각인과 성분표를 함께 확인해 주었다.\n감기뚝정(감기약)은 감기 증상 완화에 쓰이지만, 아세트아미노펜이 들어 있어 다른 두통약과 중복될 수 있다고 설명했다.\n모르는 약은 혼자 판단하지 않고 확인하는 것이 안전하다.'}},
-    {type:'bad',text:'💊 가족이 챙겨준 약이니 그냥 먹는다.',delta:{건강:-8,판단력:-10},requiresClue:null,flags:[],note:'미확인 복용',result:{title:'⚠️ 미확인 복용',text:'약 이름과 성분을 확인하지 않은 채 삼켰다. 지금 당장은 괜찮아 보여도, 오늘 다른 두통약을 먹게 되면 같은 성분이 겹칠 수 있다. 가족이 챙겨준 약이어도 복용 전에는 이름과 성분을 확인해야 한다.'}},
-    {type:'bad',text:'⬜ OK-500 각인처럼 보여 괜찮아정(두통약)을 고른다.',delta:{건강:-6,판단력:-12,지식:-4},requiresClue:1,flags:[],note:'오답 약 선택',result:{title:'⚠️ 각인 오판',speaker:'보건샘',text:'보건샘은 약 표면의 COLD-300 각인과 성분표를 함께 확인해 주었다.\n감기뚝정(감기약)은 감기 증상 완화에 쓰이지만, 아세트아미노펜이 들어 있어 다른 두통약과 중복될 수 있다고 설명했다.\n모르는 약은 혼자 판단하지 않고 확인하는 것이 안전하다.'}},
-    {type:'bad',text:'🔵 IBU-200 각인처럼 보여 아야스톱정(생리통약)을 고른다.',delta:{건강:-6,판단력:-12,지식:-4},requiresClue:1,flags:[],note:'오답 약 선택',result:{title:'⚠️ 각인 오판',speaker:'보건샘',text:'보건샘은 약 표면의 COLD-300 각인과 성분표를 함께 확인해 주었다.\n감기뚝정(감기약)은 감기 증상 완화에 쓰이지만, 아세트아미노펜이 들어 있어 다른 두통약과 중복될 수 있다고 설명했다.\n모르는 약은 혼자 판단하지 않고 확인하는 것이 안전하다.'}},
-  ]},
-  {id:'s3',day:12,loc:'🏫 D-12 보건 수업',type:'event',title:'성분표 읽기 실습',speaker:'보건샘',emoji:'🩺',isEpisode:false,clues:[],
-   text:'선생님이 종이를 한 장씩 나눠줬다. "이게 실제 약국에서 파는 감기뚝정이에요. 성분명, 함량, 복용법, 주의사항을 같이 읽어볼까요?"',
-   choices:[
-    {type:'good',text:'📋 성분표를 하나씩 짚어가며 읽는다.',delta:{지식:12,판단력:8},requiresClue:null,flags:['labelChecked'],note:'이후 성분 중복 에피소드에서 인식 보너스',result:{title:'✅ 성분표가 보이기 시작했다',text:'성분명, 함량, 복용 간격, 주의사항을 읽는 방법을 익혔다.'}},
-    {type:'good',text:'✋ "선생님, 이거 아세트아미노펜이 들어있는 거 맞아요?" 질문한다.',delta:{지식:15,판단력:5,사회성:5},requiresClue:null,flags:['labelChecked'],note:'최고 지식 보상',result:{title:'✅ 핵심 질문!',text:'질문 하나로 교실 전체가 성분 중복 위험을 함께 알게 됐다.'}},
-    {type:'bad',text:'😴 졸려서 대충 훑고 넘긴다.',delta:{지식:-3,수면:-3},requiresClue:null,flags:[],note:'',result:{title:'⚠️ 놓친 정보',text:'중요한 내용이 눈앞을 지나갔다. 다음번 성분 중복 에피소드에서 판단이 늦어질 수 있다.'}},
-  ]},
-  {id:'s4',day:11,loc:'🏃 D-11 체육관 앞',type:'event',title:'★ 생리통의 선택',speaker:'{name}',emoji:'😣',isEpisode:true,clueGuideText:'각 힌트를 눌러 스마트폰 검색 결과와 성분표 단서를 비교해 보세요',
-   clues:[
-    {itemType:'phone',icon:'📱',label:'스마트폰 확인',title:'스마트폰 검색 결과: 괜찮아정(두통약)',medicineKey:'ok',body:'괜찮아정(두통약)은 아세트아미노펜 500mg이다.\n소염 효과는 없지만 공복 복용이 가능하다.\n서연은 오늘 아침을 먹지 않은 상태라 식사 여부도 함께 확인해야 한다.',isKey:false},
-    {itemType:'guide',icon:'📋',label:'성분표 확인',title:'아야스톱정(생리통약)',medicineKey:'aya',body:'성분: 이부프로펜 200mg\n복용: 식후 즉시 / 1일 3회\n⚠️ 공복 복용 금지\n위 점막 자극 → 위염·위출혈 위험',isKey:true},
-   ],
-   text:'체육 시간 전, 서연이 얼굴이 창백하다. "배가 너무 아파. 사물함에 괜찮아정(두통약)밖에 없는데 생리통에도 먹어도 돼?" 오늘 아침 서연은 아무것도 못 먹었다.',
-   choices:[
-    {type:'good',text:'📋 스마트폰 검색 결과와 성분표를 비교하고, 식사 후 보건실에서 아야스톱정(생리통약) 복용 가능 여부를 확인한다.',delta:{건강:5,판단력:12},requiresClue:1,flags:['labelChecked'],note:'공복+이부프로펜 위험 인지 ← 스마트폰 검색과 성분표 카드 비교',result:{title:'✅ 확인 후 상담',text:'서연에게 먼저 음식을 조금 먹고 보건실에서 확인하자고 했다. 보건샘은 아침을 먹었는지 먼저 묻고, 생리통약은 식후 복용해야 위 부담을 줄일 수 있다고 설명했다. 필요하면 상태를 확인한 뒤 복용하도록 안내했다.'}},
-    {type:'good',text:'💊 괜찮아정(두통약)을 준다. 공복이라 이부프로펜보다 안전하다고 설명한다.',delta:{건강:3,판단력:8},requiresClue:null,flags:[],note:'차선책이지만 안전한 선택',result:{title:'✅ 안전한 차선책',text:'아세트아미노펜은 공복에도 위 자극이 적어 지금 상황에서 적절한 차선책이다.'}},
-    {type:'bad',text:'💊 아야스톱정(생리통약)을 바로 빌려준다.',delta:{건강:-10,판단력:-10},requiresClue:null,flags:[],note:'성분표 미확인 시 선택 가능',result:{title:'⚠️ 공복 복용!',text:'이부프로펜 공복 복용 → 속 쓰림·위 자극 부작용 발생. 성분표를 확인하지 않은 결과.'}},
-  ]},
-  {id:'s5',day:10,loc:'🏸 D-10 급식실 앞',type:'event',title:'★★ 삼색 캡슐의 비밀',speaker:'{name}',emoji:'💊',isEpisode:true,
-   clues:[
-    {itemType:'magnifier',icon:'🔍',label:'돋보기',title:'통증싹싹캡슐 확대',body:'캡슐 옆면 작은 글씨 (일반 시야로는 안 보임)\n→ "카페인무수물 50mg"\n→ 아세트아미노펜 300mg + IPA 150mg',isKey:true},
-    {itemType:'notebook',icon:'📓',label:'복용 수첩',title:'오늘 카페인 섭취 기록',body:'오늘 마신 음료: 에너지드링크 1캔\n카페인 함량: 100mg\n\n⚠️ 통증싹싹캡슐 추가 시:\n100mg + 50mg = 150mg\n청소년 권장량(50kg 기준): 125mg',isKey:false},
-   ],
-   text:'점심 후 두통이 온다. 가방에서 통증싹싹캡슐(삼색 캡슐)을 꺼냈다. 아까 에너지드링크도 한 캔 마셨는데… 먹어도 괜찮을까?',
-   choices:[
-    {type:'good',text:'🔍 돋보기로 확인 → "카페인무수물 50mg" 발견 → 합산 계산 후 복용하지 않는다.',delta:{지식:15,판단력:15},requiresClue:0,flags:['labelChecked'],note:'돋보기 필수 — 핵심 방탈출 장면',result:{title:'✅ 단서 발견!',text:'"CAF-50mg" 발견! 에너지드링크 100mg + 캡슐 50mg = 150mg. 권장량을 넘을 수 있어 복용을 멈췄다. 돋보기가 핵심이었다.'}},
-    {type:'bad',text:'💊 그냥 통증싹싹캡슐을 먹는다 (카페인 중복 무시).',delta:{건강:-15,카페인:-12,판단력:-10},requiresClue:null,flags:['analgesic','comboMedCaffeine'],note:'comboMedCaffeine:true',result:{title:'⚠️ 카페인 중복!',text:'합산 카페인 150mg. 두근거림·불안·두통 악화 부작용 발생. 돋보기로 확인했다면 피할 수 있었다.'}},
-    {type:'good',text:'💧 물 마시고 잠깐 눕는다.',delta:{건강:2,판단력:5},requiresClue:null,flags:[],note:'',result:{title:'✅ 비약물 선택',text:'완벽하진 않지만 카페인을 더 추가하지는 않았다.'}},
-  ]},
-  {id:'s6',day:9,loc:'📱 D-9 급식실',type:'event',title:'SNS 오남용 챌린지',speaker:'하은',emoji:'📱',isEpisode:false,clues:[],
-   text:'하은이 폰을 내밀었다. "야, 이거 봐봐. 누가 카페인이랑 진통제를 같이 먹는 걸 \'시험 꿀팁\'처럼 올렸어. 댓글도 많은데, 이거 위험한 거 아니야?"',
-   choices:[
-    {type:'good',text:'🔍 "진짜? 어떤 성분이야?" 폰을 당겨 성분을 직접 확인한다.',delta:{지식:6,판단력:3},requiresClue:null,flags:['labelChecked'],note:'labelChecked:true — 민준 말릴 근거 생성',result:{title:'✅ 직접 확인',text:'"이미 통증싹싹캡슐에 카페인 들어있잖아"라는 댓글을 발견했다. 성분 중복 위험을 알게 됐다.'}},
-    {type:'bad',text:'🤩 "진짜 효과 있나?" 하고 스크린샷을 저장한다.',delta:{판단력:-10},requiresClue:null,flags:['snsRisk'],note:'snsRisk:true — D-4 위험 선택지 활성화',result:{title:'⚠️ 위험한 저장',text:'지금은 호기심이지만 며칠 뒤 실제 선택지가 될 수 있다.'}},
-    {type:'good',text:'🚩 "위험할 것 같다." 신고 버튼을 누른다.',delta:{판단력:8,지식:5},requiresClue:null,flags:[],note:'',result:{title:'✅ 잘못된 정보 차단',text:'SNS의 위험한 복약 정보를 스스로 차단했다. 친구들의 안전에도 기여했다.'}},
-  ]},
-  {id:'s7',day:8,loc:'📚 D-8 도서관',type:'event',title:'★ 두 약의 겹치는 성분',speaker:'{name}',emoji:'📦',isEpisode:true,
-   clues:[
-    {itemType:'guide',icon:'📋',label:'성분표 2장 비교',title:'두 약 성분 나란히 비교',body:'감기뚝정\n→ 아세트아미노펜 300mg + 항히스타민\n\n괜찮아정\n→ 아세트아미노펜 500mg\n\n⚠️ 합산 = 800mg (1회)\n하루 3회 복용 시 = 2,400mg → 한계에 근접!',isKey:true},
-   ],
-   text:'감기에 걸려 아침에 감기뚝정(종합감기약)을 먹었다. 오후에 두통이 또 온다. 가방에서 괜찮아정을 꺼내려는데… 같이 먹어도 될까?',
-   choices:[
-    {type:'good',text:'📋 성분표 2장 비교 → 아세트아미노펜 중복 확인 → 안 먹기로 한다.',delta:{지식:15,판단력:15},requiresClue:0,flags:['labelChecked'],note:'성분표 필수 — 중복 감지',result:{title:'✅ 성분 중복 발견!',text:'두 약 모두 아세트아미노펜 포함. 합산하면 과다 복용 위험. 성분표 비교가 안전을 지켰다.'}},
-    {type:'bad',text:'💊 그냥 괜찮아정도 먹는다 (두통이 심하니까).',delta:{건강:-12,판단력:-10},requiresClue:null,flags:['analgesic'],note:'comboMedCaffeine은 아니지만 성분 중복',result:{title:'⚠️ 성분 중복!',text:'감기뚝정 300mg + 괜찮아정 500mg = 800mg. 반복 복용 시 1일 4,000mg 초과 위험.'}},
-    {type:'good',text:'🩺 보건실에 가서 물어본다.',delta:{지식:10,판단력:8},requiresClue:null,flags:['healthOffice'],note:'healthOffice:"fasting"',result:{title:'✅ 전문가 상담',text:'보건샘이 두 약 성분표를 함께 보며 중복 위험을 설명해 주셨다.'}},
-  ]},
-  {id:'s8',day:7,loc:'🪞 D-7 집 거울 앞',type:'event',title:'1주차 중간 점검',speaker:'나레이터',emoji:'📊',isEpisode:false,clues:[],
-   text:'7일이 지났다. 거울을 봤다. 눈 밑이 칙칙하고 아침부터 어깨가 무겁다. 지난 일주일의 선택이 몸에 남아있다.',
-   choices:[
-    {type:'good',text:'📓 복용 수첩에 지난 7일 선택을 정리하고 패턴을 분석한다.',delta:{판단력:10,지식:5},requiresClue:null,flags:['recoveryPlan'],note:'showReport:7',result:{title:'✅ 1주차 리포트',text:'무엇이 무너졌는지 적어보자 패턴이 보였다. 문제를 찾는 것 자체가 회복의 시작이다.'}},
-    {type:'good',text:'🔄 카페인을 줄이고 수면을 늘리기로 결심한다.',delta:{판단력:8,카페인:5,수면:5},requiresClue:null,flags:['recoveryPlan'],note:'recoveryPlan:true',result:{title:'✅ 회복 계획',text:'2주차에는 카페인과 수면 선택에서 회복 보너스가 붙을 준비가 됐다.'}},
-    {type:'bad',text:'😐 "이 정도면 괜찮지 않나?" 무시한다.',delta:{건강:-5,판단력:-4},requiresClue:null,flags:[],note:'',result:{title:'⚠️ 무시된 신호',text:'몸의 신호를 넘기면 신호는 사라지는 대신 더 크게 돌아올 수 있다.'}},
-  ]},
-  {id:'s9',day:6,loc:'🏥 D-6 보건실',type:'event',title:'★ 언제 다시 먹어도 될까?',speaker:'{name}',emoji:'⏱️',isEpisode:true,
-   clues:[
-    {itemType:'notebook',icon:'📓',label:'복용 수첩',title:'오늘 복용 기록',body:'오후 1시: 괜찮아정 1정 (500mg) 복용\n현재 시각: 오후 4시\n경과: 3시간\n\n→ 재복용 가능 시간: 오후 5~7시 (4~6시간 후)',isKey:true},
-    {itemType:'guide',icon:'📋',label:'괜찮아정 성분표',title:'괜찮아정 복용 간격 확인',body:'복용 간격: 4~6시간마다\n1일 최대 8정 (4,000mg)\n⚠️ 3시간 만에 재복용 → 혈중 농도 과다 위험',isKey:false},
-   ],
-   text:'오후 1시에 괜찮아정을 먹었다. 지금은 오후 4시. 두통이 아직 남아있다. 민준이 "3시간 됐으면 한 알 더 먹어도 되지 않아?" 라고 한다.',
-   choices:[
-    {type:'good',text:'📓 복용 수첩 확인 → 아직 4시간이 안 됐다, 거절한다.',delta:{건강:5,판단력:15},requiresClue:0,flags:[],note:'복용 수첩 필수',result:{title:'✅ 시간 확인!',text:'3시간은 아직 4~6시간 기준 미달. 수첩이 과다 복용을 막았다.'}},
-    {type:'bad',text:'💊 민준 말 믿고 한 알 더 먹는다.',delta:{건강:-12,판단력:-10},requiresClue:null,flags:['analgesic'],note:'3시간 재복용 위험',result:{title:'⚠️ 재복용 위험!',text:'3시간 만에 재복용하면 혈중 농도가 과도하게 올라간다. 간 손상 위험이 증가한다.'}},
-    {type:'good',text:'💧 물 마시고 30분 더 기다린다.',delta:{판단력:8},requiresClue:null,flags:[],note:'',result:{title:'✅ 기다리는 선택',text:'약이 아닌 방법으로 버티기로 했다. 4~6시간이 지나면 재복용이 가능하다.'}},
-  ]},
-  {id:'s10',day:5,loc:'🏫 D-5 교실',type:'event',title:'민준이를 구해줄까?',speaker:'하은',emoji:'📱',isEpisode:false,clues:[],
-   text:'하은이 조용히 다가온다. "민준이 오늘도 에너지드링크 마시고 밤새려고 한대. 심장 두근거린다는데 괜찮은 거야?"',
-   choices:[
-    {type:'good',text:'🚩 "두근거리면 그냥 넘기면 안 돼. 카페인 줄이고 자야 해."라고 말한다.',delta:{지식:8,판단력:10,사회성:5},requiresClue:null,flags:['helpedFriend','labelChecked'],note:'helpedFriend:true',result:{title:'✅ 위험 신호를 짚음',text:'민준에게 카페인을 더 마시는 대신 쉬어야 한다고 말했다.'}},
-    {type:'good',text:'🩺 민준을 보건샘에게 데려가자고 한다.',delta:{판단력:10,사회성:8},requiresClue:null,flags:['helpedFriend','healthOffice'],note:'healthOffice:"friend"',result:{title:'✅ 전문가 연결',text:'친구의 이상 신호를 혼자 판단하지 않고 보건샘에게 연결했다.'}},
-    {type:'bad',text:'😐 "그래? 괜찮대?" 관심 없이 넘긴다.',delta:{판단력:-5,사회성:-3},requiresClue:null,flags:[],note:'',result:{title:'⚠️ 놓친 신호',text:'두근거림을 가볍게 넘겼다.'}},
-  ]},
-  {id:'s11',day:4,loc:'🛒 D-4 편의점',type:'event',title:'★ 카페인 폭탄 해체',speaker:'{name}',emoji:'☕',isEpisode:true,
-   clues:[
-    {itemType:'magnifier',icon:'🔍',label:'돋보기',title:'에너지드링크 뒷면 확대',body:'에너지드링크 (355mL)\n카페인 함량: 100mg\n표시: "카페인 함유"',isKey:false},
-    {itemType:'phone',icon:'📱',label:'스마트폰 검색',title:'"청소년 카페인 하루 권장량" 검색',body:'청소년 카페인 권장량\n= 체중(kg) × 2.5mg 이하\n\n50kg 기준: 125mg 이하\n오늘 이미 섭취: 100mg (에너지드링크 1캔)\n통증싹싹캡슐 추가 시: +50mg → 총 150mg',isKey:true},
-   ],
-   text:'쉬는 시간이 되자 머리가 더 지끈거린다. 아침에 마신 에너지드링크 캔이 떠오르고, 가방 속 통증싹싹캡슐도 생각난다. 민준이 말한다. "그거 그냥 먹어. 두통엔 잘 듣잖아."',
-   choices:[
-    {type:'good',text:'📱 검색으로 카페인 합산 계산 → 150mg으로 권장량을 넘을 수 있어 먹지 않기로 결정.',delta:{지식:15,판단력:12},requiresClue:1,flags:['labelChecked'],note:'스마트폰 필수',result:{title:'✅ 계산 성공!',text:'100 + 50 = 150mg. 50kg 기준 권장량 125mg을 넘을 수 있다. 복용하지 않는 판단이 몸을 지켰다.'}},
-    {type:'bad',text:'💊 민준 말 듣고 그냥 먹는다.',delta:{건강:-15,카페인:-10,판단력:-10},requiresClue:null,flags:['analgesic','comboMedCaffeine'],note:'comboMedCaffeine:true',result:{title:'⚠️ 카페인 중복!',text:'합산 150mg. 두근거림·불안 부작용 발생 가능.'}},
-  ]},
-  {id:'s12',day:3,loc:'🏠 D-3 하굣길',type:'event',title:'서연의 카페 제안',speaker:'서연',emoji:'☕',isEpisode:false,clues:[],
-   text:'서연이 메시지를 보냈다. "카페 갈래? 카페 공부 분위기가 집보다 낫더라." 하굣길의 나는 아직 머리가 완전히 맑지는 않다.',
-   choices:[
-    {type:'bad',text:'☕ 서연과 카페에 가서 음료를 고른다.',delta:{지식:6,건강:-4,수면:-4},requiresClue:null,flags:['openDrink'],sceneAfterDrink:'scene_cafe',note:'openDrink:"cafe" / sleepHours:6',result:{title:'카페 공부',text:'카페 분위기는 집보다 집중이 잘 됐다.',followup:'하지만 내가 고른 음료의 카페인은 오늘 섭취량에 더해지고, 밤에 잠드는 시간을 흔들 수 있다.'}},
-    {type:'good',text:'🏠 "오늘은 집에서 할게." 카페에 가지 않고 집으로 간다.',delta:{지식:4,수면:5,사회성:-2},requiresClue:null,flags:[],note:'',result:{title:'✅ 수면 우선',text:'서연과 조금 어색해졌지만 오늘 밤은 일찍 정리할 수 있었다.'}},
-  ]},
-  {id:'s13',day:2,loc:'📚 D-2 독서실',type:'event',title:'마지막 밤샘의 유혹',speaker:'민준',emoji:'🌙',isEpisode:false,clues:[],
-   text:'민준이 독서실 책상에 에너지드링크를 올려놨다. "이번 주 마지막이야. 오늘만 밤새면 돼."',
-   choices:[
-    {type:'bad',text:'🥤 받아서 마신다. 새벽 2시까지 공부한다.',delta:{지식:10,건강:-12,수면:-12,카페인:-8},requiresClue:null,flags:['openDrink'],note:'sleepHour:26 / sleepHours:5',result:{title:'⚠️ 최후의 밤샘',text:'내일 시험 컨디션이 크게 흔들릴 수 있다.'}},
-    {type:'good',text:'🙅 "나는 이번엔 됐어." 거절한다.',delta:{판단력:8,사회성:-3,수면:5},requiresClue:null,flags:['noCaffeine'],note:'noCaffeine:true',result:{title:'✅ 마지막 절제',text:'민준은 살짝 서운해했다. 내일 시험 컨디션을 지켰다.'}},
-    {type:'good',text:'💬 "너도 많이 마시지 마. 시험 끝나고 쓰러지면 어떡해."',delta:{판단력:5,사회성:5},requiresClue:null,flags:['helpedFriend'],note:'minjunWarned:true',result:{title:'✅ 친구를 말림',text:'민준이 캔에서 손을 잠깐 멈췄다. 한 마디가 친구의 선택에 영향을 줬다.'}},
-  ]},
-  {id:'s14',day:1,loc:'🛌 D-1 집',type:'event',title:'시험 전날 루틴',speaker:'나레이터',emoji:'🌙',isEpisode:false,clues:[],
-   text:'D-1. 시험 전날 밤. 지금 어떤 선택을 하느냐에 따라 내일 시험지를 펼치는 순간의 컨디션이 달라진다.',
-   choices:[
-    {type:'good',text:'🛌 11시 30분에 잠든다. 8시간 수면을 확보한다.',delta:{건강:10,수면:10,판단력:8},requiresClue:null,flags:[],note:'sleepHour:23 / sleepHours:8',result:{title:'✅ 최선의 준비',text:'시험 전날 충분한 수면은 기억 정리와 컨디션 회복에 도움이 된다.'}},
-    {type:'bad',text:'💊☕ 약과 카페인을 함께 사용한다.',delta:{건강:-20,판단력:-15,수면:-15},requiresClue:null,flags:['analgesic','comboMedCaffeine'],note:'comboMedCaffeine / sleepHour:26',result:{title:'⚠️ 최악의 조합!',text:'약과 카페인을 함께 쓰면 성분 중복, 심장 두근거림, 불면, 부작용 위험이 높아진다.'}},
-    {type:'bad',text:'☕ 카페인만 마시며 새벽 2시까지 버틴다.',delta:{건강:-8,수면:-12,카페인:-8},requiresClue:null,flags:['openDrink'],note:'sleepHour:26 / openDrink:"cafe"',result:{title:'⚠️ 임시방편',text:'카페인 누적은 수면과 다음 날 컨디션을 해친다.'}},
-  ]},
-  {id:'s15',day:'exam',loc:'📝 D-Day 시험 당일',type:'exam',title:'미니 퀴즈 시작',speaker:'나레이터',emoji:'🎓',isEpisode:false,clues:[],
-   text:'14일이 여기까지 왔다. 시험지가 뒤집어진 채 책상 위에 있다. 지금 이 순간의 컨디션은 지난 2주 동안의 모든 선택이 만든 것이다. 이제 퀴즈로 배운 것을 확인해 보자.',
-   choices:[]},
+  {
+    "id": "v4_s01",
+    "day": 14,
+    "loc": "📝 D-14 시험기간 시작",
+    "type": "narration",
+    "title": "14일의 시작 (도입)",
+    "speaker": "나레이터",
+    "emoji": "📝",
+    "isEpisode": false,
+    "clues": [],
+    "text": "시험 기간 2주 전. 아직 시험지는 멀리 있는 것 같지만, {name}의 하루에는 벌써 작은 선택들이 쌓이기 시작한다. 피곤함을 어떻게 버틸지, 약과 카페인을 어떻게 대할지에 따라 2주 뒤 컨디션이 달라질 것이다.",
+    "choices": []
+  },
+  {
+    "id": "v4_s02",
+    "day": 14,
+    "loc": "🏪 D-14 교문 앞 편의점",
+    "type": "event",
+    "title": "민준의 에너지드링크 제안",
+    "speaker": "민준",
+    "emoji": "🏪",
+    "isEpisode": false,
+    "clues": [],
+    "text": "민준이 편의점에서 나오며 손을 흔든다. \"야, 시험 2주 전부터 괜히 긴장되지? 에너지드링크 하나 샀는데 너도 살래? 오전 버티려면 이거라도 마셔야 해.\"",
+    "choices": [
+      {
+        "type": "bad",
+        "text": "🥤 편의점 냉장고에서 음료를 직접 고른다.",
+        "delta": {
+          "지식": 2
+        },
+        "requiresClue": null,
+        "flags": [
+          "openDrink"
+        ],
+        "note": "openDrink:\"cvs\"",
+        "result": {
+          "title": "첫 음료 선택",
+          "text": "오전은 조금 버틸 수 있을 것 같다. 어떤 음료를 골랐는지가 오늘 총량에 남는다."
+        }
+      },
+      {
+        "type": "good",
+        "text": "💧 \"됐어, 이따 물 마실게.\" 민준의 시선을 견딘다.",
+        "delta": {
+          "판단력": 5,
+          "카페인관리": 4
+        },
+        "requiresClue": null,
+        "flags": [
+          "noCaffeine"
+        ],
+        "note": "noCaffeine:true / caffeineMg:0",
+        "result": {
+          "title": "카페인 없는 첫 칸",
+          "text": "민준이 \"어, 진짜로?\" 하며 쳐다봤다. 조금 어색했지만, 카페인에 기대지 않는 습관의 첫 칸을 채웠다."
+        }
+      }
+    ]
+  },
+  {
+    "id": "v4_s03",
+    "day": 13,
+    "loc": "🏫 D-13 1교시 교실",
+    "type": "event",
+    "title": "흐릿한 칠판, 두통약을 꺼낼까",
+    "speaker": "{name}",
+    "emoji": "🏫",
+    "isEpisode": false,
+    "clues": [],
+    "text": "어젯밤 늦게 잔 게 교실까지 따라왔다. 칠판 글씨가 흐릿하고 관자놀이가 지끈거린다. 옆자리 민준이 작게 속삭인다. \"야, 카페인 없이 이거 버텨?\"",
+    "choices": [
+      {
+        "type": "bad",
+        "text": "☕ 쉬는 시간에 자판기/편의점 음료를 고른다.",
+        "delta": {
+          "건강": -4,
+          "카페인관리": -8,
+          "컨디션": -4
+        },
+        "requiresClue": null,
+        "flags": [
+          "openDrink"
+        ],
+        "note": "openDrink:\"cvs\"",
+        "result": {
+          "title": "버티는 힘",
+          "text": "눈은 떠졌다. 하지만 오늘도 카페인이 수업을 대신 밀어주는 느낌이 들었다."
+        }
+      },
+      {
+        "type": "good",
+        "text": "💧 물을 마시고 쉬는 시간에 잠깐 바람을 쐰다.",
+        "delta": {
+          "판단력": 6,
+          "카페인관리": 4
+        },
+        "requiresClue": null,
+        "flags": [
+          "noCaffeine"
+        ],
+        "note": "noCaffeine:true / caffeineMg:0",
+        "result": {
+          "title": "느린 버티기",
+          "text": "집중은 완벽하지 않았다. 그래도 바로 카페인에 기대는 습관은 만들지 않았다."
+        }
+      },
+      {
+        "type": "good",
+        "text": "💊 가방 속 괜찮아정을 꺼내 성분·복용법을 먼저 읽어본다.",
+        "delta": {
+          "건강": 4,
+          "지식": 8,
+          "판단력": 6
+        },
+        "requiresClue": null,
+        "flags": [],
+        "note": "",
+        "result": {
+          "title": "복용 전 확인",
+          "text": "약 상자 뒷면에는 성분, 효능·효과, 용법·용량, 사용상의 주의사항이 적혀 있었다. 약은 이름보다 성분, 복용 간격, 주의사항을 확인하는 것이 중요하다."
+        }
+      }
+    ]
+  },
+  {
+    "id": "v4_s04",
+    "day": 13,
+    "loc": "🛒 D-13 편의점",
+    "type": "event",
+    "title": "★ 카페인 폭탄 해체 (합산 계산)",
+    "speaker": "{name}",
+    "emoji": "🛒",
+    "isEpisode": true,
+    "clues": [
+      {
+        "itemType": "guide",
+        "icon": "🥤",
+        "label": "캔 뒷면",
+        "title": "에너지드링크 뒷면 확대",
+        "body": "에너지드링크 355mL\n카페인 함량: 100mg\n표시: 카페인 함유",
+        "isKey": true
+      },
+      {
+        "itemType": "guide",
+        "icon": "📱",
+        "label": "스마트폰",
+        "title": "청소년 카페인 하루 권장량 검색",
+        "body": "청소년 카페인 권장량 = 체중(kg) × 2.5mg 이하\n50kg 기준: 125mg 이하\n에너지드링크 100mg + 통증싹싹캡슐 50mg = 150mg",
+        "isKey": true
+      }
+    ],
+    "text": "쉬는 시간이 되자 머리가 더 지끈거린다. 아침에 마신 에너지드링크 캔이 떠오르고, 가방 속 통증싹싹캡슐도 생각난다. 민준이 말한다. \"그거 그냥 먹어. 두통엔 잘 듣잖아.\"",
+    "choices": [
+      {
+        "type": "good",
+        "text": "📱 검색으로 카페인 합산을 계산하고 먹지 않기로 한다.",
+        "delta": {
+          "지식": 15,
+          "판단력": 12,
+          "카페인관리": 10
+        },
+        "requiresClue": null,
+        "flags": [],
+        "note": "",
+        "result": {
+          "title": "계산 성공",
+          "text": "100mg에 통증싹싹캡슐의 50mg을 더하면 150mg. 숫자로 보니 내 몸의 기준이 먼저 보였다."
+        }
+      },
+      {
+        "type": "bad",
+        "text": "💊 민준 말 듣고 그냥 먹는다.",
+        "delta": {
+          "건강": -15,
+          "카페인관리": -10,
+          "판단력": -10
+        },
+        "requiresClue": null,
+        "flags": [],
+        "note": "caffeineMg:50",
+        "result": {
+          "title": "카페인 중복",
+          "text": "잠깐의 효과 뒤에 불안한 두근거림이 따라왔다. 음료와 약의 카페인은 따로가 아니라 합산된다."
+        }
+      }
+    ]
+  },
+  {
+    "id": "v4_s05",
+    "day": 12,
+    "loc": "🏫 D-12 보건 수업",
+    "type": "event",
+    "title": "성분표 읽기 실습",
+    "speaker": "보건샘",
+    "emoji": "🏫",
+    "isEpisode": false,
+    "clues": [],
+    "text": "보건샘이 종이를 한 장씩 나눠준다. \"약 이름보다 먼저 볼 것은 성분명, 함량, 복용법, 주의사항이에요. 감기뚝정 성분표를 같이 읽어볼까요?\"",
+    "choices": [
+      {
+        "type": "good",
+        "text": "📋 성분표를 하나씩 짚어가며 읽는다.",
+        "delta": {
+          "지식": 12,
+          "판단력": 8
+        },
+        "requiresClue": null,
+        "flags": [],
+        "note": "",
+        "result": {
+          "title": "성분표가 보이기 시작했다",
+          "text": "성분명, 함량, 복용 간격, 주의사항을 읽는 방법을 익혔다."
+        }
+      },
+      {
+        "type": "good",
+        "text": "✋ \"아세트아미노펜이 다른 약에도 들어갈 수 있나요?\" 질문한다.",
+        "delta": {
+          "지식": 15,
+          "판단력": 5,
+          "사회성": 8
+        },
+        "requiresClue": null,
+        "flags": [],
+        "note": "",
+        "result": {
+          "title": "핵심 질문",
+          "text": "질문 하나로 교실 전체가 성분 중복 위험을 함께 알게 됐다."
+        }
+      },
+      {
+        "type": "bad",
+        "text": "😴 졸려서 대충 훑고 넘긴다.",
+        "delta": {
+          "지식": -3,
+          "컨디션": -3
+        },
+        "requiresClue": null,
+        "flags": [],
+        "note": "",
+        "result": {
+          "title": "놓친 정보",
+          "text": "중요한 내용이 눈앞을 지나갔다. 다음번 성분 중복 장면에서 판단이 늦어질 수 있다."
+        }
+      }
+    ]
+  },
+  {
+    "id": "v4_s06",
+    "day": 11,
+    "loc": "🏃 D-11 체육관 앞",
+    "type": "event",
+    "title": "★ 생리통의 선택 (공복·이부프로펜)",
+    "speaker": "{name}",
+    "emoji": "🏃",
+    "isEpisode": true,
+    "clues": [
+      {
+        "itemType": "guide",
+        "icon": "📱",
+        "label": "스마트폰",
+        "title": "괜찮아정 정보",
+        "body": "괜찮아정: 아세트아미노펜 500mg\n공복 복용 가능\n소염 효과는 약함",
+        "isKey": true
+      },
+      {
+        "itemType": "guide",
+        "icon": "📋",
+        "label": "성분표",
+        "title": "아야스톱정 정보",
+        "body": "아야스톱정: 이부프로펜 200mg\n생리통·염증성 통증에 유리\n공복 복용 금지, 식후 복용",
+        "isKey": true
+      }
+    ],
+    "text": "체육 시간 전, 서연이 얼굴이 창백하다. \"배가 너무 아파. 사물함에 괜찮아정밖에 없는데 생리통에도 먹어도 돼?\" 오늘 아침 서연은 아무것도 못 먹었다.",
+    "choices": [
+      {
+        "type": "good",
+        "text": "📋 성분표를 비교하고 식사 후 보건실에서 확인하자고 한다.",
+        "delta": {
+          "건강": 8,
+          "지식": 8,
+          "판단력": 12,
+          "사회성": 7
+        },
+        "requiresClue": null,
+        "flags": [],
+        "note": "",
+        "result": {
+          "title": "확인 후 상담",
+          "text": "서연에게 먼저 음식을 조금 먹고 보건실에서 확인하자고 했다. 이부프로펜은 식후 복용해야 위 부담을 줄일 수 있다."
+        }
+      },
+      {
+        "type": "good",
+        "text": "💊 괜찮아정을 준다. 공복이라 이부프로펜보다 안전하다고 설명한다.",
+        "delta": {
+          "건강": 3,
+          "판단력": 8
+        },
+        "requiresClue": null,
+        "flags": [],
+        "note": "",
+        "result": {
+          "title": "안전한 차선책",
+          "text": "아세트아미노펜은 공복에도 위 자극이 적어 지금 상황에서 적절한 차선책이다."
+        }
+      },
+      {
+        "type": "bad",
+        "text": "💊 아야스톱정을 바로 빌려준다.",
+        "delta": {
+          "건강": -10,
+          "판단력": -10
+        },
+        "requiresClue": null,
+        "flags": [],
+        "note": "",
+        "result": {
+          "title": "공복 복용 위험",
+          "text": "이부프로펜 공복 복용은 속 쓰림과 위 자극을 부를 수 있다. 성분표를 확인하지 않은 결과다."
+        }
+      }
+    ]
+  },
+  {
+    "id": "v4_s07",
+    "day": 10,
+    "loc": "🍱 D-10 급식실 앞",
+    "type": "event",
+    "title": "★★ 삼색 캡슐의 비밀 (돋보기)",
+    "speaker": "{name}",
+    "emoji": "🍱",
+    "isEpisode": true,
+    "clues": [
+      {
+        "itemType": "guide",
+        "icon": "🔍",
+        "label": "돋보기",
+        "title": "통증싹싹캡슐 확대",
+        "body": "작은 글씨: 카페인무수물 50mg\n아세트아미노펜 300mg + IPA 150mg\n에너지드링크와 함께 먹으면 카페인 합산",
+        "isKey": true
+      },
+      {
+        "itemType": "guide",
+        "icon": "📓",
+        "label": "복용 수첩",
+        "title": "오늘 카페인 섭취 기록",
+        "body": "오늘 마신 음료: 에너지드링크 1캔\n카페인 100mg\n통증싹싹캡슐 추가 시 총 150mg",
+        "isKey": true
+      }
+    ],
+    "text": "점심 후 두통이 온다. 가방에서 통증싹싹캡슐을 꺼냈다. 아까 에너지드링크도 한 캔 마셨는데, 먹어도 괜찮을까?",
+    "choices": [
+      {
+        "type": "good",
+        "text": "🔍 돋보기로 약 속 카페인 50mg을 발견하고 복용하지 않는다.",
+        "delta": {
+          "지식": 15,
+          "판단력": 15,
+          "카페인관리": 12
+        },
+        "requiresClue": null,
+        "flags": [],
+        "note": "",
+        "result": {
+          "title": "숨은 성분 발견",
+          "text": "약 안에 카페인이 숨어 있었다. 음료 카페인 100mg에 약 50mg을 더하면 권장량을 넘을 수 있어 멈췄다."
+        }
+      },
+      {
+        "type": "bad",
+        "text": "💊 그냥 통증싹싹캡슐을 먹는다.",
+        "delta": {
+          "건강": -15,
+          "카페인관리": -12,
+          "판단력": -10
+        },
+        "requiresClue": null,
+        "flags": [],
+        "note": "caffeineMg:50",
+        "result": {
+          "title": "카페인 중복",
+          "text": "두근거림과 불안이 따라왔다. 돋보기로 확인했다면 피할 수 있었다."
+        }
+      },
+      {
+        "type": "good",
+        "text": "💧 물 마시고 잠깐 눕는다.",
+        "delta": {
+          "건강": 2,
+          "판단력": 5
+        },
+        "requiresClue": null,
+        "flags": [
+          "noCaffeine"
+        ],
+        "note": "noCaffeine:true / caffeineMg:0",
+        "result": {
+          "title": "비약물 선택",
+          "text": "완벽하진 않지만 카페인을 더 추가하지는 않았다."
+        }
+      }
+    ]
+  },
+  {
+    "id": "v4_s08",
+    "day": 9,
+    "loc": "📱 D-9 급식실",
+    "type": "event",
+    "title": "SNS 오남용 챌린지",
+    "speaker": "하은",
+    "emoji": "📱",
+    "isEpisode": false,
+    "clues": [],
+    "text": "하은이 폰을 내민다. \"누가 카페인이랑 진통제를 같이 먹는 걸 시험 꿀팁처럼 올렸어. 댓글도 많은데, 이거 위험한 거 아니야?\"",
+    "choices": [
+      {
+        "type": "good",
+        "text": "🔍 \"어떤 성분이야?\" 폰을 당겨 성분을 직접 확인한다.",
+        "delta": {
+          "지식": 6,
+          "판단력": 5
+        },
+        "requiresClue": null,
+        "flags": [],
+        "note": "",
+        "result": {
+          "title": "직접 확인",
+          "text": "통증싹싹캡슐에 카페인이 들어 있다는 댓글을 발견했다. 성분 중복 위험을 알게 됐다."
+        }
+      },
+      {
+        "type": "bad",
+        "text": "🤩 \"진짜 효과 있나?\" 하고 스크린샷을 저장한다.",
+        "delta": {
+          "판단력": -10
+        },
+        "requiresClue": null,
+        "flags": [
+          "openSns"
+        ],
+        "note": "openSns:{\"caption\": \"시험 꿀팁? 약+카페인 조합은 위험할 수 있어요.\"}",
+        "result": {
+          "title": "위험한 저장",
+          "text": "지금은 호기심이지만 며칠 뒤 실제 선택지가 될 수 있다."
+        }
+      },
+      {
+        "type": "good",
+        "text": "🚩 위험 정보라며 신고하고 친구들에게 따라 하지 말라고 한다.",
+        "delta": {
+          "판단력": 8,
+          "지식": 5,
+          "사회성": 8
+        },
+        "requiresClue": null,
+        "flags": [],
+        "note": "",
+        "result": {
+          "title": "잘못된 정보 차단",
+          "text": "SNS의 위험한 복약 정보를 스스로 차단했다. 친구들의 안전에도 기여했다."
+        }
+      }
+    ]
+  },
+  {
+    "id": "v4_s09",
+    "day": 8,
+    "loc": "📚 D-8 도서관",
+    "type": "event",
+    "title": "★ 두 약의 겹치는 성분",
+    "speaker": "{name}",
+    "emoji": "📚",
+    "isEpisode": true,
+    "clues": [
+      {
+        "itemType": "guide",
+        "icon": "📋",
+        "label": "성분표 비교",
+        "title": "감기뚝정 + 괜찮아정",
+        "body": "감기뚝정: 아세트아미노펜 300mg + 항히스타민\n괜찮아정: 아세트아미노펜 500mg\n둘 다 먹으면 같은 성분이 중복됨",
+        "isKey": true
+      }
+    ],
+    "text": "감기 기운 때문에 아침에 감기뚝정을 먹었다. 오후에 두통이 또 온다. 가방에서 괜찮아정을 꺼내려는데, 같이 먹어도 될까?",
+    "choices": [
+      {
+        "type": "good",
+        "text": "📋 성분표 2장을 비교해 아세트아미노펜 중복을 확인한다.",
+        "delta": {
+          "지식": 15,
+          "판단력": 15
+        },
+        "requiresClue": null,
+        "flags": [],
+        "note": "",
+        "result": {
+          "title": "성분 중복 발견",
+          "text": "두 약 모두 아세트아미노펜을 포함한다. 이름이 달라도 성분이 같으면 합산해야 한다."
+        }
+      },
+      {
+        "type": "bad",
+        "text": "💊 두통이 심하니 괜찮아정도 먹는다.",
+        "delta": {
+          "건강": -12,
+          "판단력": -10
+        },
+        "requiresClue": null,
+        "flags": [],
+        "note": "",
+        "result": {
+          "title": "성분 중복",
+          "text": "감기뚝정 300mg + 괜찮아정 500mg. 반복 복용하면 하루 최대량에 가까워질 수 있다."
+        }
+      },
+      {
+        "type": "good",
+        "text": "🩺 보건실에 가서 두 약을 같이 보여준다.",
+        "delta": {
+          "지식": 10,
+          "판단력": 8
+        },
+        "requiresClue": null,
+        "flags": [
+          "healthOffice"
+        ],
+        "note": "healthOffice:\"fasting\"",
+        "result": {
+          "title": "전문가 상담",
+          "text": "보건샘이 두 약 성분표를 함께 보며 중복 위험을 설명해 주었다."
+        }
+      }
+    ]
+  },
+  {
+    "id": "v4_s10",
+    "day": 7,
+    "loc": "🪞 D-7 집 거울 앞",
+    "type": "event",
+    "title": "1주차 중간 점검",
+    "speaker": "나레이터",
+    "emoji": "🪞",
+    "isEpisode": false,
+    "clues": [],
+    "text": "7일이 지났다. 거울을 보니 눈 밑이 칙칙하고 어깨가 무겁다. 지난 일주일의 선택이 몸에 남아있다.",
+    "choices": [
+      {
+        "type": "good",
+        "text": "📓 복용 수첩에 지난 7일 선택을 정리하고 패턴을 분석한다.",
+        "delta": {
+          "판단력": 10,
+          "지식": 5
+        },
+        "requiresClue": null,
+        "flags": [],
+        "note": "showReport:8",
+        "result": {
+          "title": "1주차 리포트",
+          "text": "무엇이 무너졌는지 적어보자 패턴이 보였다. 문제를 찾는 것 자체가 회복의 시작이다."
+        }
+      },
+      {
+        "type": "good",
+        "text": "🔄 카페인을 줄이고 수면을 늘리기로 결심한다.",
+        "delta": {
+          "판단력": 8,
+          "카페인관리": 8,
+          "컨디션": 8
+        },
+        "requiresClue": null,
+        "flags": [],
+        "note": "",
+        "result": {
+          "title": "회복 계획",
+          "text": "2주차에는 카페인과 수면 선택에서 회복 보너스가 붙을 준비가 됐다."
+        }
+      },
+      {
+        "type": "bad",
+        "text": "😐 \"이 정도면 괜찮지 않나?\" 몸의 신호를 무시한다.",
+        "delta": {
+          "건강": -5,
+          "판단력": -4
+        },
+        "requiresClue": null,
+        "flags": [],
+        "note": "",
+        "result": {
+          "title": "무시된 신호",
+          "text": "몸의 신호를 넘기면 신호는 사라지는 대신 더 크게 돌아올 수 있다."
+        }
+      }
+    ]
+  },
+  {
+    "id": "v4_s11",
+    "day": 6,
+    "loc": "🩺 D-6 보건실",
+    "type": "event",
+    "title": "★ 언제 다시 먹어도 될까 (복용 간격)",
+    "speaker": "{name}",
+    "emoji": "🩺",
+    "isEpisode": true,
+    "clues": [
+      {
+        "itemType": "guide",
+        "icon": "📓",
+        "label": "복용 수첩",
+        "title": "오늘 복용 기록",
+        "body": "오후 1시: 괜찮아정 1정 복용\n현재: 오후 4시\n재복용 가능 시간: 오후 5~7시",
+        "isKey": true
+      },
+      {
+        "itemType": "guide",
+        "icon": "📋",
+        "label": "성분표",
+        "title": "괜찮아정 복용 간격",
+        "body": "복용 간격: 4~6시간마다\n1일 최대 8정(4,000mg)\n3시간 만에 재복용은 위험",
+        "isKey": true
+      }
+    ],
+    "text": "오후 1시에 괜찮아정을 먹었다. 지금은 오후 4시. 두통이 아직 남아있다. 민준이 \"3시간 됐으면 한 알 더 먹어도 되지 않아?\" 라고 한다.",
+    "choices": [
+      {
+        "type": "good",
+        "text": "📓 복용 수첩을 확인하고 아직 4시간이 안 됐다고 거절한다.",
+        "delta": {
+          "건강": 5,
+          "판단력": 15
+        },
+        "requiresClue": null,
+        "flags": [],
+        "note": "",
+        "result": {
+          "title": "시간 확인",
+          "text": "3시간은 아직 4~6시간 기준 미달이다. 수첩이 과다 복용을 막았다."
+        }
+      },
+      {
+        "type": "bad",
+        "text": "💊 민준 말 믿고 한 알 더 먹는다.",
+        "delta": {
+          "건강": -12,
+          "판단력": -10
+        },
+        "requiresClue": null,
+        "flags": [],
+        "note": "",
+        "result": {
+          "title": "재복용 위험",
+          "text": "3시간 만에 재복용하면 혈중 농도가 과도하게 올라갈 수 있다."
+        }
+      },
+      {
+        "type": "good",
+        "text": "💧 물 마시고 30분 더 기다린다.",
+        "delta": {
+          "판단력": 8
+        },
+        "requiresClue": null,
+        "flags": [],
+        "note": "",
+        "result": {
+          "title": "기다리는 선택",
+          "text": "약이 아닌 방법으로 버티기로 했다. 4~6시간이 지나면 재복용 여부를 다시 판단할 수 있다."
+        }
+      }
+    ]
+  },
+  {
+    "id": "v4_s12",
+    "day": 5,
+    "loc": "🏫 D-5 교실",
+    "type": "event",
+    "title": "민준이의 위험 신호",
+    "speaker": "하은",
+    "emoji": "🏫",
+    "isEpisode": false,
+    "clues": [],
+    "text": "하은이 조용히 다가온다. \"민준이 오늘도 에너지드링크 마시고 밤새려고 한대. 심장 두근거린다는데 괜찮은 거야?\"",
+    "choices": [
+      {
+        "type": "good",
+        "text": "🚩 두근거림은 그냥 넘기면 안 된다고 말한다.",
+        "delta": {
+          "지식": 8,
+          "판단력": 10,
+          "사회성": 8
+        },
+        "requiresClue": null,
+        "flags": [],
+        "note": "",
+        "result": {
+          "title": "위험 신호를 짚음",
+          "text": "민준에게 카페인을 더 마시는 대신 쉬어야 한다고 말했다."
+        }
+      },
+      {
+        "type": "good",
+        "text": "🩺 민준을 보건샘에게 데려가자고 한다.",
+        "delta": {
+          "판단력": 10,
+          "사회성": 8
+        },
+        "requiresClue": null,
+        "flags": [
+          "healthOffice"
+        ],
+        "note": "healthOffice:\"friend\"",
+        "result": {
+          "title": "전문가 연결",
+          "text": "친구의 이상 신호를 혼자 판단하지 않고 보건샘에게 연결했다."
+        }
+      },
+      {
+        "type": "bad",
+        "text": "😐 \"그래? 괜찮대?\" 관심 없이 넘긴다.",
+        "delta": {
+          "판단력": -5,
+          "사회성": -3
+        },
+        "requiresClue": null,
+        "flags": [],
+        "note": "",
+        "result": {
+          "title": "놓친 신호",
+          "text": "두근거림을 가볍게 넘겼다. 친구의 위험 신호도 선택의 대상이다."
+        }
+      }
+    ]
+  },
+  {
+    "id": "v4_s13",
+    "day": 4,
+    "loc": "☕ D-4 하굣길",
+    "type": "event",
+    "title": "서연의 카페 제안",
+    "speaker": "서연",
+    "emoji": "☕",
+    "isEpisode": false,
+    "clues": [],
+    "text": "서연이 메시지를 보냈다. \"카페 갈래? 카페 공부 분위기가 집보다 낫더라.\" 하굣길의 {name}은 아직 머리가 완전히 맑지는 않다.",
+    "choices": [
+      {
+        "type": "bad",
+        "text": "☕ 서연과 카페에 가서 음료를 고른다.",
+        "delta": {
+          "지식": 6,
+          "건강": -4,
+          "컨디션": -4
+        },
+        "requiresClue": null,
+        "flags": [
+          "openDrink"
+        ],
+        "note": "openDrink:\"cafe\"",
+        "result": {
+          "title": "카페 공부",
+          "text": "카페 분위기는 집보다 집중이 잘 됐다. 하지만 내가 고른 음료의 카페인은 오늘 섭취량에 더해지고, 밤에 잠드는 시간을 흔들 수 있다."
+        }
+      },
+      {
+        "type": "good",
+        "text": "🏠 \"오늘은 집에서 할게.\" 카페에 가지 않고 집으로 간다.",
+        "delta": {
+          "지식": 4,
+          "컨디션": 5,
+          "사회성": -2
+        },
+        "requiresClue": null,
+        "flags": [],
+        "note": "",
+        "result": {
+          "title": "수면 우선",
+          "text": "서연과 조금 어색해졌지만 오늘 밤은 일찍 정리할 수 있었다."
+        }
+      },
+      {
+        "type": "good",
+        "text": "💬 카페 대신 산책 20분만 하자고 제안한다.",
+        "delta": {
+          "건강": 4,
+          "컨디션": 7,
+          "사회성": 7
+        },
+        "requiresClue": null,
+        "flags": [],
+        "note": "",
+        "result": {
+          "title": "관계와 회복",
+          "text": "공부 장소를 바꾸지 않고도 머리를 식혔다. 관계도 컨디션도 지키는 선택이었다."
+        }
+      }
+    ]
+  },
+  {
+    "id": "v4_s14",
+    "day": 3,
+    "loc": "📚 D-3 독서실",
+    "type": "event",
+    "title": "마지막 밤샘의 유혹",
+    "speaker": "민준",
+    "emoji": "📚",
+    "isEpisode": false,
+    "clues": [],
+    "text": "민준이 독서실 책상에 에너지드링크를 올려놨다. \"이번 주 마지막이야. 오늘만 밤새면 돼.\"",
+    "choices": [
+      {
+        "type": "bad",
+        "text": "🥤 받아서 마신다. 새벽 2시까지 공부한다.",
+        "delta": {
+          "지식": 10,
+          "건강": -12,
+          "컨디션": -12,
+          "카페인관리": -8
+        },
+        "requiresClue": null,
+        "flags": [
+          "openDrink"
+        ],
+        "note": "openDrink:\"cvs\" / sleepHour:26 / sleepHours:5",
+        "result": {
+          "title": "최후의 밤샘",
+          "text": "공부량은 늘었지만 내일 컨디션이 크게 흔들릴 수 있다."
+        }
+      },
+      {
+        "type": "good",
+        "text": "🙅 \"나는 이번엔 됐어.\" 거절한다.",
+        "delta": {
+          "판단력": 8,
+          "사회성": 5,
+          "컨디션": 8,
+          "카페인관리": 8
+        },
+        "requiresClue": null,
+        "flags": [
+          "noCaffeine"
+        ],
+        "note": "noCaffeine:true / caffeineMg:0",
+        "result": {
+          "title": "마지막 절제",
+          "text": "민준은 살짝 서운해했다. 하지만 내일의 컨디션을 지켰다."
+        }
+      },
+      {
+        "type": "good",
+        "text": "💬 \"너도 많이 마시지 마. 시험 끝나고 쓰러지면 어떡해.\"",
+        "delta": {
+          "판단력": 5,
+          "사회성": 5
+        },
+        "requiresClue": null,
+        "flags": [],
+        "note": "",
+        "result": {
+          "title": "친구를 말림",
+          "text": "민준이 캔에서 손을 잠깐 멈췄다. 한 마디가 친구의 선택에 영향을 줬다."
+        }
+      }
+    ]
+  },
+  {
+    "id": "v4_s15",
+    "day": 2,
+    "loc": "📚 D-2 자습실",
+    "type": "event",
+    "title": "★ 주머니 속 감기뚝정 (미확인 약)",
+    "speaker": "{name}",
+    "emoji": "📚",
+    "isEpisode": true,
+    "clues": [
+      {
+        "itemType": "guide",
+        "icon": "🔍",
+        "label": "돋보기",
+        "title": "알약 각인 확대",
+        "body": "연한 주황색 오각형 알약\n표면 각인: COLD-300\n감기뚝정 후보와 일치",
+        "isKey": true
+      },
+      {
+        "itemType": "guide",
+        "icon": "📱",
+        "label": "약학정보원",
+        "title": "모양·각인 검색",
+        "body": "COLD-300: 감기뚝정\n성분: 아세트아미노펜 300mg + 항히스타민\n괜찮아정과 성분 중복 가능",
+        "isKey": true
+      }
+    ],
+    "text": "자습실에서 몸이 으슬으슬하다. 주머니를 뒤져보니 이름을 모르는 오각형 알약이 하나 나온다. 가족이 챙겨준 약 같지만, 지금 그냥 먹어도 되는 걸까?",
+    "choices": [
+      {
+        "type": "good",
+        "text": "✅ 각인 COLD-300과 약학정보원 검색을 맞춰 보고 보건실에서 확인한다.",
+        "delta": {
+          "지식": 12,
+          "판단력": 10
+        },
+        "requiresClue": null,
+        "flags": [],
+        "note": "",
+        "result": {
+          "title": "단서 조합 성공",
+          "text": "각인과 검색 결과가 감기뚝정으로 일치했다. 모르는 약은 혼자 판단하지 않고 확인하는 것이 안전하다."
+        }
+      },
+      {
+        "type": "bad",
+        "text": "💊 가족이 챙겨준 약이니 그냥 먹는다.",
+        "delta": {
+          "건강": -8,
+          "판단력": -10
+        },
+        "requiresClue": null,
+        "flags": [],
+        "note": "",
+        "result": {
+          "title": "미확인 복용",
+          "text": "이름과 성분을 확인하지 않은 채 삼켰다. 가족이 챙겨준 약이어도 복용 전에는 이름과 성분을 확인해야 한다."
+        }
+      },
+      {
+        "type": "bad",
+        "text": "⬜ OK-500 각인처럼 보여 괜찮아정이라고 생각한다.",
+        "delta": {
+          "건강": -6,
+          "판단력": -12,
+          "지식": -4
+        },
+        "requiresClue": null,
+        "flags": [],
+        "note": "",
+        "result": {
+          "title": "각인 오판",
+          "text": "작은 각인을 대충 보면 다른 약으로 착각할 수 있다. 모양·색·각인을 함께 확인해야 한다."
+        }
+      }
+    ]
+  },
+  {
+    "id": "v4_s16",
+    "day": 1,
+    "loc": "🛌 D-1 집",
+    "type": "event",
+    "title": "시험 전날 루틴",
+    "speaker": "나레이터",
+    "emoji": "🛌",
+    "isEpisode": false,
+    "clues": [],
+    "text": "시험 전날 밤. 지금 어떤 선택을 하느냐에 따라 내일 시험지를 펼치는 순간의 컨디션이 달라진다.",
+    "choices": [
+      {
+        "type": "good",
+        "text": "🛌 11시 30분에 잠든다. 8시간 수면을 확보한다.",
+        "delta": {
+          "건강": 14,
+          "컨디션": 17,
+          "판단력": 8
+        },
+        "requiresClue": null,
+        "flags": [],
+        "note": "sleepHour:23 / sleepHours:8",
+        "result": {
+          "title": "최선의 준비",
+          "text": "시험 전날 충분한 수면은 기억 정리와 컨디션 회복에 도움이 된다."
+        }
+      },
+      {
+        "type": "bad",
+        "text": "💊☕ 약과 카페인을 함께 사용한다.",
+        "delta": {
+          "건강": -20,
+          "판단력": -15,
+          "컨디션": -15,
+          "카페인관리": -10
+        },
+        "requiresClue": null,
+        "flags": [],
+        "note": "sleepHour:26 / sleepHours:5 / caffeineMg:50",
+        "result": {
+          "title": "최악의 조합",
+          "text": "약과 카페인을 함께 쓰면 성분 중복, 심장 두근거림, 불면, 부작용 위험이 높아진다."
+        }
+      },
+      {
+        "type": "bad",
+        "text": "☕ 카페인만 마시며 새벽 2시까지 버틴다.",
+        "delta": {
+          "건강": -8,
+          "컨디션": -12,
+          "카페인관리": -8
+        },
+        "requiresClue": null,
+        "flags": [
+          "openDrink"
+        ],
+        "note": "openDrink:\"cafe\" / sleepHour:26 / sleepHours:5",
+        "result": {
+          "title": "임시방편",
+          "text": "카페인 누적은 수면과 다음 날 컨디션을 해친다."
+        }
+      }
+    ]
+  },
+  {
+    "id": "v4_s17",
+    "day": "exam",
+    "loc": "📝 D-Day 시험 당일",
+    "type": "exam",
+    "title": "미니 퀴즈 & 결과 확인",
+    "speaker": "나레이터",
+    "emoji": "📝",
+    "isEpisode": false,
+    "clues": [],
+    "text": "14일이 여기까지 왔다. 시험지가 뒤집어진 채 책상 위에 있다. 지금 이 순간의 컨디션은 지난 2주 동안의 모든 선택이 만든 것이다. 배운 것을 떠올리며 마지막 결과를 확인해 보자.",
+    "choices": []
+  }
 ];
 
 // ══════════════════════════════════════════
@@ -1535,7 +2433,6 @@ function renderDrugPanel() {
       <div class="drug-field"><div class="df-lbl">⚠️ 주의사항</div>
         <div class="drug-chips"><span class="drug-chip caution">${esc(d.caution||'-')}</span></div>
       </div>
-      <div class="drug-field"><div class="df-lbl">시나리오 역할</div><div class="df-val" style="font-size:11px;color:var(--sub)">${esc(d.role||'-')}</div></div>
       <div class="drug-actions">
         <button class="d-act edit" onclick="openDrugModal(${i})">✏️ 편집</button>
         <button class="d-act del" onclick="deleteDrug(${i})">삭제</button>
@@ -1723,7 +2620,7 @@ function switchDrinkTab(type, btn){
 }
 
 function drinkDeltaText(delta={}){
-  const labels = {health:'체력', caffeine:'카페인관리', sleep:'수면', judgment:'판단력', knowledge:'지식', social:'사회성'};
+  const labels = {health:'건강', caffeine:'카페인관리', sleep:'컨디션', judgment:'판단력', knowledge:'지식', social:'사회성'};
   return Object.entries(delta).map(([k,v]) => `${labels[k] || k} ${v > 0 ? '+' : ''}${v}`).join(' · ') || '-';
 }
 
@@ -1869,11 +2766,11 @@ function deleteDrink(type, idx){
 }
 
 function saveJSON() {
-  const data = { meta:{ title:'약, 알고 먹자!', version:'v15_추리-editor', savedAt:new Date().toISOString() }, scenes:SCENES, drugs:DRUGS, drinks:DRINKS, quiz:QUIZ };
+  const data = { meta:{ title:'약, 알고 먹자!', version:'v16_editor_v4_layer', savedAt:new Date().toISOString() }, scenes:SCENES, drugs:DRUGS, drinks:DRINKS, quiz:QUIZ };
   const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = `health_game_data_${new Date().toISOString().slice(0,10)}.json`;
+  a.download = `health_game_v16_data_${new Date().toISOString().slice(0,10)}.json`;
   a.click(); toast('JSON 저장 완료');
 }
 function triggerLoad() { document.getElementById('file-inp').click(); }
@@ -1917,16 +2814,7 @@ function renderAll() {
   if (currentTab === 'quiz') renderQuizPanel();
 }
 
-function syncV15ScenarioSeed() {
-  const seed = [
-    {id:'v15_d1_intro',day:14,loc:'📝 D-14 시험기간',type:'narration',title:'시험 기간 2주 전',speaker:'나레이터',emoji:'📝',isEpisode:false,clues:[],text:'시험 기간 2주 전. 아직 시험지는 멀리 있는 것 같지만, {name}의 하루에는 벌써 작은 선택들이 쌓이기 시작한다. 피곤함을 어떻게 버틸지, 약과 카페인을 어떻게 대할지에 따라 2주 뒤 컨디션이 달라질 것이다.',choices:[]},
-    {id:'v15_d1_energy_offer',day:14,loc:'🏪 D-14 교문 앞 편의점',type:'event',title:'민준의 에너지드링크 제안',speaker:'민준',emoji:'🥤',isEpisode:false,clues:[],text:'민준이 편의점에서 나오며 손을 흔든다. "야, 시험 2주 전부터 괜히 긴장되지? 에너지드링크 하나 샀는데 너도 살래? 오전 버티려면 이거라도 마셔야 해."',choices:[{type:'bad',text:'🥤 편의점 냉장고에서 음료를 직접 고른다.',delta:{지식:2},requiresClue:null,flags:['openDrink'],note:'openDrink:"cvs"',result:{title:'첫 음료 선택',text:'오전은 조금 버틸 수 있을 것 같다.',followup:'선택한 음료의 카페인 양은 오늘 섭취량에 그대로 더해진다.'}},{type:'good',text:'💧 "됐어, 이따 물 마실게." 민준의 시선을 견딘다.',delta:{판단력:3},requiresClue:null,flags:['noCaffeine'],note:'caffeineMg:0 / result.speaker:"민준"',result:{title:'어색한 거절',text:'"어, 진짜로?" 민준은 어깨를 으쓱하고 먼저 교실 쪽으로 걸어갔다. 조금 어색했지만, {name은} 카페인을 추가하지 않았다.'}}]},
-    {id:'v15_d1_night',day:14,loc:'🌙 D-14 내 방',type:'event',title:'오후 11시의 선택',speaker:'나레이터',emoji:'🌙',isEpisode:false,clues:[],text:'시험 기간 첫날부터 할 일이 많았다. 시계를 보니 오후 11시. 수학 문제집이 아직 반이 남아있다.',choices:[{type:'bad',text:'📚 문제집을 다 끝내고 새벽 1시에 잔다.',delta:{지식:10,건강:-8,수면:-8,판단력:-5},requiresClue:null,flags:[],note:'sleepHour:25 / sleepHours:6',result:{title:'완성된 문제집',text:'문제집은 끝냈다. 하지만 눈꺼풀이 무겁다.'}},{type:'good',text:'🛌 "오늘은 여기까지." 오후 11시 30분쯤 눕는다.',delta:{건강:6,수면:5,판단력:3},requiresClue:null,flags:[],note:'sleepHour:23 / sleepHours:7.5',result:{title:'미완성의 불안',text:'반쯤 남은 문제집이 눈에 밟혔다. 그래도 내일 아침에 다시 볼 힘은 남겨두었다.'}},{type:'bad',text:'☕ 카페인 음료를 고르고 새벽 3시까지 버틴다.',delta:{지식:12,건강:-15,수면:-15,카페인:-8},requiresClue:null,flags:['openDrink'],note:'openDrink:"cafe" / sleepHour:26',result:{title:'밤샘의 대가',text:'진도는 나갔다. 대신 새벽 공기가 차갑게 느껴졌다. 내일 아침 몸이 먼저 대답할 것이다.',followup:'수학 문제집은 더 많이 넘어갔다. 하지만 책상 위에 남은 빈 컵과 늦어진 시계가 내일 컨디션의 힌트처럼 보였다.'}}]},
-    {id:'v15_d2_class_headache',day:13,loc:'🏫 D-13 1교시',type:'event',title:'두통약을 검색하고 먹을까',speaker:'나레이터',emoji:'🔎',isEpisode:false,clues:[],text:'칠판 글씨가 흐릿하게 보인다. 어젯밤 늦게 잔 탓인지 눈꺼풀이 무겁고, 관자놀이도 지끈거린다. 옆자리 민준이 작게 속삭인다. "야, 카페인 없이 이거 버텨?"',choices:[{type:'bad',text:'☕ 쉬는 시간에 자판기/편의점 음료를 고른다.',delta:{지식:5,건강:-4,카페인:-7,수면:-4},requiresClue:null,flags:['openDrink'],note:'openDrink:"cvs"',result:{title:'버티는 힘',text:'눈은 떠졌다. 하지만 오늘도 카페인이 수업을 대신 밀어주는 느낌이 들었다.'}},{type:'good',text:'💧 물을 마시고 쉬는 시간에 잠깐 바람을 쐰다.',delta:{지식:-4,판단력:5,카페인:4},requiresClue:null,flags:['noCaffeine'],note:'caffeineMg:0',result:{title:'느린 버티기',text:'집중은 완벽하지 않았다. 그래도 바로 카페인에 기대는 습관은 만들지 않았다.'}},{type:'good',text:'💊 가방 속 두통약을 꺼내 상자 뒷면의 성분·복용법을 읽어본다.',delta:{건강:4,지식:8,판단력:6},requiresClue:null,flags:['labelChecked','analgesic'],note:'openOkMed:true / 괜찮아정 복약 정보 팝업 후 복용',result:{title:'복용 전 확인',text:'약 상자 뒷면에는 성분, 효능·효과, 용법·용량, 사용상의 주의사항이 적혀 있었다. {name은} 약을 바로 먹기 전에 오늘 이미 먹은 약이 있는지, 몇 시간 간격으로 먹어야 하는지 먼저 확인했다. 약은 이름보다 성분, 복용 간격, 주의사항을 확인하는 것이 중요하다.'}}]},
-    {id:'v15_d2_caffeine_bomb',day:13,loc:'🛒 D-13 편의점',type:'event',title:'★ 카페인 폭탄 해체',speaker:'{name}',emoji:'☕',isEpisode:true,clues:[{itemType:'magnifier',icon:'🔍',label:'캔 뒷면',title:'에너지드링크 뒷면 확대',body:'에너지드링크 (355mL)\n카페인 함량: 100mg\n표시: "카페인 함유"',isKey:false},{itemType:'phone',icon:'📱',label:'스마트폰',title:'청소년 카페인 하루 권장량 검색',body:'청소년 카페인 권장량\n= 체중(kg) × 2.5mg 이하\n\n50kg 기준: 125mg 이하\n오늘 이미 섭취: 100mg\n통증싹싹캡슐 추가 시: +50mg → 총 150mg',isKey:true}],text:'쉬는 시간이 되자 머리가 더 지끈거린다. 아침에 마신 에너지드링크 캔이 떠오르고, 가방 속 통증싹싹캡슐도 생각난다. 민준이 말한다. "그거 그냥 먹어. 두통엔 잘 듣잖아."',choices:[{type:'good',text:'📱 검색으로 카페인 합산을 계산하고 먹지 않기로 한다.',delta:{지식:15,판단력:12},requiresClue:1,flags:['labelChecked'],note:'skipIf: 에너지드링크를 마시지 않았으면 진행하지 않음',result:{title:'계산 성공',text:'100mg에 통증싹싹캡슐의 50mg을 더하면 150mg. 숫자로 보니 내 몸의 기준이 먼저 보였다.'}},{type:'bad',text:'💊 민준 말 듣고 그냥 먹는다.',delta:{건강:-15,카페인:-10,판단력:-10},requiresClue:null,flags:['analgesic','comboMedCaffeine'],note:'caffeineMg:50',result:{title:'카페인 중복',text:'잠깐의 효과 뒤에 불안한 두근거림이 따라왔다.'}}]},
-  ];
-  seed.forEach((scene, idx) => { SCENES[idx] = scene; });
-}
+// v4: v15 부분 덮어쓰기 시드 제거. DEFAULT_SCENES가 유일한 정본입니다.
 
 // ══════════════════════════════════════════
 // 17. 키보드 단축키
@@ -1941,7 +2829,6 @@ document.addEventListener('keydown', e => {
 // 18. 초기화
 // ══════════════════════════════════════════
 (function init() {
-  syncV15ScenarioSeed();
   snapshot('초기 로드');
   renderSidenav();
   renderOverview();
@@ -1952,3 +2839,5 @@ document.addEventListener('keydown', e => {
 </script>
 </body>
 </html>
+
+
