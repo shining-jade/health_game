@@ -1,0 +1,91 @@
+{
+  "title": "보건 미스터리 파일",
+  "recommendedCount": 6,
+  "structure": "episode-select-omnibus",
+  "sharedFrame": {
+    "school": "같은 학교",
+    "recurringCharacters": ["보건샘", "민재", "지우"],
+    "growthSystem": "육각형 역량 누적 성장",
+    "worksheetPolicy": "에피소드별 활동지 1:1 대응"
+  },
+  "episodes": [
+    {
+      "id": "EP01",
+      "caseId": "case01",
+      "title": "떨리는 손의 이유",
+      "theme": "시험기간 반복 카페인 섭취 + 약 복용 + 수면 부족",
+      "keywords": ["카페인", "수면 부족", "약 복용"],
+      "difficulty": "쉬움",
+      "estimatedTime": "15~20분",
+      "coreSkills": ["관찰력", "분석력", "신중함", "건강문해력"],
+      "worksheet": true,
+      "status": "prototype",
+      "thumbnail": "./assets/images/thumbnails/thumb_case01.webp"
+    },
+    {
+      "id": "EP02",
+      "caseId": "case02",
+      "title": "한 잔인데 왜 다르지?",
+      "theme": "에너지음료, 캔커피, 카페 커피의 용량과 카페인량 차이",
+      "keywords": ["음료 종류", "용량", "카페인 표시"],
+      "difficulty": "보통",
+      "estimatedTime": "15분",
+      "coreSkills": ["관찰력", "분석력", "건강문해력"],
+      "worksheet": true,
+      "status": "planned",
+      "thumbnail": "./assets/images/placeholders/placeholder_bg.webp"
+    },
+    {
+      "id": "EP03",
+      "caseId": "case03",
+      "title": "먹었나, 안 먹었나",
+      "theme": "중복 복용과 복용 시간 혼동",
+      "keywords": ["중복 복용", "복용 기록", "습관"],
+      "difficulty": "보통",
+      "estimatedTime": "15분",
+      "coreSkills": ["판단력", "신중함", "대응력"],
+      "worksheet": true,
+      "status": "planned",
+      "thumbnail": "./assets/images/placeholders/placeholder_bg.webp"
+    },
+    {
+      "id": "EP04",
+      "caseId": "case04",
+      "title": "같은 약 같아 보여도",
+      "theme": "가족 약 또는 타인 처방약 복용 문제",
+      "keywords": ["처방약", "가족 약", "공유 금지"],
+      "difficulty": "보통",
+      "estimatedTime": "15~20분",
+      "coreSkills": ["판단력", "대응력", "건강문해력"],
+      "worksheet": true,
+      "status": "planned",
+      "thumbnail": "./assets/images/placeholders/placeholder_bg.webp"
+    },
+    {
+      "id": "EP05",
+      "caseId": "case05",
+      "title": "SNS 속 공부 꿀팁의 함정",
+      "theme": "검증되지 않은 온라인 건강 정보와 광고/과장 정보 판별",
+      "keywords": ["SNS", "건강 정보", "디지털 리터러시"],
+      "difficulty": "보통",
+      "estimatedTime": "15~20분",
+      "coreSkills": ["분석력", "신중함", "건강문해력"],
+      "worksheet": true,
+      "status": "planned",
+      "thumbnail": "./assets/images/placeholders/placeholder_bg.webp"
+    },
+    {
+      "id": "EP06",
+      "caseId": "case06",
+      "title": "괜찮을 줄 알았어",
+      "theme": "약 복용 후 주의사항 미확인, 졸음/집중 저하",
+      "keywords": ["주의사항", "졸음", "설명서 읽기"],
+      "difficulty": "보통",
+      "estimatedTime": "15분",
+      "coreSkills": ["관찰력", "대응력", "건강문해력"],
+      "worksheet": true,
+      "status": "planned",
+      "thumbnail": "./assets/images/placeholders/placeholder_bg.webp"
+    }
+  ]
+}

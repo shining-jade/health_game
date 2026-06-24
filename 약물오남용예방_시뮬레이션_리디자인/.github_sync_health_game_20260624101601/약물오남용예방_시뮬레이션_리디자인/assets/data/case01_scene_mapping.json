@@ -1,0 +1,149 @@
+{
+  "caseId": "case01",
+  "title": "떨리는 손의 이유",
+  "activeAssetSet": "imagegen",
+  "characterLabelPolicy": {
+    "showLabelsWhenCharactersVisible": true,
+    "highlightCurrentSpeaker": true,
+    "hideLabelsWhenNoCharacters": true,
+    "labels": {
+      "minjae": "민재",
+      "jiwoo": "지우",
+      "nurse": "보건샘",
+      "teacher": "담임 선생님"
+    }
+  },
+  "scenes": [
+    {
+      "id": "case01_scene01",
+      "title": "이상 징후 발견",
+      "background": "./assets/images/backgrounds/case01/bg_case01_scene01_classroom_imagegen.webp",
+      "leftCharacter": {
+        "file": "./assets/images/characters/case01/npc_minjae_pale_imagegen.webp",
+        "name": "민재",
+        "characterId": "minjae"
+      },
+      "rightCharacter": {
+        "file": "./assets/images/characters/case01/npc_jiwoo_worried_imagegen.webp",
+        "name": "지우",
+        "characterId": "jiwoo"
+      },
+      "speaker": "지우",
+      "clues": []
+    },
+    {
+      "id": "case01_scene02",
+      "title": "민재 상태 질문",
+      "background": "./assets/images/backgrounds/case01/bg_case01_scene01_classroom_imagegen.webp",
+      "leftCharacter": {
+        "file": "./assets/images/characters/case01/npc_minjae_pale_imagegen.webp",
+        "name": "민재",
+        "characterId": "minjae"
+      },
+      "rightCharacter": {
+        "file": "./assets/images/characters/case01/npc_jiwoo_worried_imagegen.webp",
+        "name": "지우",
+        "characterId": "jiwoo"
+      },
+      "speaker": "민재",
+      "clues": []
+    },
+    {
+      "id": "case01_scene03",
+      "title": "책상/가방 조사",
+      "background": "./assets/images/backgrounds/case01/bg_case01_scene02_desk_imagegen.webp",
+      "leftCharacter": null,
+      "rightCharacter": null,
+      "speaker": null,
+      "clues": [
+        "./assets/images/clues/case01/clue_case01_medicine_bag_imagegen.webp",
+        "./assets/images/clues/case01/clue_case01_note_imagegen.webp",
+        "./assets/images/clues/case01/clue_case01_energy_drink_imagegen.webp"
+      ]
+    },
+    {
+      "id": "case01_scene04",
+      "title": "영수증 확인",
+      "background": "./assets/images/backgrounds/case01/bg_case01_scene03_clueview.webp",
+      "leftCharacter": null,
+      "rightCharacter": null,
+      "speaker": null,
+      "clues": [
+        "./assets/images/clues/case01/clue_case01_receipt_imagegen.webp"
+      ]
+    },
+    {
+      "id": "case01_scene05",
+      "title": "메신저 확인",
+      "background": "./assets/images/backgrounds/case01/bg_case01_scene03_clueview.webp",
+      "leftCharacter": null,
+      "rightCharacter": null,
+      "speaker": null,
+      "clues": [
+        "./assets/images/clues/case01/clue_case01_chat_capture_imagegen.webp"
+      ]
+    },
+    {
+      "id": "case01_scene06",
+      "title": "음료 단서 확인",
+      "background": "./assets/images/backgrounds/case01/bg_case01_scene03_clueview.webp",
+      "leftCharacter": null,
+      "rightCharacter": null,
+      "speaker": null,
+      "clues": [
+        "./assets/images/clues/case01/clue_case01_energy_drink_imagegen.webp"
+      ]
+    },
+    {
+      "id": "case01_scene07",
+      "title": "보건실 이동 후 정리",
+      "background": "./assets/images/backgrounds/case01/bg_case01_scene04_healthroom_imagegen.webp",
+      "leftCharacter": {
+        "file": "./assets/images/characters/case01/npc_minjae_relieved_imagegen.webp",
+        "name": "민재",
+        "characterId": "minjae"
+      },
+      "rightCharacter": {
+        "file": "./assets/images/characters/case01/npc_nurse_default_imagegen.webp",
+        "name": "보건샘",
+        "characterId": "nurse"
+      },
+      "speaker": "보건샘",
+      "clues": [
+        "./assets/images/clues/case01/clue_case01_receipt_imagegen.webp",
+        "./assets/images/clues/case01/clue_case01_medicine_bag_imagegen.webp",
+        "./assets/images/clues/case01/clue_case01_chat_capture_imagegen.webp"
+      ]
+    },
+    {
+      "id": "case01_scene08",
+      "title": "감정 회수 / 마무리",
+      "background": "./assets/images/backgrounds/case01/bg_case01_scene04_healthroom_imagegen.webp",
+      "leftCharacter": {
+        "file": "./assets/images/characters/case01/npc_minjae_relieved_imagegen.webp",
+        "name": "민재",
+        "characterId": "minjae"
+      },
+      "rightCharacter": {
+        "file": "./assets/images/characters/case01/npc_nurse_default_imagegen.webp",
+        "name": "보건샘",
+        "characterId": "nurse"
+      },
+      "speaker": "민재",
+      "clues": []
+    },
+    {
+      "id": "case01_scene09",
+      "title": "사건 종료 요약",
+      "background": "./assets/images/thumbnails/thumb_case01.webp",
+      "leftCharacter": null,
+      "rightCharacter": null,
+      "speaker": null,
+      "clues": [
+        "./assets/images/clues/case01/clue_case01_receipt_imagegen.webp",
+        "./assets/images/clues/case01/clue_case01_medicine_bag_imagegen.webp",
+        "./assets/images/clues/case01/clue_case01_energy_drink_imagegen.webp"
+      ]
+    }
+  ]
+}
