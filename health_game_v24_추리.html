@@ -2103,12 +2103,6 @@ body{background:
         <p>내 캐릭터를 키우며 일상 속 약물 오남용 상황을 헤쳐나가요. 올바른 선택이 능력치를 높여줘요!</p>
         <span class="tag tag-green">캐릭터 육성</span>
       </div>
-      <div class="mode-card teacher" onclick="goTeacher()">
-        <div class="mc-icon">🩺</div>
-        <h2>보건교사 모드</h2>
-        <p>보건실에 찾아오는 학생들의 케이스를 파악하고, 학급 투표로 함께 올바른 지도법을 찾아요.</p>
-        <span class="tag tag-orange">교사 시연 · 학급 투표</span>
-      </div>
     </div>
     <div class="training-footer">
       <div>전북특별자치도교육청 마약예방교육 교사연수회</div>
@@ -2123,7 +2117,7 @@ body{background:
     <div class="name-card">
       <div style="font-size:3rem;margin-bottom:14px;">🌱</div>
       <h2>시작 설정</h2>
-      <p>14일 동안 건강한 선택을 이어갈 캐릭터를 준비해 주세요</p>
+      <p>7일 동안 건강한 선택을 이어갈 캐릭터를 준비해 주세요</p>
       <div class="setup-field">
         <label>성별</label>
         <div class="seg-row" id="gender-row">
@@ -2131,7 +2125,7 @@ body{background:
           <button class="seg-btn" type="button" data-value="f" onclick="selectSegment('gender','f')">여</button>
         </div>
       </div>
-      <input id="name-inp" type="text" placeholder="이름을 입력하세요" maxlength="8">
+      <input id="name-inp" type="text" placeholder="학번 이름을 입력하세요" maxlength="20">
       <div class="setup-field">
         <label>체중</label>
         <div style="display:flex;align-items:center;">
@@ -2147,7 +2141,6 @@ body{background:
           <button class="seg-btn" type="button" data-value="2" onclick="selectSegment('grade','2')">2학년</button>
           <button class="seg-btn" type="button" data-value="3" onclick="selectSegment('grade','3')">3학년</button>
         </div>
-        <small>성별과 학년은 직접 선택해 주세요. 학년에 따라 난이도가 달라집니다.</small>
       </div>
       <div class="name-row">
         <button class="btn btn-ghost" style="flex:1" onclick="randomCharacter()">🎲 랜덤</button>
@@ -2833,7 +2826,11 @@ const NAMES_F=['하윤','예린','지혜','슬기','수아','나은','채원','�
 const randomName=()=>{
   const gender=document.querySelector('#gender-row .seg-btn.active')?.dataset.value||'m';
   const pool=gender==='f'?NAMES_F:NAMES_M;
-  document.getElementById('name-inp').value=pool[Math.floor(Math.random()*pool.length)];
+  const grade=document.querySelector('#grade-row .seg-btn.active')?.dataset.value||String(G.grade||1);
+  const classNo=String(Math.floor(Math.random()*6)+1).padStart(2,'0');
+  const studentNo=String(Math.floor(Math.random()*30)+1).padStart(2,'0');
+  const name=pool[Math.floor(Math.random()*pool.length)];
+  document.getElementById('name-inp').value=`${grade}${classNo}${studentNo} ${name}`;
 };
 function randomWeight(){
   const w=Math.floor(Math.random()*36)+40;
@@ -2845,9 +2842,9 @@ function randomGrade(){
   selectSegment('grade',grade);
 }
 function randomCharacter(){
+  randomGrade();
   randomName();
   randomWeight();
-  // 학년은 학습자가 직접 선택 (랜덤 제외)
 }
 function selectSegment(kind,value){
   const row=document.getElementById(kind+'-row'); if(!row)return;
@@ -4098,7 +4095,7 @@ function buildFourteenDayScenarios(){
         "location": "📝 D-Day 시험 당일",
         "scene": "scene_exam",
         "speaker": "나레이터",
-        "text": "14일이 여기까지 왔다. 시험지가 뒤집어진 채 책상 위에 있다. 지금 이 순간의 컨디션은 지난 2주 동안의 모든 선택이 만든 것이다. 배운 것을 떠올리며 마지막 결과를 확인해 보자.",
+        "text": "7일이 여기까지 왔다. 시험지가 뒤집어진 채 책상 위에 있다. 지금 이 순간의 컨디션은 지난 7일 동안의 모든 선택이 만든 것이다. 배운 것을 떠올리며 마지막 결과를 확인해 보자.",
         "choices": null
     },
     {
@@ -4115,11 +4112,7 @@ function buildFourteenDayScenarios(){
 }
 function haeunText(line){return `${line} 화면에는 자세한 내용이 블러 처리되어 있고, 소문만 빠르게 퍼지고 있습니다.`;}
 function gradeMultipliers(){
-  // 학년별 배율: [좋은 변화(양수), 나쁜 변화(음수)]
-  const g = G.grade || 1;
-  if(g===1) return {pos:1.3, neg:0.7};   // 1학년: 쉬움
-  if(g===3) return {pos:0.8, neg:1.3};   // 3학년: 어려움
-  return {pos:1.0, neg:1.0};             // 2학년: 기준
+  return {pos:1.0, neg:1.0};
 }
 function applyDelta(delta){
   const m = gradeMultipliers();
@@ -5364,7 +5357,7 @@ function drawEndMsg(){
   const sleep   = G.stats.sleep   || 0;
   const caffeine= G.stats.caffeine|| 0;
   const judgment= G.stats.judgment|| 0;
-  const avgCaffeine = Math.round((G.totalCaffeine || 0) / 14);
+  const avgCaffeine = Math.round((G.totalCaffeine || 0) / 7);
   const avgSleep = G.sleepCount ? ((G.sleepTotal || 0) / G.sleepCount) : 0;
   const avgSleepText = avgSleep ? avgSleep.toFixed(1) : '-';
   const analgesics = G.analgesicCount || 0;
@@ -5402,7 +5395,7 @@ function drawEndMsg(){
     ending = 'leader';
     title  = '🌟 건강한 리더';
     color  = '#5fc89a';
-    msg    = `${G.name}은(는) 14일 동안 균형 잡힌 선택을 이어갔습니다. 수면, 카페인 관리, 올바른 복약까지 모든 영역에서 고른 모습을 보였어요. 균형이 진짜 건강이에요!`;
+    msg    = `${G.name}은(는) 7일 동안 균형 잡힌 선택을 이어갔습니다. 수면, 카페인 관리, 올바른 복약까지 모든 영역에서 고른 모습을 보였어요. 균형이 진짜 건강이에요!`;
 
   } else if (highOutlier) {
     ending = 'skewed';
@@ -5415,7 +5408,7 @@ function drawEndMsg(){
     ending = 'sleep';
     title  = '😓 누적 피로형';
     color  = '#5eadff';
-    msg    = `${G.name}은(는) 수면과 체력이 모두 낮아졌어요. 14일 동안 잠을 제때 자지 못한 선택들이 쌓인 결과예요. 잠이 보약이에요!`;
+    msg    = `${G.name}은(는) 수면과 체력이 모두 낮아졌어요. 7일 동안 잠을 제때 자지 못한 선택들이 쌓인 결과예요. 잠이 보약이에요!`;
 
   } else if (caffeine <= 40 && judgment <= 40) {
     ending = 'danger';
