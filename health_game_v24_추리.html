@@ -2695,9 +2695,33 @@ let VOTE_TIME=30;
 function caffeineClues(){
   return [
     {type:'can', dynamicDrink:true, icon:'🥤', label:'음료 라벨', title:'음료 라벨', facts:['제품명: 선택한 음료', '표시: 카페인 함량 확인', '카페인 함량: 선택 후 표시']},
-    {type:'medicine', icon:'💊', label:'약 성분표', title:'통증싹싹캡슐 성분표', facts:['유효성분: 아세트아미노펜 300mg', '이소프로필안티피린 150mg', '카페인무수물 50mg']}
+    {type:'medicine', icon:'💊', label:'약 성분표', title:'통증싹싹캡슐 성분표', facts:['유효성분: 이부프로펜 75mg', '산화마그네슘 50mg', '카페인무수물 40mg', '알릴이소프로필아세틸우레아 30mg', '식후 복용 권장']}
   ];
 }
+
+const MINI_QUIZ = [
+  {
+    id:'dday_q1', type:'fill', episodeRef:'D-Day',
+    sentence:'약은 이름보다 [1], 감으로 먹기보다 [2], 함께 먹기 전 [3]을 확인해야 한다.',
+    blanks:['성분표','복용간격','주의사항'],
+    tiles:['성분표','복용간격','주의사항','광고문구','친구추천','맛'],
+    explanation:'약을 안전하게 쓰려면 성분표·복용간격·주의사항을 확인해야 해요.'
+  },
+  {
+    id:'dday_q2', type:'fill', episodeRef:'D-Day',
+    sentence:'일부 진통제·감기약에도 [1]이 들어 있을 수 있다. 커피, 에너지드링크, 약을 함께 먹으면 [2] 섭취가 될 수 있다. 이때 두근거림, 손떨림, 불면 같은 [3]이 나타날 수 있다.',
+    blanks:['카페인','중복','부작용'],
+    tiles:['카페인','중복','부작용','비타민','운동','기억력'],
+    explanation:'진통제·감기약에도 카페인 등 숨은 성분이 있을 수 있어요. 음료와 겹치면 중복 섭취가 됩니다.'
+  },
+  {
+    id:'dday_q3', type:'fill', episodeRef:'D-Day',
+    sentence:'카페인 음료를 마시기 전에는 자신의 [1] 계산할 줄 알아야 한다. 청소년의 하루 카페인 최대 섭취량은 체중 × [2]mg으로 계산한다. 음료의 카페인 [3]을 확인하고, 하루 최대 섭취량을 넘지 않는지 살펴야 한다. 하루 최대 섭취량을 넘으면 [4] 같은 증상이 나타날 수 있다.',
+    blanks:['하루 최대 섭취량을','2.5','함량','두근거림·손떨림·불면'],
+    tiles:['하루 최대 섭취량을','하루 수분 섭취량을','하루 칼로리 섭취량을','2.5','5','10','함량','당류','열량','두근거림·손떨림·불면','기침·콧물·오한','근육통·복통·두통'],
+    explanation:'카페인은 기준량을 넘으면 두근거림·손떨림·불면으로 나타나요. 마시기 전 내 하루 최대 섭취량과 제품 카페인 함량을 함께 확인해야 합니다.'
+  }
+];
 function upgradeGameData(data){
   if(!data || !Array.isArray(data.scenarios)) return data;
   const tempFollowups = data.scenarios.filter(s => s && s.tempFollowup);
@@ -2827,7 +2851,7 @@ const randomName=()=>{
   const gender=document.querySelector('#gender-row .seg-btn.active')?.dataset.value||'m';
   const pool=gender==='f'?NAMES_F:NAMES_M;
   const grade=document.querySelector('#grade-row .seg-btn.active')?.dataset.value||String(G.grade||1);
-  const classNo=String(Math.floor(Math.random()*6)+1);
+  const classNo=String(Math.floor(Math.random()*6)+1).padStart(2,'0');
   const studentNo=String(Math.floor(Math.random()*30)+1).padStart(2,'0');
   const name=pool[Math.floor(Math.random()*pool.length)];
   document.getElementById('name-inp').value=`${grade}${classNo}${studentNo} ${name}`;
@@ -3339,7 +3363,7 @@ function buildFourteenDayScenarios(){
                 "facts": [
                     "청소년 카페인 권장량 = 체중(kg) × 2.5mg 이하",
                     "50kg 기준: 125mg 이하",
-                    "에너지드링크 100mg + 통증싹싹캡슐 50mg = 150mg"
+                    "에너지드링크 100mg + 통증싹싹캡슐 40mg = 140mg"
                 ]
             }
         ],
@@ -3355,7 +3379,7 @@ function buildFourteenDayScenarios(){
                 },
                 "result": {
                     "title": "계산 성공",
-                    "text": "[속마음] 음료 100에 약 50이면… 150이잖아? 이거 내 기준보다 너무 많은데.\n[선택 결과] 음료와 약의 카페인은 따로가 아니라 합산된다."
+                    "text": "[속마음] 음료 100에 약 40이면… 140이잖아? 이거 내 기준에 가까울 수 있네.\n[선택 결과] 음료와 약의 카페인은 따로가 아니라 합산된다."
                 }
             },
             {
@@ -3370,7 +3394,8 @@ function buildFourteenDayScenarios(){
                     "title": "카페인 중복",
                     "text": "[속마음] 어? 잠깐 괜찮은가 싶더니 가슴이 두근거리기 시작하네…\n[선택 결과] 음료와 약의 카페인은 따로가 아니라 합산된다."
                 },
-                "caffeineMg": 50
+                "caffeineMg": 40,
+                "comboMedCaffeine": true
             }
         ]
     },
@@ -3509,8 +3534,8 @@ function buildFourteenDayScenarios(){
                 "label": "돋보기",
                 "title": "통증싹싹캡슐 확대",
                 "facts": [
-                    "작은 글씨: 카페인무수물 50mg",
-                    "아세트아미노펜 300mg + IPA 150mg",
+                    "작은 글씨: 카페인무수물 40mg",
+                    "이부프로펜 75mg + 산화마그네슘 50mg + 알릴이소프로필아세틸우레아 30mg",
                     "에너지드링크와 함께 먹으면 카페인 합산"
                 ]
             },
@@ -3522,14 +3547,14 @@ function buildFourteenDayScenarios(){
                 "facts": [
                     "오늘 마신 음료: 에너지드링크 1캔",
                     "카페인 100mg",
-                    "통증싹싹캡슐 추가 시 총 150mg"
+                    "통증싹싹캡슐 추가 시 총 140mg"
                 ]
             }
         ],
         "text": "점심 후 두통이 온다. 가방에서 통증싹싹캡슐을 꺼냈다. 아까 에너지드링크도 한 캔 마셨는데, 먹어도 괜찮을까?",
         "choices": [
             {
-                "text": "🔍 돋보기로 약 속 카페인 50mg을 발견하고 복용하지 않는다.",
+                "text": "🔍 돋보기로 약 속 카페인 40mg을 발견하고 복용하지 않는다.",
                 "good": true,
                 "delta": {
                     "knowledge": 15,
@@ -3538,7 +3563,7 @@ function buildFourteenDayScenarios(){
                 },
                 "result": {
                     "title": "숨은 성분 발견",
-                    "text": "[속마음] 약 안에 카페인이 숨어 있었네! 음료 100에 이거 50이면… 멈추는 게 맞아.\n[선택 결과] 약에 포함된 카페인도 섭취량에 합산된다."
+                    "text": "[속마음] 약 안에 카페인이 숨어 있었네! 음료 100에 이거 40이면… 멈추는 게 맞아.\n[선택 결과] 약에 포함된 카페인도 섭취량에 합산된다."
                 }
             },
             {
@@ -3553,7 +3578,8 @@ function buildFourteenDayScenarios(){
                     "title": "카페인 중복",
                     "text": "[속마음] 또 두근거려… 돋보기로 성분만 봤어도 피했을 텐데."
                 },
-                "caffeineMg": 50
+                "caffeineMg": 40,
+                "comboMedCaffeine": true
             },
             {
                 "text": "💧 물 마시고 잠깐 눕는다.",
@@ -3635,7 +3661,7 @@ function buildFourteenDayScenarios(){
                 "label": "성분표 비교",
                 "title": "감기뚝정 + 괜찮아정",
                 "facts": [
-                    "감기뚝정: 아세트아미노펜 300mg + 항히스타민",
+                    "감기뚝정: 아세트아미노펜 300mg + 항히스타민 + 무수카페인 30mg",
                     "괜찮아정: 아세트아미노펜 500mg",
                     "둘 다 먹으면 같은 성분이 중복됨"
                 ]
@@ -3653,7 +3679,8 @@ function buildFourteenDayScenarios(){
                 "result": {
                     "title": "성분 중복 발견",
                     "text": "[속마음] 어? 두 약 다 아세트아미노펜이잖아. 이름만 다르지 같은 성분이네.\n[선택 결과] 이름이 달라도 성분이 같으면 합산해야 한다."
-                }
+                },
+                "caffeineMg": 30
             },
             {
                 "text": "💊 두통이 심하니 괜찮아정도 먹는다.",
@@ -3665,7 +3692,8 @@ function buildFourteenDayScenarios(){
                 "result": {
                     "title": "성분 중복",
                     "text": "[속마음] 감기뚝정에 괜찮아정까지… 이거 계속 먹다간 하루 최대량 넘겠는데.\n[선택 결과] 같은 성분(아세트아미노펜)을 반복 복용하면 하루 최대량에 가까워질 수 있다."
-                }
+                },
+                "caffeineMg": 30
             },
             {
                 "text": "🩺 보건실에 가서 두 약을 같이 보여준다.",
@@ -3678,7 +3706,8 @@ function buildFourteenDayScenarios(){
                     "title": "전문가 상담",
                     "text": "[보건샘] \"두 약 성분표를 같이 보자. 여기, 둘 다 아세트아미노펜이 들었지?\"\n[속마음] 혼자 판단 안 하고 물어보길 잘했다."
                 },
-                "healthOffice": "fasting"
+                "healthOffice": "fasting",
+                "caffeineMg": 30
             }
         ]
     },
@@ -3686,48 +3715,303 @@ function buildFourteenDayScenarios(){
         "type": "event",
         "day": 8,
         "countdown": "D-7 시험기간",
-        "location": "🪞 D-7 집 거울 앞",
-        "scene": "scene_bedroom",
-        "speaker": "나레이터",
-        "text": "7일이 지났다. 거울을 보니 눈 밑이 칙칙하고 어깨가 무겁다. 지난 일주일의 선택이 몸에 남아있다.",
+        "location": "🏪 D-7 등굣길",
+        "scene": "scene_convenience",
+        "speaker": "민준",
+        "text": "시험이 일주일 앞으로 다가왔다. 어젯밤 좀 늦게 잤더니 아침부터 머리가 무겁다. 교문 앞 편의점에서 민준이 캔을 흔들며 나온다. \"야, 벌써 졸려? 이거 'THE KING ENERGY' 죽이는데. 너도 하나 사줄까?\"",
         "choices": [
             {
-                "text": "📓 복용 수첩에 지난 7일 선택을 정리하고 패턴을 분석한다.",
+                "text": "🥤 받아 마신다.",
+                "good": false,
+                "delta": {
+                    "knowledge": 15,
+                    "social": 5,
+                    "judgment": -5
+                },
+                "result": {
+                    "title": "마신 뒤 확인한 라벨",
+                    "text": "[음료 라벨]\nTHE KING ENERGY · 카페인 100mg\n\n[선택 결과] 잠은 잠깐 깼지만 오늘 카페인 총량에 100mg이 더해졌다."
+                },
+                "caffeineMg": 100,
+                "nextLocation": "🏫 D-7 일과 중"
+            },
+            {
+                "text": "🔎 \"잠깐, 성분 좀 보고.\"",
+                "good": true,
+                "delta": {
+                    "knowledge": 10
+                },
+                "result": {
+                    "title": "라벨 확인",
+                    "text": "[정보카드]\nTHE KING ENERGY\n카페인 100mg"
+                },
+                "nextLocation": "🔎 D-7 등굣길 라벨 확인 후 선택"
+            },
+            {
+                "text": "🙅 \"난 됐어.\" 거절한다.",
                 "good": true,
                 "delta": {
                     "judgment": 10,
-                    "knowledge": 5
+                    "knowledge": -10,
+                    "social": -5
                 },
                 "result": {
-                    "title": "1주차 리포트",
-                    "text": "[속마음] 뭐가 무너졌는지 적어보니까 패턴이 보이네. 문제를 찾은 게 시작이지."
+                    "title": "거절",
+                    "text": "[선택 결과] 잠은 덜 깨지만 오늘 첫 카페인은 더하지 않았다."
                 },
-                "showReport": 8
-            },
+                "caffeineMg": 0,
+                "noCaffeine": true,
+                "nextLocation": "🏫 D-7 일과 중"
+            }
+        ]
+    },
+    {
+        "type": "event",
+        "day": 8,
+        "countdown": "D-7 시험기간",
+        "location": "🔎 D-7 등굣길 라벨 확인 후 선택",
+        "scene": "scene_convenience",
+        "speaker": "{name}",
+        "text": "라벨을 보니 THE KING ENERGY 한 캔에는 카페인 100mg이 들어 있다. 민준이 아직 캔을 내밀고 있다.",
+        "choices": [
             {
-                "text": "🔄 카페인을 줄이고 수면을 늘리기로 결심한다.",
-                "good": true,
-                "delta": {
-                    "judgment": 8,
-                    "caffeine": 8,
-                    "sleep": 8
-                },
-                "result": {
-                    "title": "회복 계획",
-                    "text": "[속마음] 2주차엔 카페인이랑 수면부터 다시 잡아보자."
-                }
-            },
-            {
-                "text": "😐 \"이 정도면 괜찮지 않나?\" 몸의 신호를 무시한다.",
+                "text": "🥤 그래도 마신다.",
                 "good": false,
                 "delta": {
-                    "health": -5,
-                    "judgment": -4
+                    "knowledge": 15,
+                    "social": 5,
+                    "judgment": -5
                 },
                 "result": {
-                    "title": "무시된 신호",
-                    "text": "[속마음] 몸이 보내는 신호를 자꾸 넘기네… 이러다 더 크게 돌아오는 거 아냐?"
-                }
+                    "title": "알고 마신 선택",
+                    "text": "[선택 결과] 카페인 100mg을 확인한 뒤 마셨다. 오늘 총량에 그대로 더해진다."
+                },
+                "caffeineMg": 100,
+                "nextLocation": "🏫 D-7 일과 중"
+            },
+            {
+                "text": "🙅 확인했으니 마시지 않는다.",
+                "good": true,
+                "delta": {
+                    "judgment": 10,
+                    "knowledge": -10,
+                    "social": -5
+                },
+                "result": {
+                    "title": "확인 후 거절",
+                    "text": "[선택 결과] 잠은 덜 깨지만 라벨 확인 뒤 카페인을 더하지 않았다."
+                },
+                "caffeineMg": 0,
+                "noCaffeine": true,
+                "nextLocation": "🏫 D-7 일과 중"
+            }
+        ]
+    },
+    {
+        "type": "event",
+        "day": 8,
+        "countdown": "D-7 시험기간",
+        "location": "🏫 D-7 일과 중",
+        "scene": "scene_classroom",
+        "speaker": "{name}",
+        "text": "점심을 먹고 나니 눈이 스르르 감긴다. 5교시는 제일 어려운 수학이다. 매점에 갈까, 잠깐 몸을 움직일까, 그냥 버틸까?",
+        "choices": [
+            {
+                "text": "☕ 매점 캔커피를 마신다.",
+                "good": false,
+                "delta": {
+                    "knowledge": 10,
+                    "sleep": -5
+                },
+                "result": {
+                    "title": "캔커피",
+                    "text": "[음료 라벨]\n캔커피 · 카페인 81mg\n\n[선택 결과] 잠은 깼지만 오늘 카페인 총량에 81mg이 더해졌다."
+                },
+                "caffeineMg": 81,
+                "nextLocation": "🏪 D-7 방과후"
+            },
+            {
+                "text": "🏃 친구랑 운동장 한 바퀴를 걷는다.",
+                "good": true,
+                "delta": {
+                    "knowledge": 8,
+                    "health": 10
+                },
+                "result": {
+                    "title": "몸을 깨우는 선택",
+                    "text": "[선택 결과] 카페인 없이도 몸을 움직여 졸음을 줄였다."
+                },
+                "nextLocation": "🏪 D-7 방과후"
+            },
+            {
+                "text": "😴 엎드려 10분 잔다.",
+                "good": true,
+                "delta": {
+                    "sleep": 5,
+                    "health": 5,
+                    "knowledge": -5
+                },
+                "result": {
+                    "title": "짧은 회복",
+                    "text": "[선택 결과] 잠깐 회복했지만 수업 직전 집중은 조금 늦게 올라온다."
+                },
+                "nextLocation": "🏪 D-7 방과후"
+            },
+            {
+                "text": "😐 그냥 버틴다.",
+                "good": false,
+                "delta": {
+                    "knowledge": -10,
+                    "judgment": -5
+                },
+                "result": {
+                    "title": "버티기",
+                    "text": "[선택 결과] 아무것도 더하지 않았지만 피로가 집중을 계속 흔든다."
+                },
+                "nextLocation": "🏪 D-7 방과후"
+            }
+        ]
+    },
+    {
+        "type": "event",
+        "day": 8,
+        "countdown": "D-7 시험기간",
+        "location": "🏪 D-7 방과후",
+        "scene": "scene_convenience",
+        "speaker": "{name}",
+        "clues": [
+            {
+                "type": "medicine",
+                "icon": "🏷️",
+                "label": "라벨 확인하기",
+                "title": "편의점 음료 카페인",
+                "facts": [
+                    "에너지드링크: 카페인 100mg",
+                    "캔커피: 카페인 81mg",
+                    "비타민음료: 카페인 0mg",
+                    "물: 카페인 0mg"
+                ]
+            }
+        ],
+        "text": "방과후 독서실로 가는 길. 오늘따라 유난히 피곤하다. 편의점 냉장고 앞에 섰다. 라벨을 확인하면 음료별 카페인을 볼 수 있다.",
+        "choices": [
+            {
+                "text": "🥤 에너지드링크를 고른다.",
+                "good": false,
+                "delta": {
+                    "knowledge": 15,
+                    "sleep": -10
+                },
+                "result": {
+                    "title": "에너지드링크",
+                    "text": "[음료 라벨]\n에너지드링크 · 카페인 100mg\n\n[선택 결과] 오늘 총량에 100mg이 더해지고 밤잠이 밀릴 수 있다."
+                },
+                "caffeineMg": 100,
+                "nextLocation": "📓 D-7 마무리"
+            },
+            {
+                "text": "☕ 캔커피를 고른다.",
+                "good": false,
+                "delta": {
+                    "knowledge": 8,
+                    "sleep": -5
+                },
+                "result": {
+                    "title": "캔커피",
+                    "text": "[음료 라벨]\n캔커피 · 카페인 81mg\n\n[선택 결과] 오늘 총량에 81mg이 더해진다."
+                },
+                "caffeineMg": 81,
+                "nextLocation": "📓 D-7 마무리"
+            },
+            {
+                "text": "🍊 비타민음료를 고른다.",
+                "good": true,
+                "delta": {
+                    "health": 5
+                },
+                "result": {
+                    "title": "비타민음료",
+                    "text": "[음료 라벨]\n비타민음료 · 카페인 0mg\n\n[선택 결과] 카페인은 없지만 즉각적인 각성 음료는 아니다."
+                },
+                "caffeineMg": 0,
+                "noCaffeine": true,
+                "nextLocation": "📓 D-7 마무리"
+            },
+            {
+                "text": "💧 물 + 5분 스트레칭을 한다.",
+                "good": true,
+                "delta": {
+                    "judgment": 10,
+                    "health": 5,
+                    "knowledge": -5
+                },
+                "result": {
+                    "title": "물과 스트레칭",
+                    "text": "[선택 결과] 카페인은 더하지 않았지만 각성 효과는 천천히 온다."
+                },
+                "caffeineMg": 0,
+                "noCaffeine": true,
+                "nextLocation": "📓 D-7 마무리"
+            }
+        ]
+    },
+    {
+        "type": "narration",
+        "day": 8,
+        "countdown": "D-7 시험기간",
+        "location": "📓 D-7 마무리",
+        "scene": "scene_bedroom",
+        "speaker": "나레이터",
+        "text": "오늘 카페인 총량은 화면의 게이지에 쌓여 있다. 나의 한계선은 체중 × 2.5mg이다. 총량이 한계선을 넘는 날이 잦아지면 결과 유형에도 경고가 남는다.",
+        "choices": null
+    },
+    {
+        "type": "event",
+        "day": 9,
+        "countdown": "D-6 시험기간",
+        "location": "🚶 D-6 등굣길",
+        "scene": "scene_commute",
+        "speaker": "{name}",
+        "text": "어젯밤 공부하느라 늦게까지 깨어 있었다. 짧게 잔 탓에 아침부터 관자놀이가 욱신거린다. 가방을 뒤지니 어제 약국에서 산 '아야스톱정' 한 알이 나온다. 그런데 아침을 못 먹고 나왔다.",
+        "choices": [
+            {
+                "text": "💊 그냥 빈속에 먹는다.",
+                "good": false,
+                "delta": {
+                    "knowledge": -5,
+                    "health": -15
+                },
+                "result": {
+                    "title": "공복 복용",
+                    "text": "[선택 결과] 두통은 조금 줄었지만 공복에 이부프로펜을 먹어 위 부담이 생길 수 있다."
+                },
+                "fastingMed": true,
+                "nextLocation": "🏫 D-6 일과 중"
+            },
+            {
+                "text": "📋 설명서부터 읽는다.",
+                "good": true,
+                "delta": {
+                    "knowledge": 15
+                },
+                "result": {
+                    "title": "설명서 확인",
+                    "text": "[정보카드]\n아야스톱정 — 성분: 이부프로펜 200mg\n주의: 공복 복용 금지(위 점막 자극·위출혈 위험)\n복용: 식후 복용"
+                },
+                "nextLocation": "🔎 D-6 아야스톱정 설명서 확인 후 선택"
+            },
+            {
+                "text": "🙅 그냥 참는다.",
+                "good": true,
+                "delta": {
+                    "judgment": 5,
+                    "knowledge": -15
+                },
+                "result": {
+                    "title": "참기",
+                    "text": "[선택 결과] 약은 먹지 않았지만 두통 때문에 오전 집중이 크게 흔들린다."
+                },
+                "nextLocation": "🏫 D-6 일과 중"
             }
         ]
     },
@@ -3735,69 +4019,227 @@ function buildFourteenDayScenarios(){
         "type": "event",
         "day": 9,
         "countdown": "D-6 시험기간",
-        "location": "🩺 D-6 보건실",
-        "scene": "scene_health",
+        "location": "🔎 D-6 아야스톱정 설명서 확인 후 선택",
+        "scene": "scene_commute",
         "speaker": "{name}",
-        "clues": [
-            {
-                "type": "medicine",
-                "icon": "📓",
-                "label": "복용 수첩",
-                "title": "오늘 복용 기록",
-                "facts": [
-                    "오후 1시: 괜찮아정 1정 복용",
-                    "현재: 오후 4시",
-                    "재복용 가능 시간: 오후 5~7시"
-                ]
-            },
-            {
-                "type": "medicine",
-                "icon": "📋",
-                "label": "성분표",
-                "title": "괜찮아정 복용 간격",
-                "facts": [
-                    "복용 간격: 4~6시간마다",
-                    "1일 최대 8정(4,000mg)",
-                    "3시간 만에 재복용은 위험"
-                ]
-            }
-        ],
-        "text": "오후 1시에 괜찮아정을 먹었다. 지금은 오후 4시. 두통이 아직 남아있다. 민준이 \"3시간 됐으면 한 알 더 먹어도 되지 않아?\" 라고 한다.",
+        "text": "설명서를 확인했다. 아야스톱정은 이부프로펜 200mg이며 공복 복용 금지, 식후 복용이 적혀 있다.",
         "choices": [
             {
-                "text": "📓 복용 수첩을 확인하고 아직 4시간이 안 됐다고 거절한다.",
+                "text": "🥛 편의점서 우유·빵 먹고 먹는다.",
                 "good": true,
                 "delta": {
+                    "knowledge": 13,
+                    "health": 5
+                },
+                "result": {
+                    "title": "식후 복용",
+                    "text": "[선택 결과] 빈속을 피하고 약을 먹었다. 바쁜 아침이지만 설명서 확인이 선택을 바꿨다."
+                },
+                "nextLocation": "🏫 D-6 일과 중"
+            },
+            {
+                "text": "🍱 점심까지 기다렸다 식후 복용한다.",
+                "good": true,
+                "delta": {
+                    "judgment": 10,
                     "health": 5,
-                    "judgment": 15
-                },
-                "result": {
-                    "title": "시간 확인",
-                    "text": "[속마음] 아직 3시간밖에 안 됐네. 4~6시간은 지나야 하는데. 수첩 적어두길 잘했다.\n[선택 결과] 복용 간격(4~6시간)을 지키지 않으면 과다 복용이 될 수 있다."
-                }
-            },
-            {
-                "text": "💊 민준 말 믿고 한 알 더 먹는다.",
-                "good": false,
-                "delta": {
-                    "health": -12,
-                    "judgment": -10
-                },
-                "result": {
-                    "title": "재복용 위험",
-                    "text": "[민준] \"3시간 지났으면 한 알 더 먹어도 되지 않아?\"\n[선택 결과] 3시간 만의 재복용은 혈중 농도를 과도하게 올릴 수 있다."
-                }
-            },
-            {
-                "text": "💧 물 마시고 30분 더 기다린다.",
-                "good": true,
-                "delta": {
-                    "judgment": 8
+                    "knowledge": -10
                 },
                 "result": {
                     "title": "기다리는 선택",
-                    "text": "[속마음] 약 말고 다른 방법으로 좀 버텨보자. 시간 지나면 다시 판단하면 되니까.\n[선택 결과] 4~6시간이 지나면 재복용 여부를 다시 판단할 수 있다."
-                }
+                    "text": "[선택 결과] 지금 집중은 조금 손해 보지만 공복 복용은 피했다."
+                },
+                "nextLocation": "🏫 D-6 일과 중"
+            }
+        ]
+    },
+    {
+        "type": "event",
+        "day": 9,
+        "countdown": "D-6 시험기간",
+        "location": "🏫 D-6 일과 중",
+        "scene": "scene_classroom",
+        "speaker": "짝꿍",
+        "text": "2교시. 아까 약을 먹었는데도 두통이 여전하다. 짝꿍이 말한다. \"약 먹었다며? 안 들으면 한 알 더 먹어. 나도 그렇게 해.\"",
+        "choices": [
+            {
+                "text": "💊 한 알 더 먹는다.",
+                "good": false,
+                "delta": {
+                    "health": -15,
+                    "knowledge": -10
+                },
+                "result": {
+                    "title": "복용 간격 무시",
+                    "text": "[선택 결과] 약이 안 듣는다고 바로 더 먹으면 복용 간격을 놓칠 수 있다."
+                },
+                "analgesic": true,
+                "nextLocation": "📚 D-6 방과후"
+            },
+            {
+                "text": "📋 \"복용 간격 봐야 해.\" 설명서를 확인한다.",
+                "good": true,
+                "delta": {
+                    "knowledge": 15,
+                    "judgment": 10
+                },
+                "result": {
+                    "title": "복용 간격 확인",
+                    "text": "[정보카드]\n복용법: 4~6시간 간격, 1일 3회까지\n현재 마지막 복용 후 약 2시간 경과"
+                },
+                "nextLocation": "📚 D-6 방과후"
+            },
+            {
+                "text": "🩺 보건실에 간다.",
+                "good": true,
+                "delta": {
+                    "health": 10,
+                    "knowledge": 5,
+                    "judgment": -8
+                },
+                "result": {
+                    "title": "상담 선택",
+                    "text": "[선택 결과] 수업 시간은 조금 빠졌지만 복용 판단을 혼자 하지 않았다."
+                },
+                "nextLocation": "📚 D-6 방과후"
+            },
+            {
+                "text": "💧 물 마시고 좀 더 기다린다.",
+                "good": true,
+                "delta": {
+                    "judgment": 10,
+                    "knowledge": -5
+                },
+                "result": {
+                    "title": "기다리기",
+                    "text": "[선택 결과] 바로 더 먹지 않고 시간을 두고 몸 상태를 본다."
+                },
+                "nextLocation": "📚 D-6 방과후"
+            }
+        ]
+    },
+    {
+        "type": "event",
+        "day": 9,
+        "countdown": "D-6 시험기간",
+        "location": "📚 D-6 방과후",
+        "scene": "scene_library",
+        "speaker": "친구",
+        "text": "독서실. 옆자리 친구가 작은 알약을 내민다. \"이거 두통에 직빵이야. 우리 엄마가 챙겨준 건데 너 줄게. 먹어봐.\" 친구가 건넨 알약은 이름도 성분도 아직 모른다.",
+        "choices": [
+            {
+                "text": "💊 받아서 바로 먹는다.",
+                "good": false,
+                "delta": {
+                    "social": 5,
+                    "health": -20,
+                    "knowledge": -15
+                },
+                "result": {
+                    "title": "미확인 약 복용",
+                    "text": "[선택 결과] 고마운 마음은 받았지만, 남이 준 약을 성분 확인 없이 먹었다."
+                },
+                "analgesic": true,
+                "nextLocation": "📓 D-6 마무리"
+            },
+            {
+                "text": "🙅 \"무슨 약인지 알아야 해.\" 거절한다.",
+                "good": true,
+                "delta": {
+                    "knowledge": 15,
+                    "judgment": 10,
+                    "social": -5
+                },
+                "result": {
+                    "title": "미확인 약 거절",
+                    "text": "[선택 결과] 관계가 살짝 어색해졌지만 이름과 성분을 모르는 약은 먹지 않았다."
+                },
+                "nextLocation": "📓 D-6 마무리"
+            },
+            {
+                "text": "🔎 약 이름·성분을 물어본다.",
+                "good": true,
+                "delta": {
+                    "knowledge": 10
+                },
+                "result": {
+                    "title": "확인 질문",
+                    "text": "[선택 결과] 친구도 정확히 모른다는 걸 알게 됐다."
+                },
+                "nextLocation": "📓 D-6 마무리"
+            },
+            {
+                "text": "💊 \"고맙지만 내 약 먹을게.\"",
+                "good": true,
+                "delta": {
+                    "judgment": 15,
+                    "health": 5,
+                    "social": -3
+                },
+                "result": {
+                    "title": "내 약만 사용",
+                    "text": "[선택 결과] 상대의 호의는 인정하되, 알 수 없는 약은 피했다."
+                },
+                "nextLocation": "📓 D-6 마무리"
+            }
+        ]
+    },
+    {
+        "type": "narration",
+        "day": 9,
+        "countdown": "D-6 시험기간",
+        "location": "📓 D-6 마무리",
+        "scene": "scene_bedroom",
+        "speaker": "나레이터",
+        "text": "오늘 복용한 약의 횟수와 복용 간격을 떠올려 본다. 약은 효과만 보는 것이 아니라, 언제 얼마나 먹었는지도 함께 기록해야 한다.",
+        "choices": null
+    },
+    {
+        "type": "event",
+        "day": 10,
+        "countdown": "D-5 시험기간",
+        "location": "🏠 D-5 등굣길",
+        "scene": "scene_bedroom",
+        "speaker": "엄마",
+        "text": "며칠째 이어진 공부로 몸은 무겁지만 마음은 급하다. 등교 준비를 하는데 엄마가 머리를 짚으며 부른다. \"엄마가 어제 회식에서 한잔했더니 머리가 깨질 것 같네… 서랍에 두통약 있지? 하나만 꺼내 줄래?\" 서랍을 여니 '괜찮아정(아세트아미노펜 500mg)'이 보인다.",
+        "choices": [
+            {
+                "text": "💊 얼른 꺼내 드린다.",
+                "good": false,
+                "delta": {
+                    "social": 5,
+                    "knowledge": -10
+                },
+                "result": {
+                    "title": "바로 건넴",
+                    "text": "[선택 결과] 약을 건네기 전 설명서를 확인하지 않았다."
+                },
+                "nextLocation": "🏫 D-5 일과 중"
+            },
+            {
+                "text": "📋 약 설명서를 먼저 읽는다.",
+                "good": true,
+                "delta": {
+                    "knowledge": 15
+                },
+                "result": {
+                    "title": "괜찮아정 설명서",
+                    "text": "[정보카드]\n괜찮아정 — 성분: 아세트아미노펜 500mg\n주의: 음주 후 복용 시 간 손상 위험\n술을 마신 경우 의사·약사와 상담"
+                },
+                "nextLocation": "🔎 D-5 엄마 약 설명서 확인 후 선택"
+            },
+            {
+                "text": "💧 \"물 먼저 드시는 게…\" 머뭇거린다.",
+                "good": true,
+                "delta": {
+                    "judgment": 3,
+                    "social": -3
+                },
+                "result": {
+                    "title": "망설임",
+                    "text": "[선택 결과] 바로 약을 건네지는 않았지만, 근거를 확인하지는 못했다."
+                },
+                "nextLocation": "🏫 D-5 일과 중"
             }
         ]
     },
@@ -3805,50 +4247,245 @@ function buildFourteenDayScenarios(){
         "type": "event",
         "day": 10,
         "countdown": "D-5 시험기간",
-        "location": "🏫 D-5 교실",
-        "scene": "scene_classroom",
-        "speaker": "하은",
-        "text": "하은이 조용히 다가온다. \"민준이 오늘도 에너지드링크 마시고 밤새려고 한대. 심장 두근거린다는데 괜찮은 거야?\"",
+        "location": "🔎 D-5 엄마 약 설명서 확인 후 선택",
+        "scene": "scene_bedroom",
+        "speaker": "{name}",
+        "text": "설명서에는 괜찮아정의 성분이 아세트아미노펜 500mg이고, 음주 후 복용 시 간 손상 위험이 있다고 적혀 있다.",
         "choices": [
             {
-                "text": "🚩 두근거림은 그냥 넘기면 안 된다고 말한다.",
+                "text": "💧 \"엄마, 술 드신 날은 위험하대. 물 많이 드시고 좀 쉬어보는 건…\"",
                 "good": true,
                 "delta": {
-                    "knowledge": 8,
-                    "judgment": 10,
-                    "social": 8
+                    "knowledge": 10,
+                    "social": 10,
+                    "judgment": 10
                 },
                 "result": {
-                    "title": "위험 신호를 짚음",
-                    "text": "[속마음] 민준이 상태가 영 이상한데. 카페인 더 마시지 말고 쉬라고 해야겠다.\n[민준] \"괜찮아, 좀 두근거리는 것뿐이야.\""
-                }
+                    "title": "설명서 근거로 말하기",
+                    "text": "[선택 결과] 약 대신 수분과 휴식을 먼저 권했다."
+                },
+                "nextLocation": "🏫 D-5 일과 중"
             },
             {
-                "text": "🩺 민준을 보건샘에게 데려가자고 한다.",
-                "good": true,
-                "delta": {
-                    "judgment": 10,
-                    "social": 8
-                },
-                "result": {
-                    "title": "전문가 연결",
-                    "text": "[속마음] 이건 나 혼자 판단할 게 아니야.\n[보건샘] \"잘 데려왔어. 이런 신호는 그냥 넘기면 안 돼.\""
-                },
-                "healthOffice": "friend"
-            },
-            {
-                "text": "😐 \"그래? 괜찮대?\" 관심 없이 넘긴다.",
+                "text": "💊 위험을 알지만 그냥 드린다.",
                 "good": false,
                 "delta": {
-                    "judgment": -5,
-                    "social": -3
+                    "social": 5,
+                    "health": -15,
+                    "knowledge": -5
                 },
                 "result": {
-                    "title": "놓친 신호",
-                    "text": "[속마음] 그냥 두근거리는 거겠지 뭐… 근데 친구 일이라 그냥 넘겨도 되나?"
-                }
+                    "title": "알고도 건넴",
+                    "text": "[선택 결과] 설명서를 봤지만 음주 후 주의사항을 선택에 반영하지 못했다."
+                },
+                "nextLocation": "🏫 D-5 일과 중"
             }
         ]
+    },
+    {
+        "type": "event",
+        "day": 10,
+        "countdown": "D-5 시험기간",
+        "location": "🏫 D-5 일과 중",
+        "scene": "scene_classroom",
+        "speaker": "{name}",
+        "text": "2교시 쉬는 시간. 한 시간 전, 으슬으슬해서 종합감기약(감기뚝정)을 먹었는데 이번엔 두통까지 겹친다. 가방엔 두통약(괜찮아정)이 있다. 벌써 또 먹어도 될까?",
+        "choices": [
+            {
+                "text": "💊 두통약을 바로 먹는다.",
+                "good": false,
+                "delta": {
+                    "knowledge": 2,
+                    "health": -15
+                },
+                "result": {
+                    "title": "성분 중복 가능성",
+                    "text": "[선택 결과] 감기뚝정 복용 한 시간 뒤, 성분을 비교하지 않고 괜찮아정까지 먹었다."
+                },
+                "caffeineMg": 30,
+                "analgesic": true,
+                "nextLocation": "📱 D-5 방과후"
+            },
+            {
+                "text": "📋 두 약의 성분표를 비교한다.",
+                "good": true,
+                "delta": {
+                    "knowledge": 15
+                },
+                "result": {
+                    "title": "성분표 비교",
+                    "text": "[정보카드]\n감기뚝정 성분: 아세트아미노펜 300mg + 항히스타민제 + 무수카페인 30mg\n괜찮아정 성분: 아세트아미노펜 500mg"
+                },
+                "caffeineMg": 30,
+                "nextLocation": "🔎 D-5 성분표 비교 후 선택"
+            },
+            {
+                "text": "🙅 그냥 참는다.",
+                "good": true,
+                "delta": {
+                    "judgment": 5,
+                    "knowledge": -10
+                },
+                "result": {
+                    "title": "참기",
+                    "text": "[선택 결과] 약은 더하지 않았지만 두통 때문에 집중이 흔들린다."
+                },
+                "caffeineMg": 30,
+                "nextLocation": "📱 D-5 방과후"
+            },
+            {
+                "text": "🩺 보건실에 물어본다.",
+                "good": true,
+                "delta": {
+                    "knowledge": 10,
+                    "health": 5,
+                    "judgment": -8
+                },
+                "result": {
+                    "title": "보건실 확인",
+                    "text": "[선택 결과] 수업 시간은 조금 빠졌지만 두 약을 함께 확인했다."
+                },
+                "caffeineMg": 30,
+                "nextLocation": "📱 D-5 방과후"
+            }
+        ]
+    },
+    {
+        "type": "event",
+        "day": 10,
+        "countdown": "D-5 시험기간",
+        "location": "🔎 D-5 성분표 비교 후 선택",
+        "scene": "scene_classroom",
+        "speaker": "{name}",
+        "text": "두 성분표를 나란히 보았다. 감기뚝정에는 아세트아미노펜 300mg과 무수카페인 30mg이 있고, 괜찮아정에는 아세트아미노펜 500mg이 있다. 복용 간격도 아직 한 시간밖에 지나지 않았다.",
+        "choices": [
+            {
+                "text": "⏳ 지금은 참고, 다음 복용 때 간격·용량을 맞춘다.",
+                "good": true,
+                "delta": {
+                    "judgment": 15,
+                    "health": 5,
+                    "knowledge": 5
+                },
+                "result": {
+                    "title": "성분과 간격 확인",
+                    "text": "[정보팝업]\n아세트아미노펜 1일 최대 4,000mg(4g)\n감기약·진통제에 흔히 중복\n복용 간격 4~6시간"
+                },
+                "nextLocation": "📱 D-5 방과후"
+            },
+            {
+                "text": "💊 그래도 두통이 심해 먹는다.",
+                "good": false,
+                "delta": {
+                    "health": -10,
+                    "knowledge": -5
+                },
+                "result": {
+                    "title": "알고도 추가 복용",
+                    "text": "[선택 결과] 성분표를 봤지만 중복 가능성과 복용 간격을 선택에 반영하지 못했다."
+                },
+                "analgesic": true,
+                "nextLocation": "📱 D-5 방과후"
+            }
+        ]
+    },
+    {
+        "type": "event",
+        "day": 10,
+        "countdown": "D-5 시험기간",
+        "location": "📱 D-5 방과후",
+        "scene": "scene_library",
+        "speaker": "하은",
+        "text": "독서실에서 잠깐 쉬며 폰을 본다. 친구 하은이 게시물 링크를 보냈다. \"야 이거 봤어? 요즘 이게 시험 꿀팁이래 ㅋㅋ 너도 해봐.\" 게시물에는 '진통제랑 에너지드링크 같이 먹으면 두통도 잡고 잠도 깸!'이라고 적혀 있다.",
+        "choices": [
+            {
+                "text": "⚡ \"오 좋은데?\" 따라 한다.",
+                "good": false,
+                "delta": {
+                    "health": -20,
+                    "knowledge": -15,
+                    "judgment": -10
+                },
+                "result": {
+                    "title": "SNS 꿀팁 따라 하기",
+                    "text": "[선택 결과] 출처를 확인하지 않은 정보를 그대로 따라 했다."
+                },
+                "nextLocation": "📓 D-5 마무리"
+            },
+            {
+                "text": "🔎 게시물 정보를 비판적으로 살핀다.",
+                "good": true,
+                "delta": {
+                    "knowledge": 15
+                },
+                "result": {
+                    "title": "게시물 정보 확인",
+                    "text": "[정보카드]\n작성자: 일반인(의료 전문가 아님)\n출처·근거: 없음\n댓글: \"따라 했다 속 쓰려 고생함\" / \"카페인+약 같이 먹는 거 위험하다던데?\""
+                },
+                "nextLocation": "🔎 D-5 SNS 확인 후 선택"
+            },
+            {
+                "text": "🙈 \"위험할 듯.\" 답 없이 무시한다.",
+                "good": true,
+                "delta": {
+                    "judgment": 5,
+                    "social": -10
+                },
+                "result": {
+                    "title": "나만 피함",
+                    "text": "[선택 결과] 위험해 보이는 정보는 피했지만, 친구에게는 아무 말도 하지 않았다."
+                },
+                "nextLocation": "📓 D-5 마무리"
+            }
+        ]
+    },
+    {
+        "type": "event",
+        "day": 10,
+        "countdown": "D-5 시험기간",
+        "location": "🔎 D-5 SNS 확인 후 선택",
+        "scene": "scene_library",
+        "speaker": "{name}",
+        "text": "게시물의 작성자는 의료 전문가가 아니고 출처와 근거가 없다. 댓글에도 따라 했다가 속이 쓰렸다는 말과 약+카페인 조합을 걱정하는 말이 섞여 있다.",
+        "choices": [
+            {
+                "text": "🔍 신뢰할 정보를 더 찾아 확인하고 넘긴다.",
+                "good": true,
+                "delta": {
+                    "knowledge": 15,
+                    "judgment": 10
+                },
+                "result": {
+                    "title": "나를 지킨 확인",
+                    "text": "[선택 결과] 좋아요 수보다 출처와 근거를 먼저 보았다."
+                },
+                "nextLocation": "📓 D-5 마무리"
+            },
+            {
+                "text": "💬 하은이에게 위험성을 알려준다.",
+                "good": true,
+                "delta": {
+                    "knowledge": 10,
+                    "social": 15,
+                    "judgment": 10
+                },
+                "result": {
+                    "title": "친구까지 지킴",
+                    "text": "[선택 결과] 확인한 정보를 친구에게도 공유했다."
+                },
+                "nextLocation": "📓 D-5 마무리"
+            }
+        ]
+    },
+    {
+        "type": "narration",
+        "day": 10,
+        "countdown": "D-5 시험기간",
+        "location": "📓 D-5 마무리",
+        "scene": "scene_bedroom",
+        "speaker": "나레이터",
+        "text": "오늘 만난 약물 정보 중 믿을 만한 것과 걸러야 할 것은? 설명서, 성분표, 출처, 근거가 있는 정보인지 떠올려 본다.",
+        "choices": null
     },
     {
         "type": "event",
@@ -3983,7 +4620,7 @@ function buildFourteenDayScenarios(){
                 "title": "모양·각인 검색",
                 "facts": [
                     "COLD-300: 감기뚝정",
-                    "성분: 아세트아미노펜 300mg + 항히스타민",
+                    "성분: 아세트아미노펜 300mg + 항히스타민 + 무수카페인 30mg",
                     "괜찮아정과 성분 중복 가능"
                 ]
             }
@@ -4012,7 +4649,8 @@ function buildFourteenDayScenarios(){
                 "result": {
                     "title": "미확인 복용",
                     "text": "[속마음] 그냥 삼켜버렸네… 가족이 준 약이라도 뭔지 확인했어야 했는데.\n[선택 결과] 복용 전에는 약의 이름과 성분을 반드시 확인해야 한다."
-                }
+                },
+                "caffeineMg": 30
             },
             {
                 "text": "⬜ OK-500 각인처럼 보여 괜찮아정이라고 생각한다.",
@@ -4066,7 +4704,8 @@ function buildFourteenDayScenarios(){
                     "title": "최악의 조합",
                     "text": "[속마음] 약에 카페인까지 같이…? 이건 좀 위험할 것 같은데.\n[선택 결과] 약과 카페인 병용은 성분 중복·심장 두근거림·불면·부작용 위험을 높인다."
                 },
-                "caffeineMg": 50,
+                "caffeineMg": 140,
+                "comboMedCaffeine": true,
                 "sleepHour": 26,
                 "sleepHours": 5
             },
@@ -4089,14 +4728,122 @@ function buildFourteenDayScenarios(){
         ]
     },
     {
-        "type": "narration",
+        "type": "event",
         "day": 15,
         "countdown": "D-Day 시험 당일",
         "location": "📝 D-Day 시험 당일",
         "scene": "scene_exam",
         "speaker": "나레이터",
-        "text": "7일이 여기까지 왔다. 시험지가 뒤집어진 채 책상 위에 있다. 지금 이 순간의 컨디션은 지난 7일 동안의 모든 선택이 만든 것이다. 배운 것을 떠올리며 마지막 결과를 확인해 보자.",
-        "choices": null
+        "text": "시험 당일. 누적 피로로 머리가 띵하고 관자놀이가 욱신. 시험 긴장에 아침도 거의 못 먹었다. 가방 속엔 '통증싹싹캡슐'.",
+        "choices": [
+            {
+                "text": "💊 그냥 먹는다.",
+                "good": false,
+                "delta": {
+                    "judgment": 8,
+                    "knowledge": -10,
+                    "health": -5
+                },
+                "result": {
+                    "title": "먹고 나서야 보인 성분",
+                    "text": "[속마음] 집중은 잠깐 오른 것 같지만, 성분표를 나중에 보니 카페인무수물 40mg이 들어 있었다.\n[선택 결과] 공복에 이부프로펜 성분을 먹어 위 부담이 생길 수 있고, 약 속 카페인도 오늘 섭취량에 더해진다."
+                },
+                "caffeineMg": 40,
+                "fastingMed": true,
+                "comboMedCaffeine": true,
+                "nextLocation": "🧩 D-Day 미니 퀴즈"
+            },
+            {
+                "text": "🔎 성분표부터 확인한다.",
+                "good": true,
+                "delta": {
+                    "knowledge": 15
+                },
+                "result": {
+                    "title": "성분표 확인",
+                    "text": "[성분표]\n이부프로펜 75mg · 산화마그네슘 50mg · 카페인무수물 40mg · 알릴이소프로필아세틸우레아 30mg / 식후 복용 권장\n\n[선택 결과] 약 이름보다 성분과 복용 조건을 먼저 확인했다."
+                }
+            },
+            {
+                "text": "💧 안 먹고 물·심호흡을 한다.",
+                "good": true,
+                "delta": {
+                    "judgment": 10,
+                    "knowledge": -2
+                },
+                "result": {
+                    "title": "잠깐 멈춤",
+                    "text": "[속마음] 집중은 조금 덜 올라오지만, 지금은 무리하게 약과 카페인을 더하지 않는 게 낫겠다.\n[선택 결과] 자기조절로 몸의 신호를 먼저 살폈다."
+                },
+                "caffeineMg": 0,
+                "noCaffeine": true,
+                "nextLocation": "🧩 D-Day 미니 퀴즈"
+            }
+        ]
+    },
+    {
+        "type": "event",
+        "day": 15,
+        "countdown": "D-Day 시험 당일",
+        "location": "🔎 D-Day 성분표 확인 후 선택",
+        "scene": "scene_exam",
+        "speaker": "{name}",
+        "text": "성분표를 확인했다. 이 약에는 카페인무수물 40mg이 있고, 이부프로펜 성분은 식후 복용이 권장된다. 시험 직전, 에너지드링크까지 같이 마실지 다시 결정해야 한다.",
+        "choices": [
+            {
+                "text": "🥛 물·요기와 함께 약만 먹고 에너지드링크는 참기.",
+                "good": true,
+                "delta": {
+                    "knowledge": 10,
+                    "judgment": 15,
+                    "health": 3
+                },
+                "result": {
+                    "title": "성분 확인 후 조절",
+                    "text": "[속마음] 빈속을 피하고, 에너지드링크는 안 더했다. 약 성분을 알고 먹으니 선택이 훨씬 분명해졌다.\n[선택 결과] 약 속 카페인 40mg만 오늘 총량에 더해졌다."
+                },
+                "caffeineMg": 40,
+                "comboMedCaffeine": true,
+                "nextLocation": "🧩 D-Day 미니 퀴즈"
+            },
+            {
+                "text": "💊🥤 약+에너지드링크 둘 다.",
+                "good": false,
+                "delta": {
+                    "health": -10,
+                    "caffeine": -12,
+                    "judgment": -10
+                },
+                "result": {
+                    "title": "시험 직전 카페인 중복",
+                    "text": "[속마음] 약 40mg에 에너지드링크 100mg까지 더해 총 140mg. 손끝이 살짝 떨리고, 잠깐 오른 집중 뒤에 확 꺼질까 불안하다.\n[선택 결과] 카페인 140mg이 한 번에 누적되어 두근거림·손떨림·컨디션 급락 위험이 커졌다."
+                },
+                "caffeineMg": 140,
+                "comboMedCaffeine": true,
+                "nextLocation": "🧩 D-Day 미니 퀴즈"
+            }
+        ]
+    },
+    {
+        "type": "event",
+        "day": 15,
+        "countdown": "D-Day 시험 당일",
+        "location": "🧩 D-Day 미니 퀴즈",
+        "scene": "scene_exam",
+        "speaker": "나레이터",
+        "text": "마지막으로 오늘의 핵심을 빈칸으로 확인해 보자. 성분표, 복용간격, 주의사항, 카페인 총량을 스스로 말할 수 있으면 결과 화면으로 넘어간다.",
+        "choices": [
+            {
+                "text": "🧩 미니 퀴즈 풀기",
+                "good": true,
+                "delta": {},
+                "result": {
+                    "title": "미니 퀴즈",
+                    "text": "빈칸에 맞는 말을 골라 핵심을 정리한다."
+                },
+                "openMiniQuiz": true
+            }
+        ]
     },
     {
         "type": "ending",
@@ -4485,9 +5232,10 @@ function showClue(idx){
       <div class="wide">일반의약품 정보</div>
       <div class="wide">이 약을 사용하기 전 첨부문서를 확인하세요.</div>
       <div>유효성분</div><div>함량</div>
-      <div>아세트아미노펜</div><div>300mg</div>
-      <div>이소프로필안티피린</div><div>150mg</div>
-      <div>카페인무수물</div><div>50mg</div>
+      <div>이부프로펜</div><div>75mg</div>
+      <div>산화마그네슘</div><div>50mg</div>
+      <div>카페인무수물</div><div>40mg</div>
+      <div>알릴이소프로필아세틸우레아</div><div>30mg</div>
       <div class="warn">주의: 카페인 함유 제품과 함께 복용 전 확인</div>
     </div>`: clue.drink ? drinkLabelVisual(clue.drink) : clue.emptyDrink ? `
     <div class="draw-drink-label" style="--drink-a:#ffd86b;--drink-b:#7e6655;--drink-c:#fff3c4;">
@@ -5201,6 +5949,12 @@ function pickChoice(i){
     openPrescription(ch.openPrescription);
     return;
   }
+  if(ch.openMiniQuiz){
+    pushSceneHistory('miniQuiz');
+    G.answered=true;
+    openMiniQuiz();
+    return;
+  }
   if(ch.openNpc){
     openNpcBubble(ch.openNpc.id, ch.openNpc.lineIdx || 0, ch.openNpc.choices);
     return;
@@ -5217,6 +5971,10 @@ function pickChoice(i){
   applyDelta(ch.delta||{});
   applySystemEffects(ch);
   queueFollowupScenario(ch);
+  if(ch.nextLocation){
+    const targetIdx = DB.gameData.scenarios.findIndex(s => s.location === ch.nextLocation);
+    if(targetIdx > G.scene) G.nextSceneOverrideIndex = targetIdx;
+  }
   showDialogResult(ch.result.title, ch.result.text, () => {
     if(ch.showReport) setTimeout(()=>showDailyReport(ch.showReport),800);
   }, {fallbackLabel:'선택 결과'});
@@ -5224,6 +5982,12 @@ function pickChoice(i){
 function nextScene(){
   clearTypingState(_typing);
   clearTypingState(_resultTyping);
+  if(Number.isInteger(G.nextSceneOverrideIndex)){
+    G.scene = G.nextSceneOverrideIndex;
+    delete G.nextSceneOverrideIndex;
+    renderScene(G.scene);
+    return;
+  }
   if (G.pendingHealthOffice) {
     const data = DB.gameData;
     const current = data.scenarios[G.scene];
@@ -5284,6 +6048,113 @@ function prevScene(){
   G.scene = Math.max(0, (G.scene || 0) - 1);
   G.answered = false;
   renderScene(G.scene);
+}
+
+let _miniQuizState = { qIdx:0, picks:[], correct:0 };
+
+function ensureMiniQuizModal(){
+  let modal = document.getElementById('mini-quiz-modal');
+  if(modal) return modal;
+  modal = document.createElement('div');
+  modal.id = 'mini-quiz-modal';
+  modal.style.cssText = 'position:fixed;inset:0;z-index:9998;background:rgba(39,31,27,.42);display:none;align-items:center;justify-content:center;padding:18px;';
+  modal.innerHTML = `
+    <div style="width:min(760px,100%);max-height:92vh;overflow:auto;background:#fffaf2;border:2px solid #e9c8a8;border-radius:18px;box-shadow:0 22px 60px rgba(70,45,24,.22);padding:22px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;">
+        <div>
+          <div style="font-size:.82rem;color:#8a6b56;font-weight:700;">D-Day 미니 퀴즈</div>
+          <h2 id="mq-title" style="font-family:'Jua',sans-serif;margin:2px 0 0;color:#3f2d24;font-size:1.35rem;">빈칸 채우기</h2>
+        </div>
+        <div id="mq-step" style="font-weight:900;color:#58c4a0;">1 / 3</div>
+      </div>
+      <div id="mq-sentence" style="line-height:1.8;color:#3f2d24;font-size:1rem;background:#fff;border:2px solid #f1d3b8;border-radius:14px;padding:16px;margin-bottom:14px;"></div>
+      <div id="mq-picks" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;"></div>
+      <div id="mq-tiles" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;"></div>
+      <div id="mq-feedback" style="display:none;border-radius:12px;padding:12px 14px;margin-bottom:14px;font-size:.9rem;line-height:1.55;"></div>
+      <button id="mq-check" class="btn btn-primary" style="width:100%;margin-bottom:8px;">확인</button>
+      <button id="mq-next" class="btn" style="width:100%;display:none;">다음</button>
+    </div>`;
+  document.body.appendChild(modal);
+  return modal;
+}
+
+function renderMiniQuizQuestion(){
+  const modal = ensureMiniQuizModal();
+  const q = MINI_QUIZ[_miniQuizState.qIdx];
+  _miniQuizState.picks = [];
+  document.getElementById('mq-step').textContent = `${_miniQuizState.qIdx + 1} / ${MINI_QUIZ.length}`;
+  document.getElementById('mq-sentence').innerHTML = escapeHtml(q.sentence)
+    .replace(/\[(\d+)\]/g, '<span style="display:inline-block;min-width:76px;border-bottom:3px solid #58c4a0;color:#58c4a0;font-weight:900;text-align:center;">[$1]</span>');
+  document.getElementById('mq-picks').innerHTML = q.blanks.map((_, i) =>
+    `<span data-pick="${i}" style="min-width:88px;text-align:center;background:#fff;border:2px dashed #d7b698;border-radius:999px;padding:8px 12px;color:#9a7a62;font-weight:800;">${i+1}</span>`
+  ).join('');
+  document.getElementById('mq-tiles').innerHTML = q.tiles.map(tile =>
+    `<button type="button" data-tile="${escapeHtml(tile)}" style="border:2px solid #bfe7d8;background:#f1fff8;color:#31765f;border-radius:999px;padding:9px 13px;font-weight:800;cursor:pointer;">${escapeHtml(tile)}</button>`
+  ).join('');
+  const feedback = document.getElementById('mq-feedback');
+  feedback.style.display = 'none';
+  document.getElementById('mq-check').style.display = 'block';
+  document.getElementById('mq-next').style.display = 'none';
+  document.querySelectorAll('#mq-tiles button').forEach(btn => {
+    btn.onclick = () => chooseMiniQuizTile(btn);
+  });
+  modal.style.display = 'flex';
+}
+
+function chooseMiniQuizTile(btn){
+  const q = MINI_QUIZ[_miniQuizState.qIdx];
+  if(_miniQuizState.picks.length >= q.blanks.length) return;
+  const tile = btn.getAttribute('data-tile');
+  _miniQuizState.picks.push(tile);
+  btn.disabled = true;
+  btn.style.opacity = '.42';
+  btn.style.cursor = 'default';
+  const pickEl = document.querySelector(`#mq-picks [data-pick="${_miniQuizState.picks.length - 1}"]`);
+  if(pickEl){
+    pickEl.textContent = tile;
+    pickEl.style.borderStyle = 'solid';
+    pickEl.style.color = '#31765f';
+    pickEl.style.background = '#f1fff8';
+  }
+}
+
+function checkMiniQuizAnswer(){
+  const q = MINI_QUIZ[_miniQuizState.qIdx];
+  const correct = q.blanks.every((answer, i) => _miniQuizState.picks[i] === answer);
+  if(correct) _miniQuizState.correct += 1;
+  applyDelta(correct ? {knowledge:5, judgment:3} : {knowledge:-2});
+  const feedback = document.getElementById('mq-feedback');
+  feedback.style.display = 'block';
+  feedback.style.background = correct ? '#dcfce7' : '#fee2e2';
+  feedback.style.color = correct ? '#166534' : '#991b1b';
+  feedback.textContent = `${correct ? '정답!' : '다시 기억해보기.'} ${q.explanation}`;
+  document.getElementById('mq-check').style.display = 'none';
+  const next = document.getElementById('mq-next');
+  next.style.display = 'block';
+  next.textContent = _miniQuizState.qIdx < MINI_QUIZ.length - 1 ? '다음' : '결과 보기';
+}
+
+function nextMiniQuizQuestion(){
+  if(_miniQuizState.qIdx < MINI_QUIZ.length - 1){
+    _miniQuizState.qIdx += 1;
+    renderMiniQuizQuestion();
+    return;
+  }
+  document.getElementById('mini-quiz-modal').style.display = 'none';
+  const total = _miniQuizState.correct;
+  const title = `미니 퀴즈 ${total}/${MINI_QUIZ.length}`;
+  const text = total === MINI_QUIZ.length
+    ? '[선택 결과] 핵심을 모두 정리했다. 이제 내 결과 유형을 확인해 보자.'
+    : '[선택 결과] 헷갈린 부분이 있었지만, 성분표·복용간격·주의사항·카페인 총량을 다시 확인했다.';
+  showDialogResult(title, text, null, {fallbackLabel:'선택 결과'});
+}
+
+function openMiniQuiz(){
+  _miniQuizState = { qIdx:0, picks:[], correct:0 };
+  const modal = ensureMiniQuizModal();
+  modal.querySelector('#mq-check').onclick = checkMiniQuizAnswer;
+  modal.querySelector('#mq-next').onclick = nextMiniQuizQuestion;
+  renderMiniQuizQuestion();
 }
 
 // ══════════════════════════════════════
@@ -5919,20 +6790,20 @@ function makeHealthOfficeScenario(kind) {
   function getGeborinTemplate() {
     const todayMg  = G.caffeineToday || 0;
     const maxMg    = G.caffeineMax   || Math.round((G.weight || 60) * 2.5);
-    const afterMg  = todayMg + 50;
+    const afterMg  = todayMg + 40;
     const pctAfter = Math.round((afterMg / maxMg) * 100);
     let text, resultText, delta;
     if (todayMg === 0) {
-      text = `보건샘이 통증싹싹캡슐 성분표를 같이 펼쳤다. "어디 봐봐 — 여기 카페인무수물 50mg이 보이지? 오늘 에너지드링크나 커피 마신 거 없지?" 고개를 저으니 보건샘이 말을 이었다. "오늘은 카페인을 안 마셨으니까, 통증싹싹캡슐까지 더해도 50mg이라 권고량(${maxMg}mg)엔 여유가 있어. 근데 이 사실 자체를 알고 있는 게 중요해 — 다음에 에너지드링크랑 같이 먹으려고 할 때 멈출 수 있거든."`;
-      resultText = `오늘 카페인 0mg + 통증싹싹캡슐 50mg = 50mg. 권고량(${maxMg}mg) 이하라 지금은 괜찮아. 하지만 보건샘 말처럼, 에너지드링크(100mg)와 함께 먹으면 합산 150mg — 권고량에 근접하거나 초과할 수 있어. 성분표 확인 습관이 오늘 생겼다.`;
+      text = `보건샘이 통증싹싹캡슐 성분표를 같이 펼쳤다. "어디 봐봐 — 여기 카페인무수물 40mg이 보이지? 오늘 에너지드링크나 커피 마신 거 없지?" 고개를 저으니 보건샘이 말을 이었다. "오늘은 카페인을 안 마셨으니까, 통증싹싹캡슐까지 더해도 40mg이라 권고량(${maxMg}mg)엔 여유가 있어. 근데 이 사실 자체를 알고 있는 게 중요해 — 다음에 에너지드링크랑 같이 먹으려고 할 때 멈출 수 있거든."`;
+      resultText = `오늘 카페인 0mg + 통증싹싹캡슐 40mg = 40mg. 권고량(${maxMg}mg) 이하라 지금은 괜찮아. 하지만 보건샘 말처럼, 에너지드링크(100mg)와 함께 먹으면 합산 140mg — 권고량에 근접하거나 초과할 수 있어. 성분표 확인 습관이 오늘 생겼다.`;
       delta = {knowledge:8, judgment:6, caffeine:4};
     } else if (afterMg < maxMg * 0.85) {
-      text = `보건샘이 성분표를 가리켰다. "오늘 카페인 음료 마셨어? 아까 뭐 마셨는지 생각해봐." 오늘 마신 것을 말하자 보건샘이 계산을 했다. "그거랑 통증싹싹캡슐 카페인무수물 50mg 합치면 ${afterMg}mg이야. 하루 권고량이 ${maxMg}mg인데 아직 여유는 있어. 근데 오늘 오후에 음료 더 마실 것 같으면 통증싹싹캡슐은 지금 참는 게 나아. 총량 관리가 핵심이거든."`;
-      resultText = `오늘 마신 카페인 ${todayMg}mg + 통증싹싹캡슐 50mg = ${afterMg}mg. 권고량(${maxMg}mg)의 ${pctAfter}%. 아직 여유 있지만 오늘 하루 총량을 생각하면 지금 통증싹싹캡슐은 보류하는 게 안전해.`;
+      text = `보건샘이 성분표를 가리켰다. "오늘 카페인 음료 마셨어? 아까 뭐 마셨는지 생각해봐." 오늘 마신 것을 말하자 보건샘이 계산을 했다. "그거랑 통증싹싹캡슐 카페인무수물 40mg 합치면 ${afterMg}mg이야. 하루 권고량이 ${maxMg}mg인데 아직 여유는 있어. 근데 오늘 오후에 음료 더 마실 것 같으면 통증싹싹캡슐은 지금 참는 게 나아. 총량 관리가 핵심이거든."`;
+      resultText = `오늘 마신 카페인 ${todayMg}mg + 통증싹싹캡슐 40mg = ${afterMg}mg. 권고량(${maxMg}mg)의 ${pctAfter}%. 아직 여유 있지만 오늘 하루 총량을 생각하면 지금 통증싹싹캡슐은 보류하는 게 안전해.`;
       delta = {knowledge:10, judgment:8, caffeine:3};
     } else {
-      text = `보건샘이 눈을 약간 키우며 말했다. "오늘 카페인이 벌써 ${todayMg}mg이야. 통증싹싹캡슐에 카페인무수물이 50mg 더 들어 있어서, 지금 먹으면 합산 ${afterMg}mg — 하루 권고량 ${maxMg}mg을${afterMg >= maxMg ? ' 이미 넘어' : ' 거의 다 채워'}." 보건샘이 물 한 컵을 건넸다. "오늘은 통증싹싹캡슐 말고, 일단 여기 누워서 쉬어봐. 두통이 수분 부족일 수도 있거든."`;
-      resultText = `${todayMg}mg + 통증싹싹캡슐 50mg = ${afterMg}mg — 권고량(${maxMg}mg)${afterMg >= maxMg ? '을 초과' : '에 거의 도달'}. 보건샘 판단대로 오늘은 통증싹싹캡슐을 피하고 휴식을 선택한 게 맞아. 카페인이 쌓인 날엔 약보다 물과 쉬는 것이 더 안전할 수 있어.`;
+      text = `보건샘이 눈을 약간 키우며 말했다. "오늘 카페인이 벌써 ${todayMg}mg이야. 통증싹싹캡슐에 카페인무수물이 40mg 더 들어 있어서, 지금 먹으면 합산 ${afterMg}mg — 하루 권고량 ${maxMg}mg을${afterMg >= maxMg ? ' 이미 넘어' : ' 거의 다 채워'}." 보건샘이 물 한 컵을 건넸다. "오늘은 통증싹싹캡슐 말고, 일단 여기 누워서 쉬어봐. 두통이 수분 부족일 수도 있거든."`;
+      resultText = `${todayMg}mg + 통증싹싹캡슐 40mg = ${afterMg}mg — 권고량(${maxMg}mg)${afterMg >= maxMg ? '을 초과' : '에 거의 도달'}. 보건샘 판단대로 오늘은 통증싹싹캡슐을 피하고 휴식을 선택한 게 맞아. 카페인이 쌓인 날엔 약보다 물과 쉬는 것이 더 안전할 수 있어.`;
       delta = {knowledge:12, judgment:10, health:3, caffeine:3};
     }
     return { text, delta, result:{title:'보건샘과 성분표 확인', text:resultText} };
