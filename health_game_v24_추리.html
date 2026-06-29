@@ -591,6 +591,10 @@ body{background:
   height:540px;
   transform:translateY(0);
 }
+#screen-student .scene-char.slot-npc-mom img{
+  height:336px;
+  transform:translateY(0);
+}
 #screen-student .scene-char.slot-teacher-main img{
   height:332px;
   transform:translateY(3px);
@@ -1803,6 +1807,7 @@ body{background:
   #screen-student .scene-char.slot-npc-seoyeon img,
   #screen-student .scene-char.slot-npc-haeun img{height:480px;transform:translateY(0);}
   #screen-student .scene-char.slot-npc-taeyang img{height:500px;transform:translateY(0);}
+  #screen-student .scene-char.slot-npc-mom img{height:306px;transform:translateY(0);}
   #screen-student .scene-char.slot-teacher-main img{height:306px;}
   #screen-student .scene-char.scene-duo .scene-actor.left{left:18px;}
   #screen-student .scene-char.scene-duo .scene-actor.right{right:16px;}
@@ -2567,6 +2572,7 @@ const DEFAULT_DATA = {
     scene_commute:   'assets/backgrounds/scene_commute.png',
     scene_convenience:'assets/backgrounds/scene_convenience.png',
     scene_bedroom:   'assets/backgrounds/scene_bedroom.png',
+    scene_home:      'assets/backgrounds/scene_home.png',
     scene_cafeteria: 'assets/backgrounds/scene_cafeteria.png',
     scene_cafe:      'assets/backgrounds/scene_cafe.png',
     scene_exam:      'assets/backgrounds/scene_exam.png',
@@ -2596,6 +2602,7 @@ const DEFAULT_DATA = {
     npc_seoyeon: 'assets/characters/npc_seoyeon.png',
     npc_taeyang: 'assets/characters/npc_taeyang.png',
     npc_haeun:   'assets/characters/npc_haeun.png',
+    npc_mom:     'assets/characters/npc_mom.png',
 
     // ── 선생님 ──
     teacher_main: 'assets/characters/teacher_main.png',
@@ -3231,6 +3238,17 @@ const NPC_DATA = {
       '어떤 애가 이상해졌다는 소문 들었어? 카톡이 막혔대.',
       '요즘 이상한 챌린지가 유행한다던데… 진짜 위험한 거 아닐까?',
       '댓글에 "따라 하지 마세요" 라고 적혀 있는데 왜인지 모르겠어.',
+    ]
+  },
+  mom: {
+    name:'엄마', emoji:'👩',
+    imgSlot:'npc_mom',
+    color:'#f4a261',
+    desc:'가정·보호자',
+    lines: [
+      '서랍에 두통약 있지? 하나만 꺼내 줄래?',
+      '설명서를 먼저 확인해 주는 게 좋겠구나.',
+      '오늘은 물 마시고 조금 쉬어볼게.'
     ]
   }
 };
@@ -4199,7 +4217,7 @@ function buildFourteenDayScenarios(){
         "day": 10,
         "countdown": "D-5 시험기간",
         "location": "🏠 D-5 등굣길",
-        "scene": "scene_bedroom",
+        "scene": "scene_home",
         "speaker": "엄마",
         "text": "며칠째 이어진 공부로 몸은 무겁지만 마음은 급하다. 등교 준비를 하는데 엄마가 머리를 짚으며 부른다. \"엄마가 어제 회식에서 한잔했더니 머리가 깨질 것 같네… 서랍에 두통약 있지? 하나만 꺼내 줄래?\" 서랍을 여니 '괜찮아정(아세트아미노펜 500mg)'이 보인다.",
         "choices": [
@@ -4248,7 +4266,7 @@ function buildFourteenDayScenarios(){
         "day": 10,
         "countdown": "D-5 시험기간",
         "location": "🔎 D-5 엄마 약 설명서 확인 후 선택",
-        "scene": "scene_bedroom",
+        "scene": "scene_home",
         "speaker": "{name}",
         "text": "설명서에는 괜찮아정의 성분이 아세트아미노펜 500mg이고, 음주 후 복용 시 간 손상 위험이 있다고 적혀 있다.",
         "choices": [
@@ -7103,6 +7121,7 @@ function sceneColor(key){
     scene_commute:'linear-gradient(150deg,#ffe8ef 0%,#e1f8ff 45%,#e8f7d8 100%)',
     scene_convenience:'linear-gradient(150deg,#fff0dc 0%,#e7fbff 48%,#ffe4ef 100%)',
     scene_bedroom:'linear-gradient(150deg,#f0e8ff 0%,#fff0d9 50%,#dff2ff 100%)',
+    scene_home:'linear-gradient(150deg,#fff2dc 0%,#e7f8ec 48%,#ffe3d7 100%)',
     scene_cafeteria:'linear-gradient(150deg,#fff8d7 0%,#e4fff4 48%,#ffe6df 100%)',
     scene_cafe:'linear-gradient(150deg,#fff0dc 0%,#f6e8ff 45%,#e6fff4 100%)',
     scene_exam:'linear-gradient(150deg,#eef8ff 0%,#fff7df 46%,#e8f7e5 100%)'
@@ -7112,15 +7131,18 @@ function sceneColor(key){
 function sceneCharacterSlot(sc) {
   const speaker = String(sc?.speaker || '').replace('{name}', G.name);
   const text = String(sc?.text || '');
+  const location = String(sc?.location || '');
   if (speaker.includes('민준')) return 'npc_minjun';
   if (speaker.includes('서연')) return 'npc_seoyeon';
   if (speaker.includes('태양')) return 'npc_taeyang';
   if (speaker.includes('하은')) return 'npc_haeun';
+  if (speaker.includes('엄마')) return 'npc_mom';
   if (speaker.includes('선생님') || speaker.includes('보건샘') || speaker.includes('의사')) return 'teacher_main';
   if (text.includes('민준')) return 'npc_minjun';
   if (text.includes('서연')) return 'npc_seoyeon';
   if (text.includes('태양')) return 'npc_taeyang';
   if (text.includes('하은')) return 'npc_haeun';
+  if (text.includes('엄마') || location.includes('엄마')) return 'npc_mom';
   return protagonistConditionSlot(G.gender === 'f' ? 'char_female' : 'char_male');
 }
 
@@ -7212,6 +7234,7 @@ function sceneCharacterFallback(sc, slot) {
     npc_seoyeon: '🤓',
     npc_taeyang: '😎',
     npc_haeun: '📱',
+    npc_mom: '👩',
     teacher_main: '👩‍🏫',
   }[slot] || sc?.emoji || '🧑‍🎓';
 }
