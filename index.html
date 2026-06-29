@@ -165,6 +165,102 @@ select option{background:var(--panel);}
 .result-section:first-child{margin-top:0;}
 .result-speaker{font-family:'Jua',sans-serif;font-size:.88rem;margin-bottom:4px;}
 .result-body{white-space:pre-line;color:#38291f;font-weight:800;line-height:1.75;}
+.sns-info-card{
+  margin-top:8px;
+  overflow:hidden;
+  border:2px solid #ead5c7;
+  border-radius:18px;
+  background:#fffdf8;
+  box-shadow:0 12px 28px rgba(66,45,35,.13);
+}
+.sns-info-top{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:11px 12px;
+  border-bottom:1px solid #f0dfd3;
+}
+.sns-info-avatar{
+  width:32px;
+  height:32px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  color:#fff;
+  font-size:.9rem;
+  background:linear-gradient(135deg,#ff8f76,#9b7bff);
+}
+.sns-info-account{flex:1;min-width:0;}
+.sns-info-account strong{display:block;font-size:.82rem;color:#34251f;line-height:1.1;}
+.sns-info-account span{display:block;font-size:.68rem;color:#8a7367;margin-top:2px;}
+.sns-info-more{color:#7d6a61;font-weight:900;letter-spacing:2px;}
+.sns-info-visual{
+  height:clamp(150px,42vw,220px);
+  background-image:url('assets/ui/sns_misinformation_post_bg.png');
+  background-size:cover;
+  background-position:center;
+}
+.sns-info-actions{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:10px 12px 4px;
+  font-size:1.15rem;
+}
+.sns-info-actions span:last-child{margin-left:auto;}
+.sns-info-caption,
+.sns-info-comments,
+.sns-info-warning{padding:0 12px;}
+.sns-info-caption{
+  color:#35251f;
+  font-size:.78rem;
+  font-weight:800;
+  line-height:1.55;
+}
+.sns-info-caption strong{color:#ff6f61;}
+.sns-info-facts{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:6px;
+  padding:9px 12px 8px;
+}
+.sns-info-chip{
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+  padding:7px 9px;
+  border:1px solid #efd6c6;
+  border-radius:10px;
+  background:#fff8ee;
+  color:#3f2d24;
+  font-size:.72rem;
+  font-weight:900;
+}
+.sns-info-chip b{color:#9a5a22;}
+.sns-info-comments{
+  display:grid;
+  gap:5px;
+  padding-bottom:10px;
+  color:#4c372f;
+  font-size:.74rem;
+  line-height:1.45;
+}
+.sns-info-comment{
+  padding:7px 9px;
+  border-radius:12px;
+  background:#f7f0ff;
+  border:1px solid #dfd2f5;
+}
+.sns-info-comment b{color:#6955b8;}
+.sns-info-warning{
+  padding:9px 12px 11px;
+  border-top:1px solid #f0dfd3;
+  background:#fff3dd;
+  color:#8a3f22;
+  font-size:.72rem;
+  font-weight:900;
+  line-height:1.45;
+}
 .result-section.info,
 .result-section.outcome{
   border-left:5px solid #ff9f80;
@@ -304,13 +400,22 @@ select option{background:var(--panel);}
 #screen-ending{align-items:center;justify-content:center;padding:40px 20px;
   background:radial-gradient(ellipse at 50% 20%,#152820 0%,#0d1117 68%);}
 .ending-wrap{background:var(--panel);border:2px solid var(--border);border-radius:24px;
-  padding:40px 36px;max-width:560px;width:100%;text-align:center;}
+  padding:40px 36px;max-width:860px;width:100%;text-align:center;}
 #ending-title{font-family:'Jua',sans-serif;font-size:1.9rem;color:var(--accent);margin-bottom:4px;}
 #ending-sub{color:var(--subtext);font-size:.88rem;margin-bottom:26px;}
-#radar-cvs{max-width:300px;margin:0 auto 22px;display:block;}
+.ending-visuals{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:18px;align-items:center;margin:0 auto 22px;}
+.ending-type-card{width:100%;max-width:360px;margin:0 auto;border-radius:18px;display:block;box-shadow:0 14px 34px rgba(66,45,35,.13);border:1px solid rgba(235,199,169,.72);background:#fff;}
+.ending-radar-panel{background:#fffdf8;border:1px solid #f1d3b8;border-radius:18px;padding:14px 10px 8px;box-shadow:0 10px 24px rgba(126,102,85,.08);}
+.ending-radar-title{font-family:'Jua',sans-serif;color:#5fc89a;font-size:.86rem;margin-bottom:4px;}
+#radar-cvs{max-width:300px;margin:0 auto;display:block;}
 .ending-msg{background:var(--panel2);border-radius:12px;padding:15px 18px;text-align:left;
   font-size:.88rem;line-height:1.75;margin-bottom:22px;border-left:3px solid var(--accent);}
 .export-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;}
+@media(max-width:760px){
+  .ending-wrap{max-width:560px;padding:28px 20px;}
+  .ending-visuals{grid-template-columns:1fr;}
+  .ending-type-card{max-width:330px;}
+}
 
 /* ════════════════════
    TEACHER MODE
@@ -933,6 +1038,29 @@ body{background:
   gap:9px;
   margin-bottom:14px;
 }
+.cvs-drink-overview{
+  margin:2px 0 12px;
+  padding:12px;
+  border:2px solid #f1d3b8;
+  border-radius:18px;
+  background:linear-gradient(180deg,#fffdf8,#fff5e8);
+  box-shadow:0 10px 22px rgba(126,102,85,.08);
+}
+.cvs-drink-overview img{
+  width:100%;
+  max-height:220px;
+  object-fit:contain;
+  display:block;
+  border-radius:14px;
+  background:#fffaf2;
+}
+.cvs-drink-overview-caption{
+  margin-top:9px;
+  color:#7e6655;
+  font-size:.78rem;
+  font-weight:900;
+  text-align:center;
+}
 .cvs-drink-row,
 .cafe-drink-row{
   width:100%;
@@ -951,9 +1079,9 @@ body{background:
 }
 .cvs-drink-row{
   display:grid;
-  grid-template-columns:82px 1fr auto;
+  grid-template-columns:82px minmax(0,1fr);
   align-items:center;
-  gap:14px;
+  gap:10px 14px;
   padding:16px 14px;
   min-height:96px;
 }
@@ -974,10 +1102,22 @@ body{background:
   display:block;
   filter:drop-shadow(0 3px 4px rgba(63,45,36,.14));
 }
+.cvs-drink-art{
+  width:72px;
+  height:72px;
+  border-radius:14px;
+  background-image:url("assets/drinks/convenience_drinks_caffeine_sheet.png");
+  background-size:390% auto;
+  background-position:var(--sprite-x,0%) center;
+  background-repeat:no-repeat;
+  filter:drop-shadow(0 5px 7px rgba(63,45,36,.18));
+}
+.cvs-drink-info{min-width:0;}
 .cvs-drink-info strong{
   display:block;
   color:#3f2d24;
   font-size:1.12rem;
+  word-break:keep-all;
 }
 .cvs-drink-info span{
   display:block;
@@ -988,6 +1128,8 @@ body{background:
   line-height:1.35;
 }
 .cvs-caffeine-badge{
+  grid-column:2;
+  justify-self:start;
   border-radius:999px;
   padding:8px 10px;
   font-size:.74rem;
@@ -1602,6 +1744,60 @@ body{background:
   font-weight:900;
 }
 
+.drug-card-modal{position:fixed;inset:0;z-index:255;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(42,31,24,.46);backdrop-filter:blur(5px);}
+.drug-card-modal.show{display:flex;}
+.drug-card-sheet{width:min(100%,430px);max-height:94dvh;overflow-y:auto;background:linear-gradient(180deg,#fffaf2 0%,#fff5e8 100%);border:2px solid #f1c8a8;border-radius:22px;padding:20px;color:#3f2d24;box-shadow:0 26px 70px rgba(63,45,36,.24);}
+.drug-card-sheet h3{font-family:'Jua',sans-serif;font-size:1.08rem;color:#2f241e;margin-bottom:4px;}
+.drug-card-sheet .modal-sub{font-size:.8rem;line-height:1.6;color:#7e6655;margin-bottom:13px;}
+.drug-dict-card{background:#fffdf8;border:2px solid #ebc7a9;border-radius:14px;padding:15px;position:relative;}
+.drug-dict-card-top{display:flex;align-items:center;gap:10px;margin-bottom:11px;}
+.drug-dict-emoji{font-size:2rem;width:48px;height:48px;display:flex;align-items:center;justify-content:center;border-radius:10px;background:#fff8ea;border:2px solid #ebc7a9;flex-shrink:0;overflow:hidden;}
+.drug-pill-art{width:42px;height:42px;position:relative;display:block;filter:drop-shadow(0 5px 7px rgba(126,102,85,.18));}
+.pill-shape{position:absolute;display:block;box-shadow:inset 5px 6px 10px rgba(255,255,255,.62),inset -5px -6px 10px rgba(71,44,28,.12),0 4px 7px rgba(126,102,85,.16);}
+.pill-shape::after{content:"";position:absolute;left:18%;top:13%;width:34%;height:20%;border-radius:50%;background:rgba(255,255,255,.62);filter:blur(.5px);}
+.pill-oblong{left:50%;top:50%;width:38px;height:17px;border-radius:999px;background:linear-gradient(145deg,#fffef8,#e9edf2);transform:translate(-50%,-50%);}
+.pill-oval{left:50%;top:50%;width:31px;height:21px;border-radius:999px;background:linear-gradient(145deg,var(--pill-a),var(--pill-b));transform:translate(-50%,-50%);}
+.pill-pentagon{left:50%;top:50%;width:28px;height:28px;clip-path:polygon(50% 0,96% 36%,78% 100%,22% 100%,4% 36%);background:linear-gradient(145deg,var(--pill-a),var(--pill-b));transform:translate(-50%,-50%);}
+.pill-capsule-combo{left:50%;top:50%;width:36px;height:18px;border-radius:999px;overflow:hidden;background:linear-gradient(90deg,#f65f78 0 34%,#ffd45e 34% 67%,#75e4cf 67% 100%);transform:translate(-50%,-50%);}
+.pill-capsule-combo::before{content:"";position:absolute;inset:0;border-radius:999px;background:linear-gradient(145deg,rgba(255,255,255,.55),rgba(255,255,255,0) 42%,rgba(80,45,30,.13));}
+.pill-capsule-combo::after{content:"";position:absolute;left:7px;top:3px;width:13px;height:5px;border-radius:50%;background:rgba(255,255,255,.55);filter:blur(.5px);}
+.pill-mark{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Jua',sans-serif;font-size:7px;color:rgba(74,58,46,.46);letter-spacing:0;text-shadow:0 1px 0 rgba(255,255,255,.65);white-space:nowrap;}
+.pill-mark.light{color:rgba(255,255,255,.82);}
+.drug-dict-name{font-family:'Jua',sans-serif;font-size:1rem;color:#2f241e;}
+.drug-dict-ingr{font-size:.78rem;color:#6f5849;font-weight:800;margin-top:2px;}
+.drug-dict-field{margin-bottom:9px;}
+.drug-dict-label{font-size:.68rem;font-weight:900;color:#9a755e;letter-spacing:.04em;margin-bottom:4px;}
+.drug-dict-value{font-size:.82rem;color:#3f2d24;font-weight:700;line-height:1.5;}
+.drug-dict-chips{display:flex;flex-wrap:wrap;gap:5px;}
+.drug-dict-chip{padding:4px 9px;border-radius:999px;background:#fff8ea;border:1.5px solid #ebc7a9;font-size:.76rem;color:#7e6655;font-weight:900;}
+.drug-dict-chip.caution{background:#fff1f1;color:#ef4444;border-color:#fecaca;}
+.drug-card-continue{width:100%;margin-top:13px;border:0;border-radius:15px;background:#ff9f80;color:#fffaf2;font-family:'Jua',sans-serif;font-size:.95rem;padding:13px 14px;cursor:pointer;box-shadow:0 10px 22px rgba(231,102,66,.20);}
+
+.energy-inspect-modal{position:fixed;inset:0;z-index:260;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(42,31,24,.46);backdrop-filter:blur(5px);}
+.energy-inspect-modal.show{display:flex;}
+.energy-inspect-sheet{width:min(100%,520px);max-height:94dvh;overflow-y:auto;background:linear-gradient(180deg,#fffaf2 0%,#fff1dc 100%);border:2px solid #f1c8a8;border-radius:22px;padding:20px;color:#3f2d24;box-shadow:0 26px 70px rgba(63,45,36,.24);}
+.energy-inspect-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:14px;}
+.energy-inspect-head h3{font-family:'Jua',sans-serif;font-size:1.12rem;color:#2f241e;margin-bottom:4px;}
+.energy-inspect-head p{font-size:.8rem;line-height:1.6;color:#7e6655;}
+.energy-inspect-close{width:38px;height:38px;border-radius:13px;border:2px solid #efc6a9;background:#fffaf2;color:#7e6655;font-family:'Jua',sans-serif;cursor:pointer;}
+.energy-scan-stage{position:relative;height:360px;border-radius:18px;border:2px dashed #efc6a9;background:linear-gradient(180deg,#fffdf8,#fff6e8);overflow:hidden;touch-action:none;user-select:none;display:flex;align-items:center;justify-content:center;}
+.energy-can{position:relative;width:156px;height:286px;border-radius:26px 26px 22px 22px;background:linear-gradient(90deg,#68d45f 0 17%,#d9dde2 17% 23%,#171b25 23% 78%,#d9dde2 78% 84%,#8eea6c 84%);border:3px solid #d4d9df;box-shadow:0 18px 38px rgba(39,31,27,.22),inset -16px 0 24px rgba(255,255,255,.12),inset 18px 0 24px rgba(0,0,0,.16);}
+.energy-can::before,.energy-can::after{content:'';position:absolute;left:18px;right:18px;height:11px;border-radius:999px;background:rgba(255,255,255,.5);}
+.energy-can::before{top:9px;}
+.energy-can::after{bottom:9px;background:rgba(0,0,0,.18);}
+.energy-brand{position:absolute;top:52px;left:12px;right:12px;text-align:center;font-family:'Jua',sans-serif;font-size:1.08rem;line-height:1.08;color:#fff;text-shadow:0 2px 0 rgba(0,0,0,.18);}
+.energy-hidden-caf{position:absolute;left:22px;right:22px;bottom:56px;border-radius:12px;background:#fffdf6;border:2px solid #222836;color:#222836;font-family:'Jua',sans-serif;font-size:.9rem;text-align:center;padding:9px 5px;opacity:.12;filter:blur(3px);transition:.25s;}
+.energy-inspect-modal.found .energy-hidden-caf{opacity:1;filter:blur(0);transform:scale(1.04);border-color:#ff9f80;color:#e76642;box-shadow:0 8px 20px rgba(231,102,66,.22);}
+.energy-lens{position:absolute;width:88px;height:88px;border-radius:50%;border:5px solid #fff7df;background:rgba(255,255,255,.22);box-shadow:0 8px 20px rgba(39,31,27,.2),inset 0 0 0 2px rgba(231,102,66,.65);pointer-events:none;transform:translate(-50%,-50%);left:50%;top:50%;}
+.energy-lens::after{content:'';position:absolute;width:42px;height:10px;border-radius:999px;background:#9a5a22;right:-31px;bottom:5px;transform:rotate(42deg);transform-origin:left center;}
+.energy-found-panel{margin-top:13px;border-radius:16px;border:2px solid #f1d3b8;background:#fffaf2;padding:13px 14px;font-size:.86rem;line-height:1.65;color:#7e6655;}
+.energy-found-panel strong{font-family:'Jua',sans-serif;color:#e76642;font-size:1.05rem;}
+.energy-found-panel .found-msg{display:none;}
+.energy-inspect-modal.found .energy-found-panel .hint-msg{display:none;}
+.energy-inspect-modal.found .energy-found-panel .found-msg{display:block;}
+.energy-continue{width:100%;margin-top:12px;border:0;border-radius:15px;background:#d8cfc1;color:#fffaf2;font-family:'Jua',sans-serif;font-size:.95rem;padding:13px 14px;cursor:not-allowed;}
+.energy-inspect-modal.found .energy-continue{background:#e76642;cursor:pointer;box-shadow:0 10px 22px rgba(231,102,66,.23);}
+
 #screen-ending{
   background:
     radial-gradient(circle at 22% 14%, rgba(255,183,197,.42), transparent 28%),
@@ -2176,7 +2372,7 @@ body{background:
       <div class="stat-list" id="stat-list"></div>
     </div>
     <div class="caffeine-hud">
-      <span id="caf-label">☕ 오늘 카페인: 0mg / 150mg</span>
+      <span id="caf-label">☕ 카페인 오늘: 0mg / 150mg · 누적: 0mg</span>
       <div class="caf-track"><div class="caf-fill" id="caf-fill"></div></div>
     </div>
     <div class="s-dialog" id="s-dialog">
@@ -2219,13 +2415,54 @@ body{background:
   </div>
 </div>
 
+<!-- ══ 약품 사전 카드 확인 ══ -->
+<div class="drug-card-modal" id="drug-card-modal">
+  <div class="drug-card-sheet">
+    <h3>약품 사전</h3>
+    <p class="modal-sub">설명서를 읽고 약 성분과 복용 조건을 확인합니다.</p>
+    <div id="drug-card-modal-body"></div>
+    <button class="drug-card-continue" type="button" onclick="finishDrugCardModal()">확인했어요</button>
+  </div>
+</div>
+
+<!-- ══ 에너지음료 라벨 검사 ══ -->
+<div class="energy-inspect-modal" id="energy-inspect-modal">
+  <div class="energy-inspect-sheet">
+    <div class="energy-inspect-head">
+      <div>
+        <h3>THE KING ENERGY 라벨 확인</h3>
+        <p>돋보기를 캔 아래쪽 성분 표시 근처로 움직여 카페인 함량을 찾아보세요.</p>
+      </div>
+      <button class="energy-inspect-close" type="button" onclick="closeEnergyLabelInspect()" aria-label="닫기">✕</button>
+    </div>
+    <div class="energy-scan-stage" id="energy-scan-stage" onpointerdown="energyInspectMove(event)" onpointermove="energyInspectMove(event)">
+      <div class="energy-can" aria-label="THE KING ENERGY 에너지음료 캔">
+        <div class="energy-brand">THE KING<br>ENERGY</div>
+        <div class="energy-hidden-caf">카페인 100mg</div>
+      </div>
+      <div class="energy-lens" id="energy-lens" aria-hidden="true"></div>
+    </div>
+    <div class="energy-found-panel">
+      <div class="hint-msg">아직 흐릿합니다. 돋보기를 라벨 아래쪽으로 천천히 움직여 보세요.</div>
+      <div class="found-msg"><strong>카페인 100mg 발견!</strong><br>한 캔만 마셔도 오늘 카페인 총량에 크게 더해질 수 있어요.</div>
+    </div>
+    <button class="energy-continue" id="energy-continue" type="button" onclick="finishEnergyLabelInspect()">카페인 함량을 찾으면 계속하기</button>
+  </div>
+</div>
+
 <!-- ══ ENDING ══ -->
 <div id="screen-ending" class="screen">
   <div style="flex:1;display:flex;align-items:center;justify-content:center;padding:40px 20px;">
     <div class="ending-wrap" id="ending-wrap">
       <div id="ending-title">결과 확인</div>
       <div id="ending-sub"></div>
-      <canvas id="radar-cvs" width="300" height="260"></canvas>
+      <div class="ending-visuals">
+        <img id="ending-type-card" class="ending-type-card" src="" alt="결과 유형 카드">
+        <div class="ending-radar-panel">
+          <div class="ending-radar-title">나의 건강 선택 육각형</div>
+          <canvas id="radar-cvs" width="300" height="260"></canvas>
+        </div>
+      </div>
       <div class="ending-msg" id="ending-msg"></div>
       <div id="ending-discussion"></div>
       <div class="export-row">
@@ -2291,7 +2528,7 @@ body{background:
     </div>
     <!-- 카페인 게이지 -->
     <div style="background:#fff;border:2px solid #f1d3b8;border-radius:14px;padding:10px 14px;margin-bottom:14px;font-size:.82rem;">
-      <div id="dm-caf-label" style="margin-bottom:6px;color:#7e6655;">☕ 오늘 카페인: 0mg / 150mg</div>
+      <div id="dm-caf-label" style="margin-bottom:6px;color:#7e6655;">☕ 카페인 오늘: 0mg / 150mg · 누적: 0mg</div>
       <div style="height:8px;border-radius:4px;background:#f0dbc8;overflow:hidden;">
         <div id="dm-caf-fill" style="height:100%;width:0%;background:#5fc89a;transition:width .4s;border-radius:4px;"></div>
       </div>
@@ -2631,7 +2868,7 @@ const DEFAULT_DATA = {
     },
     {
       id:1, name:'공복에 약 먹으러 온 학생', tag:'🍽️ 공복 복용', urgency:'mid', avatar:'😟',
-      desc:'2학년 이서연이 배를 살짝 감싸 쥔 채 들어왔다. 얼굴이 약간 창백하다. "선생님, 오늘 아침을 못 먹었는데요 — 생리통이 너무 심해서요. 집에서 이부프로펜 먹고 오려다가 빈속이라 그냥 참고 왔어요. 지금 먹어도 돼요?"',
+      desc:'2학년 이소연이 배를 살짝 감싸 쥔 채 들어왔다. 얼굴이 약간 창백하다. "선생님, 오늘 아침을 못 먹었는데요 — 생리통이 너무 심해서요. 집에서 이부프로펜 먹고 오려다가 빈속이라 그냥 참고 왔어요. 지금 먹어도 돼요?"',
       keywords:['이부프로펜','공복','생리통','위장 보호'],
       choices:[
         { label:'선택 A',
@@ -2711,7 +2948,7 @@ const MINI_QUIZ = [
     sentence:'일부 진통제·감기약에도 [1]이 들어 있을 수 있다. 커피, 에너지드링크, 약을 함께 먹으면 [2] 섭취가 될 수 있다. 이때 두근거림, 손떨림, 불면 같은 [3]이 나타날 수 있다.',
     blanks:['카페인','중복','부작용'],
     tiles:['카페인','중복','부작용','비타민','운동','기억력'],
-    explanation:'진통제·감기약에도 카페인 등 숨은 성분이 있을 수 있어요. 음료와 겹치면 중복 섭취가 됩니다.'
+    explanation:'진통제·감기약에도 카페인이 포함될 수 있어요. 음료와 겹치면 중복 섭취가 됩니다.'
   },
   {
     id:'dday_q3', type:'fill', episodeRef:'D-Day',
@@ -2986,7 +3223,7 @@ function updateCaffeineHud(){
   if(!label || !fill) return;
   const max = G.caffeineMax || Math.round((G.weight||60)*2.5);
   const pct = Math.round(((G.caffeineToday||0)/max)*100);
-  label.textContent = `☕ 오늘 카페인: ${G.caffeineToday||0}mg / ${max}mg`;
+  label.textContent = `☕ 카페인 오늘: ${G.caffeineToday||0}mg / ${max}mg · 누적: ${G.totalCaffeine||0}mg`;
   fill.style.width      = Math.min(100, Math.max(0, pct)) + '%';
   fill.style.background = pct >= 100 ? '#ef4444' : pct >= 80 ? '#f59e0b' : '#5fc89a';
 
@@ -3208,7 +3445,7 @@ const NPC_DATA = {
     ]
   },
   seoyeon: {
-    name:'서연', emoji:'🤓',
+    name:'소연', emoji:'🤓',
     imgSlot:'npc_seoyeon',
     color:'#5fc89a',
     desc:'모범생·걱정쟁이',
@@ -3220,7 +3457,7 @@ const NPC_DATA = {
     ]
   },
   taeyang: {
-    name:'태양', emoji:'😎',
+    name:'태영', emoji:'😎',
     imgSlot:'npc_taeyang',
     color:'#8b949e',
     desc:'무관심·쿨한 척',
@@ -3264,8 +3501,8 @@ function buildFourteenDayScenarios(){
         "countdown": "D-7 시험기간",
         "location": "🏪 D-7 등굣길",
         "scene": "scene_convenience",
-        "speaker": "민준",
-        "text": "시험이 일주일 앞으로 다가왔다. 어젯밤 좀 늦게 잤더니 아침부터 머리가 무겁다. 교문 앞 편의점에서 민준이 캔을 흔들며 나온다. \"야, 벌써 졸려? 이거 'THE KING ENERGY' 죽이는데. 너도 하나 사줄까?\"",
+        "speaker": "나레이터",
+        "text": "[나레이터] 시험이 일주일 앞으로 다가왔다. 어젯밤 좀 늦게 잤더니 아침부터 머리가 무겁다. 교문 앞 편의점에서 민준이 캔을 흔들며 나온다.\n[민준] \"야, 벌써 졸려? 이거 THE KING ENERGY 죽이는데. 너도 하나 사줄까?\"",
         "choices": [
             {
                 "text": "🥤 받아 마신다.",
@@ -3292,6 +3529,10 @@ function buildFourteenDayScenarios(){
                     "title": "라벨 확인",
                     "text": "[정보카드]\nTHE KING ENERGY\n카페인 100mg"
                 },
+                "labelInspect": {
+                    "drinkId": "energy"
+                },
+                "labelChecked": true,
                 "nextLocation": "🔎 D-7 등굣길 라벨 확인 후 선택"
             },
             {
@@ -3428,7 +3669,8 @@ function buildFourteenDayScenarios(){
         "speaker": "{name}",
         "clues": [
             {
-                "type": "medicine",
+                "type": "can",
+                "dynamicDrink": true,
                 "icon": "🏷️",
                 "label": "라벨 확인하기",
                 "title": "편의점 음료 카페인",
@@ -3545,6 +3787,9 @@ function buildFourteenDayScenarios(){
                     "title": "설명서 확인",
                     "text": "[정보카드]\n아야스톱정 — 성분: 이부프로펜 200mg\n주의: 공복 복용 금지(위 점막 자극·위출혈 위험)\n복용: 식후 복용"
                 },
+                "showDrugCardBeforeResult": {
+                    "drugKey": "stop"
+                },
                 "nextLocation": "🔎 D-5 아야스톱정 설명서 확인 후 선택"
             },
             {
@@ -3606,8 +3851,8 @@ function buildFourteenDayScenarios(){
         "countdown": "D-5 시험기간",
         "location": "🏫 D-5 일과 중",
         "scene": "scene_classroom",
-        "speaker": "짝꿍",
-        "text": "2교시. 아까 약을 먹었는데도 두통이 여전하다. 짝꿍이 말한다. \"약 먹었다며? 안 들으면 한 알 더 먹어. 나도 그렇게 해.\"",
+        "speaker": "태영",
+        "text": "2교시. 아까 약을 먹었는데도 두통이 여전하다. 태영이 말한다. \"약 먹었다며? 안 들으면 한 알 더 먹어. 나도 그렇게 해.\"",
         "choices": [
             {
                 "text": "💊 한 알 더 먹는다.",
@@ -3671,8 +3916,8 @@ function buildFourteenDayScenarios(){
         "countdown": "D-5 시험기간",
         "location": "📚 D-5 방과후",
         "scene": "scene_library",
-        "speaker": "친구",
-        "text": "독서실. 옆자리 친구가 작은 알약을 내민다. \"이거 두통에 직빵이야. 우리 엄마가 챙겨준 건데 너 줄게. 먹어봐.\" 친구가 건넨 알약은 이름도 성분도 아직 모른다.",
+        "speaker": "소연",
+        "text": "독서실. 옆자리 소연이 작은 알약을 내민다. \"이거 두통에 직빵이야. 우리 엄마가 챙겨준 건데 너 줄게. 먹어봐.\" 소연이 건넨 알약은 이름도 성분도 아직 모른다.",
         "choices": [
             {
                 "text": "💊 받아서 바로 먹는다.",
@@ -3711,7 +3956,7 @@ function buildFourteenDayScenarios(){
                 },
                 "result": {
                     "title": "확인 질문",
-                    "text": "[선택 결과] 친구도 정확히 모른다는 걸 알게 됐다."
+                    "text": "[선택 결과] 소연도 정확히 모른다는 걸 알게 됐다."
                 },
                 "nextLocation": "📓 D-5 마무리"
             },
@@ -3772,6 +4017,9 @@ function buildFourteenDayScenarios(){
                 "result": {
                     "title": "괜찮아정 설명서",
                     "text": "[정보카드]\n괜찮아정 — 성분: 아세트아미노펜 500mg\n주의: 음주 후 복용 시 간 손상 위험\n술을 마신 경우 의사·약사와 상담"
+                },
+                "showDrugCardBeforeResult": {
+                    "drugKey": "ok"
                 },
                 "nextLocation": "🔎 D-3 엄마 약 설명서 확인 후 선택"
             },
@@ -4293,7 +4541,8 @@ function formatDrinkResultText(drink, reactionText, overLimit){
     '[음료 정보]',
     `선택한 음료: ${drink.name}${productLine ? ` (${productLine})` : ''}`,
     `카페인: ${drink.caffeine}mg`,
-    `오늘 누적 카페인: ${now}mg / ${max}mg`,
+    `오늘 카페인: ${now}mg / ${max}mg`,
+    `게임 누적 카페인: ${G.totalCaffeine || 0}mg`,
     drink.desc || ''
   ].filter(Boolean);
   if(overLimit){
@@ -4501,7 +4750,7 @@ function refreshClueState(){
   }
 }
 
-let clueDrinkTab='cafe';
+let clueDrinkTab='cvs';
 
 function caffeineBadgeClass(mg){
   if((mg || 0) <= 0) return 'badge-zero';
@@ -4517,13 +4766,34 @@ function renderClueCafBar(){
   const color=pct >= 100 ? '#ef4444' : pct >= 80 ? '#f59e0b' : '#5fc89a';
   return `
     <div class="clue-caf-bar-wrap">
-      <div>☕ 오늘 카페인: ${now}mg / ${max}mg</div>
+      <div>☕ 카페인 오늘: ${now}mg / ${max}mg · 누적: ${G.totalCaffeine || 0}mg</div>
       <div class="clue-caf-track"><div class="clue-caf-bar-fg" style="width:${pct}%;background:${color};"></div></div>
     </div>`;
 }
 
 function renderCvsDrinks(){
-  return renderDrinkImageMenu('cvs');
+  const featured = ['energy','cancoffee','vitamin','water'];
+  const spritePos = {energy:'0%', cancoffee:'33.333%', vitamin:'66.666%', water:'100%'};
+  const rows = featured.map(id => {
+    const drink = DRINK_MENU.cvs.find(d => d.id === id);
+    if(!drink) return '';
+    const cafText = `카페인 ${drink.caffeine || 0}mg`;
+    return `
+      <button class="cvs-drink-row" type="button" onclick="pickClueDrink('${drink.id}','cvs')">
+        <div class="cvs-drink-icon"><div class="cvs-drink-art" style="--sprite-x:${spritePos[id] || '0%'}"></div></div>
+        <div class="cvs-drink-info">
+          <strong>${escapeHtml(drink.name)}</strong>
+          <span>${escapeHtml(drink.product || drink.volume || '')}</span>
+        </div>
+        <span class="cvs-caffeine-badge ${caffeineBadgeClass(drink.caffeine)}">${escapeHtml(cafText)}</span>
+      </button>`;
+  }).join('');
+  return `
+    <div class="cvs-drink-overview">
+      <img src="assets/drinks/convenience_drinks_caffeine_sheet.png" alt="편의점 음료 네 종류: 에너지드링크, 캔커피, 비타민음료, 물">
+      <div class="cvs-drink-overview-caption">라벨을 확인해 음료별 카페인 함량을 비교하세요.</div>
+    </div>
+    <div class="clue-drink-list">${rows}</div>`;
 }
 
 function renderDrinkImageMenu(type, actionName='pickClueDrink'){
@@ -4547,17 +4817,13 @@ function renderCafeDrinks(){
   return renderDrinkImageMenu('cafe');
 }
 
-function renderClueModal(tab=clueDrinkTab){
-  clueDrinkTab = tab;
+function renderClueModal(tab='cvs'){
+  clueDrinkTab = 'cvs';
   const content=document.getElementById('clue-drink-ui');
   if(!content) return;
   content.innerHTML = `
-    <div class="clue-tabs">
-      <button class="clue-tab-btn ${tab==='cafe'?'active':''}" type="button" onclick="renderClueModal('cafe')">☕ 카페</button>
-      <button class="clue-tab-btn ${tab==='cvs'?'active':''}" type="button" onclick="renderClueModal('cvs')">🏪 편의점</button>
-    </div>
     ${renderClueCafBar()}
-    ${tab === 'cafe' ? renderCafeDrinks() : renderCvsDrinks()}`;
+    ${renderCvsDrinks()}`;
 }
 
 function pickClueDrink(drinkId, tab){
@@ -4588,8 +4854,8 @@ function showClue(idx){
     document.getElementById('clue-visual').style.display='none';
     document.getElementById('clue-facts').style.display='none';
     const sceneText=String(sc?.location || '') + String(sc?.scene || '');
-    clueDrinkTab = sceneText.includes('카페') || sceneText.includes('cafe') ? 'cafe' : 'cvs';
-    renderClueModal(clueDrinkTab);
+    clueDrinkTab = 'cvs';
+    renderClueModal('cvs');
     document.getElementById('clue-modal').classList.add('show');
     return;
   }
@@ -4777,12 +5043,51 @@ function renderResultContent(text, fallbackLabel='') {
       return `<div class="result-section plain"><div class="result-body">${escapeHtml(body)}</div></div>`;
     }
     const type = resultSectionType(section.label);
+    if(isSnsInfoCard(section.label, body)) return renderSnsInfoCard();
     return `
       <div class="result-section ${type}">
         <div class="result-speaker">${escapeHtml(resultDisplayLabel(section.label))}</div>
         <div class="result-body">${escapeHtml(body)}</div>
       </div>`;
   }).join('');
+}
+
+function isSnsInfoCard(label, body) {
+  const text = `${label || ''}\n${body || ''}`;
+  return text.includes('작성자: 일반인')
+    && text.includes('출처·근거: 없음')
+    && text.includes('댓글:');
+}
+
+function renderSnsInfoCard() {
+  return `
+    <div class="result-section info sns-result-section">
+      <div class="result-speaker">📱 SNS 게시물 확인</div>
+      <div class="sns-info-card" aria-label="출처가 불분명한 SNS 게시물과 댓글 정보">
+        <div class="sns-info-top">
+          <div class="sns-info-avatar">TIP</div>
+          <div class="sns-info-account">
+            <strong>study_tip_daily</strong>
+            <span>시험기간 인기 게시물</span>
+          </div>
+          <div class="sns-info-more">•••</div>
+        </div>
+        <div class="sns-info-visual" role="img" aria-label="카페인 음료와 약이 함께 놓인 SNS 게시물 이미지"></div>
+        <div class="sns-info-actions"><span>♡</span><span>💬</span><span>↗</span><span>▱</span></div>
+        <div class="sns-info-caption">
+          <strong>study_tip_daily</strong> 시험 전엔 카페인과 약으로 버티면 된다는 글이 올라왔다.
+        </div>
+        <div class="sns-info-facts">
+          <div class="sns-info-chip"><b>작성자</b><span>일반인 · 의료 전문가 아님</span></div>
+          <div class="sns-info-chip"><b>출처·근거</b><span>확인된 자료 없음</span></div>
+        </div>
+        <div class="sns-info-comments">
+          <div class="sns-info-comment"><b>followed_user</b> 따라 했다 속 쓰려 고생함</div>
+          <div class="sns-info-comment"><b>pill_check</b> 카페인+약 같이 먹는 거 위험하다던데?</div>
+        </div>
+        <div class="sns-info-warning">좋아요 수보다 작성자와 근거를 먼저 확인해야 한다.</div>
+      </div>
+    </div>`;
 }
 
 function clearTypingState(state) {
@@ -4794,7 +5099,7 @@ function clearTypingState(state) {
 function renderTypingText(targetId, past, current) {
   const target = document.getElementById(targetId);
   if (!target) return;
-  target.innerHTML = `<span class="dialog-current">${escapeHtml(current)}</span>`;
+  target.innerHTML = `<span class="dialog-current">${escapeHtml(stripDialogueCue(current))}</span>`;
 }
 
 function hideNextArrow() {
@@ -4851,7 +5156,7 @@ function skipTypingToEnd(state, targetId, hideArrowFn, event) {
   setSkipVisible(targetId === 'd-txt' ? 'dialog-skip' : 'result-skip', false);
   const target = document.getElementById(targetId);
   if (target) {
-    target.innerHTML = `<span class="dialog-current">${escapeHtml(state.sentences.join(' '))}</span>`;
+    target.innerHTML = `<span class="dialog-current">${escapeHtml(state.sentences.map(stripDialogueCue).join(' '))}</span>`;
   }
   if (state.onComplete) state.onComplete();
 }
@@ -4862,6 +5167,7 @@ function typeNextChar(state, targetId, arrowFn) {
     finishTypingSentence(state, targetId, arrowFn);
     return;
   }
+  if(targetId === 'd-txt') applyDialogueCueForSentence(sentence);
   state.timer = setInterval(() => {
     state.charIdx++;
     renderTypingText(
@@ -4904,6 +5210,51 @@ function onDialogTap() {
 
 function skipDialogTyping(event) {
   skipTypingToEnd(_typing, 'd-txt', hideNextArrow, event);
+}
+
+function dialogueCue(sentence) {
+  const match = String(sentence || '').match(/^\[([^\]]+)\]\s*/);
+  return match ? match[1].trim() : '';
+}
+
+function stripDialogueCue(sentence) {
+  return String(sentence || '').replace(/^\[[^\]]+\]\s*/, '');
+}
+
+function slotForDialogueSpeaker(speaker) {
+  const name = String(speaker || '');
+  if(name.includes('민준')) return 'npc_minjun';
+  if(name.includes('소연') || name.includes('서연')) return 'npc_seoyeon';
+  if(name.includes('태영') || name.includes('태양')) return 'npc_taeyang';
+  if(name.includes('하은')) return 'npc_haeun';
+  if(name.includes('엄마')) return 'npc_mom';
+  if(name.includes('선생님') || name.includes('보건샘') || name.includes('의사')) return 'teacher_main';
+  return protagonistConditionSlot(G.gender === 'f' ? 'char_female' : 'char_male');
+}
+
+function setSceneCharacterSlot(slot, displayName) {
+  const el = document.getElementById('scene-char');
+  if(!el) return;
+  const imgUrl = driveUrl(DB.gameData.images?.[slot] || '');
+  el.className = `scene-char slot-${String(slot).replace(/_/g, '-')}`;
+  el.innerHTML = imgUrl
+    ? `<img src="${imgUrl}" alt="캐릭터">`
+    : `<span style="font-size:5.5rem;">${sceneCharacterFallback({}, slot)}</span>`;
+  const tag = document.getElementById('scene-name-tag');
+  if(tag) tag.textContent = displayName || sceneCharacterDisplayName({speaker:displayName || ''}, slot);
+}
+
+function applyDialogueCueForSentence(sentence) {
+  const cue = dialogueCue(sentence);
+  if(!cue) return;
+  const speaker = cue === '나레이터' ? '나레이터' : cue;
+  document.getElementById('d-spk').textContent = speaker;
+  setDialogType(dialogTypeFromSpeaker(speaker));
+  const slot = slotForDialogueSpeaker(speaker);
+  const displayName = speaker === '나레이터'
+    ? `${G.name}(나)`
+    : sceneCharacterDisplayName({speaker}, slot);
+  setSceneCharacterSlot(slot, displayName);
 }
 
 function hideChoices() {
@@ -5082,6 +5433,7 @@ function renderResultSections(sections) {
       return `<div class="result-section plain"><div class="result-body">${escapeHtml(body)}</div></div>`;
     }
     const type = resultSectionType(section.label);
+    if(isSnsInfoCard(section.label, body)) return renderSnsInfoCard();
     return `
       <div class="result-section ${type}">
         <div class="result-speaker">${escapeHtml(resultDisplayLabel(section.label))}</div>
@@ -5200,6 +5552,15 @@ function examPeriodHudLabel(day, sc) {
   return '';
 }
 
+function combineHudDayLabel(dayTitle, hudLocation) {
+  const title = String(dayTitle || '').trim();
+  const location = String(hudLocation || '').trim();
+  if (!location) return title;
+  if (!title) return location;
+  if (location === title || location.startsWith(`${title} `)) return location;
+  return `${title} · ${location}`;
+}
+
 function getScenarioText(sc, teacherEvent) {
   let text = sc?.text || '';
   const loc = sc?.location || '';
@@ -5268,7 +5629,7 @@ function renderScene(idx){
   const dayTitle = sc.countdown ? String(sc.countdown).replace(' 시험기간','') : `${day}일차`;
   document.getElementById('s-day').textContent=dayTitle;
   const hudLocation = examPeriodHudLabel(day, sc) || formatHudLocation(sc.location);
-  document.getElementById('hud-day').textContent=hudLocation ? `${dayTitle} · ${hudLocation}` : dayTitle;
+  document.getElementById('hud-day').textContent=combineHudDayLabel(dayTitle, hudLocation);
   updateCaffeineHud();
   document.getElementById('scene-loc').textContent=sc.location||'📍 교실';
   updateProgDots();
@@ -5301,6 +5662,14 @@ function pickChoice(i){
   hideChoices();
   const sc=DB.gameData.scenarios[G.scene];
   const ch=sc.choices[i];
+  if(ch.showDrugCardBeforeResult){
+    openDrugCardModal(i, ch.showDrugCardBeforeResult.drugKey || 'stop');
+    return;
+  }
+  if(ch.labelInspect){
+    openEnergyLabelInspect(i);
+    return;
+  }
   if(ch.openDrink){
     window._pendingDrinkChoice=ch;
     openDrinkModal(ch.openDrink);
@@ -5329,6 +5698,13 @@ function pickChoice(i){
     openSnsModal(ch.openSns.caption);
     return;
   }
+  finishChoice(i);
+}
+
+function finishChoice(i){
+  if(G.answered)return;
+  const sc=DB.gameData.scenarios[G.scene];
+  const ch=sc.choices[i];
   pushSceneHistory('choice');
   G.answered=true;
   document.querySelectorAll('.choice-btn').forEach((b,j)=>{
@@ -5344,6 +5720,148 @@ function pickChoice(i){
   showDialogResult(ch.result.title, ch.result.text, () => {
     if(ch.showReport) setTimeout(()=>showDailyReport(ch.showReport),800);
   }, {fallbackLabel:'선택 결과'});
+}
+
+const DRUG_CARD_DATA = {
+  ok:{
+    id:'ok',
+    name:'괜찮아정',
+    ingredient:'아세트아미노펜 500mg',
+    engraving:'OK-500',
+    features:['공복 OK','4~6시간 간격','1일 최대 8정(4,000mg)'],
+    caution:'4,000mg 초과 시 간 손상 위험',
+    artHtml:'<span class="pill-shape pill-oblong"><span class="pill-mark">OK 500</span></span>'
+  },
+  stop:{
+    id:'stop',
+    name:'아야스톱정',
+    ingredient:'이부프로펜 200mg',
+    engraving:'IBU-200',
+    features:['소염 효과','생리통에 유리','식후 복용 필수'],
+    caution:'공복 금지 — 위 점막 자극, 위출혈 위험',
+    artHtml:'<span class="pill-shape pill-oval" style="--pill-a:#78b7ff;--pill-b:#336bd6;"><span class="pill-mark light">IBU</span></span>'
+  },
+  combo:{
+    id:'combo',
+    name:'통증싹싹캡슐',
+    ingredient:'이부프로펜 75mg + 산화마그네슘 50mg + 카페인무수물 40mg + 알릴이소프로필아세틸우레아 30mg',
+    engraving:'CAF-40',
+    features:['생리통·두통 완화','근육통 완화','카페인 40mg 포함'],
+    caution:'에너지드링크·약물 병용 시 카페인 중복 위험!',
+    artHtml:'<span class="pill-shape pill-capsule-combo"><span class="pill-mark">CAF</span></span>'
+  },
+  cold:{
+    id:'cold',
+    name:'감기뚝정',
+    ingredient:'아세트아미노펜 300mg + 항히스타민제 + 무수카페인 30mg',
+    engraving:'COLD-300',
+    features:['종합 감기약','콧물·오한 완화','카페인 30mg 포함'],
+    caution:'괜찮아정과 병용 시 아세트아미노펜 중복 위험!',
+    artHtml:'<span class="pill-shape pill-pentagon" style="--pill-a:#ff9f76;--pill-b:#f05a43;"><span class="pill-mark light">COLD</span></span>'
+  }
+};
+
+function renderDrugCardModalBody(drugKey){
+  const d = DRUG_CARD_DATA[drugKey] || DRUG_CARD_DATA.stop;
+  const artHtml = d.artHtml || DRUG_CARD_DATA.stop.artHtml;
+  return `
+    <div class="drug-dict-card">
+      <div class="drug-dict-card-top">
+        <div class="drug-dict-emoji">
+          <div class="drug-pill-art" aria-label="${escapeHtml(d.name)}">${artHtml}</div>
+        </div>
+        <div>
+          <div class="drug-dict-name">${escapeHtml(d.name)}</div>
+          <div class="drug-dict-ingr">${escapeHtml(d.ingredient)}</div>
+        </div>
+      </div>
+      <div class="drug-dict-field">
+        <div class="drug-dict-label">각인</div>
+        <div class="drug-dict-value" style="font-family:monospace">${escapeHtml(d.engraving)}</div>
+      </div>
+      <div class="drug-dict-field">
+        <div class="drug-dict-label">주요 특징</div>
+        <div class="drug-dict-chips">${d.features.map(f=>`<span class="drug-dict-chip">${escapeHtml(f)}</span>`).join('')}</div>
+      </div>
+      <div class="drug-dict-field">
+        <div class="drug-dict-label">주의사항</div>
+        <div class="drug-dict-chips"><span class="drug-dict-chip caution">${escapeHtml(d.caution)}</span></div>
+      </div>
+    </div>`;
+}
+
+function openDrugCardModal(choiceIdx, drugKey='stop'){
+  window._drugCardChoiceIdx=choiceIdx;
+  const body=document.getElementById('drug-card-modal-body');
+  if(body) body.innerHTML=renderDrugCardModalBody(drugKey);
+  document.getElementById('drug-card-modal')?.classList.add('show');
+}
+
+function finishDrugCardModal(){
+  const idx=window._drugCardChoiceIdx;
+  document.getElementById('drug-card-modal')?.classList.remove('show');
+  window._drugCardChoiceIdx=null;
+  finishChoice(idx);
+}
+
+function openEnergyLabelInspect(choiceIdx){
+  window._labelInspectChoiceIdx=choiceIdx;
+  window._energyLabelFound=false;
+  const modal=document.getElementById('energy-inspect-modal');
+  const lens=document.getElementById('energy-lens');
+  const btn=document.getElementById('energy-continue');
+  if(lens){ lens.style.left='50%'; lens.style.top='50%'; }
+  if(btn){
+    btn.disabled=true;
+    btn.textContent='카페인 함량을 찾으면 계속하기';
+  }
+  modal?.classList.remove('found');
+  modal?.classList.add('show');
+}
+
+function closeEnergyLabelInspect(){
+  document.getElementById('energy-inspect-modal')?.classList.remove('show','found');
+  if(!G.answered){
+    const sc=DB.gameData.scenarios[G.scene];
+    if(sc?.choices) renderChoices(sc);
+  }
+}
+
+function energyInspectMove(event){
+  const stage=document.getElementById('energy-scan-stage');
+  const lens=document.getElementById('energy-lens');
+  if(!stage || !lens) return;
+  const rect=stage.getBoundingClientRect();
+  const x=Math.max(0,Math.min(event.clientX-rect.left,rect.width));
+  const y=Math.max(0,Math.min(event.clientY-rect.top,rect.height));
+  const xp=(x/rect.width)*100;
+  const yp=(y/rect.height)*100;
+  lens.style.left=`${xp}%`;
+  lens.style.top=`${yp}%`;
+  if(xp>=33 && xp<=67 && yp>=59 && yp<=84){
+    revealEnergyCaffeine();
+  }
+}
+
+function revealEnergyCaffeine(){
+  if(window._energyLabelFound) return;
+  window._energyLabelFound=true;
+  G.labelChecked=true;
+  const modal=document.getElementById('energy-inspect-modal');
+  const btn=document.getElementById('energy-continue');
+  modal?.classList.add('found');
+  if(btn){
+    btn.disabled=false;
+    btn.textContent='확인했어요';
+  }
+}
+
+function finishEnergyLabelInspect(){
+  if(!window._energyLabelFound) return;
+  const idx=window._labelInspectChoiceIdx;
+  document.getElementById('energy-inspect-modal')?.classList.remove('show','found');
+  window._labelInspectChoiceIdx=null;
+  finishChoice(idx);
 }
 function nextScene(){
   clearTypingState(_typing);
@@ -5526,12 +6044,80 @@ function openMiniQuiz(){
 // ══════════════════════════════════════
 // 7. 엔딩 & 레이더 차트
 // ══════════════════════════════════════
+const TYPE_RESULT_CARDS = {
+  selfControl: {
+    file:'01_squirrel_self_control_result.png',
+    title:'똑똑한 선택 다람쥐형'
+  },
+  hydration: {
+    file:'02_bear_hydration_result.png',
+    title:'수분 충전 곰형'
+  },
+  courage: {
+    file:'03_frog_courage_result.png',
+    title:'용기 개구리형'
+  },
+  medicineKnowledge: {
+    file:'04_owl_medicine_knowledge_result.png',
+    title:'현명한 부엉이형'
+  },
+  sleep: {
+    file:'05_rabbit_sleep_result.png',
+    title:'꿀잠 토끼형'
+  },
+  focus: {
+    file:'06_turtle_focus_result.png',
+    title:'꾸준한 거북이형'
+  },
+  balance: {
+    file:'07_meerkat_balance_result.png',
+    title:'균형 미어캣형'
+  },
+  caffeineWarning: {
+    file:'08_hamster_caffeine_warning_result.png',
+    title:'카페인 과속 햄스터형'
+  }
+};
+
 function showEnding(){
   show('ending');
   document.getElementById('ending-title').textContent=`${G.name}의 결과`;
   document.getElementById('ending-sub').textContent='약물 오남용 예방 시뮬레이션 완료!';
   drawRadar(); drawEndMsg();
 }
+
+function selectTypeResultCard(ctx) {
+  const stats = ctx.stats;
+  const score = {
+    selfControl: stats.judgment + stats.caffeine * 0.45,
+    hydration: stats.health + stats.caffeine * 0.25,
+    courage: stats.social + stats.judgment * 0.35 + ctx.helped * 8,
+    medicineKnowledge: stats.knowledge + stats.judgment * 0.3 - ctx.analgesics * 2,
+    sleep: stats.sleep + stats.health * 0.25 + (ctx.avgSleep >= 7 ? 10 : 0),
+    focus: (stats.knowledge + stats.sleep + stats.health) / 3 + 8,
+    balance: ctx.avg + (ctx.min.value >= 55 ? 15 : 0) - Math.max(0, ctx.max.value - ctx.min.value - 35) * 0.4,
+    caffeineWarning: (100 - stats.caffeine) + ctx.avgCaffeine * 0.55 + ctx.combo * 18
+  };
+
+  if (ctx.combo > 0 || ctx.avgCaffeine >= 90 || stats.caffeine <= 42) return TYPE_RESULT_CARDS.caffeineWarning;
+  if (stats.sleep >= 78 && ctx.avgSleep >= 7) return TYPE_RESULT_CARDS.sleep;
+  if (ctx.allHigh || (ctx.min.value >= 60 && ctx.avg >= 70)) return TYPE_RESULT_CARDS.balance;
+  if (ctx.helped >= 2 || stats.social >= 82) return TYPE_RESULT_CARDS.courage;
+  if (stats.knowledge >= 82 || (stats.knowledge >= stats.judgment && stats.knowledge >= stats.health && ctx.analgesics <= 1)) return TYPE_RESULT_CARDS.medicineKnowledge;
+  if (stats.judgment >= 82 || stats.caffeine >= 82) return TYPE_RESULT_CARDS.selfControl;
+  if (stats.health >= 82) return TYPE_RESULT_CARDS.hydration;
+
+  const best = Object.entries(score).sort((a,b) => b[1] - a[1])[0]?.[0] || 'focus';
+  return TYPE_RESULT_CARDS[best] || TYPE_RESULT_CARDS.focus;
+}
+
+function renderTypeResultCard(card) {
+  const img = document.getElementById('ending-type-card');
+  if (!img || !card) return;
+  img.src = `assets/type-result-cards/${card.file}`;
+  img.alt = `${card.title} 결과 카드`;
+}
+
 function drawRadar(){
   const cv=document.getElementById('radar-cvs');
   const ctx=cv.getContext('2d');
@@ -5578,17 +6164,18 @@ function drawRadar(){
     ctx.fillText(s.label,cx+Math.cos(a)*(R+24),cy+Math.sin(a)*(R+24)+4);});
 }
 function drawEndMsg(){
-  const stats = DB.gameData.stats.map(s => ({
+  const statRows = DB.gameData.stats.map(s => ({
     key:   s.key,
     label: s.label.replace(/[^\uAC00-\uD7A3A-Za-z0-9]/g,'').trim(),
     value: Math.min(100, G.stats[s.key] || 0)
   }));
 
-  const avg     = Math.round(stats.reduce((sum,s) => sum + s.value, 0) / stats.length);
-  const min     = stats.reduce((a,b) => a.value <= b.value ? a : b);
-  const allHigh = stats.every(s => s.value >= 70);
-  const highOutlier = stats.filter(s => s.value >= 85).length >= 2 &&
-                      stats.filter(s => s.value < 50).length >= 2;
+  const avg     = Math.round(statRows.reduce((sum,s) => sum + s.value, 0) / statRows.length);
+  const min     = statRows.reduce((a,b) => a.value <= b.value ? a : b);
+  const max     = statRows.reduce((a,b) => a.value >= b.value ? a : b);
+  const allHigh = statRows.every(s => s.value >= 70);
+  const highOutlier = statRows.filter(s => s.value >= 85).length >= 2 &&
+                      statRows.filter(s => s.value < 50).length >= 2;
 
   const health  = G.stats.health  || 0;
   const sleep   = G.stats.sleep   || 0;
@@ -5601,6 +6188,11 @@ function drawEndMsg(){
   const fasting = G.fastingMedCount || 0;
   const combo = G.comboCount || 0;
   const helped = G.helpedFriend || 0;
+  const typeCard = selectTypeResultCard({
+    stats:{ health, sleep, caffeine, judgment, knowledge:G.stats.knowledge || 0, social:G.stats.social || 0 },
+    avg, min, max, allHigh, avgCaffeine, avgSleep, analgesics, fasting, combo, helped
+  });
+  renderTypeResultCard(typeCard);
 
   let ending, title, msg, color;
 
@@ -5676,6 +6268,7 @@ function drawEndMsg(){
       <div>💊 진통제 복용: <strong>${analgesics}회</strong> / 공복 복용: <strong>${fasting}회</strong></div>
       <div>⚠️ 카페인+진통제 중복: <strong>${combo}회</strong></div>
       <div>🤝 친구에게 도움을 준 횟수: <strong>${helped}회</strong></div>
+      <div>🧭 결과 유형: <strong>${typeCard.title}</strong></div>
     </div>`;
   document.getElementById('ending-msg').style.borderLeftColor = color;
 
@@ -5934,7 +6527,7 @@ function openDrinkModal(type) {
   const max = G.caffeineMax || Math.round((G.weight || 60) * 2.5);
   const pct = Math.round(((G.caffeineToday || 0) / max) * 100);
   document.getElementById('dm-caf-label').textContent =
-    `☕ 오늘 카페인: ${G.caffeineToday || 0}mg / ${max}mg`;
+    `☕ 카페인 오늘: ${G.caffeineToday || 0}mg / ${max}mg · 누적: ${G.totalCaffeine || 0}mg`;
   const fill = document.getElementById('dm-caf-fill');
   fill.style.width = Math.min(100, pct) + '%';
   fill.style.background = pct >= 100 ? '#ef4444' : pct >= 80 ? '#f59e0b' : '#5fc89a';
@@ -6115,7 +6708,7 @@ function showDailyReport(day) {
   document.getElementById('dr-title').textContent = `DAY ${day} 결산`;
   document.getElementById('dr-body').innerHTML = `
     <div style="background:#fff;border:2px solid #f1d3b8;border-radius:10px;padding:10px 14px;">
-      ☕ 카페인: ${G.caffeineToday||0}mg / ${max}mg
+      ☕ 오늘 카페인: ${G.caffeineToday||0}mg / ${max}mg · 게임 누적: ${G.totalCaffeine||0}mg
       <span style="color:${pct>=100?'#ef4444':pct>=80?'#f59e0b':'#5fc89a'};">
         (${pct>=100?'⚠️ 초과':pct>=80?'주의':'양호'})
       </span>
@@ -6480,15 +7073,16 @@ function sceneCharacterSlot(sc) {
   const speaker = String(sc?.speaker || '').replace('{name}', G.name);
   const text = String(sc?.text || '');
   const location = String(sc?.location || '');
+  if (speaker.includes('나레이터')) return protagonistConditionSlot(G.gender === 'f' ? 'char_female' : 'char_male');
   if (speaker.includes('민준')) return 'npc_minjun';
-  if (speaker.includes('서연')) return 'npc_seoyeon';
-  if (speaker.includes('태양')) return 'npc_taeyang';
+  if (speaker.includes('소연') || speaker.includes('서연')) return 'npc_seoyeon';
+  if (speaker.includes('태영') || speaker.includes('태양')) return 'npc_taeyang';
   if (speaker.includes('하은')) return 'npc_haeun';
   if (speaker.includes('엄마')) return 'npc_mom';
   if (speaker.includes('선생님') || speaker.includes('보건샘') || speaker.includes('의사')) return 'teacher_main';
   if (text.includes('민준')) return 'npc_minjun';
-  if (text.includes('서연')) return 'npc_seoyeon';
-  if (text.includes('태양')) return 'npc_taeyang';
+  if (text.includes('소연') || text.includes('서연')) return 'npc_seoyeon';
+  if (text.includes('태영') || text.includes('태양')) return 'npc_taeyang';
   if (text.includes('하은')) return 'npc_haeun';
   if (text.includes('엄마') || location.includes('엄마')) return 'npc_mom';
   return protagonistConditionSlot(G.gender === 'f' ? 'char_female' : 'char_male');
