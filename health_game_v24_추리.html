@@ -2827,10 +2827,10 @@ const randomName=()=>{
   const gender=document.querySelector('#gender-row .seg-btn.active')?.dataset.value||'m';
   const pool=gender==='f'?NAMES_F:NAMES_M;
   const grade=document.querySelector('#grade-row .seg-btn.active')?.dataset.value||String(G.grade||1);
-  const classNo=String(Math.floor(Math.random()*6)+1).padStart(2,'0');
+  const classNo=String(Math.floor(Math.random()*6)+1);
   const studentNo=String(Math.floor(Math.random()*30)+1).padStart(2,'0');
   const name=pool[Math.floor(Math.random()*pool.length)];
-  document.getElementById('name-inp').value=`${classNo}${studentNo} ${name}`;
+  document.getElementById('name-inp').value=`${grade}${classNo}${studentNo} ${name}`;
 };
 function randomWeight(){
   const w=Math.floor(Math.random()*36)+40;
