@@ -1768,7 +1768,6 @@ body{background:
   grid-template-columns:repeat(2,1fr);
   gap:8px;
 }
-#grade-row{grid-template-columns:repeat(3,1fr);}
 .seg-btn{
   border:2px solid #ebc7a9;
   border-radius:12px;
@@ -2130,7 +2129,8 @@ body{background:
           <button class="seg-btn" type="button" data-value="f" onclick="selectSegment('gender','f')">여</button>
         </div>
       </div>
-      <input id="name-inp" type="text" placeholder="학번 이름을 입력하세요" maxlength="20">
+      <input id="name-inp" type="text" placeholder="예: 1101 홍길동" maxlength="24">
+      <small style="display:block;margin-top:-8px;margin-bottom:12px;color:#718096;">학번 4자리: 1번째=학년, 2번째=반, 3~4번째=번호</small>
       <div class="setup-field">
         <label>체중</label>
         <div style="display:flex;align-items:center;">
@@ -2138,14 +2138,6 @@ body{background:
             oninput="updateCaffeinePreview()" style="flex:1;">
         </div>
         <small id="caffeine-preview">체중을 입력하면 하루 최대 카페인을 계산해요</small>
-      </div>
-      <div class="setup-field">
-        <label>학년</label>
-        <div class="seg-row" id="grade-row">
-          <button class="seg-btn" type="button" data-value="1" onclick="selectSegment('grade','1')">1학년</button>
-          <button class="seg-btn" type="button" data-value="2" onclick="selectSegment('grade','2')">2학년</button>
-          <button class="seg-btn" type="button" data-value="3" onclick="selectSegment('grade','3')">3학년</button>
-        </div>
       </div>
       <div class="name-row">
         <button class="btn btn-ghost" style="flex:1" onclick="randomCharacter()">🎲 랜덤</button>
@@ -2525,8 +2517,9 @@ body{background:
 // 1. 데이터 저장소 (Firebase 연동 시 여기만 교체)
 // ══════════════════════════════════════
 // TODO_FIREBASE: 아래 DB 객체를 Firebase Realtime DB로 교체
-const GAME_DATA_KEY = 'hg_v16_gamedata';
-const GAME_SAVE_KEY = 'hg_v16_save';
+const GAME_DATA_KEY = 'hg_v18_gamedata';
+const GAME_SAVE_KEY = 'hg_v18_save';
+const GAME_SAVE_VERSION = 18;
 const DB = {
   // 게임 데이터 (관리자 에디터에서 수정 → localStorage 저장)
   get gameData() {
@@ -2682,7 +2675,7 @@ const DEFAULT_DATA = {
 // 3. 게임 상태
 // ══════════════════════════════════════
 let G = {
-  gender:'m', name:'학생', weight:60, grade:1, caffeineMax:150,
+  gender:'m', name:'학생', studentId:'', classNo:1, studentNo:1, weight:60, grade:1, caffeineMax:150,
   scene:0, day:1, answered:false,
   caffeineToday:0, caffeineStreak:0, noCaffeineStreak:0, caffeineOverDays:0,
   lateSleepStreak:0, veryLateSleepStreak:0, sleepDebt:0,
@@ -2792,7 +2785,7 @@ function getSavePayload() {
   const clone = JSON.parse(JSON.stringify(G));
   delete clone.sceneHistory;
   return {
-    version: 17,
+    version: GAME_SAVE_VERSION,
     savedAt: Date.now(),
     G: clone,
   };
@@ -2810,7 +2803,7 @@ function saveGameState() {
 function hasSavedGame() {
   try {
     const saved = JSON.parse(localStorage.getItem(GAME_SAVE_KEY) || 'null');
-    return !!(saved && saved.G && saved.G.name && saved.G.scene !== undefined);
+    return !!(saved && saved.version >= GAME_SAVE_VERSION && saved.G && saved.G.name && saved.G.scene !== undefined);
   } catch (err) {
     return false;
   }
@@ -2819,7 +2812,7 @@ function hasSavedGame() {
 function resumeGame() {
   try {
     const saved = JSON.parse(localStorage.getItem(GAME_SAVE_KEY) || 'null');
-    if (!saved || !saved.G) return show('name');
+    if (!saved || saved.version < GAME_SAVE_VERSION || !saved.G) return show('name');
     const data = DB.gameData;
     Object.assign(G, saved.G);
     G.sceneHistory=[];
@@ -2837,8 +2830,8 @@ function resumeGame() {
     if (G.answered) G.scene = Math.min((G.scene || 0) + 1, data.scenarios.length - 1);
     G.answered = false;
     DB.saveGameData(data);
-    document.getElementById('s-name').textContent = G.name;
-    document.getElementById('hud-name').textContent = `${G.name}(나)`;
+    document.getElementById('s-name').textContent = studentDisplayName();
+    document.getElementById('hud-name').textContent = `${studentDisplayName()}(나)`;
     buildStatBars();
     renderProgDots();
     renderScene(G.scene);
@@ -2854,11 +2847,25 @@ function resumeGame() {
 // ══════════════════════════════════════
 const NAMES_M=['도영','시우','준서','현우','지호','건우','성민','재원','윤재','은우'];
 const NAMES_F=['하윤','예린','지혜','슬기','수아','나은','채원','유진','다은','지안'];
+function parseStudentIdentity(raw){
+  const match = String(raw || '').trim().match(/^(\d{4})\s+(.+)$/);
+  if(!match) return null;
+  const studentId = match[1];
+  const grade = Number(studentId[0]);
+  const classNo = Number(studentId[1]);
+  const studentNo = Number(studentId.slice(2));
+  const name = match[2].trim();
+  if(!name || grade < 1 || grade > 3 || classNo < 1 || studentNo < 1) return null;
+  return { studentId, grade, classNo, studentNo, name };
+}
+function studentDisplayName(){
+  return G.studentId ? `${G.studentId} ${G.name}` : G.name;
+}
 const randomName=()=>{
   const gender=document.querySelector('#gender-row .seg-btn.active')?.dataset.value||'m';
   const pool=gender==='f'?NAMES_F:NAMES_M;
-  const grade=document.querySelector('#grade-row .seg-btn.active')?.dataset.value||String(G.grade||1);
-  const classNo=String(Math.floor(Math.random()*6)+1).padStart(2,'0');
+  const grade=String(Math.floor(Math.random()*3)+1);
+  const classNo=String(Math.floor(Math.random()*6)+1);
   const studentNo=String(Math.floor(Math.random()*30)+1).padStart(2,'0');
   const name=pool[Math.floor(Math.random()*pool.length)];
   document.getElementById('name-inp').value=`${grade}${classNo}${studentNo} ${name}`;
@@ -2868,12 +2875,7 @@ function randomWeight(){
   document.getElementById('weight-inp').value=w;
   updateCaffeinePreview();
 }
-function randomGrade(){
-  const grade=String(Math.floor(Math.random()*3)+1);
-  selectSegment('grade',grade);
-}
 function randomCharacter(){
-  randomGrade();
   randomName();
   randomWeight();
 }
@@ -2894,25 +2896,27 @@ function updateCaffeinePreview(){
 const confirmName=()=>{
   const nameInput=document.getElementById('name-inp');
   const weightInput=document.getElementById('weight-inp');
-  const gradeBtn=document.querySelector('#grade-row .seg-btn.active');
   const v=nameInput.value.trim();
+  const identity=parseStudentIdentity(v);
   const weightRaw=weightInput.value.trim();
   const weight=Number(weightRaw);
   const missing=[];
-  if(!v) missing.push('이름');
+  if(!identity) missing.push('4자리 학번과 이름');
   if(!weightRaw || !Number.isFinite(weight) || weight<30 || weight>120) missing.push('체중(30~120kg)');
-  if(!gradeBtn) missing.push('학년');
   if(missing.length){
     alert(`${missing.join(', ')}을(를) 입력해 주세요.`);
-    if(!v) nameInput.focus();
+    if(!identity) nameInput.focus();
     else if(!weightRaw || !Number.isFinite(weight) || weight<30 || weight>120) weightInput.focus();
     return;
   }
-  G.name=v;
+  G.name=identity.name;
+  G.studentId=identity.studentId;
+  G.grade=identity.grade;
+  G.classNo=identity.classNo;
+  G.studentNo=identity.studentNo;
   G.weight=weight;
   G.caffeineMax=Math.round(G.weight*2.5);
   G.gender=document.querySelector('#gender-row .seg-btn.active')?.dataset.value||'m';
-  G.grade=Number(gradeBtn.dataset.value);
   G.stats={health:70,knowledge:50,caffeine:70,sleep:60,judgment:55,social:60};
   G.scene=0; G.day=1; G.answered=false;
   G.caffeineToday=0; G.caffeineStreak=0; G.noCaffeineStreak=0; G.caffeineOverDays=0;
@@ -2939,8 +2943,8 @@ const confirmName=()=>{
   ];
   data.scenarios=buildFourteenDayScenarios();
   localStorage.setItem(GAME_DATA_KEY,JSON.stringify(data));
-  document.getElementById('s-name').textContent=G.name;
-  document.getElementById('hud-name').textContent=`${G.name}(나)`;
+  document.getElementById('s-name').textContent=studentDisplayName();
+  document.getElementById('hud-name').textContent=`${studentDisplayName()}(나)`;
   buildStatBars(); renderProgDots(); renderScene(G.scene);
   show('student');
   saveGameState();
@@ -3253,485 +3257,11 @@ const NPC_DATA = {
   }
 };
 function buildFourteenDayScenarios(){
-  // v16 정본: 에디터 v4 레이어 기준 D-14 → D-Day 카운트다운 시나리오
+  // 최종본: D-7 → D-5 → D-3 → D-Day 카운트다운 시나리오
   return [
-    {
-        "type": "narration",
-        "day": 1,
-        "countdown": "D-14 시험기간",
-        "location": "📝 D-14 시험기간 시작",
-        "scene": "scene_commute",
-        "speaker": "나레이터",
-        "text": "시험 기간 2주 전. 아직 시험지는 멀리 있는 것 같지만, {name}의 하루에는 벌써 작은 선택들이 쌓이기 시작한다. 피곤함을 어떻게 버틸지, 약과 카페인을 어떻게 대할지에 따라 2주 뒤 컨디션이 달라질 것이다.",
-        "choices": null
-    },
-    {
-        "type": "event",
-        "day": 1,
-        "countdown": "D-14 시험기간",
-        "location": "🏪 D-14 교문 앞 편의점",
-        "scene": "scene_convenience",
-        "speaker": "민준",
-        "text": "민준이 편의점에서 나오며 손을 흔든다. \"야, 시험 2주 전부터 괜히 긴장되지? 에너지드링크 하나 샀는데 너도 살래? 오전 버티려면 이거라도 마셔야 해.\"",
-        "choices": [
-            {
-                "text": "🥤 편의점 냉장고에서 음료를 직접 고른다.",
-                "good": false,
-                "delta": {
-                    "knowledge": 2
-                },
-                "result": {
-                    "title": "첫 음료 선택",
-                    "text": "[속마음] 오전은 그럭저럭 버틸 수 있겠지. 근데 내가 뭘 골랐는지가 오늘 카페인 총량에 그대로 쌓이는 거네."
-                },
-                "openDrink": "cvs"
-            },
-            {
-                "text": "💧 \"됐어, 이따 물 마실게.\" 민준의 시선을 견딘다.",
-                "good": true,
-                "delta": {
-                    "judgment": 5,
-                    "caffeine": 4
-                },
-                "result": {
-                    "title": "카페인 없는 첫 칸",
-                    "text": "[민준] \"어, 진짜로? 안 마신다고?\"\n[속마음] 좀 머쓱하긴 한데… 그래, 오늘은 카페인 없이 시작해보자."
-                },
-                "caffeineMg": 0,
-                "noCaffeine": true
-            }
-        ]
-    },
-    {
-        "type": "event",
-        "day": 2,
-        "countdown": "D-13 시험기간",
-        "location": "🏫 D-13 1교시 교실",
-        "scene": "scene_classroom",
-        "speaker": "{name}",
-        "text": "어젯밤 늦게 잔 게 교실까지 따라왔다. 칠판 글씨가 흐릿하고 관자놀이가 지끈거린다. 옆자리 민준이 작게 속삭인다. \"야, 카페인 없이 이거 버텨?\"",
-        "choices": [
-            {
-                "text": "☕ 쉬는 시간에 자판기/편의점 음료를 고른다.",
-                "good": false,
-                "delta": {
-                    "health": -4,
-                    "caffeine": -8,
-                    "sleep": -4
-                },
-                "result": {
-                    "title": "버티는 힘",
-                    "text": "[속마음] 눈은 떠졌어. 근데 이거… 내가 깬 게 아니라 카페인이 억지로 깨워준 느낌인데."
-                },
-                "openDrink": "cvs"
-            },
-            {
-                "text": "💧 물을 마시고 쉬는 시간에 잠깐 바람을 쐰다.",
-                "good": true,
-                "delta": {
-                    "judgment": 6,
-                    "caffeine": 4
-                },
-                "result": {
-                    "title": "느린 버티기",
-                    "text": "[속마음] 집중이 완벽하진 않네. 그래도 바로 카페인부터 찾는 버릇은 안 들이는 게 낫겠지."
-                },
-                "caffeineMg": 0,
-                "noCaffeine": true
-            },
-            {
-                "text": "💊 가방 속 괜찮아정을 꺼내 성분·복용법을 먼저 읽어본다.",
-                "good": true,
-                "delta": {
-                    "health": 4,
-                    "knowledge": 8,
-                    "judgment": 6
-                },
-                "result": {
-                    "title": "복용 전 확인",
-                    "text": "[속마음] 약 상자 뒤에 이렇게 많이 적혀 있었네. 성분, 효능, 용법, 주의사항까지.\n[선택 결과] 약은 이름보다 성분·복용 간격·주의사항을 확인하는 것이 중요하다."
-                }
-            }
-        ]
-    },
-    {
-        "type": "event",
-        "day": 2,
-        "countdown": "D-13 시험기간",
-        "location": "🛒 D-13 편의점",
-        "scene": "scene_convenience",
-        "speaker": "{name}",
-        "clues": [
-            {
-                "type": "can",
-                "icon": "🥤",
-                "label": "캔 뒷면",
-                "title": "에너지드링크 뒷면 확대",
-                "facts": [
-                    "에너지드링크 355mL",
-                    "카페인 함량: 100mg",
-                    "표시: 카페인 함유"
-                ]
-            },
-            {
-                "type": "medicine",
-                "icon": "📱",
-                "label": "스마트폰",
-                "title": "청소년 카페인 하루 권장량 검색",
-                "facts": [
-                    "청소년 카페인 권장량 = 체중(kg) × 2.5mg 이하",
-                    "50kg 기준: 125mg 이하",
-                    "에너지드링크 100mg + 통증싹싹캡슐 40mg = 140mg"
-                ]
-            }
-        ],
-        "text": "쉬는 시간이 되자 머리가 더 지끈거린다. 아침에 마신 에너지드링크 캔이 떠오르고, 가방 속 통증싹싹캡슐도 생각난다. 민준이 말한다. \"그거 그냥 먹어. 두통엔 잘 듣잖아.\"",
-        "choices": [
-            {
-                "text": "📱 검색으로 카페인 합산을 계산하고 먹지 않기로 한다.",
-                "good": true,
-                "delta": {
-                    "knowledge": 15,
-                    "judgment": 12,
-                    "caffeine": 10
-                },
-                "result": {
-                    "title": "계산 성공",
-                    "text": "[속마음] 음료 100에 약 40이면… 140이잖아? 이거 내 기준에 가까울 수 있네.\n[선택 결과] 음료와 약의 카페인은 따로가 아니라 합산된다."
-                }
-            },
-            {
-                "text": "💊 민준 말 듣고 그냥 먹는다.",
-                "good": false,
-                "delta": {
-                    "health": -15,
-                    "caffeine": -10,
-                    "judgment": -10
-                },
-                "result": {
-                    "title": "카페인 중복",
-                    "text": "[속마음] 어? 잠깐 괜찮은가 싶더니 가슴이 두근거리기 시작하네…\n[선택 결과] 음료와 약의 카페인은 따로가 아니라 합산된다."
-                },
-                "caffeineMg": 40,
-                "comboMedCaffeine": true
-            }
-        ]
-    },
-    {
-        "type": "event",
-        "day": 3,
-        "countdown": "D-12 시험기간",
-        "location": "🏫 D-12 보건 수업",
-        "scene": "scene_classroom",
-        "speaker": "보건샘",
-        "text": "보건샘이 종이를 한 장씩 나눠준다. \"약 이름보다 먼저 볼 것은 성분명, 함량, 복용법, 주의사항이에요. 감기뚝정 성분표를 같이 읽어볼까요?\"",
-        "choices": [
-            {
-                "text": "📋 성분표를 하나씩 짚어가며 읽는다.",
-                "good": true,
-                "delta": {
-                    "knowledge": 12,
-                    "judgment": 8
-                },
-                "result": {
-                    "title": "성분표가 보이기 시작했다",
-                    "text": "[속마음] 성분명, 함량, 복용 간격, 주의사항… 이제 어디를 봐야 하는지 알 것 같아."
-                }
-            },
-            {
-                "text": "✋ \"아세트아미노펜이 다른 약에도 들어갈 수 있나요?\" 질문한다.",
-                "good": true,
-                "delta": {
-                    "knowledge": 15,
-                    "judgment": 5,
-                    "social": 8
-                },
-                "result": {
-                    "title": "핵심 질문",
-                    "text": "[속마음] 손 들길 잘했다. 나만 궁금한 게 아니었나 봐.\n[나레이터] 질문 하나에 교실 전체가 성분 중복 위험을 함께 알게 됐다."
-                }
-            },
-            {
-                "text": "😴 졸려서 대충 훑고 넘긴다.",
-                "good": false,
-                "delta": {
-                    "knowledge": -3,
-                    "sleep": -3
-                },
-                "result": {
-                    "title": "놓친 정보",
-                    "text": "[속마음] 아, 방금 중요한 거 지나간 것 같은데… 뭐였더라.\n[선택 결과] 성분 중복 장면에서 판단이 늦어질 수 있다."
-                }
-            }
-        ]
-    },
-    {
-        "type": "event",
-        "day": 4,
-        "countdown": "D-11 시험기간",
-        "location": "🏃 D-11 체육관 앞",
-        "scene": "scene_gym",
-        "speaker": "{name}",
-        "clues": [
-            {
-                "type": "medicine",
-                "icon": "📱",
-                "label": "스마트폰",
-                "title": "괜찮아정 정보",
-                "facts": [
-                    "괜찮아정: 아세트아미노펜 500mg",
-                    "공복 복용 가능",
-                    "소염 효과는 약함"
-                ]
-            },
-            {
-                "type": "medicine",
-                "icon": "📋",
-                "label": "성분표",
-                "title": "아야스톱정 정보",
-                "facts": [
-                    "아야스톱정: 이부프로펜 200mg",
-                    "생리통·염증성 통증에 유리",
-                    "공복 복용 금지, 식후 복용"
-                ]
-            }
-        ],
-        "text": "체육 시간 전, 서연이 얼굴이 창백하다. \"배가 너무 아파. 사물함에 괜찮아정밖에 없는데 생리통에도 먹어도 돼?\" 오늘 아침 서연은 아무것도 못 먹었다.",
-        "choices": [
-            {
-                "text": "📋 성분표를 비교하고 식사 후 보건실에서 확인하자고 한다.",
-                "good": true,
-                "delta": {
-                    "health": 8,
-                    "knowledge": 8,
-                    "judgment": 12,
-                    "social": 7
-                },
-                "result": {
-                    "title": "확인 후 상담",
-                    "text": "[속마음] 서연이 빈속이랬지. 일단 뭐라도 먹고 보건실 가서 확인하자고 해야겠다.\n[선택 결과] 이부프로펜은 식후 복용해야 위 부담을 줄일 수 있다."
-                }
-            },
-            {
-                "text": "💊 괜찮아정을 준다. 공복이라 이부프로펜보다 안전하다고 설명한다.",
-                "good": true,
-                "delta": {
-                    "health": 3,
-                    "judgment": 8
-                },
-                "result": {
-                    "title": "안전한 차선책",
-                    "text": "[속마음] 빈속이면 이게 더 낫겠지.\n[선택 결과] 아세트아미노펜은 공복에도 위 자극이 적어 지금 상황에서 적절한 차선책이다."
-                }
-            },
-            {
-                "text": "💊 아야스톱정을 바로 빌려준다.",
-                "good": false,
-                "delta": {
-                    "health": -10,
-                    "judgment": -10
-                },
-                "result": {
-                    "title": "공복 복용 위험",
-                    "text": "[속마음] 어… 빈속에 먹였더니 서연이 속이 쓰리다고 하네. 성분표를 봤어야 했나.\n[선택 결과] 이부프로펜 공복 복용은 속 쓰림과 위 자극을 부를 수 있다."
-                }
-            }
-        ]
-    },
-    {
-        "type": "event",
-        "day": 5,
-        "countdown": "D-10 시험기간",
-        "location": "🍱 D-10 급식실 앞",
-        "scene": "scene_cafeteria",
-        "speaker": "{name}",
-        "clues": [
-            {
-                "type": "medicine",
-                "icon": "🔍",
-                "label": "돋보기",
-                "title": "통증싹싹캡슐 확대",
-                "facts": [
-                    "작은 글씨: 카페인무수물 40mg",
-                    "이부프로펜 75mg + 산화마그네슘 50mg + 알릴이소프로필아세틸우레아 30mg",
-                    "에너지드링크와 함께 먹으면 카페인 합산"
-                ]
-            },
-            {
-                "type": "medicine",
-                "icon": "📓",
-                "label": "복용 수첩",
-                "title": "오늘 카페인 섭취 기록",
-                "facts": [
-                    "오늘 마신 음료: 에너지드링크 1캔",
-                    "카페인 100mg",
-                    "통증싹싹캡슐 추가 시 총 140mg"
-                ]
-            }
-        ],
-        "text": "점심 후 두통이 온다. 가방에서 통증싹싹캡슐을 꺼냈다. 아까 에너지드링크도 한 캔 마셨는데, 먹어도 괜찮을까?",
-        "choices": [
-            {
-                "text": "🔍 돋보기로 약 속 카페인 40mg을 발견하고 복용하지 않는다.",
-                "good": true,
-                "delta": {
-                    "knowledge": 15,
-                    "judgment": 15,
-                    "caffeine": 12
-                },
-                "result": {
-                    "title": "숨은 성분 발견",
-                    "text": "[속마음] 약 안에 카페인이 숨어 있었네! 음료 100에 이거 40이면… 멈추는 게 맞아.\n[선택 결과] 약에 포함된 카페인도 섭취량에 합산된다."
-                }
-            },
-            {
-                "text": "💊 그냥 통증싹싹캡슐을 먹는다.",
-                "good": false,
-                "delta": {
-                    "health": -15,
-                    "caffeine": -12,
-                    "judgment": -10
-                },
-                "result": {
-                    "title": "카페인 중복",
-                    "text": "[속마음] 또 두근거려… 돋보기로 성분만 봤어도 피했을 텐데."
-                },
-                "caffeineMg": 40,
-                "comboMedCaffeine": true
-            },
-            {
-                "text": "💧 물 마시고 잠깐 눕는다.",
-                "good": true,
-                "delta": {
-                    "health": 2,
-                    "judgment": 5
-                },
-                "result": {
-                    "title": "비약물 선택",
-                    "text": "[속마음] 완벽하진 않지만, 적어도 카페인을 더 보태진 않았어."
-                },
-                "caffeineMg": 0,
-                "noCaffeine": true
-            }
-        ]
-    },
-    {
-        "type": "event",
-        "day": 6,
-        "countdown": "D-9 시험기간",
-        "location": "📱 D-9 급식실",
-        "scene": "scene_classroom",
-        "speaker": "하은",
-        "text": "하은이 폰을 내민다. \"누가 카페인이랑 진통제를 같이 먹는 걸 시험 꿀팁처럼 올렸어. 댓글도 많은데, 이거 위험한 거 아니야?\"",
-        "choices": [
-            {
-                "text": "🔍 \"어떤 성분이야?\" 폰을 당겨 성분을 직접 확인한다.",
-                "good": true,
-                "delta": {
-                    "knowledge": 6,
-                    "judgment": 5
-                },
-                "result": {
-                    "title": "직접 확인",
-                    "text": "[속마음] 댓글 보니 통증싹싹캡슐에 카페인이 들었대. 성분 겹치는 거 위험하네."
-                }
-            },
-            {
-                "text": "🤩 \"진짜 효과 있나?\" 하고 스크린샷을 저장한다.",
-                "good": false,
-                "delta": {
-                    "judgment": -10
-                },
-                "result": {
-                    "title": "위험한 저장",
-                    "text": "[속마음] 지금이야 그냥 궁금해서 저장한 건데… 며칠 뒤엔 진짜 선택지가 될 수도 있겠다."
-                },
-                "openSns": {
-                    "caption": "시험 꿀팁? 약+카페인 조합은 위험할 수 있어요."
-                }
-            },
-            {
-                "text": "🚩 위험 정보라며 신고하고 친구들에게 따라 하지 말라고 한다.",
-                "good": true,
-                "delta": {
-                    "judgment": 8,
-                    "knowledge": 5,
-                    "social": 8
-                },
-                "result": {
-                    "title": "잘못된 정보 차단",
-                    "text": "[속마음] 이건 따라 하면 안 되는 거야. 친구들한테도 알려야지.\n[나레이터] SNS의 위험한 복약 정보 확산을 한 번 끊어냈다."
-                }
-            }
-        ]
-    },
     {
         "type": "event",
         "day": 7,
-        "countdown": "D-8 시험기간",
-        "location": "📚 D-8 도서관",
-        "scene": "scene_library",
-        "speaker": "{name}",
-        "clues": [
-            {
-                "type": "medicine",
-                "icon": "📋",
-                "label": "성분표 비교",
-                "title": "감기뚝정 + 괜찮아정",
-                "facts": [
-                    "감기뚝정: 아세트아미노펜 300mg + 항히스타민 + 무수카페인 30mg",
-                    "괜찮아정: 아세트아미노펜 500mg",
-                    "둘 다 먹으면 같은 성분이 중복됨"
-                ]
-            }
-        ],
-        "text": "감기 기운 때문에 아침에 감기뚝정을 먹었다. 오후에 두통이 또 온다. 가방에서 괜찮아정을 꺼내려는데, 같이 먹어도 될까?",
-        "choices": [
-            {
-                "text": "📋 성분표 2장을 비교해 아세트아미노펜 중복을 확인한다.",
-                "good": true,
-                "delta": {
-                    "knowledge": 15,
-                    "judgment": 15
-                },
-                "result": {
-                    "title": "성분 중복 발견",
-                    "text": "[속마음] 어? 두 약 다 아세트아미노펜이잖아. 이름만 다르지 같은 성분이네.\n[선택 결과] 이름이 달라도 성분이 같으면 합산해야 한다."
-                },
-                "caffeineMg": 30
-            },
-            {
-                "text": "💊 두통이 심하니 괜찮아정도 먹는다.",
-                "good": false,
-                "delta": {
-                    "health": -12,
-                    "judgment": -10
-                },
-                "result": {
-                    "title": "성분 중복",
-                    "text": "[속마음] 감기뚝정에 괜찮아정까지… 이거 계속 먹다간 하루 최대량 넘겠는데.\n[선택 결과] 같은 성분(아세트아미노펜)을 반복 복용하면 하루 최대량에 가까워질 수 있다."
-                },
-                "caffeineMg": 30
-            },
-            {
-                "text": "🩺 보건실에 가서 두 약을 같이 보여준다.",
-                "good": true,
-                "delta": {
-                    "knowledge": 10,
-                    "judgment": 8
-                },
-                "result": {
-                    "title": "전문가 상담",
-                    "text": "[보건샘] \"두 약 성분표를 같이 보자. 여기, 둘 다 아세트아미노펜이 들었지?\"\n[속마음] 혼자 판단 안 하고 물어보길 잘했다."
-                },
-                "healthOffice": "fasting",
-                "caffeineMg": 30
-            }
-        ]
-    },
-    {
-        "type": "event",
-        "day": 8,
         "countdown": "D-7 시험기간",
         "location": "🏪 D-7 등굣길",
         "scene": "scene_convenience",
@@ -3785,7 +3315,7 @@ function buildFourteenDayScenarios(){
     },
     {
         "type": "event",
-        "day": 8,
+        "day": 7,
         "countdown": "D-7 시험기간",
         "location": "🔎 D-7 등굣길 라벨 확인 후 선택",
         "scene": "scene_convenience",
@@ -3827,7 +3357,7 @@ function buildFourteenDayScenarios(){
     },
     {
         "type": "event",
-        "day": 8,
+        "day": 7,
         "countdown": "D-7 시험기간",
         "location": "🏫 D-7 일과 중",
         "scene": "scene_classroom",
@@ -3892,7 +3422,7 @@ function buildFourteenDayScenarios(){
     },
     {
         "type": "event",
-        "day": 8,
+        "day": 7,
         "countdown": "D-7 시험기간",
         "location": "🏪 D-7 방과후",
         "scene": "scene_convenience",
@@ -3975,7 +3505,7 @@ function buildFourteenDayScenarios(){
     },
     {
         "type": "narration",
-        "day": 8,
+        "day": 7,
         "countdown": "D-7 시험기간",
         "location": "📓 D-7 마무리",
         "scene": "scene_bedroom",
@@ -3985,7 +3515,7 @@ function buildFourteenDayScenarios(){
     },
     {
         "type": "event",
-        "day": 9,
+        "day": 5,
         "countdown": "D-5 시험기간",
         "location": "🚶 D-5 등굣길",
         "scene": "scene_commute",
@@ -4035,7 +3565,7 @@ function buildFourteenDayScenarios(){
     },
     {
         "type": "event",
-        "day": 9,
+        "day": 5,
         "countdown": "D-5 시험기간",
         "location": "🔎 D-5 아야스톱정 설명서 확인 후 선택",
         "scene": "scene_commute",
@@ -4073,7 +3603,7 @@ function buildFourteenDayScenarios(){
     },
     {
         "type": "event",
-        "day": 9,
+        "day": 5,
         "countdown": "D-5 시험기간",
         "location": "🏫 D-5 일과 중",
         "scene": "scene_classroom",
@@ -4138,7 +3668,7 @@ function buildFourteenDayScenarios(){
     },
     {
         "type": "event",
-        "day": 9,
+        "day": 5,
         "countdown": "D-5 시험기간",
         "location": "📚 D-5 방과후",
         "scene": "scene_library",
@@ -4204,7 +3734,7 @@ function buildFourteenDayScenarios(){
     },
     {
         "type": "narration",
-        "day": 9,
+        "day": 5,
         "countdown": "D-5 시험기간",
         "location": "📓 D-5 마무리",
         "scene": "scene_bedroom",
@@ -4214,7 +3744,7 @@ function buildFourteenDayScenarios(){
     },
     {
         "type": "event",
-        "day": 10,
+        "day": 3,
         "countdown": "D-3 시험기간",
         "location": "🏠 D-3 등굣길",
         "scene": "scene_home",
@@ -4263,7 +3793,7 @@ function buildFourteenDayScenarios(){
     },
     {
         "type": "event",
-        "day": 10,
+        "day": 3,
         "countdown": "D-3 시험기간",
         "location": "🔎 D-3 엄마 약 설명서 확인 후 선택",
         "scene": "scene_home",
@@ -4302,7 +3832,7 @@ function buildFourteenDayScenarios(){
     },
     {
         "type": "event",
-        "day": 10,
+        "day": 3,
         "countdown": "D-3 시험기간",
         "location": "🏫 D-3 일과 중",
         "scene": "scene_classroom",
@@ -4370,7 +3900,7 @@ function buildFourteenDayScenarios(){
     },
     {
         "type": "event",
-        "day": 10,
+        "day": 3,
         "countdown": "D-3 시험기간",
         "location": "🔎 D-3 성분표 비교 후 선택",
         "scene": "scene_classroom",
@@ -4409,7 +3939,7 @@ function buildFourteenDayScenarios(){
     },
     {
         "type": "event",
-        "day": 10,
+        "day": 3,
         "countdown": "D-3 시험기간",
         "location": "📱 D-3 방과후",
         "scene": "scene_library",
@@ -4459,7 +3989,7 @@ function buildFourteenDayScenarios(){
     },
     {
         "type": "event",
-        "day": 10,
+        "day": 3,
         "countdown": "D-3 시험기간",
         "location": "🔎 D-3 SNS 확인 후 선택",
         "scene": "scene_library",
@@ -4497,7 +4027,7 @@ function buildFourteenDayScenarios(){
     },
     {
         "type": "narration",
-        "day": 10,
+        "day": 3,
         "countdown": "D-3 시험기간",
         "location": "📓 D-3 마무리",
         "scene": "scene_bedroom",
@@ -4507,7 +4037,7 @@ function buildFourteenDayScenarios(){
     },
     {
         "type": "event",
-        "day": 12,
+        "day": 3,
         "countdown": "D-3 시험기간",
         "location": "🌙 D-3 그날 밤",
         "scene": "scene_bedroom",
@@ -5735,8 +5265,8 @@ function renderScene(idx){
     G.caffeineToday=0;
   }
   G.currentDay=day; G.day=day;
-  document.getElementById('hud-name').textContent=`${G.name}(나)`;
-  const dayTitle = sc.countdown && String(sc.countdown).includes('D-Day') ? 'D-Day' : `${day}일차`;
+  document.getElementById('hud-name').textContent=`${studentDisplayName()}(나)`;
+  const dayTitle = sc.countdown ? String(sc.countdown).replace(' 시험기간','') : `${day}일차`;
   document.getElementById('s-day').textContent=dayTitle;
   const hudLocation = examPeriodHudLabel(day, sc) || formatHudLocation(sc.location);
   document.getElementById('hud-day').textContent=hudLocation ? `${dayTitle} · ${hudLocation}` : dayTitle;
