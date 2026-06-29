@@ -2137,7 +2137,7 @@ body{background:
           <input id="weight-inp" type="number" min="30" max="120" placeholder="예: 60"
             oninput="updateCaffeinePreview()" style="flex:1;">
         </div>
-        <small id="caffeine-preview">체중을 입력하면 하루 최대 카페인을 계산해요</small>
+        <small id="caffeine-preview">체중(kg) × 2.5mg = 하루 최대 카페인을 계산해요</small>
       </div>
       <div class="name-row">
         <button class="btn btn-ghost" style="flex:1" onclick="randomCharacter()">🎲 랜덤</button>
@@ -2890,8 +2890,8 @@ function updateCaffeinePreview(){
   const w=Number(raw);
   document.getElementById('caffeine-preview').textContent=
     raw && Number.isFinite(w) && w>=30 && w<=120
-      ? `하루 최대 카페인 ${Math.round(w*2.5)}mg`
-      : '체중을 입력하면 하루 최대 카페인을 계산해요';
+      ? `체중 ${w}kg × 2.5mg = 하루 최대 카페인 ${Math.round(w*2.5)}mg`
+      : '체중(kg) × 2.5mg = 하루 최대 카페인을 계산해요';
 }
 const confirmName=()=>{
   const nameInput=document.getElementById('name-inp');
