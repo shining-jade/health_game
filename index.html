@@ -2954,7 +2954,7 @@ const DEFAULT_DATA = {
     char_female: 'assets/characters/char_female.png',
     char_male_tired:    'assets/characters/char_male_tired.png',
     char_male_sleepy:   'assets/characters/char_male_sleepy.png',
-    char_male_headache: 'assets/characters/char_male_headache_repaired.png',
+    char_male_headache: 'assets/characters/char_male_headache_nobook.png',
     char_male_nervous:  'assets/characters/char_male_nervous.png',
     char_male_recovered:'assets/characters/char_male_recovered.png',
     char_male_sick:     'assets/characters/char_male_sick.png',
@@ -6040,7 +6040,7 @@ function prevScene(){
   const last = Array.isArray(G.sceneHistory) ? G.sceneHistory.pop() : null;
   if (last?.state && restoreGameStateSnapshot(last.state)) {
     closeAllOverlays();
-    G.answered = false;
+    window._pendingDrinkChoice = null;
     renderScene(G.scene);
     saveGameState();
     return;
