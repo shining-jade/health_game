@@ -4669,11 +4669,12 @@ function applyPendingDrinkChoice(choice){
 
 function formatDrinkResultText(drink, reactionText){
   const productLine = [drink.product || drink.english || drink.name, drink.volume].filter(Boolean).join(' · ');
+  const drinkDesc = String(drink.desc || '').replace(/^카페인\s*\d+mg[.。]?\s*/, '');
   const lines = [
     '[음료 정보]',
     `선택한 음료: ${drink.name}${productLine ? ` (${productLine})` : ''}`,
     `카페인: ${drink.caffeine}mg`,
-    drink.desc || ''
+    drinkDesc
   ].filter(Boolean);
   if(reactionText){
     const reaction = normalizeStoryText(reactionText).trim();
