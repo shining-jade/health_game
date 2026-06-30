@@ -4667,21 +4667,14 @@ function applyPendingDrinkChoice(choice){
   return choice.result?.text || '';
 }
 
-function formatDrinkResultText(drink, reactionText, overLimit){
-  const max = G.caffeineMax || Math.round((G.weight || 60) * 2.5);
-  const now = G.caffeineToday || 0;
+function formatDrinkResultText(drink, reactionText){
   const productLine = [drink.product || drink.english || drink.name, drink.volume].filter(Boolean).join(' · ');
   const lines = [
     '[음료 정보]',
     `선택한 음료: ${drink.name}${productLine ? ` (${productLine})` : ''}`,
     `카페인: ${drink.caffeine}mg`,
-    `오늘 카페인: ${now}mg / ${max}mg`,
-    `게임 누적 카페인: ${G.totalCaffeine || 0}mg`,
     drink.desc || ''
   ].filter(Boolean);
-  if(overLimit){
-    lines.push('오늘 카페인 최대량을 초과했습니다. 체력이 감소합니다.');
-  }
   if(reactionText){
     const reaction = normalizeStoryText(reactionText).trim();
     if(/^\[[^\]]+\]/.test(reaction)){
@@ -6690,11 +6683,10 @@ function selectDrink(type, drinkId) {
   window._pendingDrinkChoice = null;
   const reactionText = applyPendingDrinkChoice(pending);
   updateCaffeineHud();
-  const overLimit = G.caffeineToday > max;
 
   showDialogResult(
     pending?.result?.title || (drink.good ? `✅ ${drink.name} 선택` : `⚠️ ${drink.name} 선택`),
-    formatDrinkResultText(drink, reactionText, overLimit)
+    formatDrinkResultText(drink, reactionText)
   );
 }
 
