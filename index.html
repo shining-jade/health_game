@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>약, 알고 먹자! — 보건 시뮬레이션</title>
+<title>약, 알고 먹자! </title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
@@ -2920,7 +2920,7 @@ const DEFAULT_DATA = {
     char_female: 'assets/characters/char_female.png',
     char_male_tired:    'assets/characters/char_male_tired.png',
     char_male_sleepy:   'assets/characters/char_male_sleepy.png',
-    char_male_headache: 'assets/characters/char_male_headache.png',
+    char_male_headache: 'assets/characters/char_male_headache_repaired.png',
     char_male_nervous:  'assets/characters/char_male_nervous.png',
     char_male_recovered:'assets/characters/char_male_recovered.png',
     char_male_sick:     'assets/characters/char_male_sick.png',
@@ -3611,7 +3611,7 @@ function buildFourteenDayScenarios(){
         "location": "🏪 D-7 등굣길",
         "scene": "scene_convenience",
         "speaker": "나레이터",
-        "text": "[나레이터] 시험이 일주일 앞으로 다가왔다. 어젯밤 좀 늦게 잤더니 아침부터 머리가 무겁다. 교문 앞 편의점에서 민준이 캔을 흔들며 나온다.\n[민준] \"야, 벌써 졸려? 이거 THE KING ENERGY 죽이는데. 너도 하나 사줄까?\"",
+        "text": "[나레이터] 시험이 일주일 앞으로 다가왔다. 어젯밤 공부하느라 늦게 잤더니 아침부터 머리가 무겁다. 교문 앞 편의점에서 민준이 캔을 흔들며 나온다.\n[민준] \"야, 벌써 졸려? 이거 THE KING ENERGY 라고 잠 깨는데 최고야. 너도 하나 사줄까?\"",
         "choices": [
             {
                 "text": "🥤 받아 마신다.",
@@ -3623,7 +3623,7 @@ function buildFourteenDayScenarios(){
                 },
                 "result": {
                     "title": "마신 뒤 확인한 라벨",
-                    "text": "[음료 라벨]\nTHE KING ENERGY · 카페인 100mg\n\n[선택 결과] 잠은 잠깐 깼지만 오늘 카페인 총량에 100mg이 더해졌다."
+                    "text": "[음료 라벨]\nTHE KING ENERGY · 카페인 100mg\n\n[선택 결과] 졸음은  깼지만 카페인 100mg을 섭취했다."
                 },
                 "caffeineMg": 100,
                 "nextLocation": "🏫 D-7 일과 중"
@@ -3654,7 +3654,7 @@ function buildFourteenDayScenarios(){
                 },
                 "result": {
                     "title": "거절",
-                    "text": "[선택 결과] 잠은 덜 깨지만 오늘 첫 카페인은 더하지 않았다."
+                    "text": "[선택 결과] 졸리긴 하지만, 속은 편하다."
                 },
                 "caffeineMg": 0,
                 "noCaffeine": true,
@@ -3669,10 +3669,10 @@ function buildFourteenDayScenarios(){
         "location": "🔎 D-7 등굣길 라벨 확인 후 선택",
         "scene": "scene_convenience",
         "speaker": "{name}",
-        "text": "라벨을 보니 THE KING ENERGY 한 캔에는 카페인 100mg이 들어 있다. 민준이 아직 캔을 내밀고 있다.",
+        "text": "라벨을 보니 THE KING ENERGY 한 캔에는 카페인 100mg이 들어 있다. 민준이 여전히 캔을 내밀고 있다.",
         "choices": [
             {
-                "text": "🥤 그래도 마신다.",
+                "text": "🥤 캔을 받아 마신다.",
                 "good": false,
                 "delta": {
                     "knowledge": 15,
@@ -3681,7 +3681,7 @@ function buildFourteenDayScenarios(){
                 },
                 "result": {
                     "title": "알고 마신 선택",
-                    "text": "[선택 결과] 카페인 100mg을 확인한 뒤 마셨다. 오늘 총량에 그대로 더해진다."
+                    "text": "[선택 결과] 카페인 함량을 확인한 뒤 마셨다. 카페인 100mg을 섭취했다."
                 },
                 "caffeineMg": 100,
                 "nextLocation": "🏫 D-7 일과 중"
@@ -3696,7 +3696,7 @@ function buildFourteenDayScenarios(){
                 },
                 "result": {
                     "title": "확인 후 거절",
-                    "text": "[선택 결과] 잠은 덜 깨지만 라벨 확인 뒤 카페인을 더하지 않았다."
+                    "text": "[선택 결과] 졸리긴 하지만 라벨 확인 뒤 카페인을 마시지 않았다."
                 },
                 "caffeineMg": 0,
                 "noCaffeine": true,
@@ -3711,10 +3711,10 @@ function buildFourteenDayScenarios(){
         "location": "🏫 D-7 일과 중",
         "scene": "scene_classroom",
         "speaker": "{name}",
-        "text": "점심을 먹고 나니 눈이 스르르 감긴다. 5교시는 제일 어려운 수학이다. 매점에 갈까, 잠깐 몸을 움직일까, 그냥 버틸까?",
+        "text": "지금은 점심시간, 점심을 먹고 나니 눈이 스르르 감긴다. 5교시는 제일 어려운 수학이다. 매점에 갈까, 잠깐 몸을 움직일까, 그냥 버틸까?",
         "choices": [
             {
-                "text": "☕ 매점 캔커피를 마신다.",
+                "text": "☕ 매점에서 캔커피를 마신다.",
                 "good": false,
                 "delta": {
                     "knowledge": 10,
@@ -3722,13 +3722,13 @@ function buildFourteenDayScenarios(){
                 },
                 "result": {
                     "title": "캔커피",
-                    "text": "[음료 라벨]\n캔커피 · 카페인 81mg\n\n[선택 결과] 잠은 깼지만 오늘 카페인 총량에 81mg이 더해졌다."
+                    "text": "[음료 라벨]\n캔커피 · 카페인 81mg\n\n[선택 결과] 캔커피에는 카페인 81mg이 들어있다. 잠은 깼지만 심장이 두근거리고 몸이 긴장된다."
                 },
                 "caffeineMg": 81,
                 "nextLocation": "🏪 D-7 방과후"
             },
             {
-                "text": "🏃 친구랑 운동장 한 바퀴를 걷는다.",
+                "text": "🏃 친구랑 운동장을 걷는다.",
                 "good": true,
                 "delta": {
                     "knowledge": 8,
@@ -3736,7 +3736,7 @@ function buildFourteenDayScenarios(){
                 },
                 "result": {
                     "title": "몸을 깨우는 선택",
-                    "text": "[선택 결과] 카페인 없이도 몸을 움직여 졸음을 줄였다."
+                    "text": "[선택 결과] 카페인 없이 몸을 움직여 졸음이 깼다."
                 },
                 "nextLocation": "🏪 D-7 방과후"
             },
@@ -3750,7 +3750,7 @@ function buildFourteenDayScenarios(){
                 },
                 "result": {
                     "title": "짧은 회복",
-                    "text": "[선택 결과] 잠깐 회복했지만 수업 직전 집중은 조금 늦게 올라온다."
+                    "text": "[선택 결과] 무거운 눈꺼풀이 한결 가벼워진다. 정신이 맑아졌다."
                 },
                 "nextLocation": "🏪 D-7 방과후"
             },
@@ -3763,7 +3763,7 @@ function buildFourteenDayScenarios(){
                 },
                 "result": {
                     "title": "버티기",
-                    "text": "[선택 결과] 아무것도 더하지 않았지만 피로가 집중을 계속 흔든다."
+                    "text": "[선택 결과] 밀려오는 졸음과 몽롱함 속에 결국 수업 내용을 제대로 받아적지 못한다."
                 },
                 "nextLocation": "🏪 D-7 방과후"
             }
