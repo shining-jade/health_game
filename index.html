@@ -87,6 +87,8 @@ select option{background:var(--panel);}
 .name-card h2{font-family:'Jua',sans-serif;font-size:1.8rem;margin-bottom:8px;}
 .name-card p{color:var(--subtext);font-size:.88rem;margin-bottom:28px;}
 .name-card input{text-align:center;font-size:1.1rem;margin-bottom:12px;}
+.setup-shell{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 20px;}
+.setup-icon{font-size:3rem;margin-bottom:14px;}
 .name-row{display:flex;gap:10px;margin-top:6px;}
 .back-link{background:none;border:none;color:var(--subtext);font-size:.82rem;cursor:pointer;
   margin-top:16px;text-decoration:underline;font-family:'Noto Sans KR','Malgun Gothic',system-ui,sans-serif;}
@@ -2068,6 +2070,113 @@ body{background:
   }
 }
 
+@media(max-width:560px){
+  #screen-name{
+    min-height:100svh;
+    min-height:100dvh;
+    padding:max(8px, env(safe-area-inset-top)) 12px max(10px, env(safe-area-inset-bottom));
+    align-items:stretch;
+    justify-content:flex-start;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+  }
+  #screen-name .setup-shell{
+    min-height:calc(100svh - 18px);
+    min-height:calc(100dvh - 18px);
+    padding:8px 0 max(10px, env(safe-area-inset-bottom));
+    justify-content:center;
+  }
+  #screen-name .name-card{
+    width:min(100%, 360px);
+    padding:22px 22px 18px;
+    border-radius:20px;
+  }
+  #screen-name .setup-icon{
+    font-size:2.1rem;
+    margin-bottom:6px;
+    line-height:1;
+  }
+  #screen-name .name-card h2{
+    font-size:1.55rem;
+    margin-bottom:4px;
+  }
+  #screen-name .name-card p{
+    font-size:.8rem;
+    line-height:1.45;
+    margin-bottom:16px;
+  }
+  #screen-name .setup-field{
+    margin-bottom:8px;
+  }
+  #screen-name .setup-field label{
+    margin-bottom:5px;
+    font-size:.78rem;
+  }
+  #screen-name .seg-row{
+    gap:7px;
+  }
+  #screen-name .seg-btn{
+    min-height:42px;
+    padding:8px 10px;
+    border-radius:11px;
+    font-size:.9rem;
+  }
+  #screen-name .name-card input{
+    min-height:44px;
+    margin-bottom:8px;
+    padding:8px 10px;
+    font-size:.98rem;
+    border-radius:11px;
+  }
+  #screen-name .setup-field small{
+    margin-top:3px;
+    font-size:.77rem;
+    line-height:1.35;
+  }
+  #screen-name .name-row{
+    gap:8px;
+    margin-top:8px;
+  }
+  #screen-name .name-row .btn{
+    min-height:44px;
+    padding:9px 10px;
+    justify-content:center;
+    font-size:.88rem;
+    border-radius:12px;
+  }
+  #screen-name .back-link{
+    margin-top:10px;
+    font-size:.76rem;
+  }
+}
+
+@media(max-width:380px), (max-height:700px){
+  #screen-name .setup-shell{
+    justify-content:flex-start;
+  }
+  #screen-name .name-card{
+    padding:18px 18px 14px;
+  }
+  #screen-name .setup-icon{
+    font-size:1.85rem;
+    margin-bottom:4px;
+  }
+  #screen-name .name-card h2{
+    font-size:1.42rem;
+  }
+  #screen-name .name-card p{
+    margin-bottom:12px;
+  }
+  #screen-name .seg-btn,
+  #screen-name .name-card input,
+  #screen-name .name-row .btn{
+    min-height:40px;
+  }
+  #screen-name .setup-field small{
+    font-size:.72rem;
+  }
+}
+
 /* Teacher mode: pastel classroom dashboard */
 #screen-teacher.active{
   display:flex;
@@ -2313,9 +2422,9 @@ body{background:
 
 <!-- ══ NAME INPUT ══ -->
 <div id="screen-name" class="screen">
-  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 20px;">
+  <div class="setup-shell">
     <div class="name-card">
-      <div style="font-size:3rem;margin-bottom:14px;">🌱</div>
+      <div class="setup-icon">🌱</div>
       <h2>시작 설정</h2>
       <p>7일 동안 건강한 선택을 이어갈 캐릭터를 준비해 주세요</p>
       <div class="setup-field">
@@ -2444,7 +2553,7 @@ body{background:
     </div>
     <div class="energy-found-panel">
       <div class="hint-msg">아직 흐릿합니다. 돋보기를 라벨 아래쪽으로 천천히 움직여 보세요.</div>
-      <div class="found-msg"><strong>카페인 100mg 발견!</strong><br>한 캔만 마셔도 오늘 카페인 총량에 크게 더해질 수 있어요.</div>
+      <div class="found-msg"><strong>카페인 100mg 발견!</strong><br>한 캔만으로도 카페인 섭취량이 크게 늘 수 있어요.</div>
     </div>
     <button class="energy-continue" id="energy-continue" type="button" onclick="finishEnergyLabelInspect()">카페인 함량을 찾으면 계속하기</button>
   </div>
@@ -3685,61 +3794,13 @@ function buildFourteenDayScenarios(){
         "text": "방과후 독서실로 가는 길. 오늘따라 유난히 피곤하다. 편의점 냉장고 앞에 섰다. 라벨을 확인하면 음료별 카페인을 볼 수 있다.",
         "choices": [
             {
-                "text": "🥤 에너지드링크를 고른다.",
-                "good": false,
-                "delta": {
-                    "knowledge": 15,
-                    "sleep": -10
-                },
-                "result": {
-                    "title": "에너지드링크",
-                    "text": "[음료 라벨]\n에너지드링크 · 카페인 100mg\n\n[선택 결과] 오늘 총량에 100mg이 더해지고 밤잠이 밀릴 수 있다."
-                },
-                "caffeineMg": 100,
-                "nextLocation": "📓 D-7 마무리"
-            },
-            {
-                "text": "☕ 캔커피를 고른다.",
-                "good": false,
-                "delta": {
-                    "knowledge": 8,
-                    "sleep": -5
-                },
-                "result": {
-                    "title": "캔커피",
-                    "text": "[음료 라벨]\n캔커피 · 카페인 81mg\n\n[선택 결과] 오늘 총량에 81mg이 더해진다."
-                },
-                "caffeineMg": 81,
-                "nextLocation": "📓 D-7 마무리"
-            },
-            {
-                "text": "🍊 비타민음료를 고른다.",
+                "text": "🏷️ 라벨 확인하고 음료 고르기",
                 "good": true,
-                "delta": {
-                    "health": 5
-                },
+                "openDrink": "cvs",
                 "result": {
-                    "title": "비타민음료",
-                    "text": "[음료 라벨]\n비타민음료 · 카페인 0mg\n\n[선택 결과] 카페인은 없지만 즉각적인 각성 음료는 아니다."
+                    "title": "라벨 확인 후 선택",
+                    "text": "라벨의 카페인 함량을 확인하고 음료를 골랐다."
                 },
-                "caffeineMg": 0,
-                "noCaffeine": true,
-                "nextLocation": "📓 D-7 마무리"
-            },
-            {
-                "text": "💧 물 + 5분 스트레칭을 한다.",
-                "good": true,
-                "delta": {
-                    "judgment": 10,
-                    "health": 5,
-                    "knowledge": -5
-                },
-                "result": {
-                    "title": "물과 스트레칭",
-                    "text": "[선택 결과] 카페인은 더하지 않았지만 각성 효과는 천천히 온다."
-                },
-                "caffeineMg": 0,
-                "noCaffeine": true,
                 "nextLocation": "📓 D-7 마무리"
             }
         ]
@@ -4530,6 +4591,11 @@ function applyPendingDrinkChoice(choice){
   applyDelta(choice.delta||{});
   applyChoiceRecords(choice);
   applySleepClockEffect(choice);
+  queueFollowupScenario(choice);
+  if(choice.nextLocation){
+    const targetIdx = DB.gameData.scenarios.findIndex(s => s.location === choice.nextLocation);
+    if(targetIdx > G.scene) G.nextSceneOverrideIndex = targetIdx;
+  }
   return choice.result?.text || '';
 }
 
@@ -4771,15 +4837,16 @@ function renderClueCafBar(){
     </div>`;
 }
 
-function renderCvsDrinks(){
+function renderCvsDrinks(actionName='pickClueDrink'){
   const featured = ['energy','cancoffee','vitamin','water'];
   const spritePos = {energy:'0%', cancoffee:'33.333%', vitamin:'66.666%', water:'100%'};
   const rows = featured.map(id => {
     const drink = DRINK_MENU.cvs.find(d => d.id === id);
     if(!drink) return '';
     const cafText = `카페인 ${drink.caffeine || 0}mg`;
+    const args = actionName === 'selectDrink' ? `'cvs','${drink.id}'` : `'${drink.id}','cvs'`;
     return `
-      <button class="cvs-drink-row" type="button" onclick="pickClueDrink('${drink.id}','cvs')">
+      <button class="cvs-drink-row" type="button" onclick="${actionName}(${args})">
         <div class="cvs-drink-icon"><div class="cvs-drink-art" style="--sprite-x:${spritePos[id] || '0%'}"></div></div>
         <div class="cvs-drink-info">
           <strong>${escapeHtml(drink.name)}</strong>
@@ -4788,12 +4855,7 @@ function renderCvsDrinks(){
         <span class="cvs-caffeine-badge ${caffeineBadgeClass(drink.caffeine)}">${escapeHtml(cafText)}</span>
       </button>`;
   }).join('');
-  return `
-    <div class="cvs-drink-overview">
-      <img src="assets/drinks/convenience_drinks_caffeine_sheet.png" alt="편의점 음료 네 종류: 에너지드링크, 캔커피, 비타민음료, 물">
-      <div class="cvs-drink-overview-caption">라벨을 확인해 음료별 카페인 함량을 비교하세요.</div>
-    </div>
-    <div class="clue-drink-list">${rows}</div>`;
+  return `<div class="clue-drink-list">${rows}</div>`;
 }
 
 function renderDrinkImageMenu(type, actionName='pickClueDrink'){
@@ -6533,7 +6595,7 @@ function openDrinkModal(type) {
   fill.style.background = pct >= 100 ? '#ef4444' : pct >= 80 ? '#f59e0b' : '#5fc89a';
 
   const list = document.getElementById('drink-list');
-  list.innerHTML = renderDrinkImageMenu(type, 'selectDrink');
+  list.innerHTML = type === 'cvs' ? renderCvsDrinks('selectDrink') : renderDrinkImageMenu(type, 'selectDrink');
 
   document.getElementById('drink-modal').style.display = 'flex';
 }
