@@ -3772,6 +3772,7 @@ function buildFourteenDayScenarios(){
                     "title": "몸을 깨우는 선택",
                     "text": "[선택 결과] 카페인 없이 몸을 움직였더니 졸음이 깨고 몸이 가볍다. 표정도 밝아졌다."
                 },
+                "characterMood": "recovered",
                 "nextLocation": "🏪 D-7 방과후"
             },
             {
@@ -4665,6 +4666,12 @@ function applyPendingDrinkChoice(choice){
     if(targetIdx > G.scene) G.nextSceneOverrideIndex = targetIdx;
   }
   return choice.result?.text || '';
+}
+
+function choiceCharacterSlot(choice){
+  if(!choice?.characterMood) return '';
+  const prefix = G.gender === 'f' ? 'char_female' : 'char_male';
+  return `${prefix}_${choice.characterMood}`;
 }
 
 function formatDrinkResultText(drink, reactionText){
@@ -5830,6 +5837,8 @@ function finishChoice(i){
   });
   applyDelta(ch.delta||{});
   applySystemEffects(ch);
+  const resultSlot = choiceCharacterSlot(ch);
+  if(resultSlot) setSceneCharacterSlot(resultSlot, `${G.name}(나)`);
   queueFollowupScenario(ch);
   if(ch.nextLocation){
     const targetIdx = DB.gameData.scenarios.findIndex(s => s.location === ch.nextLocation);
