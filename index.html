@@ -4594,6 +4594,39 @@ function recordCaffeine(mg){
     G._lastCaffeineDay=dayKey;
   }
 }
+function caffeineLimitInfo(){
+  const max = G.caffeineMax || Math.round((G.weight || 60) * 2.5);
+  const today = G.caffeineToday || 0;
+  return {max, today, ratio:max > 0 ? today / max : 0};
+}
+function caffeineWarningLevel(beforeMg, afterMg){
+  const {max} = caffeineLimitInfo();
+  if(max <= 0 || afterMg <= 0) return '';
+  if(afterMg >= max && beforeMg < max) return 'over';
+  const cautionLine = max * 0.8;
+  if(afterMg >= cautionLine && beforeMg < cautionLine) return 'caution';
+  return '';
+}
+function applyCaffeineIntake(mg, options={}){
+  const amount = Number(mg) || 0;
+  const before = G.caffeineToday || 0;
+  if(amount > 0){
+    G.caffeineToday = before + amount;
+    recordCaffeine(amount);
+    G.caffeineStreak = (G.caffeineStreak || 0) + 1;
+    G.noCaffeineStreak = 0;
+  } else if(options.noCaffeine){
+    G.noCaffeineStreak = (G.noCaffeineStreak || 0) + 1;
+    G.caffeineStreak = 0;
+  }
+  const after = G.caffeineToday || 0;
+  const warningLevel = caffeineWarningLevel(before, after);
+  if(warningLevel === 'over'){
+    G.caffeineOverDays = (G.caffeineOverDays || 0) + 1;
+    applyDelta({health:-20,caffeine:-15});
+  }
+  return warningLevel;
+}
 function recordSleep(hours){
   const h=Number(hours);
   if(!h) return;
@@ -4662,15 +4695,8 @@ function formatDrinkResultText(drink, reactionText, overLimit){
 function applySystemEffects(choice){
   applyChoiceRecords(choice);
   if(choice.caffeineMg!==undefined){
-    G.caffeineToday=(G.caffeineToday||0)+choice.caffeineMg;
-    recordCaffeine(choice.caffeineMg);
-    if(choice.caffeineMg>0){G.caffeineStreak=(G.caffeineStreak||0)+1;G.noCaffeineStreak=0;}
-    else if(choice.noCaffeine){G.noCaffeineStreak=(G.noCaffeineStreak||0)+1;G.caffeineStreak=0;}
-    if(G.caffeineToday>G.caffeineMax){
-      G.caffeineOverDays=(G.caffeineOverDays||0)+1;
-      applyDelta({health:-20,caffeine:-15});
-      document.getElementById('r-title').textContent='⚠️ 카페인 최대량 초과';
-    }
+    const warningLevel = applyCaffeineIntake(choice.caffeineMg, {noCaffeine:choice.noCaffeine});
+    if(warningLevel) showCaffeineWarning(warningLevel);
     if(G.caffeineStreak>=3) applyDelta({caffeine:-5,judgment:-3});
     if(G.noCaffeineStreak>=3) applyDelta({caffeine:5,social:5});
   }
@@ -6651,24 +6677,12 @@ function selectDrink(type, drinkId) {
     }
   }
 
-  if (drink.caffeine > 0) {
-    G.caffeineToday = (G.caffeineToday || 0) + drink.caffeine;
-    recordCaffeine(drink.caffeine);
-    G.caffeineStreak = (G.caffeineStreak || 0) + 1;
-    G.noCaffeineStreak = 0;
-  } else if (drink.noCaffeine) {
-    G.noCaffeineStreak = (G.noCaffeineStreak || 0) + 1;
-    G.caffeineStreak = 0;
-  }
+  const warningLevel = applyCaffeineIntake(drink.caffeine, {noCaffeine:drink.noCaffeine});
 
   applyDelta(drink.delta || {});
 
   const max = G.caffeineMax || Math.round((G.weight || 60) * 2.5);
-  if (G.caffeineToday > max) {
-    G.caffeineOverDays = (G.caffeineOverDays || 0) + 1;
-    applyDelta({ health: -20, caffeine: -15 });
-    showCaffeineWarning();
-  }
+  if (warningLevel) showCaffeineWarning(warningLevel);
 
   if (G.caffeineStreak >= 3) applyDelta({ caffeine: -5, judgment: -3 });
   if (G.noCaffeineStreak >= 3) applyDelta({ caffeine: 5, social: 5 });
@@ -6708,14 +6722,19 @@ function restoreChoiceModalAfterDrink() {
   document.getElementById('screen-student')?.classList.add('choice-open');
 }
 
-function showCaffeineWarning() {
-  document.getElementById('clue-title').textContent = '⚠️ 카페인 최대량 초과!';
+function showCaffeineWarning(level='over') {
+  const {max, today} = caffeineLimitInfo();
+  const over = level === 'over';
+  document.getElementById('clue-title').textContent = over ? '⚠️ 카페인 최대량 도달!' : '⚠️ 카페인 섭취 주의';
   document.getElementById('clue-visual').innerHTML = `
-    <div style="font-size:3rem;margin:12px 0;">💓</div>`;
-  document.getElementById('clue-facts').innerHTML = `
-    <div class="clue-fact">심장이 두근거리기 시작합니다.</div>
-    <div class="clue-fact">체력 -20, 카페인관리 -15 적용됩니다.</div>
-    <div class="clue-fact">내일은 카페인을 줄여보세요.</div>`;
+    <div style="font-size:3rem;margin:12px 0;">${over ? '💗' : '💓'}</div>`;
+  document.getElementById('clue-facts').innerHTML = over ? `
+    <div class="clue-fact">오늘 카페인이 하루 최대 섭취량에 도달했거나 초과했습니다.</div>
+    <div class="clue-fact">심장에 부담이 가고, 어지러움이나 손떨림이 나타날 수 있어요.</div>
+    <div class="clue-fact">오늘은 카페인을 더 마시지 말고 물과 휴식을 선택해 보세요.</div>` : `
+    <div class="clue-fact">오늘 카페인이 하루 최대 섭취량에 가까워지고 있습니다.</div>
+    <div class="clue-fact">심장이 두근거리거나 몸이 긴장될 수 있어요.</div>
+    <div class="clue-fact">현재 ${today}mg / ${max}mg입니다. 다음 선택은 카페인 없는 음료가 좋아요.</div>`;
   document.getElementById('clue-modal').classList.add('show');
 }
 
