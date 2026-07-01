@@ -2953,6 +2953,9 @@ const DEFAULT_DATA = {
     scene_convenience:'assets/backgrounds/scene_convenience.png',
     scene_bedroom:   'assets/backgrounds/scene_bedroom.png',
     scene_home:      'assets/backgrounds/scene_home.png',
+    scene_diary_home:'assets/backgrounds/scene_diary_home.png',
+    scene_diary_home_male:'assets/backgrounds/scene_diary_home_male.png',
+    scene_diary_home_female:'assets/backgrounds/scene_diary_home_female.png',
     scene_cafeteria: 'assets/backgrounds/scene_cafeteria.png',
     scene_cafe:      'assets/backgrounds/scene_cafe.png',
     scene_exam:      'assets/backgrounds/scene_exam.png',
@@ -3382,22 +3385,22 @@ function updateCaffeineHud(){
   label.style.fontWeight = pct >= 80 ? '900' : '';
 }
 const CVS_DRINKS = [
-  { id:'energy', name:'에너지드링크', product:'THE KING ENERGY', volume:'355mL', emoji:'🟢캔', icon:'energy', caffeine:100,
+  { id:'energy', name:'에너지드링크', product:'강렬한 각성이 필요할 때 찾게 되는 탄산음료', volume:'355mL', emoji:'🟢캔', icon:'energy', caffeine:100,
     delta:{health:-6, caffeine:-10, judgment:-4}, good:false,
     desc:'라벨을 확인하니 카페인 100mg. 짧게는 눈이 떠지지만 밤 수면을 밀어낼 수 있어요.' },
-  { id:'coffeeMilk', name:'커피우유', product:'우유팩 커피음료', volume:'300mL', emoji:'📦', icon:'pack', caffeine:115,
+  { id:'coffeeMilk', name:'커피우유', product:'몰려오는 졸음을 잠시 잊게 만드는 친숙한 단맛', volume:'300mL', emoji:'📦', icon:'pack', caffeine:115,
     delta:{health:-4, caffeine:-10, sleep:-4}, good:false,
-    desc:'카페인 115mg. 우유팩 음료라도 커피가 들어가면 오늘 총량에 크게 쌓입니다.' },
-  { id:'cancoffee', name:'캔커피', product:'캔 모양 커피음료', volume:'200mL', emoji:'🔵캔', icon:'canblue', caffeine:81,
+    desc:'카페인 115mg. 우유의 달콤한 이면에 고농축 카페인이 몸속에 스며들어요.' },
+  { id:'cancoffee', name:'캔커피', product:'쌉싸름한 맛 뒤로 밀려오는 익숙한 카페인 ', volume:'200mL', emoji:'🔵캔', icon:'canblue', caffeine:81,
     delta:{health:-3, caffeine:-8}, good:false,
-    desc:'카페인 81mg. 달달하고 그럴싸하지만 오늘 총량에 쌓입니다.' },
-  { id:'vitamin', name:'비타민음료', product:'비타민 음료', volume:'100mL', emoji:'🟠병', icon:'bottle', caffeine:0,
+    desc:'카페인 81mg. 단기 집중력을 빌려 쓰는 대신, 누적 피로도가 증가할 수 있어요.' },
+  { id:'vitamin', name:'비타민음료', product:'카페인 없이 가볍게 기분을 전환하고 싶을 때', volume:'100mL', emoji:'🟠병', icon:'bottle', caffeine:0,
     delta:{health:1, caffeine:3}, good:true, noCaffeine:true,
-    desc:'카페인 0mg. 카페인 부담 없이 마실 수 있어요.' },
+    desc:'카페인 0mg. 카중독 성분 없이 지친 신체에 일시적인 활력을 줘요.' },
   { id:'cola', name:'콜라', product:'탄산음료', volume:'355mL', emoji:'🔴캔', icon:'canred', caffeine:35,
     delta:{health:-2, caffeine:-4}, good:false,
-    desc:'카페인 35mg. 커피보다 적지만 당분과 카페인이 함께 들어옵니다.' },
-  { id:'water', name:'물/이온음료', product:'생수 또는 이온음료', volume:'-', emoji:'💧', icon:'drop', caffeine:0,
+    desc:'카페인 35mg. 청량감은 잠시뿐, 당분과 카페인이 섞여 혈당을 높인다.' },
+  { id:'water', name:'물/이온음료', product:'지친 몸에 가장 부담이 없는 담백한 선택', volume:'-', emoji:'💧', icon:'drop', caffeine:0,
     delta:{health:5, caffeine:6}, good:true, noCaffeine:true,
     desc:'카페인 0mg. 갈증이 날 때 부담 없이 마실 수 있어요.' },
 ];
@@ -3854,9 +3857,10 @@ function buildFourteenDayScenarios(){
         "day": 7,
         "countdown": "D-7 시험기간",
         "location": "📓 D-7 마무리",
-        "scene": "scene_bedroom",
+        "scene": "scene_diary_home",
         "speaker": "나레이터",
-        "text": "오늘 카페인 총량은 화면의 게이지에 쌓여 있다. 나의 한계선은 체중 × 2.5mg이다. 총량이 한계선을 넘는 날이 잦아지면 결과 유형에도 경고가 남는다.",
+        "hideCharacter": true,
+        "text": "D-7 마무리, 오늘 선택한 음료에 카페인이 얼마나 들어있는지 알고 마셨나요? 습관처럼 마시는 한 잔이 오남용의 첫걸음이 될 수 있어요. ",
         "choices": null
     },
     {
@@ -3866,7 +3870,7 @@ function buildFourteenDayScenarios(){
         "location": "🚶 D-5 등굣길",
         "scene": "scene_commute",
         "speaker": "{name}",
-        "text": "어젯밤 공부하느라 늦게까지 깨어 있었다. 짧게 잔 탓에 아침부터 관자놀이가 욱신거린다. 가방을 뒤지니 어제 약국에서 산 '아야스톱정' 한 알이 나온다. 그런데 아침을 못 먹고 나왔다.",
+        "text": "D-5, 어젯밤 공부하느라 늦게까지 깨어 있었다. 짧게 잔 탓에 아침부터 관자놀이가 욱신거린다. 가방을 뒤지니 어제 약국에서 산 '아야스톱정' 한 알이 나온다. 그런데 아침을 못 먹고 나왔다.",
         "choices": [
             {
                 "text": "💊 그냥 빈속에 먹는다.",
@@ -4086,9 +4090,10 @@ function buildFourteenDayScenarios(){
         "day": 5,
         "countdown": "D-5 시험기간",
         "location": "📓 D-5 마무리",
-        "scene": "scene_bedroom",
+        "scene": "scene_diary_home",
         "speaker": "나레이터",
-        "text": "오늘 복용한 약의 횟수와 복용 간격을 떠올려 본다. 약은 효과만 보는 것이 아니라, 언제 얼마나 먹었는지도 함께 기록해야 한다.",
+        "hideCharacter": true,
+        "text": "오늘 약을 먹기 전에 설명서를 먼저 확인했나요? 복용 조건을 모르고 먹은 약은, 약의 효과보다 부작용이 더 클 수 있어요.",
         "choices": null
     },
     {
@@ -4382,9 +4387,10 @@ function buildFourteenDayScenarios(){
         "day": 3,
         "countdown": "D-3 시험기간",
         "location": "📓 D-3 마무리",
-        "scene": "scene_bedroom",
+        "scene": "scene_diary_home",
         "speaker": "나레이터",
-        "text": "오늘 만난 약물 정보 중 믿을 만한 것과 걸러야 할 것은? 설명서, 성분표, 출처, 근거가 있는 정보인지 떠올려 본다.",
+        "hideCharacter": true,
+        "text": "오늘 약을 먹을 때도, 정보를 받아들일 때도 '확인'을 거쳤나요? 성분이든 출처든, 확인 없이 넘어가면 그게 오남용의 시작이에요.",
         "choices": null
     },
     {
@@ -4406,7 +4412,7 @@ function buildFourteenDayScenarios(){
                 },
                 "result": {
                     "title": "밤샘 선택",
-                    "text": "[선택 결과] 당장은 조금 더 봤지만 수면이 크게 줄어 내일 컨디션이 흔들린다."
+                    "text": "[선택 결과] 당장은 조금 더 봤지만 충분한 잠을 못해, 내일 컨디션 떨어진다."
                 },
                 "caffeineMg": 81,
                 "sleepHour": 26,
@@ -4809,6 +4815,14 @@ function renderSceneCharacters(sc){
   const sc_char=document.getElementById('scene-char');
   const sceneActors=sceneActorsForScenario(sc);
   const scNameTag=document.getElementById('scene-name-tag');
+  if(sc?.hideCharacter){
+    sc_char.className='scene-char';
+    sc_char.innerHTML='';
+    sc_char.style.display='none';
+    if(scNameTag) scNameTag.style.display='none';
+    return;
+  }
+  sc_char.style.display='';
   if(sceneActors?.length){
     renderSceneActors(sc_char, sceneActors);
     if(scNameTag) scNameTag.style.display='none';
@@ -4828,7 +4842,10 @@ function renderSceneCharacters(sc){
 }
 
 function loadSceneBackgroundFirst(sa, sceneKey, onReady){
-  const imgUrl=driveUrl(DB.gameData.images?.[sceneKey]||'');
+  const imageKey = sceneKey === 'scene_diary_home'
+    ? (G.gender === 'f' ? 'scene_diary_home_female' : 'scene_diary_home_male')
+    : sceneKey;
+  const imgUrl=driveUrl(DB.gameData.images?.[imageKey]||DB.gameData.images?.[sceneKey]||'');
   let bi=sa.querySelector('img.scene-bg-img');
   window._sceneLoadToken=(window._sceneLoadToken||0)+1;
   const token=window._sceneLoadToken;
@@ -7190,6 +7207,7 @@ function sceneColor(key){
     scene_convenience:'linear-gradient(150deg,#fff0dc 0%,#e7fbff 48%,#ffe4ef 100%)',
     scene_bedroom:'linear-gradient(150deg,#f0e8ff 0%,#fff0d9 50%,#dff2ff 100%)',
     scene_home:'linear-gradient(150deg,#fff2dc 0%,#e7f8ec 48%,#ffe3d7 100%)',
+    scene_diary_home:'linear-gradient(150deg,#fff1dc 0%,#f6e8ff 48%,#e7fbff 100%)',
     scene_cafeteria:'linear-gradient(150deg,#fff8d7 0%,#e4fff4 48%,#ffe6df 100%)',
     scene_cafe:'linear-gradient(150deg,#fff0dc 0%,#f6e8ff 45%,#e6fff4 100%)',
     scene_exam:'linear-gradient(150deg,#eef8ff 0%,#fff7df 46%,#e8f7e5 100%)'
