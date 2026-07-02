@@ -688,12 +688,6 @@ body{background:
 #screen-student .scene-char[class*="slot-char-female"] img{
   height:272px;
 }
-#screen-student .scene-char.slot-char-male-headache{
-  padding-top:34px;
-}
-#screen-student .scene-char.slot-char-male-headache img{
-  height:238px;
-}
 #screen-student .scene-char.slot-npc-minjun img,
 #screen-student .scene-char.slot-npc-seoyeon img,
 #screen-student .scene-char.slot-npc-haeun img{
@@ -2040,8 +2034,6 @@ body{background:
   #screen-student .hud-main{min-height:38px;}
   #screen-student .scene-area{height:238px;min-height:238px;}
   #screen-student .scene-char img{height:286px;transform:translateY(2px);}
-  #screen-student .scene-char.slot-char-male-headache{padding-top:38px;}
-  #screen-student .scene-char.slot-char-male-headache img{height:250px;}
   #screen-student .scene-char.slot-npc-minjun img,
   #screen-student .scene-char.slot-npc-seoyeon img,
   #screen-student .scene-char.slot-npc-haeun img{height:480px;transform:translateY(0);}
@@ -3799,6 +3791,7 @@ function buildFourteenDayScenarios(){
                     "title": "짧은 회복",
                     "text": "[선택 결과] 무거운 눈꺼풀이 한결 가벼워진다. 정신이 맑아졌다."
                 },
+                "characterMood": "recovered",
                 "nextLocation": "🏪 D-7 방과후"
             },
             {
@@ -3865,6 +3858,17 @@ function buildFourteenDayScenarios(){
         "choices": null
     },
     {
+        "type": "narration",
+        "day": 5,
+        "countdown": "D-5 시험기간",
+        "location": "📘 D-5 에피소드 시작",
+        "scene": "scene_diary_home",
+        "speaker": "나레이터",
+        "hideCharacter": true,
+        "text": "며칠이 지나 시험까지 D-5. 오늘은 약을 먹기 전, 복용 조건을 확인하는 선택을 하게 됩니다.",
+        "choices": null
+    },
+    {
         "type": "event",
         "day": 5,
         "countdown": "D-5 시험기간",
@@ -3912,7 +3916,7 @@ function buildFourteenDayScenarios(){
                 },
                 "result": {
                     "title": "참기",
-                    "text": "[선택 결과] 약은 먹지 않았지만 두통 때문에 오전 집중이 크게 흔들린다."
+                    "text": "[선택 결과] 약은 먹지 않았지만 두통 때문에 오전 집중하기 어렵다."
                 },
                 "nextLocation": "🏫 D-5 일과 중"
             }
@@ -3936,7 +3940,7 @@ function buildFourteenDayScenarios(){
                 },
                 "result": {
                     "title": "식후 복용",
-                    "text": "[선택 결과] 빈속을 피하고 약을 먹었다. 바쁜 아침이지만 설명서 확인이 선택을 바꿨다."
+                    "text": "[선택 결과] 바쁜 아침이었지만 설명서를 확인한 덕분에 빈속을 피하고 안전하게 약을 복용해 부작용을 줄였다."
                 },
                 "nextLocation": "🏫 D-5 일과 중"
             },
@@ -3950,7 +3954,7 @@ function buildFourteenDayScenarios(){
                 },
                 "result": {
                     "title": "기다리는 선택",
-                    "text": "[선택 결과] 지금 집중은 조금 손해 보지만 공복 복용은 피했다."
+                    "text": "[선택 결과] 당장 집중력은 조금 떨어졌지만, 공복을 피해 약을 복용함으로써 부작용을 안전하게 예방했다."
                 },
                 "nextLocation": "🏫 D-5 일과 중"
             }
@@ -4096,6 +4100,17 @@ function buildFourteenDayScenarios(){
         "speaker": "나레이터",
         "hideCharacter": true,
         "text": "오늘 약을 먹기 전에 설명서를 먼저 확인했나요? 복용 조건을 모르고 먹은 약은, 약의 효과보다 부작용이 더 클 수 있어요.",
+        "choices": null
+    },
+    {
+        "type": "narration",
+        "day": 3,
+        "countdown": "D-3 시험기간",
+        "location": "📘 D-3 에피소드 시작",
+        "scene": "scene_diary_home",
+        "speaker": "나레이터",
+        "hideCharacter": true,
+        "text": "시험까지 D-3. 이번에는 가족이 약을 찾는 상황에서, 성분과 주의사항을 확인해야 합니다.",
         "choices": null
     },
     {
@@ -4396,6 +4411,17 @@ function buildFourteenDayScenarios(){
         "choices": null
     },
     {
+        "type": "narration",
+        "day": 3,
+        "countdown": "D-3 시험기간",
+        "location": "🌙 D-Day 전날 밤",
+        "scene": "scene_diary_home",
+        "speaker": "나레이터",
+        "hideCharacter": true,
+        "text": "D-3 에피소드는 여기서 마무리됩니다. 이제 시험 전날 밤, 마지막 컨디션 선택으로 넘어갑니다.",
+        "choices": null
+    },
+    {
         "type": "event",
         "day": 3,
         "countdown": "D-3 시험기간",
@@ -4419,7 +4445,7 @@ function buildFourteenDayScenarios(){
                 "caffeineMg": 81,
                 "sleepHour": 26,
                 "sleepHours": 5,
-                "nextLocation": "📝 D-Day 시험 당일"
+                "nextLocation": "📘 D-Day 에피소드 시작"
             },
             {
                 "text": "🛌 지금 자고 새벽에 일찍 일어나 본다.",
@@ -4434,7 +4460,7 @@ function buildFourteenDayScenarios(){
                 },
                 "sleepHour": 24,
                 "sleepHours": 7,
-                "nextLocation": "📝 D-Day 시험 당일"
+                "nextLocation": "📘 D-Day 에피소드 시작"
             },
             {
                 "text": "⏱️ 30분만 더 하고 잔다.",
@@ -4450,9 +4476,20 @@ function buildFourteenDayScenarios(){
                 },
                 "sleepHour": 25,
                 "sleepHours": 6,
-                "nextLocation": "📝 D-Day 시험 당일"
+                "nextLocation": "📘 D-Day 에피소드 시작"
             }
         ]
+    },
+    {
+        "type": "narration",
+        "day": 15,
+        "countdown": "D-Day 시험 당일",
+        "location": "📘 D-Day 에피소드 시작",
+        "scene": "scene_diary_home",
+        "speaker": "나레이터",
+        "hideCharacter": true,
+        "text": "드디어 D-Day. 지금까지의 수면, 카페인, 복약 선택이 시험 당일 컨디션으로 이어집니다.",
+        "choices": null
     },
     {
         "type": "event",
@@ -4685,9 +4722,16 @@ function applyPendingDrinkChoice(choice){
 }
 
 function choiceCharacterSlot(choice){
-  if(!choice?.characterMood) return '';
+  const mood = choice?.characterMood || (choice?.noCaffeine || choice?.caffeineMg === 0 ? 'recovered' : '');
+  if(!mood) return '';
   const prefix = G.gender === 'f' ? 'char_female' : 'char_male';
-  return `${prefix}_${choice.characterMood}`;
+  return `${prefix}_${mood}`;
+}
+
+function drinkCharacterSlot(drink){
+  if(Number(drink?.caffeine || 0) !== 0) return '';
+  const prefix = G.gender === 'f' ? 'char_female' : 'char_male';
+  return `${prefix}_recovered`;
 }
 
 function formatDrinkResultText(drink, reactionText){
@@ -6719,6 +6763,8 @@ function selectDrink(type, drinkId) {
 
   window._pendingDrinkChoice = null;
   const reactionText = applyPendingDrinkChoice(pending);
+  const resultSlot = drinkCharacterSlot(drink) || choiceCharacterSlot(pending);
+  if(resultSlot) setSceneCharacterSlot(resultSlot, `${G.name}(나)`);
   updateCaffeineHud();
 
   showDialogResult(
