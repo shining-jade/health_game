@@ -2955,6 +2955,10 @@ const DEFAULT_DATA = {
     // ── 주인공 ──
     char_male:   'assets/characters/char_male.png',
     char_female: 'assets/characters/char_female.png',
+    char_male_default: 'assets/characters/char_male_default.png',
+    char_female_default: 'assets/characters/char_female_default.png',
+    char_male_stomach: 'assets/characters/char_male_stomach.png',
+    char_female_stomach: 'assets/characters/char_female_stomach.png',
     char_male_tired:    'assets/characters/char_male_tired.png',
     char_male_sleepy:   'assets/characters/char_male_sleepy.png',
     char_male_headache: 'assets/characters/char_male_headache_nobook.png',
@@ -3379,22 +3383,22 @@ function updateCaffeineHud(){
 const CVS_DRINKS = [
   { id:'energy', name:'에너지드링크', product:'강렬한 각성이 필요할 때 찾게 되는 탄산음료', volume:'355mL', emoji:'🟢캔', icon:'energy', caffeine:100,
     delta:{health:-6, caffeine:-10, judgment:-4}, good:false,
-    desc:'라벨을 확인하니 카페인 100mg. 짧게는 눈이 떠지지만 밤 수면을 밀어낼 수 있어요.' },
+    desc:'라벨을 확인하니 카페인 100mg. 당장 눈은 번쩍 뜨이겠지만, 밤늦게까지 잠을 이루지 못해 수면 패턴이 망가질 수 있어요.' },
   { id:'coffeeMilk', name:'커피우유', product:'몰려오는 졸음을 잠시 잊게 만드는 친숙한 단맛', volume:'300mL', emoji:'📦', icon:'pack', caffeine:115,
     delta:{health:-4, caffeine:-10, sleep:-4}, good:false,
-    desc:'카페인 115mg. 우유의 달콤한 이면에 고농축 카페인이 몸속에 스며들어요.' },
+    desc:'카페인 115mg. 우유의 달콤함 뒤에 숨겨진 고농축 카페인이 몸에 무리를 줄 수 있어요.' },
   { id:'cancoffee', name:'캔커피', product:'쌉싸름한 맛 뒤로 밀려오는 익숙한 카페인 ', volume:'200mL', emoji:'🔵캔', icon:'canblue', caffeine:81,
     delta:{health:-3, caffeine:-8}, good:false,
     desc:'카페인 81mg. 단기 집중력을 빌려 쓰는 대신, 누적 피로도가 증가할 수 있어요.' },
   { id:'vitamin', name:'비타민음료', product:'카페인 없이 가볍게 기분을 전환하고 싶을 때', volume:'100mL', emoji:'🟠병', icon:'bottle', caffeine:0,
     delta:{health:1, caffeine:3}, good:true, noCaffeine:true,
-    desc:'카페인 0mg. 카중독 성분 없이 지친 신체에 일시적인 활력을 줘요.' },
+    desc:'카페인 0mg. 중독성이나 카페인 부담 없이, 지친 몸에 비타민으로 가벼운 활력을 채워줍니다.' },
   { id:'cola', name:'콜라', product:'탄산음료', volume:'355mL', emoji:'🔴캔', icon:'canred', caffeine:35,
     delta:{health:-2, caffeine:-4}, good:false,
-    desc:'카페인 35mg. 청량감은 잠시뿐, 당분과 카페인이 섞여 혈당을 높인다.' },
+    desc:'카페인 35mg. 청량감은 잠시뿐, 높은 당분과 카페인이 섞여 오히려 몸을 더 피로하게 만들 수 있어요.' },
   { id:'water', name:'물/이온음료', product:'지친 몸에 가장 부담이 없는 담백한 선택', volume:'-', emoji:'💧', icon:'drop', caffeine:0,
     delta:{health:5, caffeine:6}, good:true, noCaffeine:true,
-    desc:'카페인 0mg. 갈증이 날 때 부담 없이 마실 수 있어요.' },
+    desc:'카페인 0mg. 갈증을 해소하고 지친 몸을 회복시켜 주는, 가장 순수하고 안전한 선택입니다.' },
 ];
 
 const CAFE_DRINKS = [
@@ -3644,7 +3648,7 @@ function buildFourteenDayScenarios(){
     {
         "type": "event",
         "day": 7,
-        "countdown": "D-7 시험기간",
+        "countdown": "D-7 시험",
         "location": "🏪 D-7 등굣길",
         "scene": "scene_convenience",
         "speaker": "나레이터",
@@ -3703,7 +3707,7 @@ function buildFourteenDayScenarios(){
     {
         "type": "event",
         "day": 7,
-        "countdown": "D-7 시험기간",
+        "countdown": "D-7 시험",
         "location": "🔎 D-7 등굣길 라벨 확인 후 선택",
         "scene": "scene_convenience",
         "speaker": "{name}",
@@ -3745,7 +3749,7 @@ function buildFourteenDayScenarios(){
     {
         "type": "event",
         "day": 7,
-        "countdown": "D-7 시험기간",
+        "countdown": "D-7 시험",
         "location": "🏫 D-7 일과 중",
         "scene": "scene_classroom",
         "speaker": "{name}",
@@ -3812,7 +3816,7 @@ function buildFourteenDayScenarios(){
     {
         "type": "event",
         "day": 7,
-        "countdown": "D-7 시험기간",
+        "countdown": "D-7 시험",
         "location": "🏪 D-7 방과후",
         "scene": "scene_convenience",
         "speaker": "{name}",
@@ -3849,7 +3853,7 @@ function buildFourteenDayScenarios(){
     {
         "type": "narration",
         "day": 7,
-        "countdown": "D-7 시험기간",
+        "countdown": "D-7 시험",
         "location": "📓 D-7 마무리",
         "scene": "scene_diary_home",
         "speaker": "나레이터",
@@ -3865,7 +3869,7 @@ function buildFourteenDayScenarios(){
         "scene": "scene_commute",
         "speaker": "나레이터",
         "characterMood": "headache",
-        "text": "D-5, 어젯밤 공부하느라 늦게까지 깨어 있었다. 짧게 잔 탓에 아침부터 관자놀이가 욱신거린다. 가방을 뒤지니 어제 약국에서 산 '아야스톱정' 한 알이 나온다. 그런데 아침을 못 먹고 나왔다.",
+        "text": "D-5, 어젯밤 공부하느라 늦게까지 깨어 있었다. 짧게 잔 탓에 아침부터 관자놀이가 욱신거린다. 어제 약국에서 산 '아야스톱정' 한 알이 있지만, 아침을 못 먹고 나온 상태다.",
         "choices": [
             {
                 "text": "💊 그냥 빈속에 먹는다.",
@@ -3876,7 +3880,7 @@ function buildFourteenDayScenarios(){
                 },
                 "result": {
                     "title": "공복 복용",
-                    "text": "[선택 결과] 두통은 조금 줄었지만 공복에 이부프로펜을 먹어 위 부담이 생길 수 있다."
+                    "text": "[선택 결과] 두통은 조금 줄었지만 빈속에 먹으니 속이 쓰린 것 같다."
                 },
                 "fastingMed": true,
                 "nextLocation": "🏫 D-5 일과 중"
@@ -3946,6 +3950,23 @@ function buildFourteenDayScenarios(){
                     "text": "[선택 결과] 당장 집중력은 조금 떨어졌지만, 공복을 피해 약을 복용함으로써 부작용을 안전하게 예방했다."
                 },
                 "nextLocation": "🏫 D-5 일과 중"
+            },
+            {
+                "text": "💊 아프니까 일단 먹는다.",
+                "good": false,
+                "delta": {
+                    "health": -10,
+                    "knowledge": -8,
+                    "sleep": 3,
+                    "judgment": -10
+                },
+                "result": {
+                    "title": "공복 복용",
+                    "text": "[선택 결과] 두통은 조금 줄었지만 빈속에 먹으니 속이 쓰린 것 같다."
+                },
+                "fastingMed": true,
+                "characterMood": "stomach",
+                "nextLocation": "🏫 D-5 일과 중"
             }
         ]
     },
@@ -3955,8 +3976,9 @@ function buildFourteenDayScenarios(){
         "countdown": "D-5 시험",
         "location": "🏫 D-5 일과 중",
         "scene": "scene_classroom",
-        "speaker": "태영",
-        "text": "2교시. 아까 약을 먹었는데도 두통이 여전하다. 태영이 말한다. \"약 먹었다며? 안 들으면 한 알 더 먹어. 나도 그렇게 해.\"",
+        "speaker": "{name}",
+        "characterMood": "headache",
+        "text": "2교시, 아까 약을 먹었는데도 두통이 여전하다.\n[태양] 지금도 머리 아파?\n[태양] 안 들으면 한 알 더 먹어, 나도 그렇게 해.",
         "choices": [
             {
                 "text": "💊 한 알 더 먹는다.",
@@ -3967,7 +3989,7 @@ function buildFourteenDayScenarios(){
                 },
                 "result": {
                     "title": "복용 간격 무시",
-                    "text": "[선택 결과] 약이 안 듣는다고 바로 더 먹으면 복용 간격을 놓칠 수 있다."
+                    "text": "[선택 결과] 효과가 없다고 약을 바로 더 먹으면, 과다 복용으로 인한 부작용이 생길 수 있다."
                 },
                 "analgesic": true,
                 "nextLocation": "📚 D-5 방과후"
@@ -3981,7 +4003,7 @@ function buildFourteenDayScenarios(){
                 },
                 "result": {
                     "title": "복용 간격 확인",
-                    "text": "[정보카드]\n복용법: 4~6시간 간격, 1일 3회까지\n현재 마지막 복용 후 약 2시간 경과"
+                    "text": "[선택 결과] 아야스톱정(이부프로펜)은 1회 200~400mg을 최소 4~6시간(또는 6~8시간) 간격으로 복용해야 함을 알았다."
                 },
                 "nextLocation": "📚 D-5 방과후"
             },
@@ -3995,7 +4017,7 @@ function buildFourteenDayScenarios(){
                 },
                 "result": {
                     "title": "상담 선택",
-                    "text": "[선택 결과] 수업 시간은 조금 빠졌지만 복용 판단을 혼자 하지 않았다."
+                    "text": "[선택 결과] 수업을 잠시 빠지고 보건실에 갔다. 보건샘의 지도 덕분에 혼자 무리하게 약을 더 먹지 않고 안전하게 대처했다."
                 },
                 "nextLocation": "📚 D-5 방과후"
             },
@@ -4008,7 +4030,7 @@ function buildFourteenDayScenarios(){
                 },
                 "result": {
                     "title": "기다리기",
-                    "text": "[선택 결과] 바로 더 먹지 않고 시간을 두고 몸 상태를 본다."
+                    "text": "[선택 결과] 약을 연달아 먹지 않고, 물을 마시며 시간을 두고 몸 상태를 지켜보기로 했다. 현명하게 과다 복용을 피했다."
                 },
                 "nextLocation": "📚 D-5 방과후"
             }
@@ -4020,8 +4042,8 @@ function buildFourteenDayScenarios(){
         "countdown": "D-5 시험",
         "location": "📚 D-5 방과후",
         "scene": "scene_library",
-        "speaker": "소연",
-        "text": "독서실. 옆자리 소연이 작은 알약을 내민다. \"이거 두통에 직빵이야. 우리 엄마가 챙겨준 건데 너 줄게. 먹어봐.\" 소연이 건넨 알약은 이름도 성분도 아직 모른다.",
+        "speaker": "나레이터",
+        "text": "독서실, 옆자리 소연이 작은 알약을 내민다.\n[소연] 지금도 머리 아파? 이거 두통에 직빵이야. 우리 엄마가 챙겨준 건데 너 줄게. 먹어봐.\n[나레이터] 소연이 건넨 알약은 이름도 성분도 아직 모른다.",
         "choices": [
             {
                 "text": "💊 받아서 바로 먹는다.",
@@ -4094,7 +4116,7 @@ function buildFourteenDayScenarios(){
     {
         "type": "narration",
         "day": 3,
-        "countdown": "D-3 시험기간",
+        "countdown": "D-3 시험",
         "location": "📘 D-3 에피소드 시작",
         "scene": "scene_diary_home",
         "speaker": "나레이터",
@@ -4105,7 +4127,7 @@ function buildFourteenDayScenarios(){
     {
         "type": "event",
         "day": 3,
-        "countdown": "D-3 시험기간",
+        "countdown": "D-3 시험",
         "location": "🏠 D-3 등굣길",
         "scene": "scene_home",
         "speaker": "엄마",
@@ -4157,7 +4179,7 @@ function buildFourteenDayScenarios(){
     {
         "type": "event",
         "day": 3,
-        "countdown": "D-3 시험기간",
+        "countdown": "D-3 시험",
         "location": "🔎 D-3 엄마 약 설명서 확인 후 선택",
         "scene": "scene_home",
         "speaker": "{name}",
@@ -4196,7 +4218,7 @@ function buildFourteenDayScenarios(){
     {
         "type": "event",
         "day": 3,
-        "countdown": "D-3 시험기간",
+        "countdown": "D-3 시험",
         "location": "🏫 D-3 일과 중",
         "scene": "scene_classroom",
         "speaker": "{name}",
@@ -4264,7 +4286,7 @@ function buildFourteenDayScenarios(){
     {
         "type": "event",
         "day": 3,
-        "countdown": "D-3 시험기간",
+        "countdown": "D-3 시험",
         "location": "🔎 D-3 성분표 비교 후 선택",
         "scene": "scene_classroom",
         "speaker": "{name}",
@@ -4303,7 +4325,7 @@ function buildFourteenDayScenarios(){
     {
         "type": "event",
         "day": 3,
-        "countdown": "D-3 시험기간",
+        "countdown": "D-3 시험",
         "location": "📱 D-3 방과후",
         "scene": "scene_library",
         "speaker": "하은",
@@ -4353,7 +4375,7 @@ function buildFourteenDayScenarios(){
     {
         "type": "event",
         "day": 3,
-        "countdown": "D-3 시험기간",
+        "countdown": "D-3 시험",
         "location": "🔎 D-3 SNS 확인 후 선택",
         "scene": "scene_library",
         "speaker": "{name}",
@@ -4391,7 +4413,7 @@ function buildFourteenDayScenarios(){
     {
         "type": "narration",
         "day": 3,
-        "countdown": "D-3 시험기간",
+        "countdown": "D-3 시험",
         "location": "📓 D-3 마무리",
         "scene": "scene_diary_home",
         "speaker": "나레이터",
@@ -4402,7 +4424,7 @@ function buildFourteenDayScenarios(){
     {
         "type": "narration",
         "day": 3,
-        "countdown": "D-3 시험기간",
+        "countdown": "D-3 시험",
         "location": "🌙 D-Day 전날 밤",
         "scene": "scene_diary_home",
         "speaker": "나레이터",
@@ -4413,7 +4435,7 @@ function buildFourteenDayScenarios(){
     {
         "type": "event",
         "day": 3,
-        "countdown": "D-3 시험기간",
+        "countdown": "D-3 시험",
         "location": "🌙 D-3 그날 밤",
         "scene": "scene_bedroom",
         "speaker": "{name}",
@@ -5348,7 +5370,8 @@ function skipTypingToEnd(state, targetId, hideArrowFn, event) {
 
 function typeNextChar(state, targetId, arrowFn) {
   const sentence = state.sentences[state.sIdx] || '';
-  if (!sentence) {
+  const visibleSentence = stripDialogueCue(sentence);
+  if (!visibleSentence) {
     finishTypingSentence(state, targetId, arrowFn);
     return;
   }
@@ -5358,10 +5381,10 @@ function typeNextChar(state, targetId, arrowFn) {
     renderTypingText(
       targetId,
       state.sentences.slice(0, state.sIdx).join(' '),
-      sentence.slice(0, state.charIdx)
+      visibleSentence.slice(0, state.charIdx)
     );
 
-    if (state.charIdx >= sentence.length) {
+    if (state.charIdx >= visibleSentence.length) {
       finishTypingSentence(state, targetId, arrowFn);
     }
   }, state.speed);
@@ -5729,10 +5752,10 @@ function examPeriodHudLabel(day, sc) {
   if (sc && sc.countdown) return String(sc.countdown);
   const loc = String(sc?.location || '');
   const m = loc.match(/D-(\d+)|D-Day/i);
-  if (m) return m[0] === 'D-Day' ? 'D-Day 시험 당일' : `${m[0]} 시험기간`;
+  if (m) return m[0] === 'D-Day' ? 'D-Day 시험 당일' : `${m[0]} 시험`;
   const n = Number(day);
   if (!Number.isFinite(n)) return '';
-  if (n >= 1 && n <= 14) return `D-${15 - n} 시험기간`;
+  if (n >= 1 && n <= 14) return `D-${15 - n} 시험`;
   if (n === 15) return 'D-Day 시험 당일';
   return '';
 }
@@ -5811,7 +5834,7 @@ function renderScene(idx){
   }
   G.currentDay=day; G.day=day;
   document.getElementById('hud-name').textContent=`${studentDisplayName()}(나)`;
-  const dayTitle = sc.countdown ? String(sc.countdown).replace(' 시험기간','') : `${day}일차`;
+  const dayTitle = sc.countdown ? String(sc.countdown).replace(' 시험기간','').replace(' 시험','') : `${day}일차`;
   document.getElementById('s-day').textContent=dayTitle;
   const hudLocation = examPeriodHudLabel(day, sc) || formatHudLocation(sc.location);
   document.getElementById('hud-day').textContent=combineHudDayLabel(dayTitle, hudLocation);
@@ -7262,6 +7285,10 @@ function sceneCharacterSlot(sc) {
   if (speaker.includes('하은')) return 'npc_haeun';
   if (speaker.includes('엄마')) return 'npc_mom';
   if (speaker.includes('선생님') || speaker.includes('보건샘') || speaker.includes('의사')) return 'teacher_main';
+  if (sc?.characterMood) {
+    const prefix = G.gender === 'f' ? 'char_female' : 'char_male';
+    return `${prefix}_${sc.characterMood}`;
+  }
   if (text.includes('민준')) return 'npc_minjun';
   if (text.includes('소연') || text.includes('서연')) return 'npc_seoyeon';
   if (text.includes('태영') || text.includes('태양')) return 'npc_taeyang';
