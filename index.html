@@ -142,7 +142,7 @@ select option{background:var(--panel);}
   padding:18px 22px;margin-bottom:14px;cursor:pointer;}
 .dialog-box .spk{font-family:'Jua',sans-serif;color:var(--accent);font-size:.82rem;margin-bottom:5px;}
 .dialog-box .txt{font-size:.92rem;line-height:1.8;}
-.dialog-current{color:#38291f;font-weight:900;}
+.dialog-current{color:#38291f;font-weight:900;white-space:pre-line;}
 .skip-btn{margin-top:10px;border:2px solid #f1d3b8;border-radius:999px;background:#fffaf2;color:#7e6655;
   font-family:'Jua',sans-serif;font-size:.72rem;padding:5px 12px;cursor:pointer;float:right;}
 .skip-btn:hover{border-color:#ff9f80;color:#e76642;background:#fff3e8;}
@@ -1719,6 +1719,25 @@ body{background:
   white-space:normal;
   word-break:keep-all;
 }
+.choice-question.ad-post{
+  border-left:0;
+  border-radius:14px;
+  padding:0;
+  overflow:hidden;
+  background:#fffdf8;
+  border:1.5px solid #f1d3b8;
+}
+.choice-ad-head{display:flex;align-items:center;gap:9px;padding:10px 12px;border-bottom:1px solid #f1d3b8;}
+.choice-ad-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#ff7b74,#9257d8);color:#fff;font-size:.76rem;font-weight:900;}
+.choice-ad-account{flex:1;min-width:0;}
+.choice-ad-account strong{display:block;font-size:.8rem;line-height:1.1;color:#3f2d24;}
+.choice-ad-account span{display:block;font-size:.68rem;line-height:1.2;color:#8a7367;margin-top:2px;}
+.choice-ad-more{font-size:1rem;color:#8a7367;letter-spacing:1px;}
+.choice-ad-image{height:124px;background:url('assets/ui/sns_misinformation_post_bg.png') center/cover no-repeat;}
+.choice-ad-actions{display:flex;gap:14px;padding:9px 12px 4px;color:#7e6655;font-size:1rem;}
+.choice-ad-actions span:last-child{margin-left:auto;}
+.choice-ad-caption{padding:0 12px 12px;font-size:.78rem;line-height:1.55;color:#3f2d24;font-weight:900;}
+.choice-ad-caption b{color:#ff6f61;}
 .choice-modal-list{
   display:flex;
   flex-direction:column;
@@ -1786,6 +1805,7 @@ body{background:
 .drug-card-sheet h3{font-family:'Jua',sans-serif;font-size:1.08rem;color:#2f241e;margin-bottom:4px;}
 .drug-card-sheet .modal-sub{font-size:.8rem;line-height:1.6;color:#7e6655;margin-bottom:13px;}
 .drug-dict-card{background:#fffdf8;border:2px solid #ebc7a9;border-radius:14px;padding:15px;position:relative;}
+.drug-dict-card + .drug-dict-card{margin-top:10px;}
 .drug-dict-card-top{display:flex;align-items:center;gap:10px;margin-bottom:11px;}
 .drug-dict-emoji{font-size:2rem;width:48px;height:48px;display:flex;align-items:center;justify-content:center;border-radius:10px;background:#fff8ea;border:2px solid #ebc7a9;flex-shrink:0;overflow:hidden;}
 .drug-pill-art{width:42px;height:42px;position:relative;display:block;filter:drop-shadow(0 5px 7px rgba(126,102,85,.18));}
@@ -3911,6 +3931,7 @@ function buildFourteenDayScenarios(){
             },
             {
                 "text": "🙅 그냥 참는다.",
+                "characterMood": "headache",
                 "good": true,
                 "delta": {
                     "judgment": 5,
@@ -4225,6 +4246,7 @@ function buildFourteenDayScenarios(){
         "choices": [
             {
                 "text": "💊 두통약을 바로 먹는다.",
+                "characterMood": "headache",
                 "good": false,
                 "delta": {
                     "knowledge": 2,
@@ -4248,11 +4270,15 @@ function buildFourteenDayScenarios(){
                     "title": "성분표 비교",
                     "text": "[정보카드]\n• 감기뚝정: 아세트아미노펜 300mg + 항히스타민제 + 무수카페인 30mg\n• 괜찮아정: 아세트아미노펜 500mg\n\n두 약 모두에 동일한 진통제 성분이 들어있음을 확인했다."
                 },
+                "showDrugCardBeforeResult": {
+                    "drugKeys": ["ok", "cold"]
+                },
                 "caffeineMg": 30,
                 "nextLocation": "🔎 D-3 성분표 비교 후 선택"
             },
             {
                 "text": "🙅 그냥 참는다.",
+                "characterMood": "headache",
                 "good": true,
                 "delta": {
                     "judgment": 5,
@@ -4260,7 +4286,7 @@ function buildFourteenDayScenarios(){
                 },
                 "result": {
                     "title": "참기",
-                    "text": "[선택 결과] 약은 더하지 않았지만 두통 때문에 집중이 흔들린다."
+                    "text": "[선택 결과] 약을 더 먹어도 되는지 몰라 그냥 억지로 참아냈다. 위험한 과다 복용은 우연히 피했을지 몰라도, 지독한 통증 때문에 남은 수업 시간 내내 제대로 집중할 수 없었다."
                 },
                 "caffeineMg": 30,
                 "nextLocation": "📱 D-3 방과후"
@@ -4275,7 +4301,7 @@ function buildFourteenDayScenarios(){
                 },
                 "result": {
                     "title": "보건실 확인",
-                    "text": "[선택 결과] 수업 시간은 조금 빠졌지만 두 약을 함께 확인했다."
+                    "text": "[선택 결과] 두 약을 들고 보건실로 향했다. 보건 선생님은 종합감기약에도 이미 진통제 성분이 들어있으니 지금 추가로 먹으면 안 된다며 친절하게 알려주셨다."
                 },
                 "caffeineMg": 30,
                 "nextLocation": "📱 D-3 방과후"
@@ -4289,7 +4315,7 @@ function buildFourteenDayScenarios(){
         "location": "🔎 D-3 성분표 비교 후 선택",
         "scene": "scene_classroom",
         "speaker": "{name}",
-        "text": "두 성분표를 나란히 보았다. 감기뚝정에는 아세트아미노펜 300mg과 무수카페인 30mg이 있고, 괜찮아정에는 아세트아미노펜 500mg이 있다. 복용 간격도 아직 한 시간밖에 지나지 않았다.",
+        "text": "약 먹은지 한 시간 밖에 안 됐는데 또 먹어도 괜찮을까?",
         "choices": [
             {
                 "text": "⏳ 지금은 참고, 다음 복용 때 간격·용량을 맞춘다.",
@@ -4301,7 +4327,7 @@ function buildFourteenDayScenarios(){
                 },
                 "result": {
                     "title": "성분과 간격 확인",
-                    "text": "[정보팝업]\n아세트아미노펜 1일 최대 4,000mg(4g)\n감기약·진통제에 흔히 중복\n복용 간격 4~6시간"
+                    "text": "[선택 결과] 두 약의 성분이 중복되고 복용 간격이 짧다는 것을 확인하고 지금은 참기로 했다. 감기약과 진통제는 아세트아미노펜이 중복되기 쉬우므로 최소 4~6시간 간격을 지켜야 함을 배웠다."
                 },
                 "nextLocation": "📱 D-3 방과후"
             },
@@ -4314,7 +4340,7 @@ function buildFourteenDayScenarios(){
                 },
                 "result": {
                     "title": "알고도 추가 복용",
-                    "text": "[선택 결과] 성분표를 봤지만 중복 가능성과 복용 간격을 선택에 반영하지 못했다."
+                    "text": "[선택 결과] 성분이 겹치는 걸 알지만 통증을 참지 못해 약을 또 먹었다. 중복 복용이 반복되면 심각한 부작용이 발생할 할 수 있으니 주의해야 한다."
                 },
                 "analgesic": true,
                 "nextLocation": "📱 D-3 방과후"
@@ -4327,8 +4353,10 @@ function buildFourteenDayScenarios(){
         "countdown": "D-3 시험",
         "location": "📱 D-3 방과후",
         "scene": "scene_library",
-        "speaker": "하은",
-        "text": "독서실에서 잠깐 쉬며 폰을 본다. 친구 하은이 게시물 링크를 보냈다. \"야 이거 봤어? 요즘 이게 시험 꿀팁이래 ㅋㅋ 너도 해봐.\" 게시물에는 '진통제랑 에너지드링크 같이 먹으면 두통도 잡고 잠도 깸!'이라고 적혀 있다.",
+        "speaker": "{name}",
+        "text": "[{name}] 독서실에서 잠깐 쉬며 폰을 본다. 친구 하은이 게시물 링크를 보냈다.\n[하은] 야 이거 봤어? 요즘 이게 시험 꿀팁이래 ㅋㅋ 우리 해볼까?.\n[나레이터] 게시물에는 '진통제랑 에너지드링크 같이 먹으면 두통도 잡고 잠도 깸!'이라고 적혀 있다.",
+        "choicePrompt": "[나레이터] 게시물에는 '진통제랑 에너지드링크 같이 먹으면 두통도 잡고 잠도 깸!'이라고 적혀 있다.",
+        "choicePromptAd": true,
         "choices": [
             {
                 "text": "⚡ \"오 좋은데?\" 따라 한다.",
@@ -4340,12 +4368,15 @@ function buildFourteenDayScenarios(){
                 },
                 "result": {
                     "title": "SNS 꿀팁 따라 하기",
-                    "text": "[선택 결과] 출처를 확인하지 않은 정보를 그대로 따라 했다."
+                    "text": "[선택 결과] 호기심에 SNS 꿀팁을 그대로 따라 했다. 하지만 출처 불명의 정보를 맹신해 진통제와 고카페인 음료를 함께 복용하는 것은 심장과 위장에 큰 무리를 주는 위험한 행동이다."
                 },
                 "nextLocation": "📓 D-3 마무리"
             },
             {
                 "text": "🔎 게시물 정보를 비판적으로 살핀다.",
+                "openSns": {
+                    "caption": "진통제랑 에너지드링크 같이 먹으면 두통도 잡고 잠도 깸!"
+                },
                 "good": true,
                 "delta": {
                     "knowledge": 15
@@ -4365,7 +4396,7 @@ function buildFourteenDayScenarios(){
                 },
                 "result": {
                     "title": "나만 피함",
-                    "text": "[선택 결과] 위험해 보이는 정보는 피했지만, 친구에게는 아무 말도 하지 않았다."
+                    "text": "[선택 결과] 위험해 보이는 정보라 생각하고 하은이의 톡을 그냥 읽고 넘겼다. 다행히 내 몸의 안전은 지켜냈지만, 소중한 친구 역시 잘못된 정보로 위험해질 수 있다는 사실을 모른 채 넘어가 버린 아쉬움이 남는다."
                 },
                 "nextLocation": "📓 D-3 마무리"
             }
@@ -4389,7 +4420,7 @@ function buildFourteenDayScenarios(){
                 },
                 "result": {
                     "title": "나를 지킨 확인",
-                    "text": "[선택 결과] 좋아요 수보다 출처와 근거를 먼저 보았다."
+                    "text": "[선택 결과] 겉보기에 화려한 좋아요 수나 조회수에 속지 않고, 공식 기관의 신뢰할 만한 의약품 정보를 직접 검색해 보았다. 카페인과 진통제 조합의 위험성을 확실히 검증해 내며 근거 없는 건강 루머로부터 내 몸을 안전하게 지켜냈다."
                 },
                 "nextLocation": "📓 D-3 마무리"
             },
@@ -4403,7 +4434,7 @@ function buildFourteenDayScenarios(){
                 },
                 "result": {
                     "title": "친구까지 지킴",
-                    "text": "[선택 결과] 확인한 정보를 친구에게도 공유했다."
+                    "text": "[선택 결과] 내가 찾아본 정확한 정보를 하은이에게 공유하며 이 방법이 왜 위험한지 친절하게 설명해 주었다. 잘못된 정보로부터 나뿐만 아니라 소중한 친구의 건강까지 함께 지켜낸 최고의 선택이다."
                 },
                 "nextLocation": "📓 D-3 마무리"
             }
@@ -4417,7 +4448,7 @@ function buildFourteenDayScenarios(){
         "scene": "scene_diary_home",
         "speaker": "나레이터",
         "hideCharacter": true,
-        "text": "오늘 약을 먹을 때도, 정보를 받아들일 때도 '확인'을 거쳤나요? 성분이든 출처든, 확인 없이 넘어가면 그게 오남용의 시작이에요.",
+        "text": "D-3 마무리, 오늘 약을 먹을 때도, 정보를 받아들일 때도 '확인'을 거쳤나요? 성분이든 출처든, 확인 없이 넘어가면 그게 오남용의 시작이에요.",
         "choices": null
     },
     {
@@ -5203,6 +5234,11 @@ function parseResultSections(text, fallbackLabel='') {
 
   lines.forEach(line => {
     const trimmed = line.trim();
+    if(/^\[약품비교:[^\]]+\]$/.test(trimmed)){
+      if(!current) current = { label: fallbackLabel || '정보카드', body: [] };
+      current.body.push(trimmed);
+      return;
+    }
     const labelOnly = trimmed.match(/^\[([^\]]+)\]$/);
     const labelWithBody = trimmed.match(/^\[([^\]]+)\]\s*(.*)$/);
     if(labelOnly || labelWithBody){
@@ -5269,24 +5305,30 @@ function renderResultContent(text, fallbackLabel='') {
 }
 
 function isDrugCompareCard(label, body) {
-  return String(label || '').includes('정보카드') && /^\[약품비교:[^\]]+\]/.test(String(body || '').trim());
+  return String(label || '').includes('정보카드') && /\[약품비교:[^\]]+\]/.test(String(body || ''));
 }
 
 function renderDrugCompareCard(body) {
+  return `
+    <div class="result-section info">
+      <div class="result-speaker">💊 두 약의 성분표 비교</div>
+      ${renderDrugCompareContent(body)}
+    </div>`;
+}
+
+function renderDrugCompareContent(body) {
   const lines = String(body || '').split('\n');
-  const marker = lines.shift() || '';
+  const markerIdx = lines.findIndex(line => /^\[약품비교:[^\]]+\]/.test(line.trim()));
+  const marker = markerIdx >= 0 ? lines.splice(markerIdx, 1)[0].trim() : '';
   const keys = (marker.match(/^\[약품비교:([^\]]+)\]/)?.[1] || '')
     .split(',')
     .map(key => key.trim())
     .filter(Boolean);
-  const note = lines.join('\n').trim();
+  const info = lines.join('\n').trim();
   return `
-    <div class="result-section info">
-      <div class="result-speaker">💊 두 약의 성분표 비교</div>
-      <div class="drug-compare-stack">
-        ${keys.map(renderDrugDictCard).join('')}
-        ${note ? `<div class="drug-compare-note">${escapeHtml(note)}</div>` : ''}
-      </div>
+    <div class="drug-compare-stack">
+      ${info ? `<div class="drug-compare-note">${escapeHtml(info)}</div>` : ''}
+      ${keys.map(renderDrugDictCard).join('')}
     </div>`;
 }
 
@@ -5596,6 +5638,7 @@ function choiceSpeakerProfile(sc) {
 }
 
 function choiceQuestionText(sc) {
+  if(sc?.choicePrompt) return normalizeStoryText(sc.choicePrompt).replace(/{name}/g, G.name);
   const raw = normalizeStoryText(sc?.text || '').replace(/{name}/g, G.name).replace(/\s+/g, ' ').trim();
   if (!raw) return '어떻게 선택할까?';
   const quoted = [...raw.matchAll(/["“”]([^"“”]{4,})["“”]/g)].map(m => m[1].trim());
@@ -5764,8 +5807,9 @@ function showDialogResultSection(state) {
   _typing.done = true;
   setSkipVisible('dialog-skip', false);
   hideNextArrow();
-  document.getElementById('d-txt').innerHTML =
-    `<span class="dialog-current">${escapeHtml(bodyText)}</span>`;
+  document.getElementById('d-txt').innerHTML = isDrugCompareCard(section.label, bodyText)
+    ? renderDrugCompareContent(bodyText)
+    : `<span class="dialog-current">${escapeHtml(bodyText)}</span>`;
   document.getElementById('next-btn').classList.add('show');
 
   if(state.idx >= state.sections.length - 1 && state.onComplete && !state.completeCalled) {
@@ -5941,7 +5985,7 @@ function pickChoice(i){
   const sc=DB.gameData.scenarios[G.scene];
   const ch=sc.choices[i];
   if(ch.showDrugCardBeforeResult){
-    openDrugCardModal(i, ch.showDrugCardBeforeResult.drugKey || 'stop');
+    openDrugCardModal(i, ch.showDrugCardBeforeResult.drugKeys || ch.showDrugCardBeforeResult.drugKey || 'stop');
     return;
   }
   if(ch.labelInspect){
@@ -5973,7 +6017,7 @@ function pickChoice(i){
     return;
   }
   if(ch.openSns){
-    openSnsModal(ch.openSns.caption);
+    openSnsModal(i, ch.openSns.caption);
     return;
   }
   finishChoice(i);
@@ -6042,7 +6086,8 @@ const DRUG_CARD_DATA = {
 };
 
 function renderDrugCardModalBody(drugKey){
-  return renderDrugDictCard(drugKey);
+  const keys = Array.isArray(drugKey) ? drugKey : [drugKey];
+  return keys.map(renderDrugDictCard).join('');
 }
 
 function renderDrugDictCard(drugKey){
@@ -7346,9 +7391,46 @@ function selectNpcChoice(idx) {
 // ══════════════════════════════════════
 // SNS 블러 처리 시스템
 // ══════════════════════════════════════
-function openSnsModal(caption) {
-  document.getElementById('sns-caption').textContent = caption || '댓글이 빠르게 쌓이고 있습니다.';
-  document.getElementById('sns-modal').style.display = 'flex';
+function openSnsModal(choiceIdx, caption) {
+  window._snsChoiceIdx = choiceIdx;
+  const modal = document.getElementById('sns-modal');
+  const sheet = modal?.querySelector(':scope > div');
+  if(sheet){
+    sheet.innerHTML = `
+      <div style="background:#fffdf8;padding:14px 16px;border-bottom:1px solid #f1d3b8;display:flex;align-items:center;gap:10px;">
+        <div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#ff8a65,#9b5cff);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;">AD</div>
+        <div style="flex:1;">
+          <div style="font-weight:900;color:#34251f;font-size:.88rem;">study_tip_daily</div>
+          <div style="font-size:.72rem;color:#8a7367;">시험기간 추천 게시물 · 시험기간 인기 상승 트렌드</div>
+        </div>
+        <div style="font-weight:900;color:#8a7367;">•••</div>
+      </div>
+      <div style="padding:14px 16px 18px;">
+        <div class="sns-info-visual" role="img" aria-label="에너지드링크와 약을 함께 권하는 SNS 광고 이미지"></div>
+        <div class="sns-info-actions" style="padding:10px 0 6px;"><span>♡</span><span>💬</span><span>↗</span><span>▱</span></div>
+        <div class="sns-info-caption" style="padding:0;margin-bottom:10px;">
+          <strong>study_tip_daily</strong> ${escapeHtml(caption || '진통제랑 에너지드링크 같이 먹으면 두통도 잡고 잠도 깸!')}
+        </div>
+        <div class="sns-info-comments" style="padding:0;">
+          <div class="sns-info-comment"><b>followed_user</b> 따라 했다가 속 쓰려서 보건실 감...</div>
+          <div class="sns-info-comment"><b>pill_check</b> 이거 약+카페인 같이 먹는 거 위험한 정보 아닌가요?</div>
+          <div class="sns-info-comment"><b>health_note</b> 출처도 없고 의료 전문가 의견도 없네요.</div>
+        </div>
+        <div class="sns-info-warning" style="margin:10px 0 14px;">좋아요 수보다 작성자, 근거, 댓글의 부작용 신호를 먼저 확인해야 한다.</div>
+        <button onclick="finishSnsModal()"
+          style="width:100%;border:0;border-radius:14px;background:#ff967d;color:#fff;font-family:'Jua',sans-serif;font-size:.95rem;padding:13px;cursor:pointer;">
+          확인했어요
+        </button>
+      </div>`;
+  }
+  if(modal) modal.style.display = 'flex';
+}
+
+function finishSnsModal() {
+  const idx = window._snsChoiceIdx;
+  document.getElementById('sns-modal').style.display = 'none';
+  window._snsChoiceIdx = null;
+  finishChoice(idx);
 }
 
 function selectSns(action) {
