@@ -2988,6 +2988,7 @@ const DEFAULT_DATA = {
     char_male_recovered:'assets/characters/char_male_recovered.png',
     char_male_sick:     'assets/characters/char_male_sick.png',
     char_male_focused:  'assets/characters/char_male_focused.png',
+    char_male_phone:    'assets/characters/char_male_phone.png',
     char_female_tired:    'assets/characters/char_female_tired.png',
     char_female_sleepy:   'assets/characters/char_female_sleepy.png',
     char_female_headache: 'assets/characters/char_female_headache.png',
@@ -2995,6 +2996,7 @@ const DEFAULT_DATA = {
     char_female_recovered:'assets/characters/char_female_recovered.png',
     char_female_sick:     'assets/characters/char_female_sick.png',
     char_female_focused:  'assets/characters/char_female_focused.png',
+    char_female_phone:    'assets/characters/char_female_phone.png',
     char_student:'',
 
     // ── NPC ──
@@ -3126,7 +3128,7 @@ const MINI_QUIZ = [
     id:'dday_q3', type:'fill', episodeRef:'D-Day',
     sentence:'카페인 음료를 마시기 전에는 자신의 [1] 계산할 줄 알아야 한다. 청소년의 하루 카페인 최대 섭취량은 체중 × [2]mg으로 계산한다. 음료의 카페인 [3]을 확인하고, 하루 최대 섭취량을 넘지 않는지 살펴야 한다. 하루 최대 섭취량을 넘으면 [4] 같은 증상이 나타날 수 있다.',
     blanks:['하루 최대 섭취량을','2.5','함량','두근거림·손떨림·불면'],
-    tiles:['하루 최대 섭취량을','하루 수분 섭취량을','하루 칼로리 섭취량을','2.5','5','10','함량','당류','열량','두근거림·손떨림·불면','기침·콧물·오한','근육통·복통·두통'],
+    tiles:['하루 최대 섭취량을','하루 수분 섭취량을','하루 칼로리 섭취량을','2.5','5','10','함량','당류','열량','두근거림·손떨림·불면','기침·콧물·오한','피부가려움·두드러기·눈충혈'],
     explanation:'카페인은 기준량을 넘으면 두근거림·손떨림·불면으로 나타나요. 마시기 전 내 하루 최대 섭취량과 제품 카페인 함량을 함께 확인해야 합니다.'
   }
 ];
@@ -4354,8 +4356,9 @@ function buildFourteenDayScenarios(){
         "location": "📱 D-3 방과후",
         "scene": "scene_library",
         "speaker": "{name}",
-        "text": "[{name}] 독서실에서 잠깐 쉬며 폰을 본다. 친구 하은이 게시물 링크를 보냈다.\n[하은] 야 이거 봤어? 요즘 이게 시험 꿀팁이래 ㅋㅋ 우리 해볼까?.\n[나레이터] 게시물에는 '진통제랑 에너지드링크 같이 먹으면 두통도 잡고 잠도 깸!'이라고 적혀 있다.",
-        "choicePrompt": "[나레이터] 게시물에는 '진통제랑 에너지드링크 같이 먹으면 두통도 잡고 잠도 깸!'이라고 적혀 있다.",
+        "characterMood": "phone",
+        "text": "[{name}] 독서실에서 잠깐 쉬며 폰을 본다. 친구 하은이 게시물 링크를 보냈다.\n[하은] 야 이거 봤어? 요즘 이게 시험 꿀팁이래 ㅋㅋ 우리 해볼까?.\n[나레이터] 게시물에는 '콜라와 에너지드링크 섞어 마시면 두통도 잡고 잠도 깸!'이라고 적혀 있다.",
+        "choicePrompt": "[나레이터] 게시물에는 '콜라와 에너지드링크 섞어 마시면 두통도 잡고 잠도 깸!'이라고 적혀 있다.",
         "choicePromptAd": true,
         "choices": [
             {
@@ -4370,12 +4373,12 @@ function buildFourteenDayScenarios(){
                     "title": "SNS 꿀팁 따라 하기",
                     "text": "[선택 결과] 호기심에 SNS 꿀팁을 그대로 따라 했다. 하지만 출처 불명의 정보를 맹신해 진통제와 고카페인 음료를 함께 복용하는 것은 심장과 위장에 큰 무리를 주는 위험한 행동이다."
                 },
-                "nextLocation": "📓 D-3 마무리"
+                "nextLocation": "🌙 D-3 그날 밤"
             },
             {
                 "text": "🔎 게시물 정보를 비판적으로 살핀다.",
                 "openSns": {
-                    "caption": "진통제랑 에너지드링크 같이 먹으면 두통도 잡고 잠도 깸!"
+                    "caption": "콜라와 에너지드링크 섞어 마시면 두통도 잡고 잠도 깸!"
                 },
                 "good": true,
                 "delta": {
@@ -4383,7 +4386,7 @@ function buildFourteenDayScenarios(){
                 },
                 "result": {
                     "title": "게시물 정보 확인",
-                    "text": "[정보카드]\n작성자: 일반인(의료 전문가 아님)\n출처·근거: 없음\n댓글: \"따라 했다 속 쓰려 고생함\" / \"카페인+약 같이 먹는 거 위험하다던데?\""
+                    "text": "[선택 결과] 게시물의 작성자와 근거, 댓글 반응을 확인하고 무작정 따라 하지 않기로 했다."
                 },
                 "nextLocation": "🔎 D-3 SNS 확인 후 선택"
             },
@@ -4398,7 +4401,7 @@ function buildFourteenDayScenarios(){
                     "title": "나만 피함",
                     "text": "[선택 결과] 위험해 보이는 정보라 생각하고 하은이의 톡을 그냥 읽고 넘겼다. 다행히 내 몸의 안전은 지켜냈지만, 소중한 친구 역시 잘못된 정보로 위험해질 수 있다는 사실을 모른 채 넘어가 버린 아쉬움이 남는다."
                 },
-                "nextLocation": "📓 D-3 마무리"
+                "nextLocation": "🌙 D-3 그날 밤"
             }
         ]
     },
@@ -4409,7 +4412,8 @@ function buildFourteenDayScenarios(){
         "location": "🔎 D-3 SNS 확인 후 선택",
         "scene": "scene_library",
         "speaker": "{name}",
-        "text": "게시물의 작성자는 의료 전문가가 아니고 출처와 근거가 없다. 댓글에도 따라 했다가 속이 쓰렸다는 말과 약+카페인 조합을 걱정하는 말이 섞여 있다.",
+        "characterMood": "phone",
+        "text": "자세히 보니 출처도 근거도 없는 낚시성 게시물이다. 댓글 창도 이미 '따라 했다가 심장 터지는 줄 알았다', '카페인 폭탄 제조법이다'라며 위험성을 경고하는 반응이 가득하다.",
         "choices": [
             {
                 "text": "🔍 신뢰할 정보를 더 찾아 확인하고 넘긴다.",
@@ -4420,9 +4424,9 @@ function buildFourteenDayScenarios(){
                 },
                 "result": {
                     "title": "나를 지킨 확인",
-                    "text": "[선택 결과] 겉보기에 화려한 좋아요 수나 조회수에 속지 않고, 공식 기관의 신뢰할 만한 의약품 정보를 직접 검색해 보았다. 카페인과 진통제 조합의 위험성을 확실히 검증해 내며 근거 없는 건강 루머로부터 내 몸을 안전하게 지켜냈다."
+                    "text": "[선택 결과] 보기에 화려한 좋아요 수나 조회수에 속지 않고, 신뢰할 만한 정보를 직접 찾아보았다. 콜라와 에너지드링크를 섞어 마시면 카페인과 당류를 치사량 수준으로 과다 섭취하게 된다는 사실을 깨닫고, 근거 없는 루머로부터 내 몸을 안전하게 지켜냈다."
                 },
-                "nextLocation": "📓 D-3 마무리"
+                "nextLocation": "🌙 D-3 그날 밤"
             },
             {
                 "text": "💬 하은이에게 위험성을 알려준다.",
@@ -4434,8 +4438,68 @@ function buildFourteenDayScenarios(){
                 },
                 "result": {
                     "title": "친구까지 지킴",
-                    "text": "[선택 결과] 내가 찾아본 정확한 정보를 하은이에게 공유하며 이 방법이 왜 위험한지 친절하게 설명해 주었다. 잘못된 정보로부터 나뿐만 아니라 소중한 친구의 건강까지 함께 지켜낸 최고의 선택이다."
+                    "text": "[선택 결과] 내가 확인한 정보를 하은이에게 공유하며 콜라와 에너지드링크를 섞어 마시는 방법이 왜 무리한 선택인지 설명해 주었다. 잘못된 정보로부터 나뿐만 아니라 소중한 친구의 건강까지 함께 지켜냈다."
                 },
+                "nextLocation": "🌙 D-3 그날 밤"
+            }
+        ]
+    },
+    {
+        "type": "event",
+        "day": 3,
+        "countdown": "D-3 시험",
+        "location": "🌙 D-3 그날 밤",
+        "scene": "scene_bedroom",
+        "speaker": "{name}",
+        "characterMood": "tired",
+        "text": "독서실에서 돌아와 책상 앞에 앉으니 어느덧 새벽 1시다. 아직 못 본 단원이 남아 있어 마음이 급하다. 눈이 감기는데... 밤을 새워야 할까, 아니면 지금이라도 자야 할까?",
+        "choices": [
+            {
+                "text": "☕ 밤새워 마저 한다. 커피 한 잔을 더 마신다.",
+                "good": false,
+                "delta": {
+                    "knowledge": 5,
+                    "sleep": -20,
+                    "health": -10
+                },
+                "result": {
+                    "title": "밤샘 선택",
+                    "text": "[선택 결과] 당장은 몇 페이지 더 읽었을지 몰라도, 커피까지 추가해가며 밤을 새운 대가는 혹독하다. 뇌가 쉴 시간을 주지 않으면 오늘 외운 것마저 내일 기억나지 않을 수 있다."
+                },
+                "caffeineMg": 81,
+                "sleepHour": 26,
+                "sleepHours": 5,
+                "nextLocation": "📓 D-3 마무리"
+            },
+            {
+                "text": "🛌 지금 자고 일찍 일어난다.",
+                "good": true,
+                "delta": {
+                    "sleep": 15,
+                    "judgment": 10
+                },
+                "result": {
+                    "title": "수면 우선",
+                    "text": "[선택 결과] 불안해도 과감히 잠을 청했다. 푹 자고 새벽에 일찍 일어나 맑은 정신으로 마저 공부하는 것이 기억 정착과 컨디션 관리에 훨씬 효율적이다."
+                },
+                "sleepHour": 24,
+                "sleepHours": 7,
+                "nextLocation": "📓 D-3 마무리"
+            },
+            {
+                "text": "⏱️ 30분만 더 하고 잔다.",
+                "good": true,
+                "delta": {
+                    "judgment": 5,
+                    "sleep": 5,
+                    "knowledge": -3
+                },
+                "result": {
+                    "title": "짧게 정리",
+                    "text": "[선택 결과] 밤을 새워서라도 다 봐야 할 것 같은 불안감을 누르고, 딱 30분만 더 보기로 했다. 불안한 마음을 달래면서도 수면 시간까지 챙긴 영리한 타협이다."
+                },
+                "sleepHour": 25,
+                "sleepHours": 6,
                 "nextLocation": "📓 D-3 마무리"
             }
         ]
@@ -4449,87 +4513,6 @@ function buildFourteenDayScenarios(){
         "speaker": "나레이터",
         "hideCharacter": true,
         "text": "D-3 마무리, 오늘 약을 먹을 때도, 정보를 받아들일 때도 '확인'을 거쳤나요? 성분이든 출처든, 확인 없이 넘어가면 그게 오남용의 시작이에요.",
-        "choices": null
-    },
-    {
-        "type": "narration",
-        "day": 3,
-        "countdown": "D-3 시험",
-        "location": "🌙 D-Day 전날 밤",
-        "scene": "scene_diary_home",
-        "speaker": "나레이터",
-        "hideCharacter": true,
-        "text": "D-3 에피소드는 여기서 마무리됩니다. 이제 시험 전날 밤, 마지막 컨디션 선택으로 넘어갑니다.",
-        "choices": null
-    },
-    {
-        "type": "event",
-        "day": 3,
-        "countdown": "D-3 시험",
-        "location": "🌙 D-3 그날 밤",
-        "scene": "scene_bedroom",
-        "speaker": "{name}",
-        "text": "독서실에서 돌아와 책상 앞에 앉았다. 시계는 새벽 1시. 아직 못 본 단원이 남아 있어 마음이 급하다. 잘까, 조금 더 할까?",
-        "choices": [
-            {
-                "text": "☕ 밤새워 마저 한다. 커피 한 잔을 더 마신다.",
-                "good": false,
-                "delta": {
-                    "knowledge": 5,
-                    "sleep": -20,
-                    "health": -10
-                },
-                "result": {
-                    "title": "밤샘 선택",
-                    "text": "[선택 결과] 당장은 조금 더 봤지만 충분한 잠을 못해, 내일 컨디션 떨어진다."
-                },
-                "caffeineMg": 81,
-                "sleepHour": 26,
-                "sleepHours": 5,
-                "nextLocation": "📘 D-Day 에피소드 시작"
-            },
-            {
-                "text": "🛌 지금 자고 새벽에 일찍 일어나 본다.",
-                "good": true,
-                "delta": {
-                    "sleep": 15,
-                    "judgment": 10
-                },
-                "result": {
-                    "title": "수면 우선",
-                    "text": "[선택 결과] 남은 단원이 불안하지만, 수면을 확보해 기억 정착과 컨디션을 지켰다."
-                },
-                "sleepHour": 24,
-                "sleepHours": 7,
-                "nextLocation": "📘 D-Day 에피소드 시작"
-            },
-            {
-                "text": "⏱️ 30분만 더 하고 잔다.",
-                "good": true,
-                "delta": {
-                    "judgment": 5,
-                    "sleep": 5,
-                    "knowledge": -3
-                },
-                "result": {
-                    "title": "짧게 정리",
-                    "text": "[선택 결과] 더 하고 싶은 마음을 제한해 공부와 수면 사이 균형을 잡았다."
-                },
-                "sleepHour": 25,
-                "sleepHours": 6,
-                "nextLocation": "📘 D-Day 에피소드 시작"
-            }
-        ]
-    },
-    {
-        "type": "narration",
-        "day": 15,
-        "countdown": "D-Day 시험 당일",
-        "location": "📘 D-Day 에피소드 시작",
-        "scene": "scene_diary_home",
-        "speaker": "나레이터",
-        "hideCharacter": true,
-        "text": "드디어 D-Day. 지금까지의 수면, 카페인, 복약 선택이 시험 당일 컨디션으로 이어집니다.",
         "choices": null
     },
     {
@@ -6382,7 +6365,7 @@ function checkMiniQuizAnswer(){
   feedback.style.display = 'block';
   feedback.style.background = correct ? '#dcfce7' : '#fee2e2';
   feedback.style.color = correct ? '#166534' : '#991b1b';
-  feedback.textContent = `${correct ? '정답!' : '다시 기억해보기.'} ${q.explanation}`;
+  feedback.textContent = `${correct ? '정답!' : '다시 기억하기!'} ${q.explanation}`;
   document.getElementById('mq-check').style.display = 'none';
   const next = document.getElementById('mq-next');
   next.style.display = 'block';
@@ -7409,12 +7392,12 @@ function openSnsModal(choiceIdx, caption) {
         <div class="sns-info-visual" role="img" aria-label="에너지드링크와 약을 함께 권하는 SNS 광고 이미지"></div>
         <div class="sns-info-actions" style="padding:10px 0 6px;"><span>♡</span><span>💬</span><span>↗</span><span>▱</span></div>
         <div class="sns-info-caption" style="padding:0;margin-bottom:10px;">
-          <strong>study_tip_daily</strong> ${escapeHtml(caption || '진통제랑 에너지드링크 같이 먹으면 두통도 잡고 잠도 깸!')}
+          <strong>study_tip_daily</strong> ${escapeHtml(caption || '콜라와 에너지드링크 섞어 마시면 두통도 잡고 잠도 깸!')}
         </div>
         <div class="sns-info-comments" style="padding:0;">
-          <div class="sns-info-comment"><b>followed_user</b> 따라 했다가 속 쓰려서 보건실 감...</div>
-          <div class="sns-info-comment"><b>pill_check</b> 이거 약+카페인 같이 먹는 거 위험한 정보 아닌가요?</div>
-          <div class="sns-info-comment"><b>health_note</b> 출처도 없고 의료 전문가 의견도 없네요.</div>
+          <div class="sns-info-comment"><b>high_caffeine:</b> 이거 진짜 무식한 방법임.. 내 친구 시험 때 이렇게 먹었다가 응급실 실려감</div>
+          <div class="sns-info-comment"><b>drink_monster</b> "콜라에 에너지드링크를 섞어 마신다고? 진짜 누가 이딴 걸 같이 먹냐ㅋㅋㅋ 심장 터져 죽을 일 있나"</div>
+          <div class="sns-info-comment"><b>health_note</b> 카페인 폭탄 제조법이네;; 출처도 근거도 없는 낚시글이네</div>
         </div>
         <div class="sns-info-warning" style="margin:10px 0 14px;">좋아요 수보다 작성자, 근거, 댓글의 부작용 신호를 먼저 확인해야 한다.</div>
         <button onclick="finishSnsModal()"
