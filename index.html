@@ -3070,7 +3070,7 @@ let G = {
   analgesicCount:0, fastingMedCount:0, comboCount:0, helpedFriend:0,
   labelChecked:false, snsRisk:false, minjunWarned:false, recoveryPlan:false,
   cluesChecked:{}, pendingHealthOffice:'', lastCvsDrink:null, day3CvsDrink:null,
-  sceneHistory:[],
+  sceneHistory:[], caffeineLog:[],
   stats:{health:70,knowledge:50,caffeine:70,sleep:60,judgment:55,social:60},
 };
 let T = { trust:50, currentCase:-1, done:[] };
@@ -3169,7 +3169,6 @@ function closeAllOverlays(){
 
 function getSavePayload() {
   const clone = JSON.parse(JSON.stringify(G));
-  delete clone.sceneHistory;
   return {
     version: GAME_SAVE_VERSION,
     savedAt: Date.now(),
@@ -3201,7 +3200,8 @@ function resumeGame() {
     if (!saved || saved.version < GAME_SAVE_VERSION || !saved.G) return show('name');
     const data = DB.gameData;
     Object.assign(G, saved.G);
-    G.sceneHistory=[];
+    if(!Array.isArray(G.sceneHistory)) G.sceneHistory=[];
+    if(!Array.isArray(G.caffeineLog)) G.caffeineLog=[];
     if(!G.cluesChecked) G.cluesChecked={};
     if(!G.pendingHealthOffice) G.pendingHealthOffice='';
     data.stats = [
@@ -3312,6 +3312,7 @@ const confirmName=()=>{
   G.currentDay=undefined;
   G.totalCaffeine=0; G.caffeineDays=0; G.sleepTotal=0; G.sleepCount=0;
   G.lastDayCaffeine=0;
+  G.caffeineLog=[];
   G.analgesicCount=0; G.fastingMedCount=0; G.comboCount=0; G.helpedFriend=0;
   G.labelChecked=false; G.snsRisk=false; G.minjunWarned=false; G.recoveryPlan=false;
   G.cluesChecked={};
@@ -3380,25 +3381,31 @@ function updateCaffeineHud(){
   label.style.color = pct >= 100 ? '#ef4444' : pct >= 80 ? '#f59e0b' : '';
   label.style.fontWeight = pct >= 80 ? '900' : '';
 }
+function resetCaffeineTotals(){
+  G.caffeineToday=0;
+  G.totalCaffeine=0;
+  G.caffeineDays=0;
+  G._lastCaffeineDay=undefined;
+}
 const CVS_DRINKS = [
   { id:'energy', name:'에너지드링크', product:'강렬한 각성이 필요할 때 찾게 되는 탄산음료', volume:'355mL', emoji:'🟢캔', icon:'energy', caffeine:100,
     delta:{health:-6, caffeine:-10, judgment:-4}, good:false,
-    desc:'라벨을 확인하니 카페인 100mg. 당장 눈은 번쩍 뜨이겠지만, 밤늦게까지 잠을 이루지 못해 수면 패턴이 망가질 수 있어요.' },
+    desc:'355mL 용량의 에너지드링크를 마셨다. 라벨에 적힌 카페인은 무려 100mg. 당장은 눈이 번쩍 뜨이고 각성 효과가 오겠지만, 밤늦게까지 잠을 이루지 못해 수면 패턴이 완전히 망가질 수 있다.' },
   { id:'coffeeMilk', name:'커피우유', product:'몰려오는 졸음을 잠시 잊게 만드는 친숙한 단맛', volume:'300mL', emoji:'📦', icon:'pack', caffeine:115,
     delta:{health:-4, caffeine:-10, sleep:-4}, good:false,
-    desc:'카페인 115mg. 우유의 달콤함 뒤에 숨겨진 고농축 카페인이 몸에 무리를 줄 수 있어요.' },
+    desc:'300mL 용량의 친숙하고 달콤한 커피우유를 마셨다. 하지만 이 달콤함 뒤에는 무려 115mg의 고농축 카페인이 숨겨져 있어, 생각보다 강한 자극이 몸에 무리를 줄 수 있다.' },
   { id:'cancoffee', name:'캔커피', product:'쌉싸름한 맛 뒤로 밀려오는 익숙한 카페인 ', volume:'200mL', emoji:'🔵캔', icon:'canblue', caffeine:81,
     delta:{health:-3, caffeine:-8}, good:false,
-    desc:'카페인 81mg. 단기 집중력을 빌려 쓰는 대신, 누적 피로도가 증가할 수 있어요.' },
+    desc:'200mL 용량의 쌉싸름한 캔커피를 마셨다. 81mg의 카페인이 당장의 집중력을 미래에서 빌려오듯 채워주지만, 그 대가로 나중에 한꺼번에 밀려올 누적 피로도가 커질 수 있다.' },
   { id:'vitamin', name:'비타민음료', product:'카페인 없이 가볍게 기분을 전환하고 싶을 때', volume:'100mL', emoji:'🟠병', icon:'bottle', caffeine:0,
     delta:{health:1, caffeine:3}, good:true, noCaffeine:true,
-    desc:'카페인 0mg. 중독성이나 카페인 부담 없이, 지친 몸에 비타민으로 가벼운 활력을 채워줍니다.' },
+    desc:'100mL 용량의 상큼한 비타민음료를 마셨다. 카페인이 전혀 들어있지 않아 중독이나 부작용 걱정 없이, 지친 몸에 비타민을 채워주며 가볍고 건강한 활력을 더해준다.' },
   { id:'cola', name:'콜라', product:'탄산음료', volume:'355mL', emoji:'🔴캔', icon:'canred', caffeine:35,
     delta:{health:-2, caffeine:-4}, good:false,
-    desc:'카페인 35mg. 청량감은 잠시뿐, 높은 당분과 카페인이 섞여 오히려 몸을 더 피로하게 만들 수 있어요.' },
+    desc:'355mL 용량의 시원한 콜라를 마셨다. 35mg의 카페인이 들어있는데, 특유의 청량감은 잠시뿐이며 높은 당분과 카페인이 섞여 시간이 지나면 오히려 몸을 더 피로하게 만들 수 있다.' },
   { id:'water', name:'물/이온음료', product:'지친 몸에 가장 부담이 없는 담백한 선택', volume:'-', emoji:'💧', icon:'drop', caffeine:0,
     delta:{health:5, caffeine:6}, good:true, noCaffeine:true,
-    desc:'카페인 0mg. 갈증을 해소하고 지친 몸을 회복시켜 주는, 가장 순수하고 안전한 선택입니다.' },
+    desc:'부담 없는 물과 이온음료를 선택해 마셨다. 카페인이 전혀 없어 몸에 자극을 주지 않으며, 갈증을 순수하게 해소하고 체내 수분을 보충해 주는 가장 안전한 선택이다.' },
 ];
 
 const CAFE_DRINKS = [
@@ -3869,7 +3876,7 @@ function buildFourteenDayScenarios(){
         "scene": "scene_commute",
         "speaker": "나레이터",
         "characterMood": "headache",
-        "text": "D-5, 어젯밤 공부하느라 늦게까지 깨어 있었다. 짧게 잔 탓에 아침부터 관자놀이가 욱신거린다. 어제 약국에서 산 '아야스톱정' 한 알이 있지만, 아침을 못 먹고 나온 상태다.",
+        "text": "D-5, 어젯밤 공부하느라 늦게까지 깨어 있었다. 제대로 못 잔 탓에 아침부터 관자놀이가 욱신거린다. 어제 약국에서 산 '아야스톱정' 한 알이 있지만, 아침을 못 먹고 나온 상태다.",
         "choices": [
             {
                 "text": "💊 그냥 빈속에 먹는다.",
@@ -4043,7 +4050,7 @@ function buildFourteenDayScenarios(){
         "location": "📚 D-5 방과후",
         "scene": "scene_library",
         "speaker": "나레이터",
-        "text": "독서실, 옆자리 소연이 작은 알약을 내민다.\n[소연] 지금도 머리 아파? 이거 두통에 직빵이야. 우리 엄마가 챙겨준 건데 너 줄게. 먹어봐.\n[나레이터] 소연이 건넨 알약은 이름도 성분도 아직 모른다.",
+        "text": "독서실, 옆자리에 앉은 소연이가 작은 알약을 내민다.\n[소연] 지금도 머리 아파? 이거 두통에 직빵이야. 우리 엄마가 챙겨준 건데, 너 줄게 먹어봐.\n[나레이터] 소연이 건넨 알약은 이름도 성분도 아직 모른다.",
         "choices": [
             {
                 "text": "💊 받아서 바로 먹는다.",
@@ -4055,7 +4062,7 @@ function buildFourteenDayScenarios(){
                 },
                 "result": {
                     "title": "미확인 약 복용",
-                    "text": "[선택 결과] 고마운 마음은 받았지만, 남이 준 약을 성분 확인 없이 먹었다."
+                    "text": "[선택 결과] 소연이의 고마운 마음만 생각하고 약을 삼켰다. 하지만 이름도 성분도 모르는 약을 함부로 먹는 행동은 예기치 못한 부작용을 부를 수 있어 위험하다."
                 },
                 "analgesic": true,
                 "nextLocation": "📓 D-5 마무리"
@@ -4070,7 +4077,7 @@ function buildFourteenDayScenarios(){
                 },
                 "result": {
                     "title": "미확인 약 거절",
-                    "text": "[선택 결과] 관계가 살짝 어색해졌지만 이름과 성분을 모르는 약은 먹지 않았다."
+                    "text": "[선택 결과] 무슨 약인지 모른다며 거절하자 소연이와 잠시 어색해졌다. 하지만 정체불명의 약을 함부로 먹지 않고 안전을 우선시한 올바른 선택이다."
                 },
                 "nextLocation": "📓 D-5 마무리"
             },
@@ -4082,7 +4089,7 @@ function buildFourteenDayScenarios(){
                 },
                 "result": {
                     "title": "확인 질문",
-                    "text": "[선택 결과] 소연도 정확히 모른다는 걸 알게 됐다."
+                    "text": "[선택 결과] 무슨 약인지 묻자 소연이도 잘 모른다며 당황했다. 질문을 던진 덕분에, 권하는 사람조차 약의 성분을 모르는 경우가 많다는 사실을 깨달았다."
                 },
                 "nextLocation": "📓 D-5 마무리"
             },
@@ -4096,7 +4103,7 @@ function buildFourteenDayScenarios(){
                 },
                 "result": {
                     "title": "내 약만 사용",
-                    "text": "[선택 결과] 상대의 호의는 인정하되, 알 수 없는 약은 피했다."
+                    "text": "[선택 결과] 마음은 고맙다며 내가 가져온 약을 먹겠다고 자연스럽게 거절했다. 친구의 호의를 다치지 않게 하면서도 알 수 없는 약물의 위험을 현명하게 피했다."
                 },
                 "nextLocation": "📓 D-5 마무리"
             }
@@ -4110,7 +4117,7 @@ function buildFourteenDayScenarios(){
         "scene": "scene_diary_home",
         "speaker": "나레이터",
         "hideCharacter": true,
-        "text": "오늘 약을 먹기 전에 설명서를 먼저 확인했나요? 복용 조건을 모르고 먹은 약은, 약의 효과보다 부작용이 더 클 수 있어요.",
+        "text": "D-5 마무리, 오늘 약을 먹기 전에 설명서를 먼저 확인했나요? 복용 조건을 모르고 먹은 약은, 약의 효과보다 부작용이 더 클 수 있어요.",
         "choices": null
     },
     {
@@ -4652,6 +4659,8 @@ function sleepHoursFromClock(hour){
 function recordCaffeine(mg){
   const amount=Number(mg)||0;
   if(amount<=0) return;
+  if(!Array.isArray(G.caffeineLog)) G.caffeineLog=[];
+  G.caffeineLog.push({scene:G.scene||0, day:G.day||1, amount});
   G.totalCaffeine=(G.totalCaffeine||0)+amount;
   const dayKey=`${G.day||1}`;
   if(G._lastCaffeineDay!==dayKey){
@@ -4746,23 +4755,7 @@ function drinkCharacterSlot(drink){
 }
 
 function formatDrinkResultText(drink, reactionText){
-  const productLine = [drink.product || drink.english || drink.name, drink.volume].filter(Boolean).join(' · ');
-  const drinkDesc = String(drink.desc || '').replace(/^카페인\s*\d+mg[.。]?\s*/, '');
-  const lines = [
-    '[음료 정보]',
-    `선택한 음료: ${drink.name}${productLine ? ` (${productLine})` : ''}`,
-    `카페인: ${drink.caffeine}mg`,
-    drinkDesc
-  ].filter(Boolean);
-  if(reactionText){
-    const reaction = normalizeStoryText(reactionText).trim();
-    if(/^\[[^\]]+\]/.test(reaction)){
-      lines.push('', reaction);
-    } else {
-      lines.push('', `[${selfInnerLabel()}]`, reaction);
-    }
-  }
-  return lines.join('\n');
+  return String(drink.desc || '').trim();
 }
 function applySystemEffects(choice){
   applyChoiceRecords(choice);
@@ -5303,10 +5296,15 @@ function clearTypingState(state) {
   state.done = false;
 }
 
+function stripDialogueCues(text) {
+  return String(text || '').replace(/(?:^|\s)\[[^\]]+\]\s*/g, match => match.startsWith(' ') ? ' ' : '');
+}
+
 function renderTypingText(targetId, past, current) {
   const target = document.getElementById(targetId);
   if (!target) return;
-  target.innerHTML = `<span class="dialog-current">${escapeHtml(stripDialogueCue(current))}</span>`;
+  const visibleCurrent = stripDialogueCue(current).trimStart();
+  target.innerHTML = `<span class="dialog-current">${escapeHtml(visibleCurrent)}</span>`;
 }
 
 function hideNextArrow() {
@@ -5338,7 +5336,7 @@ function finishTypingSentence(state, targetId, arrowFn) {
   if (state.timer) clearInterval(state.timer);
   state.timer = null;
   const sentence = state.sentences[state.sIdx] || '';
-  state.charIdx = sentence.length;
+  state.charIdx = stripDialogueCue(sentence).length;
   renderTypingText(targetId, state.sentences.slice(0, state.sIdx).join(' '), sentence);
 
   if (state.sIdx >= state.sentences.length - 1) {
@@ -5355,17 +5353,8 @@ function skipTypingToEnd(state, targetId, hideArrowFn, event) {
   if (state.done) return;
   if (state.timer) clearInterval(state.timer);
   state.timer = null;
-  state.done = true;
-  // 모든 문장을 끝까지 채운 것으로 간주하고, 전체를 한 번에 출력
-  state.sIdx = Math.max(0, state.sentences.length - 1);
-  state.charIdx = (state.sentences[state.sIdx] || '').length;
   hideArrowFn();
-  setSkipVisible(targetId === 'd-txt' ? 'dialog-skip' : 'result-skip', false);
-  const target = document.getElementById(targetId);
-  if (target) {
-    target.innerHTML = `<span class="dialog-current">${escapeHtml(state.sentences.map(stripDialogueCue).join(' '))}</span>`;
-  }
-  if (state.onComplete) state.onComplete();
+  finishTypingSentence(state, targetId, targetId === 'd-txt' ? showNextArrow : showResultArrow);
 }
 
 function typeNextChar(state, targetId, arrowFn) {
@@ -5427,6 +5416,12 @@ function dialogueCue(sentence) {
 
 function stripDialogueCue(sentence) {
   return String(sentence || '').replace(/^\[[^\]]+\]\s*/, '');
+}
+
+function lastDialogueCue(text) {
+  const matches = [...String(text || '').matchAll(/(?:^|\n)\[([^\]]+)\]\s*/g)];
+  const cues = matches.map(match => match[1].trim()).filter(Boolean);
+  return cues.findLast(cue => cue !== '나레이터') || cues[cues.length - 1] || '';
 }
 
 function slotForDialogueSpeaker(speaker) {
@@ -5495,9 +5490,10 @@ function toggleChoiceModal(event) {
 }
 
 function choiceSpeakerProfile(sc) {
-  const slot = sceneCharacterSlot(sc);
+  const cueSpeaker = lastDialogueCue(sc?.text || '');
+  const slot = cueSpeaker ? slotForDialogueSpeaker(cueSpeaker) : sceneCharacterSlot(sc);
   const npc = Object.values(NPC_DATA || {}).find(x => x.imgSlot === slot);
-  const speaker = formatSpeakerName(sc?.speaker || '');
+  const speaker = cueSpeaker || formatSpeakerName(sc?.speaker || '');
   if (npc) {
     return {
       name: npc.name,
@@ -5832,6 +5828,9 @@ function renderScene(idx){
     G.lastDayCaffeine=G.caffeineToday||0;
     G.caffeineToday=0;
   }
+  if((idx || 0) === 0 && (!Array.isArray(G.caffeineLog) || G.caffeineLog.length === 0)){
+    resetCaffeineTotals();
+  }
   G.currentDay=day; G.day=day;
   document.getElementById('hud-name').textContent=`${studentDisplayName()}(나)`;
   const dayTitle = sc.countdown ? String(sc.countdown).replace(' 시험기간','').replace(' 시험','') : `${day}일차`;
@@ -6119,9 +6118,25 @@ function restoreGameStateSnapshot(snapshot) {
   Object.keys(G).forEach(key => delete G[key]);
   Object.assign(G, JSON.parse(JSON.stringify(snapshot)));
   G.sceneHistory = history;
+  if (!Array.isArray(G.caffeineLog)) G.caffeineLog = [];
   if (!G.cluesChecked) G.cluesChecked = {};
   if (!G.pendingHealthOffice) G.pendingHealthOffice = '';
   return true;
+}
+function syncCaffeineTotalsFromLog(sceneIdx=G.scene) {
+  if(!Array.isArray(G.caffeineLog)) {
+    G.caffeineLog=[];
+    return;
+  }
+  const scenarios = DB.gameData?.scenarios || [];
+  const targetDay = Number(scenarios[sceneIdx]?.day || G.day || 1);
+  G.caffeineLog = G.caffeineLog.filter(entry => Number(entry.scene || 0) <= sceneIdx);
+  G.totalCaffeine = G.caffeineLog.reduce((sum, entry) => sum + (Number(entry.amount) || 0), 0);
+  G.caffeineDays = new Set(G.caffeineLog.map(entry => `${entry.day || 1}`)).size;
+  G.caffeineToday = G.caffeineLog
+    .filter(entry => Number(entry.day || 1) === targetDay)
+    .reduce((sum, entry) => sum + (Number(entry.amount) || 0), 0);
+  G._lastCaffeineDay = G.caffeineLog.length ? `${G.caffeineLog[G.caffeineLog.length - 1].day || 1}` : undefined;
 }
 function prevScene(){
   hideChoices();
@@ -6141,7 +6156,9 @@ function prevScene(){
   if((G.scene || 0) <= 0) return;
   G.scene = Math.max(0, (G.scene || 0) - 1);
   G.answered = false;
+  syncCaffeineTotalsFromLog(G.scene);
   renderScene(G.scene);
+  saveGameState();
 }
 
 let _miniQuizState = { qIdx:0, picks:[], correct:0 };
@@ -6780,7 +6797,7 @@ function selectDrink(type, drinkId) {
   updateCaffeineHud();
 
   showDialogResult(
-    pending?.result?.title || (drink.good ? `✅ ${drink.name} 선택` : `⚠️ ${drink.name} 선택`),
+    '[음료 정보]',
     formatDrinkResultText(drink, reactionText)
   );
 }
