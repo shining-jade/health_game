@@ -1807,6 +1807,8 @@ body{background:
 .drug-dict-chips{display:flex;flex-wrap:wrap;gap:5px;}
 .drug-dict-chip{padding:4px 9px;border-radius:999px;background:#fff8ea;border:1.5px solid #ebc7a9;font-size:.76rem;color:#7e6655;font-weight:900;}
 .drug-dict-chip.caution{background:#fff1f1;color:#ef4444;border-color:#fecaca;}
+.drug-compare-stack{display:flex;flex-direction:column;gap:10px;margin-top:8px;}
+.drug-compare-note{font-size:.82rem;line-height:1.6;font-weight:800;color:#3f2d24;background:#fff7e9;border:1.5px solid #ebc7a9;border-radius:12px;padding:10px 12px;}
 .drug-card-continue{width:100%;margin-top:13px;border:0;border-radius:15px;background:#ff9f80;color:#fffaf2;font-family:'Jua',sans-serif;font-size:.95rem;padding:13px 14px;cursor:pointer;box-shadow:0 10px 22px rgba(231,102,66,.20);}
 
 .energy-inspect-modal{position:fixed;inset:0;z-index:260;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(42,31,24,.46);backdrop-filter:blur(5px);}
@@ -3843,7 +3845,7 @@ function buildFourteenDayScenarios(){
                 ]
             }
         ],
-        "text": "방과후 독서실로 가는 길. 오늘따라 유난히 피곤하다. 편의점 냉장고 앞에 섰다. 라벨을 확인하면 음료별 카페인을 볼 수 있다.",
+        "text": "방과후 독서실로 가는 길, 오늘따라 유난히 피곤하다. 편의점 냉장고 앞에 섰다. 라벨을 확인하면 음료별 카페인을 볼 수 있다.",
         "choices": [
             {
                 "text": "🏷️ 라벨 확인하고 음료 고르기",
@@ -4121,24 +4123,14 @@ function buildFourteenDayScenarios(){
         "choices": null
     },
     {
-        "type": "narration",
-        "day": 3,
-        "countdown": "D-3 시험",
-        "location": "📘 D-3 에피소드 시작",
-        "scene": "scene_diary_home",
-        "speaker": "나레이터",
-        "hideCharacter": true,
-        "text": "시험까지 D-3. 이번에는 가족이 약을 찾는 상황에서, 성분과 주의사항을 확인해야 합니다.",
-        "choices": null
-    },
-    {
         "type": "event",
         "day": 3,
         "countdown": "D-3 시험",
         "location": "🏠 D-3 등굣길",
         "scene": "scene_home",
-        "speaker": "엄마",
-        "text": "며칠째 이어진 공부로 몸은 무겁지만 마음은 급하다. 등교 준비를 하는데 엄마가 머리를 짚으며 부른다. \"엄마가 어제 회식에서 한잔했더니 머리가 깨질 것 같네… 서랍에 두통약 있지? 하나만 꺼내 줄래?\" 서랍을 여니 '괜찮아정(아세트아미노펜 500mg)'이 보인다.",
+        "characterSlot": "npc_mom",
+        "speaker": "나레이터",
+        "text": "[나레이터] 시험까지 D-3, 등교 준비를 하는데 엄마가 머리를 짚으며 부른다.\n[엄마] 엄마가 어제 회식에서 한잔했더니 머리가 깨질 것 같네…\n[엄마] 서랍에 두통약 있지? 하나만 꺼내 줄래?\n[나레이터] 서랍을 여니 '괜찮아정(아세트아미노펜 500mg)'이 보인다.",
         "choices": [
             {
                 "text": "💊 얼른 꺼내 드린다.",
@@ -4149,7 +4141,7 @@ function buildFourteenDayScenarios(){
                 },
                 "result": {
                     "title": "바로 건넴",
-                    "text": "[선택 결과] 약을 건네기 전 설명서를 확인하지 않았다."
+                    "text": "[선택 결과] 엄마를 위해 얼른 약을 꺼내 건넸다. 하지만 숙취 상태에서 성분을 확인하지 않고 진통제를 복용하는 것이 얼마나 위험한지 미처 생각하지 못했다."
                 },
                 "nextLocation": "🏫 D-3 일과 중"
             },
@@ -4161,7 +4153,7 @@ function buildFourteenDayScenarios(){
                 },
                 "result": {
                     "title": "괜찮아정 설명서",
-                    "text": "[정보카드]\n괜찮아정 — 성분: 아세트아미노펜 500mg\n주의: 음주 후 복용 시 간 손상 위험\n술을 마신 경우 의사·약사와 상담"
+                    "text": "[정보카드]\n'괜찮아정'\n• 성분: 아세트아미노펜 500mg\n• 주의: 매일 정기적으로 술을 마시거나 음주 후 복용 시 심각한 간 손상이 유발될 수 있습니다."
                 },
                 "showDrugCardBeforeResult": {
                     "drugKey": "ok"
@@ -4177,7 +4169,7 @@ function buildFourteenDayScenarios(){
                 },
                 "result": {
                     "title": "망설임",
-                    "text": "[선택 결과] 바로 약을 건네지는 않았지만, 근거를 확인하지는 못했다."
+                    "text": "[선택 결과] 무언가 찜찜한 기분에 약을 바로 건네지는 않았지만, 정확한 이유나 근거를 찾아내지는 못했다."
                 },
                 "nextLocation": "🏫 D-3 일과 중"
             }
@@ -4202,7 +4194,7 @@ function buildFourteenDayScenarios(){
                 },
                 "result": {
                     "title": "설명서 근거로 말하기",
-                    "text": "[선택 결과] 약 대신 수분과 휴식을 먼저 권했다."
+                    "text": "[선택 결과] 설명서 내용을 바탕으로 엄마에게 술 마신 날 약을 먹으면 간이 상할 수 있다고 설명했다. 약 대신 따뜻한 물과 휴식을 권하며 엄마의 건강을 안전하게 지켰다."
                 },
                 "nextLocation": "🏫 D-3 일과 중"
             },
@@ -4216,7 +4208,7 @@ function buildFourteenDayScenarios(){
                 },
                 "result": {
                     "title": "알고도 건넴",
-                    "text": "[선택 결과] 설명서를 봤지만 음주 후 주의사항을 선택에 반영하지 못했다."
+                    "text": "[선택 결과] 간 손상 위험이 적힌 경고를 읽었지만, 엄마가 당장 아파 보여 약을 그냥 건넸다. 위험을 알고도 안전 수칙을 무시한 아쉬운 선택이다."
                 },
                 "nextLocation": "🏫 D-3 일과 중"
             }
@@ -4240,7 +4232,7 @@ function buildFourteenDayScenarios(){
                 },
                 "result": {
                     "title": "성분 중복 가능성",
-                    "text": "[선택 결과] 감기뚝정 복용 한 시간 뒤, 성분을 비교하지 않고 괜찮아정까지 먹었다."
+                    "text": "[선택 결과] 두통을 빨리 가라앉히려고 괜찮아정을 바로 삼켰다. 하지만 종합감기약에 이미 같은 진통제 성분이 들어있어, 나도 모르게 아세트아미노펜을 과다 복용하는 위험한 행동이었다."
                 },
                 "caffeineMg": 30,
                 "analgesic": true,
@@ -4254,7 +4246,7 @@ function buildFourteenDayScenarios(){
                 },
                 "result": {
                     "title": "성분표 비교",
-                    "text": "[정보카드]\n감기뚝정 성분: 아세트아미노펜 300mg + 항히스타민제 + 무수카페인 30mg\n괜찮아정 성분: 아세트아미노펜 500mg"
+                    "text": "[정보카드]\n• 감기뚝정: 아세트아미노펜 300mg + 항히스타민제 + 무수카페인 30mg\n• 괜찮아정: 아세트아미노펜 500mg\n\n두 약 모두에 동일한 진통제 성분이 들어있음을 확인했다."
                 },
                 "caffeineMg": 30,
                 "nextLocation": "🔎 D-3 성분표 비교 후 선택"
@@ -5089,22 +5081,42 @@ function closeClue(){
   if(_typing.done && window._choicesWaitingForClues && cluesCompleteForScene(G.scene, sc)) showChoicesOrNext();
 }
 
+function isProgressScenario(sc){
+  if(!sc) return false;
+  return sc.type === 'event' || String(sc.location || '').includes('마무리');
+}
+
+function progressScenarioIndices(){
+  return (DB.gameData.scenarios || [])
+    .map((sc, idx) => isProgressScenario(sc) ? idx : -1)
+    .filter(idx => idx >= 0);
+}
+
+function previousProgressSceneIndex(sceneIdx=G.scene){
+  let prev = -1;
+  for(const idx of progressScenarioIndices()){
+    if(idx >= sceneIdx) break;
+    prev = idx;
+  }
+  return prev;
+}
+
 function renderProgDots(){
   const sc=DB.gameData.scenarios;
-  const events=sc.filter(s=>s.type==='event');
-  document.getElementById('prog-dots').innerHTML=events.map((_,i)=>`<div class="prog-dot" id="pd-${i}"></div>`).join('');
+  const milestones=sc.filter(isProgressScenario);
+  document.getElementById('prog-dots').innerHTML=milestones.map((_,i)=>`<div class="prog-dot" id="pd-${i}"></div>`).join('');
   updateProgDots();
 }
 function updateProgDots(){
   const sc=DB.gameData.scenarios;
   let ei=-1;
-  for(let i=0;i<G.scene;i++) if(sc[i]&&sc[i].type==='event')ei++;
-  const events=sc.filter(s=>s.type==='event');
-  events.forEach((_,i)=>{
+  for(let i=0;i<=G.scene;i++) if(isProgressScenario(sc[i])) ei++;
+  const milestones=sc.filter(isProgressScenario);
+  milestones.forEach((_,i)=>{
     const el=document.getElementById('pd-'+i); if(!el)return;
     el.className='prog-dot'+(i<ei?' done':i===ei?' cur':'');
   });
-  document.getElementById('prog-lbl').textContent=`시나리오 ${Math.max(1,ei+1)} / ${events.length}`;
+  document.getElementById('prog-lbl').textContent=`시나리오 ${Math.max(1,ei+1)} / ${milestones.length}`;
   updateBackButton();
 }
 
@@ -5123,10 +5135,13 @@ function updateBackButton(){
 }
 
 function splitSentences(text) {
+  const keepTogether = '\uE000';
   return String(text || '')
+    .replace(/서랍에 두통약 있지\?\s+하나만/g, `서랍에 두통약 있지?${keepTogether}하나만`)
+    .replace(/\n+/g, '|')
     .replace(/([.!?])\s+/g, '$1|')
     .split('|')
-    .map(s => s.trim())
+    .map(s => s.replaceAll(keepTogether, ' ').trim())
     .filter(Boolean);
 }
 
@@ -5136,7 +5151,7 @@ const _typing = {
   charIdx: 0,
   timer: null,
   done: false,
-  speed: 22,
+  speed: 26,
   onComplete: null,
 };
 const _resultTyping = {
@@ -5244,12 +5259,35 @@ function renderResultContent(text, fallbackLabel='') {
     }
     const type = resultSectionType(section.label);
     if(isSnsInfoCard(section.label, body)) return renderSnsInfoCard();
+    if(isDrugCompareCard(section.label, body)) return renderDrugCompareCard(body);
     return `
       <div class="result-section ${type}">
         <div class="result-speaker">${escapeHtml(resultDisplayLabel(section.label))}</div>
         <div class="result-body">${escapeHtml(body)}</div>
       </div>`;
   }).join('');
+}
+
+function isDrugCompareCard(label, body) {
+  return String(label || '').includes('정보카드') && /^\[약품비교:[^\]]+\]/.test(String(body || '').trim());
+}
+
+function renderDrugCompareCard(body) {
+  const lines = String(body || '').split('\n');
+  const marker = lines.shift() || '';
+  const keys = (marker.match(/^\[약품비교:([^\]]+)\]/)?.[1] || '')
+    .split(',')
+    .map(key => key.trim())
+    .filter(Boolean);
+  const note = lines.join('\n').trim();
+  return `
+    <div class="result-section info">
+      <div class="result-speaker">💊 두 약의 성분표 비교</div>
+      <div class="drug-compare-stack">
+        ${keys.map(renderDrugDictCard).join('')}
+        ${note ? `<div class="drug-compare-note">${escapeHtml(note)}</div>` : ''}
+      </div>
+    </div>`;
 }
 
 function isSnsInfoCard(label, body) {
@@ -5338,10 +5376,41 @@ function finishTypingSentence(state, targetId, arrowFn) {
   const sentence = state.sentences[state.sIdx] || '';
   state.charIdx = stripDialogueCue(sentence).length;
   renderTypingText(targetId, state.sentences.slice(0, state.sIdx).join(' '), sentence);
+  setSkipVisible(targetId === 'd-txt' ? 'dialog-skip' : 'result-skip', false);
 
   if (state.sIdx >= state.sentences.length - 1) {
     state.done = true;
-    setSkipVisible(targetId === 'd-txt' ? 'dialog-skip' : 'result-skip', false);
+    if (state.onComplete) state.onComplete();
+  } else {
+    arrowFn();
+  }
+}
+
+function currentSpeechBlockEnd(state) {
+  const start = state.sIdx || 0;
+  for(let i = start + 1; i < state.sentences.length; i++){
+    if(dialogueCue(state.sentences[i])) return i - 1;
+  }
+  return Math.max(start, state.sentences.length - 1);
+}
+
+function finishTypingSpeechBlock(state, targetId, arrowFn) {
+  if (state.timer) clearInterval(state.timer);
+  state.timer = null;
+  const endIdx = currentSpeechBlockEnd(state);
+  const blockText = state.sentences
+    .slice(state.sIdx, endIdx + 1)
+    .map(stripDialogueCue)
+    .join(' ')
+    .trim();
+  state.sIdx = endIdx;
+  state.charIdx = blockText.length;
+  const target = document.getElementById(targetId);
+  if (target) target.innerHTML = `<span class="dialog-current">${escapeHtml(blockText)}</span>`;
+  setSkipVisible(targetId === 'd-txt' ? 'dialog-skip' : 'result-skip', false);
+
+  if (state.sIdx >= state.sentences.length - 1) {
+    state.done = true;
     if (state.onComplete) state.onComplete();
   } else {
     arrowFn();
@@ -5351,10 +5420,11 @@ function finishTypingSentence(state, targetId, arrowFn) {
 function skipTypingToEnd(state, targetId, hideArrowFn, event) {
   if (event) event.stopPropagation();
   if (state.done) return;
+  if (!state.timer) return;
   if (state.timer) clearInterval(state.timer);
   state.timer = null;
   hideArrowFn();
-  finishTypingSentence(state, targetId, targetId === 'd-txt' ? showNextArrow : showResultArrow);
+  finishTypingSpeechBlock(state, targetId, targetId === 'd-txt' ? showNextArrow : showResultArrow);
 }
 
 function typeNextChar(state, targetId, arrowFn) {
@@ -5365,6 +5435,7 @@ function typeNextChar(state, targetId, arrowFn) {
     return;
   }
   if(targetId === 'd-txt') applyDialogueCueForSentence(sentence);
+  setSkipVisible(targetId === 'd-txt' ? 'dialog-skip' : 'result-skip', true);
   state.timer = setInterval(() => {
     state.charIdx++;
     renderTypingText(
@@ -5938,7 +6009,7 @@ const DRUG_CARD_DATA = {
     ingredient:'아세트아미노펜 500mg',
     engraving:'OK-500',
     features:['공복 OK','4~6시간 간격','1일 최대 8정(4,000mg)'],
-    caution:'4,000mg 초과 시 간 손상 위험',
+    cautions:['4,000mg 초과 시 간 손상 위험','음주 후 복용 시 간 손상 위험'],
     artHtml:'<span class="pill-shape pill-oblong"><span class="pill-mark">OK 500</span></span>'
   },
   stop:{
@@ -5971,8 +6042,13 @@ const DRUG_CARD_DATA = {
 };
 
 function renderDrugCardModalBody(drugKey){
+  return renderDrugDictCard(drugKey);
+}
+
+function renderDrugDictCard(drugKey){
   const d = DRUG_CARD_DATA[drugKey] || DRUG_CARD_DATA.stop;
   const artHtml = d.artHtml || DRUG_CARD_DATA.stop.artHtml;
+  const cautions = d.cautions || [d.caution].filter(Boolean);
   return `
     <div class="drug-dict-card">
       <div class="drug-dict-card-top">
@@ -5994,7 +6070,7 @@ function renderDrugCardModalBody(drugKey){
       </div>
       <div class="drug-dict-field">
         <div class="drug-dict-label">주의사항</div>
-        <div class="drug-dict-chips"><span class="drug-dict-chip caution">${escapeHtml(d.caution)}</span></div>
+        <div class="drug-dict-chips">${cautions.map(c=>`<span class="drug-dict-chip caution">${escapeHtml(c)}</span>`).join('')}</div>
       </div>
     </div>`;
 }
@@ -6145,6 +6221,29 @@ function prevScene(){
   window._dialogResultReveal = null;
   window._resultReveal = null;
   resetResultNextButton();
+  if(!G.answered){
+    const prevIdx = previousProgressSceneIndex(G.scene);
+    if(prevIdx >= 0){
+      const history = Array.isArray(G.sceneHistory) ? G.sceneHistory : [];
+      const last = history[history.length - 1] || null;
+      if(last?.state && Number(last.state.scene) === prevIdx){
+        history.pop();
+        if(restoreGameStateSnapshot(last.state)){
+          closeAllOverlays();
+          window._pendingDrinkChoice = null;
+          renderScene(G.scene);
+          saveGameState();
+          return;
+        }
+      }
+      G.scene = prevIdx;
+      G.answered = false;
+      syncCaffeineTotalsFromLog(G.scene);
+      renderScene(G.scene);
+      saveGameState();
+      return;
+    }
+  }
   const last = Array.isArray(G.sceneHistory) ? G.sceneHistory.pop() : null;
   if (last?.state && restoreGameStateSnapshot(last.state)) {
     closeAllOverlays();
@@ -7295,6 +7394,7 @@ function sceneCharacterSlot(sc) {
   const speaker = String(sc?.speaker || '').replace('{name}', G.name);
   const text = String(sc?.text || '');
   const location = String(sc?.location || '');
+  if (sc?.characterSlot) return sc.characterSlot;
   if (speaker.includes('나레이터')) return protagonistConditionSlot(G.gender === 'f' ? 'char_female' : 'char_male');
   if (speaker.includes('민준')) return 'npc_minjun';
   if (speaker.includes('소연') || speaker.includes('서연')) return 'npc_seoyeon';
