@@ -3656,6 +3656,7 @@ function buildFourteenDayScenarios(){
         "location": "🏪 D-7 등굣길",
         "scene": "scene_convenience",
         "speaker": "나레이터",
+        "characterMood": "tired",
         "text": "[나레이터] 시험이 일주일 앞으로 다가왔다. 어젯밤 공부하느라 늦게 잤더니 아침부터 머리가 무겁다. 교문 앞 편의점에서 민준이 캔을 흔들며 나온다.\n[민준] \"야, 벌써 졸려? 이거 THE KING ENERGY 라고 잠 깨는데 최고야. 너도 하나 사줄까?\"",
         "choices": [
             {
@@ -3869,7 +3870,8 @@ function buildFourteenDayScenarios(){
         "countdown": "D-5 시험기간",
         "location": "🚶 D-5 등굣길",
         "scene": "scene_commute",
-        "speaker": "{name}",
+        "speaker": "나레이터",
+        "characterMood": "headache",
         "text": "D-5, 어젯밤 공부하느라 늦게까지 깨어 있었다. 짧게 잔 탓에 아침부터 관자놀이가 욱신거린다. 가방을 뒤지니 어제 약국에서 산 '아야스톱정' 한 알이 나온다. 그런데 아침을 못 먹고 나왔다.",
         "choices": [
             {
@@ -5889,7 +5891,7 @@ const DRUG_CARD_DATA = {
     name:'아야스톱정',
     ingredient:'이부프로펜 200mg',
     engraving:'IBU-200',
-    features:['소염 효과','생리통에 유리','식후 복용 필수'],
+    features:['소염 효과','두통 효과','생리통에 유리','식후 복용 필수'],
     caution:'공복 금지 — 위 점막 자극, 위출혈 위험',
     artHtml:'<span class="pill-shape pill-oval" style="--pill-a:#78b7ff;--pill-b:#336bd6;"><span class="pill-mark light">IBU</span></span>'
   },
@@ -7258,6 +7260,9 @@ function protagonistConditionSlot(baseSlot) {
   const sickSignal = /감기|기침|콧물|보건실|병원|아프|아픈|열이|몸살/.test(conditionText);
   const focusedSignal = /필기|공부|복습|시험|자습|독서실|처방전|수업/.test(conditionText);
   const recoveredSignal = /가볍다|회복|잘 잔|컨디션 좋|괜찮다/.test(conditionText);
+  if (sc?.characterMood) {
+    return `${prefix}_${sc.characterMood}`;
+  }
 
   if (bodyWarning || overCaffeine) {
     return `${prefix}_nervous`;
