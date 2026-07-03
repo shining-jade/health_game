@@ -6411,7 +6411,25 @@ function prevScene(){
   saveGameState();
 }
 
-let _miniQuizState = { qIdx:0, picks:[], correct:0 };
+let _miniQuizState = { qIdx:0, picks:[], correct:0, tileOrders:{} };
+
+function shuffleMiniQuizTiles(items){
+  const arr = [...(items || [])];
+  for(let i=arr.length-1;i>0;i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function prepareMiniQuizTileOrder(qIdx){
+  const q = MINI_QUIZ[qIdx];
+  if(!q || _miniQuizState.tileOrders?.[qIdx]) return;
+  if(!_miniQuizState.tileOrders) _miniQuizState.tileOrders = {};
+  _miniQuizState.tileOrders[qIdx] = Array.isArray(q.choiceGroups)
+    ? q.choiceGroups.map(group => shuffleMiniQuizTiles(group))
+    : shuffleMiniQuizTiles(q.tiles || []);
+}
 
 function ensureMiniQuizModal(){
   let modal = document.getElementById('mini-quiz-modal');
@@ -6442,6 +6460,7 @@ function ensureMiniQuizModal(){
 function renderMiniQuizQuestion(){
   const modal = ensureMiniQuizModal();
   const q = MINI_QUIZ[_miniQuizState.qIdx];
+  prepareMiniQuizTileOrder(_miniQuizState.qIdx);
   _miniQuizState.picks = [];
   _miniQuizState.locked = false;
   document.getElementById('mq-step').textContent = `${_miniQuizState.qIdx + 1} / ${MINI_QUIZ.length}`;
@@ -6457,11 +6476,12 @@ function renderMiniQuizQuestion(){
 }
 
 function miniQuizAvailableTiles(q){
+  const order = _miniQuizState.tileOrders?.[_miniQuizState.qIdx];
   if(Array.isArray(q.choiceGroups)){
     const idx = Math.min(_miniQuizState.picks.length, q.choiceGroups.length - 1);
-    return q.choiceGroups[idx] || [];
+    return order?.[idx] || q.choiceGroups[idx] || [];
   }
-  return q.tiles || [];
+  return order || q.tiles || [];
 }
 
 function renderMiniQuizPicks(){
@@ -6562,7 +6582,7 @@ function nextMiniQuizQuestion(){
 }
 
 function openMiniQuiz(){
-  _miniQuizState = { qIdx:0, picks:[], correct:0, locked:false };
+  _miniQuizState = { qIdx:0, picks:[], correct:0, locked:false, tileOrders:{} };
   const modal = ensureMiniQuizModal();
   modal.querySelector('#mq-check').onclick = checkMiniQuizAnswer;
   modal.querySelector('#mq-next').onclick = nextMiniQuizQuestion;
@@ -6574,34 +6594,42 @@ function openMiniQuiz(){
 // ══════════════════════════════════════
 const TYPE_RESULT_CARDS = {
   selfControl: {
+    key:'selfControl',
     file:'01_squirrel_self_control_result.png',
     title:'똑똑한 선택 다람쥐형'
   },
   hydration: {
+    key:'hydration',
     file:'02_bear_hydration_result.png',
     title:'수분 충전 곰형'
   },
   courage: {
+    key:'courage',
     file:'03_frog_courage_result.png',
     title:'용기 개구리형'
   },
   medicineKnowledge: {
+    key:'medicineKnowledge',
     file:'04_owl_medicine_knowledge_result.png',
     title:'현명한 부엉이형'
   },
   sleep: {
+    key:'sleep',
     file:'05_rabbit_sleep_result.png',
     title:'꿀잠 토끼형'
   },
   focus: {
+    key:'focus',
     file:'06_turtle_focus_result.png',
     title:'꾸준한 거북이형'
   },
   balance: {
+    key:'balance',
     file:'07_meerkat_balance_result.png',
     title:'균형 미어캣형'
   },
   caffeineWarning: {
+    key:'caffeineWarning',
     file:'08_hamster_caffeine_warning_result.png',
     title:'카페인 과속 햄스터형'
   }
@@ -6647,6 +6675,26 @@ function renderTypeResultCard(card) {
   img.alt = `${card.title} 결과 카드`;
 }
 
+function typeAnimalLabel(card) {
+  return String(card?.title || '결과 유형').split(' ').pop() || '결과 유형';
+}
+
+function typeReasonText(card, ctx) {
+  const animal = typeAnimalLabel(card);
+  const low = ctx.min?.label ? ` 가장 낮은 지표는 ${ctx.min.label}(${ctx.min.value}점)이어서 다음에는 이 부분을 더 챙기면 좋아요.` : '';
+  const reasons = {
+    selfControl: `카페인이나 즉흥적인 권유에 휩쓸리기보다 스스로 한계선을 지킨 선택이 많이 쌓였어요. 약과 음료를 고를 때 멈춰서 확인한 태도가 ${animal}으로 이어졌습니다.`,
+    hydration: `무리하게 버티기보다 몸 상태와 수분 보충을 먼저 챙긴 선택이 돋보였어요. 카페인 의존을 낮추고 체력을 지킨 흐름이 ${animal}으로 이어졌습니다.`,
+    courage: `친구나 주변 사람이 위험한 선택을 할 수 있는 순간에 그냥 넘기지 않고 알려주려는 선택이 쌓였어요. 나뿐 아니라 주변 사람까지 지키려는 태도가 ${animal}으로 이어졌습니다.`,
+    medicineKnowledge: `성분표와 주의사항을 확인하는 선택이 많이 쌓였어요. 약 이름보다 성분, 복용 간격, 중복 복용 위험을 살핀 점이 ${animal}으로 이어졌습니다.`,
+    sleep: `카페인으로 억지로 버티기보다 잠과 회복을 선택한 흐름이 강했어요. 시험 전 컨디션을 위해 수면을 챙긴 선택이 ${animal}으로 이어졌습니다.`,
+    focus: `한 가지 지표만 높이기보다 지식, 체력, 컨디션을 함께 유지하려는 선택이 쌓였어요. 꾸준히 기본을 챙긴 흐름이 ${animal}으로 이어졌습니다.${low}`,
+    balance: `큰 위험 선택을 피하면서 여러 지표를 고르게 유지했어요. 특정 능력치에만 치우치지 않고 균형 있게 관리한 결과가 ${animal}으로 이어졌습니다.`,
+    caffeineWarning: `카페인 음료나 카페인과 약을 함께 고려하는 위험 선택이 누적되었어요. 짧은 각성 효과를 좇은 선택이 많아져 ${animal}으로 이어졌습니다.`
+  };
+  return reasons[card?.key] || `이번 선택 기록을 바탕으로 ${animal}이 나왔어요. 아래 지표를 보며 어떤 선택이 결과에 영향을 주었는지 확인해 보세요.`;
+}
+
 function drawRadar(){
   const cv=document.getElementById('radar-cvs');
   const ctx=cv.getContext('2d');
@@ -6688,9 +6736,31 @@ function drawRadar(){
     ctx.fillStyle=radarStroke; ctx.fill();
     ctx.strokeStyle='#fffdf7'; ctx.lineWidth=2; ctx.stroke();});
   // 레이블
-  ctx.font='700 12px Noto Sans KR, Malgun Gothic, sans-serif'; ctx.textAlign='center'; ctx.fillStyle='#38291f';
-  data.stats.forEach((s,i)=>{const a=(i/N)*Math.PI*2-Math.PI/2;
-    ctx.fillText(s.label,cx+Math.cos(a)*(R+24),cy+Math.sin(a)*(R+24)+4);});
+  ctx.textBaseline='middle';
+  ctx.textAlign='center';
+  data.stats.forEach((s,i)=>{
+    const a=(i/N)*Math.PI*2-Math.PI/2;
+    const value=Math.round(Math.max(0,Math.min(100,G.stats[s.key]||0)));
+    const label=String(s.label||'').replace(/\s+/g,'');
+    const lx=cx+Math.cos(a)*(R+34);
+    const ly=cy+Math.sin(a)*(R+34);
+    const y=Math.max(22,Math.min(H-20,ly+(Math.sin(a)<-0.75?10:Math.sin(a)>0.75?-6:0)));
+    ctx.font='700 12px Noto Sans KR, Malgun Gothic, sans-serif';
+    const labelWidth=ctx.measureText(label).width;
+    const scoreText=` (${value})`;
+    ctx.font='800 11px Noto Sans KR, Malgun Gothic, sans-serif';
+    const scoreWidth=ctx.measureText(scoreText).width;
+    const safeHalf=Math.max(labelWidth, scoreWidth)/2 + 4;
+    const x=Math.max(safeHalf,Math.min(W-safeHalf,lx));
+    ctx.font='700 12px Noto Sans KR, Malgun Gothic, sans-serif';
+    ctx.fillStyle='#38291f';
+    ctx.fillText(label,x,y-6);
+    ctx.font='800 11px Noto Sans KR, Malgun Gothic, sans-serif';
+    ctx.fillStyle='#ef4444';
+    ctx.fillText(scoreText,x,y+8);
+  });
+  ctx.textBaseline='alphabetic';
+  ctx.textAlign='start';
 }
 function drawEndMsg(){
   const statRows = DB.gameData.stats.map(s => ({
@@ -6712,7 +6782,7 @@ function drawEndMsg(){
   const judgment= G.stats.judgment|| 0;
   const avgCaffeine = Math.round((G.totalCaffeine || 0) / 7);
   const avgSleep = G.sleepCount ? ((G.sleepTotal || 0) / G.sleepCount) : 0;
-  const avgSleepText = avgSleep ? avgSleep.toFixed(1) : '-';
+  const avgSleepText = avgSleep ? `${avgSleep.toFixed(1)}시간` : '기록 없음';
   const analgesics = G.analgesicCount || 0;
   const fasting = G.fastingMedCount || 0;
   const combo = G.comboCount || 0;
@@ -6722,6 +6792,8 @@ function drawEndMsg(){
     avg, min, max, allHigh, avgCaffeine, avgSleep, analgesics, fasting, combo, helped
   });
   renderTypeResultCard(typeCard);
+  const typeAnimal = typeAnimalLabel(typeCard);
+  const typeReason = typeReasonText(typeCard, {avg, min, max, allHigh, avgCaffeine, avgSleep, analgesics, fasting, combo, helped});
 
   let ending, title, msg, color;
 
@@ -6790,10 +6862,11 @@ function drawEndMsg(){
   document.getElementById('ending-title').style.color = color;
   document.getElementById('ending-sub').textContent = title;
   document.getElementById('ending-msg').innerHTML = `
-    <div style="margin-bottom:12px;">${msg}</div>
+    <div style="font-family:'Jua',sans-serif;font-size:1rem;margin-bottom:8px;color:${color};">${escapeHtml(typeAnimal)}이 된 이유</div>
+    <div style="margin-bottom:12px;">${escapeHtml(typeReason)}</div>
     <div style="display:grid;gap:7px;font-size:.82rem;line-height:1.55;">
       <div>☕ 총 카페인 섭취: <strong>${G.totalCaffeine||0}mg</strong> (평균 1일 ${avgCaffeine}mg)</div>
-      <div>🌙 평균 수면 시간: <strong>${avgSleepText}시간</strong></div>
+      <div>🌙 평균 수면 시간: <strong>${avgSleepText}</strong></div>
       <div>💊 진통제 복용: <strong>${analgesics}회</strong> / 공복 복용: <strong>${fasting}회</strong></div>
       <div>⚠️ 카페인+진통제 중복: <strong>${combo}회</strong></div>
       <div>🤝 친구에게 도움을 준 횟수: <strong>${helped}회</strong></div>
@@ -6803,18 +6876,7 @@ function drawEndMsg(){
 
   const discussion = document.getElementById('ending-discussion');
   if (discussion) {
-    discussion.innerHTML = `
-      <div style="margin-top:20px;background:rgba(94,173,255,.08);
-        border:1px solid rgba(94,173,255,.3);border-radius:14px;padding:16px;">
-        <div style="font-family:'Jua',sans-serif;color:#5eadff;
-          font-size:.85rem;margin-bottom:10px;">💬 수업 마무리 토론</div>
-        <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;font-size:.82rem;line-height:1.6;">
-          <li>📌 처음엔 어떤 선택이 좋아 보였나요?</li>
-          <li>📌 왜 후반에 지표가 무너졌나요?</li>
-          <li>📌 현실에서도 이런 상황이 생길 수 있을까요?</li>
-          <li>📌 앞으로 약을 먹기 전에 가장 먼저 확인할 것은 무엇인가요?</li>
-        </ul>
-      </div>`;
+    discussion.innerHTML = '';
   }
 }
 async function renderEndingCanvas(){
