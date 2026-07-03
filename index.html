@@ -2920,7 +2920,7 @@ body{background:
 // TODO_FIREBASE: 아래 DB 객체를 Firebase Realtime DB로 교체
 const GAME_DATA_KEY = 'hg_v18_gamedata';
 const GAME_SAVE_KEY = 'hg_v18_save';
-const GAME_SAVE_VERSION = 18;
+const GAME_SAVE_VERSION = 19;
 const DB = {
   // 게임 데이터 (관리자 에디터에서 수정 → localStorage 저장)
   get gameData() {
@@ -3215,11 +3215,33 @@ function saveGameState() {
   }
 }
 
+function savedGameIsUsable(saved, scenarios=DB.gameData?.scenarios || []) {
+  if (!saved || saved.version !== GAME_SAVE_VERSION || !saved.G) return false;
+  const state = saved.G;
+  const scene = Number(state.scene);
+  if (!Number.isInteger(scene) || scene < 0 || scene >= scenarios.length) return false;
+  if (!scenarios[scene]) return false;
+  if (!state.name || typeof state.name !== 'string') return false;
+  const requiredStats = ['health','knowledge','caffeine','sleep','judgment','social'];
+  if (!state.stats || typeof state.stats !== 'object') return false;
+  return requiredStats.every(key => {
+    const value = Number(state.stats[key]);
+    return Number.isFinite(value) && value >= 0 && value <= 200;
+  });
+}
+
+function clearBrokenSavedGame() {
+  try { localStorage.removeItem(GAME_SAVE_KEY); } catch (err) {}
+}
+
 function hasSavedGame() {
   try {
     const saved = JSON.parse(localStorage.getItem(GAME_SAVE_KEY) || 'null');
-    return !!(saved && saved.version >= GAME_SAVE_VERSION && saved.G && saved.G.name && saved.G.scene !== undefined);
+    const usable = savedGameIsUsable(saved);
+    if (!usable && saved) clearBrokenSavedGame();
+    return usable;
   } catch (err) {
+    clearBrokenSavedGame();
     return false;
   }
 }
@@ -3227,8 +3249,12 @@ function hasSavedGame() {
 function resumeGame() {
   try {
     const saved = JSON.parse(localStorage.getItem(GAME_SAVE_KEY) || 'null');
-    if (!saved || saved.version < GAME_SAVE_VERSION || !saved.G) return show('name');
     const data = DB.gameData;
+    data.scenarios = buildFourteenDayScenarios();
+    if (!savedGameIsUsable(saved, data.scenarios)) {
+      clearBrokenSavedGame();
+      return show('name');
+    }
     Object.assign(G, saved.G);
     if(!Array.isArray(G.sceneHistory)) G.sceneHistory=[];
     if(!Array.isArray(G.caffeineLog)) G.caffeineLog=[];
@@ -3242,8 +3268,11 @@ function resumeGame() {
       {key:'judgment',label:'🟢 판단력',color:'#58c4a0'},
       {key:'social',label:'🟣 사회성',color:'#c084fc'},
     ];
-    data.scenarios = buildFourteenDayScenarios();
     if (G.answered) G.scene = Math.min((G.scene || 0) + 1, data.scenarios.length - 1);
+    if (!data.scenarios[G.scene]) {
+      clearBrokenSavedGame();
+      return show('name');
+    }
     G.answered = false;
     DB.saveGameData(data);
     document.getElementById('s-name').textContent = studentDisplayName();
@@ -4625,7 +4654,7 @@ function buildFourteenDayScenarios(){
         "location": "🧩 D-Day 미니 퀴즈",
         "scene": "scene_exam",
         "speaker": "나레이터",
-        "text": "이제 드디어 최종 시험 시간입니다. 오늘 파악한 핵심 내용을 떠올리며 시험에 임해 주세요..",
+        "text": "이제 드디어 최종 시험 시간입니다. 오늘 파악한 핵심 내용을 떠올리며 시험에 임해 주세요.",
         "choices": [
             {
                 "text": "🧩 미니 퀴즈 풀기",
@@ -5905,7 +5934,15 @@ function getScenarioText(sc, teacherEvent) {
 }
 
 function renderScene(idx){
-  const sc=DB.gameData.scenarios[idx]; if(!sc)return;
+  const scenarios = DB.gameData.scenarios || [];
+  const sc=scenarios[idx];
+  if(!sc){
+    clearBrokenSavedGame();
+    G.scene = 0;
+    G.answered = false;
+    if(scenarios[0]) return renderScene(0);
+    return;
+  }
   const day=sc.day||idx+1;
 
   if(day===11 && !G.day11Applied){
