@@ -3128,7 +3128,13 @@ const MINI_QUIZ = [
     id:'dday_q3', type:'fill', episodeRef:'D-Day',
     sentence:'카페인 음료를 마시기 전에는 자신의 [1] 계산할 줄 알아야 한다. 청소년의 하루 카페인 최대 섭취량은 체중 × [2]mg으로 계산한다. 음료의 카페인 [3]을 확인하고, 하루 최대 섭취량을 넘지 않는지 살펴야 한다. 하루 최대 섭취량을 넘으면 [4] 같은 증상이 나타날 수 있다.',
     blanks:['하루 최대 섭취량을','2.5','함량','두근거림·손떨림·불면'],
-    tiles:['하루 최대 섭취량을','하루 수분 섭취량을','하루 칼로리 섭취량을','2.5','5','10','함량','당류','열량','두근거림·손떨림·불면','기침·콧물·오한','피부가려움·두드러기·눈충혈'],
+    tiles:['하루 최대 섭취량을','하루 수분 섭취량을','하루 칼로리 섭취량을','2.5','5','10','함량','당류','열량','두근거림·손떨림·불면','기침·콧물·오한','근육통·복통·두통'],
+    choiceGroups:[
+      ['하루 최대 섭취량을','하루 수분 섭취량을','하루 칼로리 섭취량을'],
+      ['2.5','5','10'],
+      ['함량','당류','열량'],
+      ['두근거림·손떨림·불면','기침·콧물·오한','근육통·복통·두통']
+    ],
     explanation:'카페인은 기준량을 넘으면 두근거림·손떨림·불면으로 나타나요. 마시기 전 내 하루 최대 섭취량과 제품 카페인 함량을 함께 확인해야 합니다.'
   }
 ];
@@ -4619,7 +4625,7 @@ function buildFourteenDayScenarios(){
         "location": "🧩 D-Day 미니 퀴즈",
         "scene": "scene_exam",
         "speaker": "나레이터",
-        "text": "마지막으로 오늘의 핵심을 빈칸으로 확인해 보자. 성분표, 복용간격, 주의사항, 카페인 총량을 스스로 말할 수 있으면 결과 화면으로 넘어간다.",
+        "text": "이제 드디어 최종 시험 시간입니다. 오늘 파악한 핵심 내용을 떠올리며 시험에 임해 주세요..",
         "choices": [
             {
                 "text": "🧩 미니 퀴즈 풀기",
@@ -5859,6 +5865,7 @@ function combineHudDayLabel(dayTitle, hudLocation) {
   const location = String(hudLocation || '').trim();
   if (!location) return title;
   if (!title) return location;
+  if (title === 'D-Day 당일' && location === 'D-Day 시험 당일') return location;
   if (location === title || location.startsWith(`${title} `)) return location;
   return `${title} · ${location}`;
 }
@@ -6320,56 +6327,103 @@ function renderMiniQuizQuestion(){
   const modal = ensureMiniQuizModal();
   const q = MINI_QUIZ[_miniQuizState.qIdx];
   _miniQuizState.picks = [];
+  _miniQuizState.locked = false;
   document.getElementById('mq-step').textContent = `${_miniQuizState.qIdx + 1} / ${MINI_QUIZ.length}`;
   document.getElementById('mq-sentence').innerHTML = escapeHtml(q.sentence)
     .replace(/\[(\d+)\]/g, '<span style="display:inline-block;min-width:76px;border-bottom:3px solid #58c4a0;color:#58c4a0;font-weight:900;text-align:center;">[$1]</span>');
-  document.getElementById('mq-picks').innerHTML = q.blanks.map((_, i) =>
-    `<span data-pick="${i}" style="min-width:88px;text-align:center;background:#fff;border:2px dashed #d7b698;border-radius:999px;padding:8px 12px;color:#9a7a62;font-weight:800;">${i+1}</span>`
-  ).join('');
-  document.getElementById('mq-tiles').innerHTML = q.tiles.map(tile =>
-    `<button type="button" data-tile="${escapeHtml(tile)}" style="border:2px solid #bfe7d8;background:#f1fff8;color:#31765f;border-radius:999px;padding:9px 13px;font-weight:800;cursor:pointer;">${escapeHtml(tile)}</button>`
-  ).join('');
   const feedback = document.getElementById('mq-feedback');
   feedback.style.display = 'none';
   document.getElementById('mq-check').style.display = 'block';
   document.getElementById('mq-next').style.display = 'none';
-  document.querySelectorAll('#mq-tiles button').forEach(btn => {
-    btn.onclick = () => chooseMiniQuizTile(btn);
-  });
+  renderMiniQuizPicks();
+  renderMiniQuizTiles();
   modal.style.display = 'flex';
 }
 
+function miniQuizAvailableTiles(q){
+  if(Array.isArray(q.choiceGroups)){
+    const idx = Math.min(_miniQuizState.picks.length, q.choiceGroups.length - 1);
+    return q.choiceGroups[idx] || [];
+  }
+  return q.tiles || [];
+}
+
+function renderMiniQuizPicks(){
+  const q = MINI_QUIZ[_miniQuizState.qIdx];
+  const visibleCount = Array.isArray(q.choiceGroups)
+    ? Math.min(q.blanks.length, _miniQuizState.picks.length + (_miniQuizState.locked ? 0 : 1))
+    : q.blanks.length;
+  document.getElementById('mq-picks').innerHTML = q.blanks.slice(0, visibleCount).map((_, i) => {
+    const picked = _miniQuizState.picks[i];
+    const label = picked || `${i+1}`;
+    const editable = picked && !_miniQuizState.locked;
+    const title = editable ? '클릭하면 이 칸부터 다시 선택합니다.' : '';
+    const style = picked
+      ? `border-style:solid;color:#31765f;background:#f1fff8;cursor:${editable ? 'pointer' : 'default'};`
+      : 'border-style:dashed;color:#9a7a62;background:#fff;';
+    return `<button type="button" data-pick="${i}" title="${title}" ${_miniQuizState.locked ? 'disabled' : ''} onclick="editMiniQuizPick(${i})" style="min-width:88px;text-align:center;border:2px dashed #d7b698;border-radius:999px;padding:8px 12px;font-weight:800;${style}">${escapeHtml(label)}</button>`;
+  }).join('');
+}
+
+function renderMiniQuizTiles(){
+  const q = MINI_QUIZ[_miniQuizState.qIdx];
+  const tiles = miniQuizAvailableTiles(q);
+  document.getElementById('mq-tiles').innerHTML = tiles.map(tile => {
+    const used = _miniQuizState.picks.includes(tile);
+    const disabled = used || _miniQuizState.locked;
+    return `<button type="button" data-tile="${escapeHtml(tile)}" ${disabled ? 'disabled' : ''} style="border:2px solid #bfe7d8;background:#f1fff8;color:#31765f;border-radius:999px;padding:9px 13px;font-weight:800;cursor:${disabled ? 'default' : 'pointer'};opacity:${disabled ? '.42' : '1'};">${escapeHtml(tile)}</button>`;
+  }).join('');
+  document.querySelectorAll('#mq-tiles button').forEach(btn => {
+    btn.onclick = () => chooseMiniQuizTile(btn);
+  });
+}
+
 function chooseMiniQuizTile(btn){
+  if(_miniQuizState.locked) return;
   const q = MINI_QUIZ[_miniQuizState.qIdx];
   if(_miniQuizState.picks.length >= q.blanks.length) return;
   const tile = btn.getAttribute('data-tile');
   _miniQuizState.picks.push(tile);
-  btn.disabled = true;
-  btn.style.opacity = '.42';
-  btn.style.cursor = 'default';
-  const pickEl = document.querySelector(`#mq-picks [data-pick="${_miniQuizState.picks.length - 1}"]`);
-  if(pickEl){
-    pickEl.textContent = tile;
-    pickEl.style.borderStyle = 'solid';
-    pickEl.style.color = '#31765f';
-    pickEl.style.background = '#f1fff8';
-  }
+  const feedback = document.getElementById('mq-feedback');
+  feedback.style.display = 'none';
+  renderMiniQuizPicks();
+  renderMiniQuizTiles();
+}
+
+function editMiniQuizPick(idx){
+  if(_miniQuizState.locked) return;
+  if(idx < 0 || idx >= _miniQuizState.picks.length) return;
+  _miniQuizState.picks = _miniQuizState.picks.slice(0, idx);
+  const feedback = document.getElementById('mq-feedback');
+  feedback.style.display = 'none';
+  renderMiniQuizPicks();
+  renderMiniQuizTiles();
 }
 
 function checkMiniQuizAnswer(){
   const q = MINI_QUIZ[_miniQuizState.qIdx];
+  const feedback = document.getElementById('mq-feedback');
+  if(_miniQuizState.picks.length < q.blanks.length){
+    feedback.style.display = 'block';
+    feedback.style.background = '#fff3cd';
+    feedback.style.color = '#7c5a12';
+    feedback.textContent = `빈칸 ${q.blanks.length}개를 모두 채운 뒤 확인을 눌러 주세요.`;
+    return;
+  }
   const correct = q.blanks.every((answer, i) => _miniQuizState.picks[i] === answer);
+  _miniQuizState.locked = true;
   if(correct) _miniQuizState.correct += 1;
   applyDelta(correct ? {knowledge:5, judgment:3} : {knowledge:-2});
-  const feedback = document.getElementById('mq-feedback');
   feedback.style.display = 'block';
   feedback.style.background = correct ? '#dcfce7' : '#fee2e2';
   feedback.style.color = correct ? '#166534' : '#991b1b';
   feedback.textContent = `${correct ? '정답!' : '다시 기억하기!'} ${q.explanation}`;
+  renderMiniQuizPicks();
+  renderMiniQuizTiles();
   document.getElementById('mq-check').style.display = 'none';
   const next = document.getElementById('mq-next');
   next.style.display = 'block';
-  next.textContent = _miniQuizState.qIdx < MINI_QUIZ.length - 1 ? '다음' : '결과 보기';
+  next.textContent = _miniQuizState.qIdx < MINI_QUIZ.length - 1 ? '다음' : '채점 결과';
 }
 
 function nextMiniQuizQuestion(){
@@ -6381,14 +6435,18 @@ function nextMiniQuizQuestion(){
   document.getElementById('mini-quiz-modal').style.display = 'none';
   const total = _miniQuizState.correct;
   const title = `미니 퀴즈 ${total}/${MINI_QUIZ.length}`;
-  const text = total === MINI_QUIZ.length
-    ? '[선택 결과] 핵심을 모두 정리했다. 이제 내 결과 유형을 확인해 보자.'
-    : '[선택 결과] 헷갈린 부분이 있었지만, 성분표·복용간격·주의사항·카페인 총량을 다시 확인했다.';
+  const resultMessages = {
+    3: '3/3 채점 결과, 완벽해요! 시험의 모든 핵심 문항을 완벽하게 맞추셨습니다. 성분표와 주의사항을 훌륭하게 숙지하여, 이번 시험에서 최상의 결과를 기록했습니다.',
+    2: '2/3 채점 결과, 훌륭해요! 시험 문제를 전반적으로 잘 해결하셨습니다. 다만 한 문항을 놓쳐 만점을 놓친 점은 살짝 아쉬움이 남네요.',
+    1: '1/3 채점 결과, 조금 아쉬워요! 핵심 내용을 파악하는 데 다소 아쉬운 결과입니다. 오답을 유발한 요인이 무엇인지 생각해 봅시다.',
+    0: '0/3 채점 결과, 많이 아쉬워요! 오늘의 핵심 포인트를 놓쳐 많은 아쉬움이 남는 결과입니다. 취약점이 무엇인지 다시 생각해 봅시다.'
+  };
+  const text = `[선택 결과] ${resultMessages[total] || resultMessages[0]}`;
   showDialogResult(title, text, null, {fallbackLabel:'선택 결과'});
 }
 
 function openMiniQuiz(){
-  _miniQuizState = { qIdx:0, picks:[], correct:0 };
+  _miniQuizState = { qIdx:0, picks:[], correct:0, locked:false };
   const modal = ensureMiniQuizModal();
   modal.querySelector('#mq-check').onclick = checkMiniQuizAnswer;
   modal.querySelector('#mq-next').onclick = nextMiniQuizQuestion;
