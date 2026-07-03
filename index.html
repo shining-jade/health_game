@@ -1812,6 +1812,7 @@ body{background:
 .episode-item.current{border-color:#58c4a0;background:#effbf5;}
 .episode-item strong{display:block;font-family:'Jua',sans-serif;font-size:.92rem;margin-bottom:3px;color:#e76642;}
 .episode-item span{display:block;font-size:.78rem;line-height:1.35;color:#7e6655;}
+.episode-topic{display:inline-flex;align-items:center;width:max-content;max-width:100%;margin-top:8px;padding:4px 8px;border-radius:999px;background:#effbf5;border:1.5px solid #a7e3c4;color:#27815f;font-size:.72rem;font-weight:900;line-height:1.25;}
 
 .drug-card-modal{position:fixed;inset:0;z-index:255;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(42,31,24,.46);backdrop-filter:blur(5px);}
 .drug-card-modal.show{display:flex;}
@@ -5221,6 +5222,42 @@ function episodeTitleForScenario(sc){
   return countdown || location || '장면';
 }
 
+const EPISODE_TOPICS = [
+  '에너지드링크 권유',
+  '라벨 확인 후 선택',
+  '점심 후 졸음 대처',
+  '음료 카페인 비교',
+  'D-7 카페인 회고',
+  '공복 진통제 복용',
+  '이부프로펜 설명서 확인',
+  '복용 간격과 추가 복용',
+  '친구가 준 알약 판단',
+  'D-5 복약 회고',
+  '음주 후 진통제 위험',
+  '아세트아미노펜 주의사항',
+  '성분 중복 확인',
+  '중복 복용 판단',
+  'SNS 건강정보 유혹',
+  '게시물 출처와 댓글 검증',
+  '수면과 밤샘 선택',
+  'D-3 확인 습관 회고',
+  '시험 당일 진통제 판단',
+  '약 속 카페인 확인',
+  'D-Day 미니 퀴즈'
+];
+
+function episodeTopicForScenario(sc, order){
+  const preset = EPISODE_TOPICS[order];
+  if(preset) return preset;
+  const text = `${sc?.location || ''} ${sc?.text || ''}`;
+  if(text.includes('카페인')) return '카페인 관리';
+  if(text.includes('설명서') || text.includes('성분')) return '설명서와 성분 확인';
+  if(text.includes('수면') || text.includes('잠')) return '수면과 컨디션';
+  if(text.includes('SNS') || text.includes('게시물')) return '정보 판별';
+  if(text.includes('약')) return '복약 판단';
+  return '핵심 선택';
+}
+
 function openEpisodeToc(){
   const modal = document.getElementById('episode-modal');
   const list = document.getElementById('episode-list');
@@ -5235,6 +5272,7 @@ function openEpisodeToc(){
       <button type="button" class="episode-item ${current ? 'current' : ''}" onclick="jumpToEpisode(${idx})">
         <strong>에피소드 ${order + 1}</strong>
         <span>${escapeHtml(episodeTitleForScenario(sc))}</span>
+        <em class="episode-topic">${escapeHtml(episodeTopicForScenario(sc, order))}</em>
       </button>`;
   }).join('');
   modal.classList.add('show');
