@@ -1612,11 +1612,12 @@ body{background:
   align-items:flex-start;
   justify-content:center;
   padding:92px 10px 12px;
-  background:rgba(255,246,235,.50);
+  background:rgba(255,246,235,.88);
+  backdrop-filter:blur(2px);
 }
 .choice-modal.show{display:flex;}
 #screen-student.choice-open .s-right{
-  filter:blur(4px);
+  filter:none;
 }
 #screen-student.choice-collapsed .s-right{
   filter:none;
@@ -1798,6 +1799,19 @@ body{background:
   font-size:.72rem;
   font-weight:900;
 }
+
+.episode-modal{position:fixed;inset:0;z-index:280;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(42,31,24,.46);backdrop-filter:blur(5px);}
+.episode-modal.show{display:flex;}
+.episode-sheet{width:min(100%,430px);max-height:88dvh;overflow:hidden;background:linear-gradient(180deg,#fffdf7 0%,#fff5e8 100%);border:2px solid #f1c8a8;border-radius:22px;box-shadow:0 26px 70px rgba(63,45,36,.24);color:#3f2d24;display:flex;flex-direction:column;}
+.episode-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 18px 12px;border-bottom:1px solid #f1d3b8;}
+.episode-head h2{font-family:'Jua',sans-serif;font-size:1.2rem;margin:0;color:#3f2d24;}
+.episode-head p{margin:3px 0 0;font-size:.78rem;color:#8a6b56;}
+.episode-close{width:36px;height:36px;border-radius:12px;border:2px solid #efc6a9;background:#fffaf2;color:#7e6655;font-family:'Jua',sans-serif;cursor:pointer;}
+.episode-list{padding:12px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;}
+.episode-item{border:2px solid #f1d3b8;background:#fffdf8;border-radius:14px;padding:11px 12px;text-align:left;color:#3f2d24;cursor:pointer;font-family:'Noto Sans KR','Malgun Gothic',system-ui,sans-serif;}
+.episode-item.current{border-color:#58c4a0;background:#effbf5;}
+.episode-item strong{display:block;font-family:'Jua',sans-serif;font-size:.92rem;margin-bottom:3px;color:#e76642;}
+.episode-item span{display:block;font-size:.78rem;line-height:1.35;color:#7e6655;}
 
 .drug-card-modal{position:fixed;inset:0;z-index:255;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(42,31,24,.46);backdrop-filter:blur(5px);}
 .drug-card-modal.show{display:flex;}
@@ -2518,7 +2532,7 @@ body{background:
         <strong id="hud-name">학생</strong>
         <span id="hud-day">1일차</span>
       </div>
-      <button class="hud-btn" onclick="alert('선택에 따라 능력치가 변합니다. 설명서, 성분표, 수면과 카페인 기준을 확인하며 진행하세요.')">i</button>
+      <button class="hud-btn" onclick="openEpisodeToc()" title="에피소드 목차">i</button>
     </div>
     <div class="scene-area" id="scene-area">
       <span class="scene-loc" id="scene-loc">📍 교실</span>
@@ -2563,7 +2577,7 @@ body{background:
   </div>
 </div>
 
-<!-- ══ 시나리오 질문 팝업 ══ -->
+<!-- ══ 에피소드 질문 팝업 ══ -->
 <div class="choice-modal" id="choice-modal">
   <div class="choice-sheet">
     <div class="choice-profile">
@@ -2577,6 +2591,19 @@ body{background:
     </div>
     <div class="choice-question" id="choice-question"></div>
     <div class="choice-modal-list" id="choice-modal-list"></div>
+  </div>
+</div>
+
+<div class="episode-modal" id="episode-modal" onclick="closeEpisodeToc(event)">
+  <div class="episode-sheet" onclick="event.stopPropagation()">
+    <div class="episode-head">
+      <div>
+        <h2>에피소드 목차</h2>
+        <p>이동할 에피소드를 선택하세요.</p>
+      </div>
+      <button type="button" class="episode-close" onclick="closeEpisodeToc()">×</button>
+    </div>
+    <div class="episode-list" id="episode-list"></div>
   </div>
 </div>
 
@@ -3187,6 +3214,7 @@ function closeAllOverlays(){
     const el=document.getElementById(id);
     if(el) el.style.display='none';
   });
+  document.getElementById('episode-modal')?.classList.remove('show');
   document.getElementById('clue-modal')?.classList.remove('show');
   const choiceModal=document.getElementById('choice-modal');
   if(choiceModal) choiceModal.classList.remove('show','collapsed');
@@ -3709,7 +3737,7 @@ const NPC_DATA = {
   }
 };
 function buildFourteenDayScenarios(){
-  // 최종본: D-7 → D-5 → D-3 → D-Day 카운트다운 시나리오
+  // 최종본: D-7 → D-5 → D-3 → D-Day 카운트다운 에피소드
   return [
     {
         "type": "event",
@@ -3924,7 +3952,7 @@ function buildFourteenDayScenarios(){
         "scene": "scene_diary_home",
         "speaker": "나레이터",
         "hideCharacter": true,
-        "text": "D-7 마무리, 오늘 선택한 음료에 카페인이 얼마나 들어있는지 알고 마셨나요? 습관처럼 마시는 한 잔이 오남용의 첫걸음이 될 수 있어요. ",
+        "text": "D-7 마무리, 오늘 선택한 음료에 카페인이 얼마나 들어있는지 알고 마셨나요? 습관처럼 마시는 한 잔이 오남용의 첫걸음이 될 수 있어요.",
         "choices": null
     },
     {
@@ -4045,7 +4073,7 @@ function buildFourteenDayScenarios(){
         "scene": "scene_classroom",
         "speaker": "{name}",
         "characterMood": "headache",
-        "text": "2교시, 아까 약을 먹었는데도 두통이 여전하다.\n[태양] 지금도 머리 아파?\n[태양] 안 들으면 한 알 더 먹어, 나도 그렇게 해.",
+        "text": "2교시, 아까 약을 먹었는데도 두통이 여전하다.\n[태양] 지금도 머리 아파?\n[태양] 효과가 없으면 한 알 더 먹어, 나도 그렇게 해.",
         "choices": [
             {
                 "text": "💊 한 알 더 먹는다.",
@@ -4377,7 +4405,7 @@ function buildFourteenDayScenarios(){
                 },
                 "result": {
                     "title": "알고도 추가 복용",
-                    "text": "[선택 결과] 성분이 겹치는 걸 알지만 통증을 참지 못해 약을 또 먹었다. 중복 복용이 반복되면 심각한 부작용이 발생할 할 수 있으니 주의해야 한다."
+                    "text": "[선택 결과] 성분이 겹치는 걸 알지만 통증을 참지 못해 약을 또 먹었다. 중복 복용이 반복되면 심각한 부작용이 발생할 수 있으니 주의해야 한다."
                 },
                 "analgesic": true,
                 "nextLocation": "📱 D-3 방과후"
@@ -4940,25 +4968,33 @@ function loadSceneBackgroundFirst(sa, sceneKey, onReady){
   let bi=sa.querySelector('img.scene-bg-img');
   window._sceneLoadToken=(window._sceneLoadToken||0)+1;
   const token=window._sceneLoadToken;
+  sa.style.background=sceneColor(sceneKey);
   if(!imgUrl){
     if(bi)bi.remove();
-    sa.style.background=sceneColor(sceneKey);
     onReady();
     return;
   }
-  if(!bi){
-    bi=document.createElement('img');
-    bi.className='scene-bg-img';
-    sa.insertBefore(bi,sa.firstChild);
+  if(bi?.getAttribute('src')===imgUrl && bi.complete && bi.naturalWidth>0){
+    onReady();
+    return;
   }
-  const finish=()=>{
+  const loader=new Image();
+  loader.onload=()=>{
     if(token!==window._sceneLoadToken) return;
+    if(!bi){
+      bi=document.createElement('img');
+      bi.className='scene-bg-img';
+      sa.insertBefore(bi,sa.firstChild);
+    }
+    bi.src=imgUrl;
     onReady();
   };
-  bi.onload=finish;
-  bi.onerror=finish;
-  if(bi.getAttribute('src')!==imgUrl) bi.src=imgUrl;
-  if(bi.complete) finish();
+  loader.onerror=()=>{
+    if(token!==window._sceneLoadToken) return;
+    if(bi)bi.remove();
+    onReady();
+  };
+  loader.src=imgUrl;
 }
 
 function clueSceneKey(sceneIdx=G.scene){
@@ -5165,8 +5201,64 @@ function updateProgDots(){
     const el=document.getElementById('pd-'+i); if(!el)return;
     el.className='prog-dot'+(i<ei?' done':i===ei?' cur':'');
   });
-  document.getElementById('prog-lbl').textContent=`시나리오 ${Math.max(1,ei+1)} / ${milestones.length}`;
+  document.getElementById('prog-lbl').textContent=`에피소드 ${Math.max(1,ei+1)} / ${milestones.length}`;
   updateBackButton();
+}
+
+function episodeNumberForScene(sceneIdx){
+  let n = 0;
+  const scenarios = DB.gameData.scenarios || [];
+  for(let i=0;i<=sceneIdx;i++){
+    if(isProgressScenario(scenarios[i])) n++;
+  }
+  return Math.max(1, n);
+}
+
+function episodeTitleForScenario(sc){
+  const countdown = sc?.countdown ? String(sc.countdown) : '';
+  const location = formatHudLocation(sc?.location || '');
+  if(countdown && location && !location.includes(countdown.replace(' 시험',''))) return `${countdown} · ${location}`;
+  return countdown || location || '장면';
+}
+
+function openEpisodeToc(){
+  const modal = document.getElementById('episode-modal');
+  const list = document.getElementById('episode-list');
+  if(!modal || !list) return;
+  const scenarios = DB.gameData.scenarios || [];
+  const indices = progressScenarioIndices();
+  list.innerHTML = indices.map((idx, order) => {
+    const sc = scenarios[idx] || {};
+    const nextIdx = indices[order + 1];
+    const current = idx === G.scene || (idx <= G.scene && (nextIdx === undefined || nextIdx > G.scene));
+    return `
+      <button type="button" class="episode-item ${current ? 'current' : ''}" onclick="jumpToEpisode(${idx})">
+        <strong>에피소드 ${order + 1}</strong>
+        <span>${escapeHtml(episodeTitleForScenario(sc))}</span>
+      </button>`;
+  }).join('');
+  modal.classList.add('show');
+}
+
+function closeEpisodeToc(event){
+  if(event) event.stopPropagation();
+  document.getElementById('episode-modal')?.classList.remove('show');
+}
+
+function jumpToEpisode(sceneIdx){
+  closeEpisodeToc();
+  const scenarios = DB.gameData.scenarios || [];
+  if(!scenarios[sceneIdx]) return;
+  clearTypingState(_typing);
+  clearTypingState(_resultTyping);
+  hideChoices();
+  resetResultNextButton();
+  delete G.nextSceneOverrideIndex;
+  G.scene = sceneIdx;
+  G.answered = false;
+  syncCaffeineTotalsFromLog(G.scene);
+  renderScene(G.scene);
+  saveGameState();
 }
 
 function updateBackButton(){
