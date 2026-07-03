@@ -405,9 +405,9 @@ select option{background:var(--panel);}
   padding:40px 36px;max-width:860px;width:100%;text-align:center;}
 #ending-title{font-family:'Jua',sans-serif;font-size:1.9rem;color:var(--accent);margin-bottom:4px;}
 #ending-sub{color:var(--subtext);font-size:.88rem;margin-bottom:26px;}
-.ending-visuals{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:18px;align-items:center;margin:0 auto 22px;}
-.ending-type-card{width:100%;max-width:360px;margin:0 auto;border-radius:18px;display:block;box-shadow:0 14px 34px rgba(66,45,35,.13);border:1px solid rgba(235,199,169,.72);background:#fff;}
-.ending-radar-panel{background:#fffdf8;border:1px solid #f1d3b8;border-radius:18px;padding:14px 10px 8px;box-shadow:0 10px 24px rgba(126,102,85,.08);}
+.ending-visuals{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:18px;align-items:stretch;margin:0 auto 22px;}
+.ending-type-card{width:100%;max-width:360px;height:450px;object-fit:contain;margin:0 auto;border-radius:18px;display:block;box-shadow:0 14px 34px rgba(66,45,35,.13);border:1px solid rgba(235,199,169,.72);background:#fff;}
+.ending-radar-panel{height:450px;background:#fffdf8;border:1px solid #f1d3b8;border-radius:18px;padding:14px 10px 8px;box-shadow:0 10px 24px rgba(126,102,85,.08);display:flex;flex-direction:column;justify-content:center;}
 .ending-radar-title{font-family:'Jua',sans-serif;color:#5fc89a;font-size:.86rem;margin-bottom:4px;}
 #radar-cvs{max-width:300px;margin:0 auto;display:block;}
 .ending-msg{background:var(--panel2);border-radius:12px;padding:15px 18px;text-align:left;
@@ -1734,7 +1734,7 @@ body{background:
 .choice-ad-account strong{display:block;font-size:.8rem;line-height:1.1;color:#3f2d24;}
 .choice-ad-account span{display:block;font-size:.68rem;line-height:1.2;color:#8a7367;margin-top:2px;}
 .choice-ad-more{font-size:1rem;color:#8a7367;letter-spacing:1px;}
-.choice-ad-image{height:124px;background:url('assets/ui/sns_misinformation_post_bg.png') center/cover no-repeat;}
+.choice-ad-image{height:190px;background:url('assets/ui/sns_misinformation_post_bg.png') center/cover no-repeat;}
 .choice-ad-actions{display:flex;gap:14px;padding:9px 12px 4px;color:#7e6655;font-size:1rem;}
 .choice-ad-actions span:last-child{margin-left:auto;}
 .choice-ad-caption{padding:0 12px 12px;font-size:.78rem;line-height:1.55;color:#3f2d24;font-weight:900;}
@@ -1764,6 +1764,7 @@ body{background:
 }
 .choice-modal.collapsed{
   background:transparent;
+  backdrop-filter:none;
   pointer-events:none;
 }
 .choice-modal.collapsed .choice-sheet{
@@ -2948,7 +2949,7 @@ body{background:
 // TODO_FIREBASE: 아래 DB 객체를 Firebase Realtime DB로 교체
 const GAME_DATA_KEY = 'hg_v18_gamedata';
 const GAME_SAVE_KEY = 'hg_v18_save';
-const GAME_SAVE_VERSION = 19;
+const GAME_SAVE_VERSION = 21;
 const DB = {
   // 게임 데이터 (관리자 에디터에서 수정 → localStorage 저장)
   get gameData() {
@@ -3123,7 +3124,7 @@ let G = {
   labelChecked:false, snsRisk:false, minjunWarned:false, recoveryPlan:false,
   cluesChecked:{}, pendingHealthOffice:'', lastCvsDrink:null, day3CvsDrink:null,
   sceneHistory:[], caffeineLog:[],
-  stats:{health:70,knowledge:50,caffeine:70,sleep:60,judgment:55,social:60},
+  stats:{health:50,knowledge:50,caffeine:50,sleep:50,judgment:50,social:50},
 };
 let T = { trust:50, currentCase:-1, done:[] };
 let timerInterval=null, timerLeft=30, timerRunning=false;
@@ -3391,7 +3392,7 @@ const confirmName=()=>{
   G.weight=weight;
   G.caffeineMax=Math.round(G.weight*2.5);
   G.gender=document.querySelector('#gender-row .seg-btn.active')?.dataset.value||'m';
-  G.stats={health:70,knowledge:50,caffeine:70,sleep:60,judgment:55,social:60};
+  G.stats={health:50,knowledge:50,caffeine:50,sleep:50,judgment:50,social:50};
   G.scene=0; G.day=1; G.answered=false;
   G.caffeineToday=0; G.caffeineStreak=0; G.noCaffeineStreak=0; G.caffeineOverDays=0;
   G.lateSleepStreak=0; G.veryLateSleepStreak=0; G.sleepDebt=0;
@@ -3477,22 +3478,22 @@ function resetCaffeineTotals(){
 }
 const CVS_DRINKS = [
   { id:'energy', name:'에너지드링크', product:'강렬한 각성이 필요할 때 찾게 되는 탄산음료', volume:'355mL', emoji:'🟢캔', icon:'energy', caffeine:100,
-    delta:{health:-6, caffeine:-10, judgment:-4}, good:false,
+    delta:{health:-8, caffeine:-15, sleep:-8, judgment:-5}, good:false,
     desc:'355mL 용량의 에너지드링크를 마셨다. 라벨에 적힌 카페인은 무려 100mg. 당장은 눈이 번쩍 뜨이고 각성 효과가 오겠지만, 밤늦게까지 잠을 이루지 못해 수면 패턴이 완전히 망가질 수 있다.' },
   { id:'coffeeMilk', name:'커피우유', product:'몰려오는 졸음을 잠시 잊게 만드는 친숙한 단맛', volume:'300mL', emoji:'📦', icon:'pack', caffeine:115,
-    delta:{health:-4, caffeine:-10, sleep:-4}, good:false,
+    delta:{health:-6, caffeine:-15, sleep:-8}, good:false,
     desc:'300mL 용량의 친숙하고 달콤한 커피우유를 마셨다. 하지만 이 달콤함 뒤에는 무려 115mg의 고농축 카페인이 숨겨져 있어, 생각보다 강한 자극이 몸에 무리를 줄 수 있다.' },
   { id:'cancoffee', name:'캔커피', product:'쌉싸름한 맛 뒤로 밀려오는 익숙한 카페인 ', volume:'200mL', emoji:'🔵캔', icon:'canblue', caffeine:81,
-    delta:{health:-3, caffeine:-8}, good:false,
+    delta:{health:-4, caffeine:-12, sleep:-5}, good:false,
     desc:'200mL 용량의 쌉싸름한 캔커피를 마셨다. 81mg의 카페인이 당장의 집중력을 미래에서 빌려오듯 채워주지만, 그 대가로 나중에 한꺼번에 밀려올 누적 피로도가 커질 수 있다.' },
   { id:'vitamin', name:'비타민음료', product:'카페인 없이 가볍게 기분을 전환하고 싶을 때', volume:'100mL', emoji:'🟠병', icon:'bottle', caffeine:0,
-    delta:{health:1, caffeine:3}, good:true, noCaffeine:true,
+    delta:{health:8, caffeine:10}, good:true, noCaffeine:true,
     desc:'100mL 용량의 상큼한 비타민음료를 마셨다. 카페인이 전혀 들어있지 않아 중독이나 부작용 걱정 없이, 지친 몸에 비타민을 채워주며 가볍고 건강한 활력을 더해준다.' },
   { id:'cola', name:'콜라', product:'탄산음료', volume:'355mL', emoji:'🔴캔', icon:'canred', caffeine:35,
     delta:{health:-2, caffeine:-4}, good:false,
     desc:'355mL 용량의 시원한 콜라를 마셨다. 35mg의 카페인이 들어있는데, 특유의 청량감은 잠시뿐이며 높은 당분과 카페인이 섞여 시간이 지나면 오히려 몸을 더 피로하게 만들 수 있다.' },
   { id:'water', name:'물/이온음료', product:'지친 몸에 가장 부담이 없는 담백한 선택', volume:'-', emoji:'💧', icon:'drop', caffeine:0,
-    delta:{health:5, caffeine:6}, good:true, noCaffeine:true,
+    delta:{health:15, caffeine:12}, good:true, noCaffeine:true,
     desc:'부담 없는 물과 이온음료를 선택해 마셨다. 카페인이 전혀 없어 몸에 자극을 주지 않으며, 갈증을 순수하게 해소하고 체내 수분을 보충해 주는 가장 안전한 선택이다.' },
 ];
 
@@ -3754,8 +3755,9 @@ function buildFourteenDayScenarios(){
                 "text": "🥤 받아 마신다.",
                 "good": false,
                 "delta": {
-                    "knowledge": 15,
-                    "social": 5,
+                    "knowledge": 3,
+                    "caffeine": -15,
+                    "sleep": -8,
                     "judgment": -5
                 },
                 "result": {
@@ -3785,9 +3787,10 @@ function buildFourteenDayScenarios(){
                 "text": "🙅 \"난 됐어.\" 거절한다.",
                 "good": true,
                 "delta": {
-                    "judgment": 10,
-                    "knowledge": -10,
-                    "social": -5
+                    "judgment": 8,
+                    "caffeine": 10,
+                    "knowledge": -3,
+                    "social": -3
                 },
                 "result": {
                     "title": "거절",
@@ -3812,8 +3815,9 @@ function buildFourteenDayScenarios(){
                 "text": "🥤 캔을 받아 마신다.",
                 "good": false,
                 "delta": {
-                    "knowledge": 15,
-                    "social": 5,
+                    "knowledge": 5,
+                    "caffeine": -15,
+                    "sleep": -8,
                     "judgment": -5
                 },
                 "result": {
@@ -3827,9 +3831,10 @@ function buildFourteenDayScenarios(){
                 "text": "🙅 확인했으니 마시지 않는다.",
                 "good": true,
                 "delta": {
-                    "judgment": 10,
-                    "knowledge": -10,
-                    "social": -5
+                    "judgment": 8,
+                    "caffeine": 10,
+                    "knowledge": -3,
+                    "social": -3
                 },
                 "result": {
                     "title": "확인 후 거절",
@@ -3854,8 +3859,10 @@ function buildFourteenDayScenarios(){
                 "text": "☕ 매점에서 캔커피를 마신다.",
                 "good": false,
                 "delta": {
-                    "knowledge": 10,
-                    "sleep": -5
+                    "knowledge": 3,
+                    "health": -4,
+                    "caffeine": -12,
+                    "sleep": -8
                 },
                 "result": {
                     "title": "선택 결과",
@@ -3868,8 +3875,9 @@ function buildFourteenDayScenarios(){
                 "text": "🏃 친구랑 운동장을 걷는다.",
                 "good": true,
                 "delta": {
-                    "knowledge": 8,
-                    "health": 10
+                    "health": 15,
+                    "sleep": 5,
+                    "social": 3
                 },
                 "result": {
                     "title": "몸을 깨우는 선택",
@@ -3882,8 +3890,8 @@ function buildFourteenDayScenarios(){
                 "text": "😴 엎드려 10분 잔다.",
                 "good": true,
                 "delta": {
-                    "sleep": 5,
-                    "health": 5,
+                    "sleep": 12,
+                    "health": 8,
                     "knowledge": -5
                 },
                 "result": {
@@ -3898,7 +3906,8 @@ function buildFourteenDayScenarios(){
                 "good": false,
                 "delta": {
                     "knowledge": -10,
-                    "judgment": -5
+                    "judgment": -5,
+                    "sleep": -5
                 },
                 "result": {
                     "title": "버티기",
@@ -3984,7 +3993,8 @@ function buildFourteenDayScenarios(){
                 "text": "📋 설명서부터 읽는다.",
                 "good": true,
                 "delta": {
-                    "knowledge": 15
+                    "knowledge": 10,
+                    "judgment": 3
                 },
                 "result": {
                     "title": "설명서 확인",
@@ -4001,7 +4011,8 @@ function buildFourteenDayScenarios(){
                 "good": true,
                 "delta": {
                     "judgment": 5,
-                    "knowledge": -15
+                    "health": -5,
+                    "knowledge": -12
                 },
                 "result": {
                     "title": "참기",
@@ -4024,8 +4035,9 @@ function buildFourteenDayScenarios(){
                 "text": "🥛 편의점서 우유·빵 먹고 먹는다.",
                 "good": true,
                 "delta": {
-                    "knowledge": 13,
-                    "health": 5
+                    "health": 12,
+                    "caffeine": 5,
+                    "knowledge": 5
                 },
                 "result": {
                     "title": "식후 복용",
@@ -4037,8 +4049,8 @@ function buildFourteenDayScenarios(){
                 "text": "🍱 점심까지 기다렸다 식후 복용한다.",
                 "good": true,
                 "delta": {
-                    "judgment": 10,
-                    "health": 5,
+                    "judgment": 8,
+                    "health": 8,
                     "knowledge": -10
                 },
                 "result": {
@@ -4094,8 +4106,9 @@ function buildFourteenDayScenarios(){
                 "text": "📋 \"복용 간격 봐야 해.\" 설명서를 확인한다.",
                 "good": true,
                 "delta": {
-                    "knowledge": 15,
-                    "judgment": 10
+                    "knowledge": 10,
+                    "judgment": 6,
+                    "caffeine": 4
                 },
                 "result": {
                     "title": "복용 간격 확인",
@@ -4107,9 +4120,9 @@ function buildFourteenDayScenarios(){
                 "text": "🩺 보건실에 간다.",
                 "good": true,
                 "delta": {
-                    "health": 10,
-                    "knowledge": 5,
-                    "judgment": -8
+                    "health": 15,
+                    "knowledge": 3,
+                    "judgment": -3
                 },
                 "result": {
                     "title": "상담 선택",
@@ -4121,7 +4134,9 @@ function buildFourteenDayScenarios(){
                 "text": "💧 물 마시고 좀 더 기다린다.",
                 "good": true,
                 "delta": {
-                    "judgment": 10,
+                    "health": 10,
+                    "caffeine": 5,
+                    "judgment": 5,
                     "knowledge": -5
                 },
                 "result": {
@@ -4160,8 +4175,9 @@ function buildFourteenDayScenarios(){
                 "text": "🙅 \"무슨 약인지 알아야 해.\" 거절한다.",
                 "good": true,
                 "delta": {
-                    "knowledge": 15,
                     "judgment": 10,
+                    "caffeine": 6,
+                    "knowledge": 5,
                     "social": -5
                 },
                 "result": {
@@ -4174,7 +4190,9 @@ function buildFourteenDayScenarios(){
                 "text": "🔎 약 이름·성분을 물어본다.",
                 "good": true,
                 "delta": {
-                    "knowledge": 10
+                    "knowledge": 6,
+                    "judgment": 4,
+                    "social": 4
                 },
                 "result": {
                     "title": "확인 질문",
@@ -4186,9 +4204,9 @@ function buildFourteenDayScenarios(){
                 "text": "💊 \"고맙지만 내 약 먹을게.\"",
                 "good": true,
                 "delta": {
-                    "judgment": 15,
-                    "health": 5,
-                    "social": -3
+                    "judgment": 8,
+                    "health": 8,
+                    "social": 3
                 },
                 "result": {
                     "title": "내 약만 사용",
@@ -4236,7 +4254,8 @@ function buildFourteenDayScenarios(){
                 "text": "📋 약 설명서를 먼저 읽는다.",
                 "good": true,
                 "delta": {
-                    "knowledge": 15
+                    "knowledge": 10,
+                    "judgment": 2
                 },
                 "result": {
                     "title": "괜찮아정 설명서",
@@ -4251,7 +4270,7 @@ function buildFourteenDayScenarios(){
                 "text": "💧 \"물 먼저 드시는 게…\" 머뭇거린다.",
                 "good": true,
                 "delta": {
-                    "judgment": 3,
+                    "judgment": 5,
                     "social": -3
                 },
                 "result": {
@@ -4275,9 +4294,9 @@ function buildFourteenDayScenarios(){
                 "text": "💧 \"엄마, 술 드신 날은 위험하대. 물 많이 드시고 좀 쉬어보는 건…\"",
                 "good": true,
                 "delta": {
-                    "knowledge": 10,
-                    "social": 10,
-                    "judgment": 10
+                    "knowledge": 3,
+                    "social": 15,
+                    "judgment": 8
                 },
                 "result": {
                     "title": "설명서 근거로 말하기",
@@ -4330,7 +4349,9 @@ function buildFourteenDayScenarios(){
                 "text": "📋 두 약의 성분표를 비교한다.",
                 "good": true,
                 "delta": {
-                    "knowledge": 15
+                    "knowledge": 10,
+                    "judgment": 3,
+                    "sleep": 3
                 },
                 "result": {
                     "title": "성분표 비교",
@@ -4348,7 +4369,8 @@ function buildFourteenDayScenarios(){
                 "good": true,
                 "delta": {
                     "judgment": 5,
-                    "knowledge": -10
+                    "health": -5,
+                    "knowledge": -8
                 },
                 "result": {
                     "title": "참기",
@@ -4361,9 +4383,9 @@ function buildFourteenDayScenarios(){
                 "text": "🩺 보건실에 물어본다.",
                 "good": true,
                 "delta": {
-                    "knowledge": 10,
-                    "health": 5,
-                    "judgment": -8
+                    "health": 12,
+                    "knowledge": 5,
+                    "judgment": -3
                 },
                 "result": {
                     "title": "보건실 확인",
@@ -4387,9 +4409,9 @@ function buildFourteenDayScenarios(){
                 "text": "⏳ 지금은 참고, 다음 복용 때 간격·용량을 맞춘다.",
                 "good": true,
                 "delta": {
-                    "judgment": 15,
-                    "health": 5,
-                    "knowledge": 5
+                    "judgment": 12,
+                    "health": 8,
+                    "knowledge": 3
                 },
                 "result": {
                     "title": "성분과 간격 확인",
@@ -4421,7 +4443,7 @@ function buildFourteenDayScenarios(){
         "scene": "scene_library",
         "speaker": "{name}",
         "characterMood": "phone",
-        "text": "[{name}] 독서실에서 잠깐 쉬며 폰을 본다. 친구 하은이 게시물 링크를 보냈다.\n[하은] 야 이거 봤어? 요즘 이게 시험 꿀팁이래 ㅋㅋ 우리 해볼까?\n[나레이터] 게시물에는 '콜라와 에너지드링크 섞어 마시면 두통도 잡고 잠도 깸!'이라고 적혀 있다.",
+        "text": "[{name}] 독서실에서 잠깐 쉬고 있는데, 하은이가 나에게 게시물 링크를 보여준다.\n[하은] 야 이거 봤어? 요즘 이게 시험 꿀팁이래 ㅋㅋ 우리 해볼까?\n[나레이터] 게시물에는 '콜라와 에너지드링크 섞어 마시면 두통도 잡고 잠도 깸!'이라고 적혀 있다.",
         "choicePrompt": "[나레이터] 게시물에는 '콜라와 에너지드링크 섞어 마시면 두통도 잡고 잠도 깸!'이라고 적혀 있다.",
         "choicePromptAd": true,
         "choices": [
@@ -4446,7 +4468,8 @@ function buildFourteenDayScenarios(){
                 },
                 "good": true,
                 "delta": {
-                    "knowledge": 15
+                    "knowledge": 8,
+                    "judgment": 8
                 },
                 "result": {
                     "title": "게시물 정보 확인",
@@ -4483,7 +4506,7 @@ function buildFourteenDayScenarios(){
                 "text": "🔍 신뢰할 정보를 더 찾아 확인하고 넘긴다.",
                 "good": true,
                 "delta": {
-                    "knowledge": 15,
+                    "knowledge": 8,
                     "judgment": 10
                 },
                 "result": {
@@ -4496,9 +4519,9 @@ function buildFourteenDayScenarios(){
                 "text": "💬 하은이에게 위험성을 알려준다.",
                 "good": true,
                 "delta": {
-                    "knowledge": 10,
-                    "social": 15,
-                    "judgment": 10
+                    "knowledge": 3,
+                    "social": 18,
+                    "judgment": 7
                 },
                 "result": {
                     "title": "친구까지 지킴",
@@ -4523,8 +4546,9 @@ function buildFourteenDayScenarios(){
                 "good": false,
                 "delta": {
                     "knowledge": 5,
-                    "sleep": -20,
-                    "health": -10
+                    "sleep": -22,
+                    "health": -12,
+                    "caffeine": -8
                 },
                 "result": {
                     "title": "밤샘 선택",
@@ -4539,8 +4563,9 @@ function buildFourteenDayScenarios(){
                 "text": "🛌 지금 자고 일찍 일어난다.",
                 "good": true,
                 "delta": {
-                    "sleep": 15,
-                    "judgment": 10
+                    "sleep": 20,
+                    "health": 8,
+                    "judgment": 4
                 },
                 "result": {
                     "title": "수면 우선",
@@ -4554,8 +4579,9 @@ function buildFourteenDayScenarios(){
                 "text": "⏱️ 30분만 더 하고 잔다.",
                 "good": true,
                 "delta": {
-                    "judgment": 5,
-                    "sleep": 5,
+                    "judgment": 4,
+                    "sleep": 10,
+                    "health": 4,
                     "knowledge": -3
                 },
                 "result": {
@@ -4578,103 +4604,6 @@ function buildFourteenDayScenarios(){
         "hideCharacter": true,
         "text": "D-3 마무리, 오늘 약을 먹을 때도, 정보를 받아들일 때도 '확인'을 거쳤나요? 성분이든 출처든, 확인 없이 넘어가면 그게 오남용의 시작이에요.",
         "choices": null
-    },
-    {
-        "type": "event",
-        "day": 15,
-        "countdown": "D-Day 시험 당일",
-        "location": "📝 D-Day 시험 당일",
-        "scene": "scene_exam",
-        "speaker": "나레이터",
-        "text": "시험 당일. 누적 피로로 머리가 띵하고 관자놀이가 욱신. 시험 긴장에 아침도 거의 못 먹었다. 가방 속엔 '통증싹싹캡슐'.",
-        "choices": [
-            {
-                "text": "💊 그냥 먹는다.",
-                "good": false,
-                "delta": {
-                    "judgment": 8,
-                    "knowledge": -10,
-                    "health": -5
-                },
-                "result": {
-                    "title": "먹고 나서야 보인 성분",
-                    "text": "[속마음] 집중은 잠깐 오른 것 같지만, 성분표를 나중에 보니 카페인무수물 40mg이 들어 있었다.\n[선택 결과] 공복에 이부프로펜 성분을 먹어 위 부담이 생길 수 있고, 약 속 카페인도 오늘 섭취량에 더해진다."
-                },
-                "caffeineMg": 40,
-                "fastingMed": true,
-                "comboMedCaffeine": true,
-                "nextLocation": "🧩 D-Day 미니 퀴즈"
-            },
-            {
-                "text": "🔎 성분표부터 확인한다.",
-                "good": true,
-                "delta": {
-                    "knowledge": 15
-                },
-                "result": {
-                    "title": "성분표 확인",
-                    "text": "[성분표]\n이부프로펜 75mg · 산화마그네슘 50mg · 카페인무수물 40mg · 알릴이소프로필아세틸우레아 30mg / 식후 복용 권장\n\n[선택 결과] 약 이름보다 성분과 복용 조건을 먼저 확인했다."
-                }
-            },
-            {
-                "text": "💧 안 먹고 물·심호흡을 한다.",
-                "good": true,
-                "delta": {
-                    "judgment": 10,
-                    "knowledge": -2
-                },
-                "result": {
-                    "title": "잠깐 멈춤",
-                    "text": "[속마음] 집중은 조금 덜 올라오지만, 지금은 무리하게 약과 카페인을 더하지 않는 게 낫겠다.\n[선택 결과] 자기조절로 몸의 신호를 먼저 살폈다."
-                },
-                "caffeineMg": 0,
-                "noCaffeine": true,
-                "nextLocation": "🧩 D-Day 미니 퀴즈"
-            }
-        ]
-    },
-    {
-        "type": "event",
-        "day": 15,
-        "countdown": "D-Day 시험 당일",
-        "location": "🔎 D-Day 성분표 확인 후 선택",
-        "scene": "scene_exam",
-        "speaker": "{name}",
-        "text": "성분표를 확인했다. 이 약에는 카페인무수물 40mg이 있고, 이부프로펜 성분은 식후 복용이 권장된다. 시험 직전, 에너지드링크까지 같이 마실지 다시 결정해야 한다.",
-        "choices": [
-            {
-                "text": "🥛 물·요기와 함께 약만 먹고 에너지드링크는 참기.",
-                "good": true,
-                "delta": {
-                    "knowledge": 10,
-                    "judgment": 15,
-                    "health": 3
-                },
-                "result": {
-                    "title": "성분 확인 후 조절",
-                    "text": "[속마음] 빈속을 피하고, 에너지드링크는 안 더했다. 약 성분을 알고 먹으니 선택이 훨씬 분명해졌다.\n[선택 결과] 약 속 카페인 40mg만 오늘 총량에 더해졌다."
-                },
-                "caffeineMg": 40,
-                "comboMedCaffeine": true,
-                "nextLocation": "🧩 D-Day 미니 퀴즈"
-            },
-            {
-                "text": "💊🥤 약+에너지드링크 둘 다.",
-                "good": false,
-                "delta": {
-                    "health": -10,
-                    "caffeine": -12,
-                    "judgment": -10
-                },
-                "result": {
-                    "title": "시험 직전 카페인 중복",
-                    "text": "[속마음] 약 40mg에 에너지드링크 100mg까지 더해 총 140mg. 손끝이 살짝 떨리고, 잠깐 오른 집중 뒤에 확 꺼질까 불안하다.\n[선택 결과] 카페인 140mg이 한 번에 누적되어 두근거림·손떨림·컨디션 급락 위험이 커졌다."
-                },
-                "caffeineMg": 140,
-                "comboMedCaffeine": true,
-                "nextLocation": "🧩 D-Day 미니 퀴즈"
-            }
-        ]
     },
     {
         "type": "event",
@@ -4717,7 +4646,7 @@ function applyDelta(delta){
   const m = gradeMultipliers();
   Object.entries(delta).forEach(([k,v])=>{
     const scaled = Math.round(v * (v>0 ? m.pos : m.neg));
-    G.stats[k]=Math.max(0,(G.stats[k]||0)+scaled);
+    G.stats[k]=Math.max(0,Math.min(100,(G.stats[k]||0)+scaled));
     showDelta(k,scaled);
   });
   updateStatBars();
@@ -5241,8 +5170,6 @@ const EPISODE_TOPICS = [
   '게시물 출처와 댓글 검증',
   '수면과 밤샘 선택',
   'D-3 확인 습관 회고',
-  '시험 당일 진통제 판단',
-  '약 속 카페인 확인',
   'D-Day 미니 퀴즈'
 ];
 
@@ -5795,6 +5722,21 @@ function choiceQuestionText(sc) {
   return picked;
 }
 
+function renderChoiceAdPost(sc) {
+  return `
+    <div class="choice-ad-head">
+      <div class="choice-ad-avatar">AD</div>
+      <div class="choice-ad-account">
+        <strong>study_tip_daily</strong>
+        <span>시험기간 추천 게시물 · 시험기간 인기 상승 트렌드</span>
+      </div>
+      <div class="choice-ad-more">•••</div>
+    </div>
+    <div class="choice-ad-image" role="img" aria-label="콜라와 에너지드링크를 섞어 마시는 듯한 SNS 광고 이미지"></div>
+    <div class="choice-ad-actions"><span>♡</span><span>💬</span><span>↗</span><span>▱</span></div>
+    <div class="choice-ad-caption"><b>study_tip_daily</b> 콜라와 에너지드링크 섞어 마시면 두통도 잡고 잠도 깸!</div>`;
+}
+
 function renderChoices(sc) {
   const choices = document.getElementById('choices');
   const modal = document.getElementById('choice-modal');
@@ -5811,7 +5753,14 @@ function renderChoices(sc) {
   document.getElementById('choice-name').textContent = profile.name;
   document.getElementById('choice-name').style.color = profile.color;
   document.getElementById('choice-desc').textContent = profile.desc;
-  document.getElementById('choice-question').textContent = choiceQuestionText(sc);
+  const question = document.getElementById('choice-question');
+  if(sc.choicePromptAd){
+    question.classList.add('ad-post');
+    question.innerHTML = renderChoiceAdPost(sc);
+  } else {
+    question.classList.remove('ad-post');
+    question.textContent = choiceQuestionText(sc);
+  }
   if (avatar) {
     avatar.style.borderColor = profile.color;
     avatar.className = [
@@ -6580,7 +6529,7 @@ function checkMiniQuizAnswer(){
   const correct = q.blanks.every((answer, i) => _miniQuizState.picks[i] === answer);
   _miniQuizState.locked = true;
   if(correct) _miniQuizState.correct += 1;
-  applyDelta(correct ? {knowledge:5, judgment:3} : {knowledge:-2});
+  applyDelta(correct ? {knowledge:3, judgment:2, health:2, sleep:2} : {knowledge:-2, judgment:-1});
   feedback.style.display = 'block';
   feedback.style.background = correct ? '#dcfce7' : '#fee2e2';
   feedback.style.color = correct ? '#166534' : '#991b1b';
@@ -6668,23 +6617,24 @@ function showEnding(){
 function selectTypeResultCard(ctx) {
   const stats = ctx.stats;
   const score = {
-    selfControl: stats.judgment + stats.caffeine * 0.45,
-    hydration: stats.health + stats.caffeine * 0.25,
-    courage: stats.social + stats.judgment * 0.35 + ctx.helped * 8,
-    medicineKnowledge: stats.knowledge + stats.judgment * 0.3 - ctx.analgesics * 2,
-    sleep: stats.sleep + stats.health * 0.25 + (ctx.avgSleep >= 7 ? 10 : 0),
-    focus: (stats.knowledge + stats.sleep + stats.health) / 3 + 8,
-    balance: ctx.avg + (ctx.min.value >= 55 ? 15 : 0) - Math.max(0, ctx.max.value - ctx.min.value - 35) * 0.4,
-    caffeineWarning: (100 - stats.caffeine) + ctx.avgCaffeine * 0.55 + ctx.combo * 18
+    selfControl: stats.judgment + stats.caffeine * 0.25,
+    hydration: stats.health * 1.05 + stats.caffeine * 0.25 + (ctx.avgCaffeine <= 45 ? 12 : 0),
+    courage: stats.social * 1.05 + stats.judgment * 0.25 + ctx.helped * 10,
+    medicineKnowledge: stats.knowledge + stats.judgment * 0.2 - ctx.analgesics * 3,
+    sleep: stats.sleep * 1.05 + stats.health * 0.2 + (ctx.avgSleep >= 7 ? 12 : 0),
+    focus: (stats.knowledge + stats.sleep + stats.health) / 3 + (ctx.min.value >= 45 ? 12 : 0),
+    balance: ctx.avg + (ctx.min.value >= 45 ? 20 : 0) - Math.max(0, ctx.max.value - ctx.min.value - 28) * 0.5,
+    caffeineWarning: (100 - stats.caffeine) * 0.45 + ctx.avgCaffeine * 0.22 + ctx.combo * 24
   };
 
-  if (ctx.combo > 0 || ctx.avgCaffeine >= 90 || stats.caffeine <= 42) return TYPE_RESULT_CARDS.caffeineWarning;
-  if (stats.sleep >= 78 && ctx.avgSleep >= 7) return TYPE_RESULT_CARDS.sleep;
-  if (ctx.allHigh || (ctx.min.value >= 60 && ctx.avg >= 70)) return TYPE_RESULT_CARDS.balance;
-  if (ctx.helped >= 2 || stats.social >= 82) return TYPE_RESULT_CARDS.courage;
-  if (stats.knowledge >= 82 || (stats.knowledge >= stats.judgment && stats.knowledge >= stats.health && ctx.analgesics <= 1)) return TYPE_RESULT_CARDS.medicineKnowledge;
-  if (stats.judgment >= 82 || stats.caffeine >= 82) return TYPE_RESULT_CARDS.selfControl;
-  if (stats.health >= 82) return TYPE_RESULT_CARDS.hydration;
+  if (ctx.combo > 0 || ctx.avgCaffeine >= 150 || stats.caffeine <= 12) return TYPE_RESULT_CARDS.caffeineWarning;
+  if (ctx.allHigh && ctx.max.value - ctx.min.value <= 25) return TYPE_RESULT_CARDS.balance;
+  if (ctx.min.value >= 42 && ctx.avg >= 55 && ctx.max.value - ctx.min.value <= 35) return TYPE_RESULT_CARDS.balance;
+  if (ctx.helped >= 2 || stats.social >= 75) return TYPE_RESULT_CARDS.courage;
+  if (stats.knowledge >= 68 && ctx.analgesics <= 1) return TYPE_RESULT_CARDS.medicineKnowledge;
+  if (stats.knowledge >= 52 && stats.sleep >= 52 && stats.health >= 52 && ctx.max.value - ctx.min.value > 18) return TYPE_RESULT_CARDS.focus;
+  if (stats.sleep >= 75 && ctx.avgSleep >= 7) return TYPE_RESULT_CARDS.sleep;
+  if (stats.health >= 62 && stats.caffeine >= 45) return TYPE_RESULT_CARDS.hydration;
 
   const best = Object.entries(score).sort((a,b) => b[1] - a[1])[0]?.[0] || 'focus';
   return TYPE_RESULT_CARDS[best] || TYPE_RESULT_CARDS.focus;
