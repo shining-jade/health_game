@@ -6792,7 +6792,10 @@ function drawEndMsg(){
   const sleep   = G.stats.sleep   || 0;
   const caffeine= G.stats.caffeine|| 0;
   const judgment= G.stats.judgment|| 0;
-  const avgCaffeine = Math.round((G.totalCaffeine || 0) / 7);
+  const caffeineIntakeDays = Array.isArray(G.caffeineLog)
+    ? new Set(G.caffeineLog.filter(entry => Number(entry.amount || 0) > 0).map(entry => `${entry.day || 1}`)).size
+    : (G.caffeineDays || 0);
+  const avgCaffeine = caffeineIntakeDays ? Math.round((G.totalCaffeine || 0) / caffeineIntakeDays) : 0;
   const avgSleep = G.sleepCount ? ((G.sleepTotal || 0) / G.sleepCount) : 0;
   const avgSleepText = avgSleep ? `${avgSleep.toFixed(1)}시간` : '기록 없음';
   const analgesics = G.analgesicCount || 0;
@@ -6878,7 +6881,7 @@ function drawEndMsg(){
     <div style="font-family:'Jua',sans-serif;font-size:1rem;margin-bottom:8px;color:${color};">${escapeHtml(typeReasonHeading)}</div>
     <div style="margin-bottom:12px;white-space:pre-line;">${escapeHtml(typeReason)}</div>
     <div style="display:grid;gap:7px;font-size:.82rem;line-height:1.55;">
-      <div>☕ 총 카페인 섭취: <strong>${G.totalCaffeine||0}mg</strong> (평균 1일 ${avgCaffeine}mg)</div>
+      <div>☕ 총 카페인 섭취: <strong>${G.totalCaffeine||0}mg</strong> (카페인 섭취일 평균 ${avgCaffeine}mg)</div>
       <div>🌙 평균 수면 시간: <strong>${avgSleepText}</strong></div>
       <div>💊 진통제 복용: <strong>${analgesics}회</strong> / 공복 복용: <strong>${fasting}회</strong></div>
       <div>⚠️ 카페인+진통제 중복: <strong>${combo}회</strong></div>
