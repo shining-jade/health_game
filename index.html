@@ -6596,27 +6596,27 @@ const TYPE_RESULT_CARDS = {
   selfControl: {
     key:'selfControl',
     file:'01_squirrel_self_control_result.png',
-    title:'똑똑한 선택 다람쥐형'
+    title:'신중한 다람쥐형'
   },
   hydration: {
     key:'hydration',
     file:'02_bear_hydration_result.png',
-    title:'수분 충전 곰형'
+    title:'든든한 곰형'
   },
   courage: {
     key:'courage',
     file:'03_frog_courage_result.png',
-    title:'용기 개구리형'
+    title:'재빠른 개구리형'
   },
   medicineKnowledge: {
     key:'medicineKnowledge',
     file:'04_owl_medicine_knowledge_result.png',
-    title:'현명한 부엉이형'
+    title:'꼼꼼한 부엉이형'
   },
   sleep: {
     key:'sleep',
     file:'05_rabbit_sleep_result.png',
-    title:'꿀잠 토끼형'
+    title:'균형 잡힌 토끼형'
   },
   focus: {
     key:'focus',
@@ -6626,12 +6626,12 @@ const TYPE_RESULT_CARDS = {
   balance: {
     key:'balance',
     file:'07_meerkat_balance_result.png',
-    title:'균형 미어캣형'
+    title:'침착한 미어캣형'
   },
   caffeineWarning: {
     key:'caffeineWarning',
     file:'08_hamster_caffeine_warning_result.png',
-    title:'카페인 과속 햄스터형'
+    title:'점검이 필요한 햄스터형'
   }
 };
 
@@ -6680,19 +6680,31 @@ function typeAnimalLabel(card) {
 }
 
 function typeReasonText(card, ctx) {
-  const animal = typeAnimalLabel(card);
-  const low = ctx.min?.label ? ` 가장 낮은 지표는 ${ctx.min.label}(${ctx.min.value}점)이어서 다음에는 이 부분을 더 챙기면 좋아요.` : '';
   const reasons = {
-    selfControl: `카페인이나 즉흥적인 권유에 휩쓸리기보다 스스로 한계선을 지킨 선택이 많이 쌓였어요. 약과 음료를 고를 때 멈춰서 확인한 태도가 ${animal}으로 이어졌습니다.`,
-    hydration: `무리하게 버티기보다 몸 상태와 수분 보충을 먼저 챙긴 선택이 돋보였어요. 카페인 의존을 낮추고 체력을 지킨 흐름이 ${animal}으로 이어졌습니다.`,
-    courage: `친구나 주변 사람이 위험한 선택을 할 수 있는 순간에 그냥 넘기지 않고 알려주려는 선택이 쌓였어요. 나뿐 아니라 주변 사람까지 지키려는 태도가 ${animal}으로 이어졌습니다.`,
-    medicineKnowledge: `성분표와 주의사항을 확인하는 선택이 많이 쌓였어요. 약 이름보다 성분, 복용 간격, 중복 복용 위험을 살핀 점이 ${animal}으로 이어졌습니다.`,
-    sleep: `카페인으로 억지로 버티기보다 잠과 회복을 선택한 흐름이 강했어요. 시험 전 컨디션을 위해 수면을 챙긴 선택이 ${animal}으로 이어졌습니다.`,
-    focus: `한 가지 지표만 높이기보다 지식, 체력, 컨디션을 함께 유지하려는 선택이 쌓였어요. 꾸준히 기본을 챙긴 흐름이 ${animal}으로 이어졌습니다.${low}`,
-    balance: `큰 위험 선택을 피하면서 여러 지표를 고르게 유지했어요. 특정 능력치에만 치우치지 않고 균형 있게 관리한 결과가 ${animal}으로 이어졌습니다.`,
-    caffeineWarning: `카페인 음료나 카페인과 약을 함께 고려하는 위험 선택이 누적되었어요. 짧은 각성 효과를 좇은 선택이 많아져 ${animal}으로 이어졌습니다.`
+    selfControl: `카페인이나 즉흥적인 권유 앞에서도 쉽게 휩쓸리지 않고, 한 번 더 확인하는 선택이 많았어요.\n내 몸에 맞는지 따져 보고 스스로 기준선을 지킨 태도가 신중한 다람쥐형으로 이어졌어요.`,
+    hydration: `무리해서 버티기보다 몸 상태를 먼저 살피고, 수분과 회복을 챙기는 선택이 두드러졌어요.\n내 페이스를 지키며 오래 갈 힘을 쌓아 온 흐름이 든든한 곰형으로 이어졌어요.`,
+    courage: `위험한 선택을 그냥 지나치지 않고, 친구나 주변 사람에게 먼저 알려주려는 태도가 여러 장면에서 드러났어요.\n나만이 아니라 주변까지 함께 지키려는 감각이 재빠른 개구리형으로 이어졌어요.`,
+    medicineKnowledge: `겉만 보고 넘기지 않고 성분표와 주의사항을 꼼꼼히 확인하는 선택이 많았어요.\n약 이름보다 성분, 복용 간격, 함께 먹으면 안 되는 경우까지 살핀 태도가 꼼꼼한 부엉이형으로 이어졌어요.`,
+    sleep: `카페인으로 억지로 버티기보다 잠과 회복을 더 중요하게 생각하는 흐름이 강했어요.\n피곤한 순간에도 컨디션 신호를 무시하지 않고 생활 리듬을 지키려 한 태도가 균형 잡힌 토끼형으로 이어졌어요.`,
+    focus: `한 번에 눈에 띄는 선택보다 기본을 꾸준히 챙기며 안정적으로 관리한 흐름이 보였어요.\n지식, 체력, 컨디션을 차곡차곡 쌓아 가는 태도가 꾸준한 거북이형으로 이어졌어요.`,
+    balance: `한쪽에 치우치기보다 전체 상황을 살피며 여러 지표를 고르게 유지하려는 선택이 인상적이었어요.\n큰 위험은 피하고 흐름 전체를 안정적으로 관리한 태도가 침착한 미어캣형으로 이어졌어요.`,
+    caffeineWarning: `피곤함을 빨리 해결하려다 카페인에 기대는 선택이 조금 많았고, 음료와 약을 함께 볼 때 놓친 부분이 있었을 수 있어요.\n잠깐 버티는 데 집중하기보다 카페인 양과 복용 간격을 한 번 더 점검할 필요가 있어 점검이 필요한 햄스터형으로 이어졌어요.`
   };
-  return reasons[card?.key] || `이번 선택 기록을 바탕으로 ${animal}이 나왔어요. 아래 지표를 보며 어떤 선택이 결과에 영향을 주었는지 확인해 보세요.`;
+  return reasons[card?.key] || `이번 선택 기록을 바탕으로 ${typeAnimalLabel(card)}이 나왔어요. 아래 지표를 보며 어떤 선택이 결과에 영향을 주었는지 확인해 보세요.`;
+}
+
+function typeReasonTitle(card) {
+  const titles = {
+    selfControl: '신중한 다람쥐형이 된 이유',
+    hydration: '든든한 곰형이 된 이유',
+    courage: '재빠른 개구리형이 된 이유',
+    medicineKnowledge: '꼼꼼한 부엉이형이 된 이유',
+    sleep: '균형 잡힌 토끼형이 된 이유',
+    focus: '꾸준한 거북이형이 된 이유',
+    balance: '침착한 미어캣형이 된 이유',
+    caffeineWarning: '점검이 필요한 햄스터형이 된 이유'
+  };
+  return titles[card?.key] || `${typeAnimalLabel(card)}이 된 이유`;
 }
 
 function drawRadar(){
@@ -6793,6 +6805,7 @@ function drawEndMsg(){
   });
   renderTypeResultCard(typeCard);
   const typeAnimal = typeAnimalLabel(typeCard);
+  const typeReasonHeading = typeReasonTitle(typeCard);
   const typeReason = typeReasonText(typeCard, {avg, min, max, allHigh, avgCaffeine, avgSleep, analgesics, fasting, combo, helped});
 
   let ending, title, msg, color;
@@ -6862,8 +6875,8 @@ function drawEndMsg(){
   document.getElementById('ending-title').style.color = color;
   document.getElementById('ending-sub').textContent = title;
   document.getElementById('ending-msg').innerHTML = `
-    <div style="font-family:'Jua',sans-serif;font-size:1rem;margin-bottom:8px;color:${color};">${escapeHtml(typeAnimal)}이 된 이유</div>
-    <div style="margin-bottom:12px;">${escapeHtml(typeReason)}</div>
+    <div style="font-family:'Jua',sans-serif;font-size:1rem;margin-bottom:8px;color:${color};">${escapeHtml(typeReasonHeading)}</div>
+    <div style="margin-bottom:12px;white-space:pre-line;">${escapeHtml(typeReason)}</div>
     <div style="display:grid;gap:7px;font-size:.82rem;line-height:1.55;">
       <div>☕ 총 카페인 섭취: <strong>${G.totalCaffeine||0}mg</strong> (평균 1일 ${avgCaffeine}mg)</div>
       <div>🌙 평균 수면 시간: <strong>${avgSleepText}</strong></div>
