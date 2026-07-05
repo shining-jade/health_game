@@ -3121,6 +3121,7 @@ let G = {
   lastSleepHour:22, nextDayPenalty:'normal', teacherEventDay:0,
   totalCaffeine:0, caffeineDays:0, sleepTotal:0, sleepCount:0, lastDayCaffeine:0,
   analgesicCount:0, fastingMedCount:0, comboCount:0, helpedFriend:0,
+  miniQuizScore:null, miniQuizTotal:3,
   labelChecked:false, snsRisk:false, minjunWarned:false, recoveryPlan:false,
   cluesChecked:{}, pendingHealthOffice:'', lastCvsDrink:null, day3CvsDrink:null,
   sceneHistory:[], caffeineLog:[],
@@ -3403,6 +3404,7 @@ const confirmName=()=>{
   G.lastDayCaffeine=0;
   G.caffeineLog=[];
   G.analgesicCount=0; G.fastingMedCount=0; G.comboCount=0; G.helpedFriend=0;
+  G.miniQuizScore=null; G.miniQuizTotal=MINI_QUIZ.length;
   G.labelChecked=false; G.snsRisk=false; G.minjunWarned=false; G.recoveryPlan=false;
   G.cluesChecked={};
   G.sceneHistory=[];
@@ -6549,7 +6551,6 @@ function checkMiniQuizAnswer(){
   const correct = q.blanks.every((answer, i) => _miniQuizState.picks[i] === answer);
   _miniQuizState.locked = true;
   if(correct) _miniQuizState.correct += 1;
-  applyDelta(correct ? {knowledge:3, judgment:2, health:2, sleep:2} : {knowledge:-2, judgment:-1});
   feedback.style.display = 'block';
   feedback.style.background = correct ? '#dcfce7' : '#fee2e2';
   feedback.style.color = correct ? '#166534' : '#991b1b';
@@ -6570,6 +6571,8 @@ function nextMiniQuizQuestion(){
   }
   document.getElementById('mini-quiz-modal').style.display = 'none';
   const total = _miniQuizState.correct;
+  G.miniQuizScore = total;
+  G.miniQuizTotal = MINI_QUIZ.length;
   const title = `미니 퀴즈 ${total}/${MINI_QUIZ.length}`;
   const resultMessages = {
     3: '3/3 채점 결과, 완벽해요! 시험의 모든 핵심 문항을 완벽하게 맞추셨습니다. 성분표와 주의사항을 훌륭하게 숙지하여, 이번 시험에서 최상의 결과를 기록했습니다.',
@@ -6802,6 +6805,9 @@ function drawEndMsg(){
   const fasting = G.fastingMedCount || 0;
   const combo = G.comboCount || 0;
   const helped = G.helpedFriend || 0;
+  const miniQuizScore = Number.isFinite(Number(G.miniQuizScore)) ? Number(G.miniQuizScore) : null;
+  const miniQuizTotal = Number.isFinite(Number(G.miniQuizTotal)) ? Number(G.miniQuizTotal) : MINI_QUIZ.length;
+  const miniQuizText = miniQuizScore === null ? '기록 없음' : `${miniQuizScore}/${miniQuizTotal}`;
   const typeCard = selectTypeResultCard({
     stats:{ health, sleep, caffeine, judgment, knowledge:G.stats.knowledge || 0, social:G.stats.social || 0 },
     avg, min, max, allHigh, avgCaffeine, avgSleep, analgesics, fasting, combo, helped
@@ -6886,6 +6892,7 @@ function drawEndMsg(){
       <div>💊 진통제 복용: <strong>${analgesics}회</strong> / 공복 복용: <strong>${fasting}회</strong></div>
       <div>⚠️ 카페인+진통제 중복: <strong>${combo}회</strong></div>
       <div>🤝 친구에게 도움을 준 횟수: <strong>${helped}회</strong></div>
+      <div>📝 학습 확인 미니퀴즈: <strong>${miniQuizText}</strong></div>
       <div>🧭 결과 유형: <strong>${typeCard.title}</strong></div>
     </div>`;
   document.getElementById('ending-msg').style.borderLeftColor = color;
