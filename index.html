@@ -6413,7 +6413,7 @@ function prevScene(){
   saveGameState();
 }
 
-let _miniQuizState = { qIdx:0, picks:[], correct:0, tileOrders:{} };
+let _miniQuizState = { qIdx:0, picks:[], correct:0, tileOrders:{}, retryCounts:{} };
 
 function shuffleMiniQuizTiles(items){
   const arr = [...(items || [])];
@@ -6453,6 +6453,7 @@ function ensureMiniQuizModal(){
       <div id="mq-tiles" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;"></div>
       <div id="mq-feedback" style="display:none;border-radius:12px;padding:12px 14px;margin-bottom:14px;font-size:.9rem;line-height:1.55;"></div>
       <button id="mq-check" class="btn btn-primary" style="width:100%;margin-bottom:8px;">확인</button>
+      <button id="mq-retry" class="btn btn-primary" style="width:100%;margin-bottom:8px;display:none;">다시 풀어보기</button>
       <button id="mq-next" class="btn" style="width:100%;display:none;">다음</button>
     </div>`;
   document.body.appendChild(modal);
@@ -6463,6 +6464,10 @@ function renderMiniQuizQuestion(){
   const modal = ensureMiniQuizModal();
   const q = MINI_QUIZ[_miniQuizState.qIdx];
   prepareMiniQuizTileOrder(_miniQuizState.qIdx);
+  if(!_miniQuizState.retryCounts) _miniQuizState.retryCounts = {};
+  if(!Number.isFinite(_miniQuizState.retryCounts[_miniQuizState.qIdx])) {
+    _miniQuizState.retryCounts[_miniQuizState.qIdx] = 0;
+  }
   _miniQuizState.picks = [];
   _miniQuizState.locked = false;
   document.getElementById('mq-step').textContent = `${_miniQuizState.qIdx + 1} / ${MINI_QUIZ.length}`;
@@ -6471,6 +6476,7 @@ function renderMiniQuizQuestion(){
   const feedback = document.getElementById('mq-feedback');
   feedback.style.display = 'none';
   document.getElementById('mq-check').style.display = 'block';
+  document.getElementById('mq-retry').style.display = 'none';
   document.getElementById('mq-next').style.display = 'none';
   renderMiniQuizPicks();
   renderMiniQuizTiles();
@@ -6551,6 +6557,11 @@ function checkMiniQuizAnswer(){
   const correct = q.blanks.every((answer, i) => _miniQuizState.picks[i] === answer);
   _miniQuizState.locked = true;
   if(correct) _miniQuizState.correct += 1;
+  if(!correct) {
+    if(!_miniQuizState.retryCounts) _miniQuizState.retryCounts = {};
+    _miniQuizState.retryCounts[_miniQuizState.qIdx] = (_miniQuizState.retryCounts[_miniQuizState.qIdx] || 0) + 1;
+  }
+  const wrongAttempts = _miniQuizState.retryCounts?.[_miniQuizState.qIdx] || 0;
   feedback.style.display = 'block';
   feedback.style.background = correct ? '#dcfce7' : '#fee2e2';
   feedback.style.color = correct ? '#166534' : '#991b1b';
@@ -6558,9 +6569,23 @@ function checkMiniQuizAnswer(){
   renderMiniQuizPicks();
   renderMiniQuizTiles();
   document.getElementById('mq-check').style.display = 'none';
+  const retry = document.getElementById('mq-retry');
   const next = document.getElementById('mq-next');
-  next.style.display = 'block';
+  retry.style.display = correct ? 'none' : 'block';
+  next.style.display = correct || wrongAttempts >= 2 ? 'block' : 'none';
   next.textContent = _miniQuizState.qIdx < MINI_QUIZ.length - 1 ? '다음' : '채점 결과';
+}
+
+function retryMiniQuizQuestion(){
+  _miniQuizState.picks = [];
+  _miniQuizState.locked = false;
+  const feedback = document.getElementById('mq-feedback');
+  feedback.style.display = 'none';
+  document.getElementById('mq-check').style.display = 'block';
+  document.getElementById('mq-retry').style.display = 'none';
+  document.getElementById('mq-next').style.display = 'none';
+  renderMiniQuizPicks();
+  renderMiniQuizTiles();
 }
 
 function nextMiniQuizQuestion(){
@@ -6585,9 +6610,10 @@ function nextMiniQuizQuestion(){
 }
 
 function openMiniQuiz(){
-  _miniQuizState = { qIdx:0, picks:[], correct:0, locked:false, tileOrders:{} };
+  _miniQuizState = { qIdx:0, picks:[], correct:0, locked:false, tileOrders:{}, retryCounts:{} };
   const modal = ensureMiniQuizModal();
   modal.querySelector('#mq-check').onclick = checkMiniQuizAnswer;
+  modal.querySelector('#mq-retry').onclick = retryMiniQuizQuestion;
   modal.querySelector('#mq-next').onclick = nextMiniQuizQuestion;
   renderMiniQuizQuestion();
 }
