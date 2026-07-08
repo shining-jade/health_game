@@ -3148,10 +3148,16 @@ function caffeineClues(){
 const MINI_QUIZ = [
   {
     id:'dday_q1', type:'fill', episodeRef:'D-Day',
-    sentence:'약은 이름보다 [1], 감으로 먹기보다 [2], 함께 먹기 전 [3]을 확인해야 한다.',
-    blanks:['성분표','복용간격','주의사항'],
-    tiles:['성분표','복용간격','주의사항','광고문구','친구추천','맛'],
-    explanation:'약을 안전하게 쓰려면 성분표·복용간격·주의사항을 확인해야 해요.'
+    sentence:'약은 이름이나 광고문구보다 [1]와/과 [2]을/를 먼저 확인하고, 정해진 [3]과 [4]을/를 지켜서 먹어야 합니다.',
+    blanks:['성분','주의사항','용량','복용 간격'],
+    acceptedAnswers:[
+      ['성분','주의사항','용량','복용 간격'],
+      ['성분','주의사항','복용 간격','용량'],
+      ['주의사항','성분','용량','복용 간격'],
+      ['주의사항','성분','복용 간격','용량']
+    ],
+    tiles:['성분','주의사항','용량','복용 간격','가격','모양','색상','광고문구'],
+    explanation:'약은 이름이나 광고문구보다 성분과 주의사항을 먼저 확인하고, 정해진 용량과 복용 간격을 지켜서 먹어야 해요.'
   },
   {
     id:'dday_q2', type:'fill', episodeRef:'D-Day',
@@ -6572,6 +6578,15 @@ function editMiniQuizPick(idx){
   renderMiniQuizTiles();
 }
 
+function isMiniQuizAnswerCorrect(q, picks){
+  const accepted = Array.isArray(q.acceptedAnswers) && q.acceptedAnswers.length
+    ? q.acceptedAnswers
+    : [q.blanks || []];
+  return accepted.some(answer =>
+    answer.length === picks.length && answer.every((value, i) => picks[i] === value)
+  );
+}
+
 function checkMiniQuizAnswer(){
   const q = MINI_QUIZ[_miniQuizState.qIdx];
   const feedback = document.getElementById('mq-feedback');
@@ -6582,7 +6597,7 @@ function checkMiniQuizAnswer(){
     feedback.textContent = `빈칸 ${q.blanks.length}개를 모두 채운 뒤 확인을 눌러 주세요.`;
     return;
   }
-  const correct = q.blanks.every((answer, i) => _miniQuizState.picks[i] === answer);
+  const correct = isMiniQuizAnswerCorrect(q, _miniQuizState.picks);
   _miniQuizState.locked = true;
   if(correct) _miniQuizState.correct += 1;
   if(!correct) {
