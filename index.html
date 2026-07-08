@@ -1616,6 +1616,9 @@ body{background:
   backdrop-filter:blur(2px);
 }
 .choice-modal.show{display:flex;}
+.choice-modal.choice-guard .choice-btn{
+  pointer-events:none;
+}
 #screen-student.choice-open .s-right{
   filter:none;
 }
@@ -5262,6 +5265,10 @@ const _typing = {
   speed: 26,
   onComplete: null,
 };
+const CHOICE_REVEAL_DELAY_MS = 450;
+const CHOICE_INPUT_GUARD_MS = 300;
+let _choiceRevealTimer = null;
+let _choiceInputLockedUntil = 0;
 const _resultTyping = {
   sentences: [],
   sIdx: 0,
@@ -5651,6 +5658,11 @@ function applyDialogueCueForSentence(sentence) {
 }
 
 function hideChoices() {
+  if (_choiceRevealTimer) {
+    clearTimeout(_choiceRevealTimer);
+    _choiceRevealTimer = null;
+  }
+  _choiceInputLockedUntil = 0;
   const choices = document.getElementById('choices');
   if (!choices) return;
   choices.innerHTML = '';
@@ -5658,7 +5670,7 @@ function hideChoices() {
   choices.style.animation = '';
   const modal = document.getElementById('choice-modal');
   const modalList = document.getElementById('choice-modal-list');
-  if (modal) modal.classList.remove('show');
+  if (modal) modal.classList.remove('show','choice-guard');
   if (modalList) modalList.innerHTML = '';
   setChoiceModalCollapsed(false);
   document.getElementById('screen-student')?.classList.remove('choice-open','choice-collapsed');
@@ -5740,6 +5752,10 @@ function renderChoiceAdPost(sc) {
 }
 
 function renderChoices(sc) {
+  if (_choiceRevealTimer) {
+    clearTimeout(_choiceRevealTimer);
+    _choiceRevealTimer = null;
+  }
   const choices = document.getElementById('choices');
   const modal = document.getElementById('choice-modal');
   const modalList = document.getElementById('choice-modal-list');
@@ -5783,9 +5799,13 @@ function renderChoices(sc) {
     target.appendChild(b);
   });
   if (modal) {
-    modal.classList.add('show');
+    modal.classList.add('show','choice-guard');
     setChoiceModalCollapsed(false);
   }
+  _choiceInputLockedUntil = Date.now() + CHOICE_INPUT_GUARD_MS;
+  setTimeout(() => {
+    if (modal) modal.classList.remove('choice-guard');
+  }, CHOICE_INPUT_GUARD_MS);
   document.getElementById('screen-student')?.classList.add('choice-open');
 }
 
@@ -5801,7 +5821,11 @@ function showChoicesOrNext() {
     return;
   }
   window._choicesWaitingForClues = false;
-  renderChoices(sc);
+  if (_choiceRevealTimer) clearTimeout(_choiceRevealTimer);
+  _choiceRevealTimer = setTimeout(() => {
+    _choiceRevealTimer = null;
+    renderChoices(sc);
+  }, CHOICE_REVEAL_DELAY_MS);
 }
 
 function startResultTyping(text, onComplete) {
@@ -6088,6 +6112,7 @@ function renderScene(idx){
   saveGameState();
 }
 function pickChoice(i){
+  if(Date.now() < _choiceInputLockedUntil) return;
   if(G.answered)return;
   hideChoices();
   const sc=DB.gameData.scenarios[G.scene];
