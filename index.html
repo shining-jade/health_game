@@ -2509,7 +2509,10 @@ body{background:
           <button class="seg-btn" type="button" data-value="f" onclick="selectSegment('gender','f')">여</button>
         </div>
       </div>
-      <input id="name-inp" type="text" placeholder="예: 1101 홍길동" maxlength="24">
+      <div class="setup-field">
+        <label>학번 이름</label>
+        <input id="name-inp" type="text" placeholder="예: 1101 또는 11001 홍길동" maxlength="24">
+      </div>
       <div class="setup-field">
         <label>체중</label>
         <div style="display:flex;align-items:center;">
@@ -3327,12 +3330,12 @@ function resumeGame() {
 const NAMES_M=['도영','시우','준서','현우','지호','건우','성민','재원','윤재','은우'];
 const NAMES_F=['하윤','예린','지혜','슬기','수아','나은','채원','유진','다은','지안'];
 function parseStudentIdentity(raw){
-  const match = String(raw || '').trim().match(/^(\d{4})\s+(.+)$/);
+  const match = String(raw || '').trim().match(/^(\d{4,})\s+(.+)$/);
   if(!match) return null;
   const studentId = match[1];
   const grade = Number(studentId[0]);
-  const classNo = Number(studentId[1]);
-  const studentNo = Number(studentId.slice(2));
+  const classNo = Number(studentId.length > 4 ? studentId.slice(1, -2) : studentId[1]);
+  const studentNo = Number(studentId.slice(-2));
   const name = match[2].trim();
   if(!name || grade < 1 || grade > 3 || classNo < 1 || studentNo < 1) return null;
   return { studentId, grade, classNo, studentNo, name };
@@ -3380,7 +3383,7 @@ const confirmName=()=>{
   const weightRaw=weightInput.value.trim();
   const weight=Number(weightRaw);
   const missing=[];
-  if(!identity) missing.push('4자리 학번과 이름');
+  if(!identity) missing.push('학번과 이름');
   if(!weightRaw || !Number.isFinite(weight) || weight<30 || weight>120) missing.push('체중(30~120kg)');
   if(missing.length){
     alert(`${missing.join(', ')}을(를) 입력해 주세요.`);
@@ -6695,7 +6698,7 @@ const TYPE_RESULT_CARDS = {
 
 function showEnding(){
   show('ending');
-  document.getElementById('ending-title').textContent=`${G.name}의 결과`;
+  document.getElementById('ending-title').textContent=`${studentDisplayName()}의 결과`;
   document.getElementById('ending-sub').textContent='약물 오남용 예방 시뮬레이션 완료!';
   drawRadar(); drawEndMsg();
 }
