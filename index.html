@@ -3121,7 +3121,7 @@ let G = {
   lastSleepHour:22, nextDayPenalty:'normal', teacherEventDay:0,
   totalCaffeine:0, caffeineDays:0, sleepTotal:0, sleepCount:0, lastDayCaffeine:0,
   analgesicCount:0, fastingMedCount:0, comboCount:0, helpedFriend:0,
-  miniQuizScore:null, miniQuizTotal:3,
+  miniQuizScore:null, miniQuizTotal:3, miniQuizRetryCount:0,
   labelChecked:false, snsRisk:false, minjunWarned:false, recoveryPlan:false,
   cluesChecked:{}, pendingHealthOffice:'', lastCvsDrink:null, day3CvsDrink:null,
   sceneHistory:[], caffeineLog:[],
@@ -3404,7 +3404,7 @@ const confirmName=()=>{
   G.lastDayCaffeine=0;
   G.caffeineLog=[];
   G.analgesicCount=0; G.fastingMedCount=0; G.comboCount=0; G.helpedFriend=0;
-  G.miniQuizScore=null; G.miniQuizTotal=MINI_QUIZ.length;
+  G.miniQuizScore=null; G.miniQuizTotal=MINI_QUIZ.length; G.miniQuizRetryCount=0;
   G.labelChecked=false; G.snsRisk=false; G.minjunWarned=false; G.recoveryPlan=false;
   G.cluesChecked={};
   G.sceneHistory=[];
@@ -6596,8 +6596,11 @@ function nextMiniQuizQuestion(){
   }
   document.getElementById('mini-quiz-modal').style.display = 'none';
   const total = _miniQuizState.correct;
+  const retryTotal = Object.values(_miniQuizState.retryCounts || {})
+    .reduce((sum, count) => sum + (Number(count) || 0), 0);
   G.miniQuizScore = total;
   G.miniQuizTotal = MINI_QUIZ.length;
+  G.miniQuizRetryCount = retryTotal;
   const title = `미니 퀴즈 ${total}/${MINI_QUIZ.length}`;
   const resultMessages = {
     3: '3/3 채점 결과, 완벽해요! 시험의 모든 핵심 문항을 완벽하게 맞추셨습니다. 성분표와 주의사항을 훌륭하게 숙지하여, 이번 시험에서 최상의 결과를 기록했습니다.',
@@ -6611,6 +6614,7 @@ function nextMiniQuizQuestion(){
 
 function openMiniQuiz(){
   _miniQuizState = { qIdx:0, picks:[], correct:0, locked:false, tileOrders:{}, retryCounts:{} };
+  G.miniQuizRetryCount = 0;
   const modal = ensureMiniQuizModal();
   modal.querySelector('#mq-check').onclick = checkMiniQuizAnswer;
   modal.querySelector('#mq-retry').onclick = retryMiniQuizQuestion;
@@ -6834,6 +6838,7 @@ function drawEndMsg(){
   const miniQuizScore = Number.isFinite(Number(G.miniQuizScore)) ? Number(G.miniQuizScore) : null;
   const miniQuizTotal = Number.isFinite(Number(G.miniQuizTotal)) ? Number(G.miniQuizTotal) : MINI_QUIZ.length;
   const miniQuizText = miniQuizScore === null ? '기록 없음' : `${miniQuizScore}/${miniQuizTotal}`;
+  const miniQuizRetryCount = Number.isFinite(Number(G.miniQuizRetryCount)) ? Number(G.miniQuizRetryCount) : 0;
   const typeCard = selectTypeResultCard({
     stats:{ health, sleep, caffeine, judgment, knowledge:G.stats.knowledge || 0, social:G.stats.social || 0 },
     avg, min, max, allHigh, avgCaffeine, avgSleep, analgesics, fasting, combo, helped
@@ -6918,7 +6923,7 @@ function drawEndMsg(){
       <div>💊 진통제 복용: <strong>${analgesics}회</strong> / 공복 복용: <strong>${fasting}회</strong></div>
       <div>⚠️ 카페인+진통제 중복: <strong>${combo}회</strong></div>
       <div>🤝 친구에게 도움을 준 횟수: <strong>${helped}회</strong></div>
-      <div>📝 학습 확인 미니퀴즈: <strong>${miniQuizText}</strong></div>
+      <div>📝 학습 확인 미니퀴즈: <strong>${miniQuizText}</strong> (다시푼 횟수: <strong>${miniQuizRetryCount}회</strong>)</div>
       <div>🧭 결과 유형: <strong>${typeCard.title}</strong></div>
     </div>`;
   document.getElementById('ending-msg').style.borderLeftColor = color;
