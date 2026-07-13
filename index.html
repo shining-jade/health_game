@@ -4000,6 +4000,7 @@ function buildFourteenDayScenarios(){
                     "title": "공복 복용",
                     "text": "[선택 결과] 두통은 조금 줄었지만 빈속에 먹으니 속이 쓰린 것 같다."
                 },
+                "analgesicDoses": 1,
                 "fastingMed": true,
                 "nextLocation": "🏫 D-5 일과 중"
             },
@@ -4057,6 +4058,7 @@ function buildFourteenDayScenarios(){
                     "title": "식후 복용",
                     "text": "[선택 결과] 바쁜 아침이었지만 설명서를 확인한 덕분에 빈속을 피하고 안전하게 약을 복용해 부작용을 줄였다."
                 },
+                "analgesicDoses": 1,
                 "nextLocation": "🏫 D-5 일과 중"
             },
             {
@@ -4071,6 +4073,7 @@ function buildFourteenDayScenarios(){
                     "title": "기다리는 선택",
                     "text": "[선택 결과] 당장 집중력은 조금 떨어졌지만, 공복을 피해 약을 복용함으로써 부작용을 안전하게 예방했다."
                 },
+                "analgesicDoses": 1,
                 "nextLocation": "🏫 D-5 일과 중"
             },
             {
@@ -4086,6 +4089,7 @@ function buildFourteenDayScenarios(){
                     "title": "공복 복용",
                     "text": "[선택 결과] 두통은 조금 줄었지만 빈속에 먹으니 속이 쓰린 것 같다."
                 },
+                "analgesicDoses": 1,
                 "fastingMed": true,
                 "characterMood": "stomach",
                 "nextLocation": "🏫 D-5 일과 중"
@@ -4356,7 +4360,8 @@ function buildFourteenDayScenarios(){
                     "text": "[선택 결과] 두통을 빨리 가라앉히려고 괜찮아정을 바로 삼켰다. 하지만 종합감기약에 이미 같은 진통제 성분이 들어있어, 나도 모르게 아세트아미노펜을 과다 복용하는 위험한 행동이었다."
                 },
                 "caffeineMg": 30,
-                "analgesic": true,
+                "analgesicDoses": 2,
+                "comboMedCaffeine": true,
                 "nextLocation": "📱 D-3 방과후"
             },
             {
@@ -4374,6 +4379,7 @@ function buildFourteenDayScenarios(){
                 "showDrugCardBeforeResult": {
                     "drugKeys": ["ok", "cold"]
                 },
+                "analgesicDoses": 1,
                 "caffeineMg": 30,
                 "nextLocation": "🔎 D-3 성분표 비교 후 선택"
             },
@@ -4390,6 +4396,7 @@ function buildFourteenDayScenarios(){
                     "title": "참기",
                     "text": "[선택 결과] 약을 더 먹어도 되는지 몰라 그냥 억지로 참아냈다. 위험한 과다 복용은 우연히 피했을지 몰라도, 지독한 통증 때문에 남은 수업 시간 내내 제대로 집중할 수 없었다."
                 },
+                "analgesicDoses": 1,
                 "caffeineMg": 30,
                 "nextLocation": "📱 D-3 방과후"
             },
@@ -4405,6 +4412,7 @@ function buildFourteenDayScenarios(){
                     "title": "보건실 확인",
                     "text": "[선택 결과] 두 약을 들고 보건실로 향했다. 보건 선생님은 종합감기약에도 이미 진통제 성분이 들어있으니 지금 추가로 먹으면 안 된다며 친절하게 알려주셨다."
                 },
+                "analgesicDoses": 1,
                 "caffeineMg": 30,
                 "nextLocation": "📱 D-3 방과후"
             }
@@ -4444,7 +4452,8 @@ function buildFourteenDayScenarios(){
                     "title": "알고도 추가 복용",
                     "text": "[선택 결과] 성분이 겹치는 걸 알지만 통증을 참지 못해 약을 또 먹었다. 중복 복용이 반복되면 심각한 부작용이 발생할 수 있으니 주의해야 한다."
                 },
-                "analgesic": true,
+                "analgesicDoses": 1,
+                "comboMedCaffeine": true,
                 "nextLocation": "📱 D-3 방과후"
             }
         ]
@@ -4473,6 +4482,9 @@ function buildFourteenDayScenarios(){
                     "title": "SNS 꿀팁 따라 하기",
                     "text": "[선택 결과] 호기심에 SNS 꿀팁을 그대로 따라 했다. 하지만 출처 불명의 정보를 맹신해 진통제와 고카페인 음료를 함께 복용하는 것은 심장과 위장에 큰 무리를 주는 위험한 행동이다."
                 },
+                "analgesicDoses": 1,
+                "caffeineMg": 135,
+                "comboMedCaffeine": true,
                 "nextLocation": "🌙 D-3 그날 밤"
             },
             {
@@ -4726,7 +4738,8 @@ function applyChoiceRecords(choice){
   if(choice.minjunWarned) G.minjunWarned=true;
   if(choice.recoveryPlan) G.recoveryPlan=true;
   if(choice.helpedFriend) G.helpedFriend=(G.helpedFriend||0)+1;
-  if(choice.analgesic) G.analgesicCount=(G.analgesicCount||0)+1;
+  const analgesicDoses = Number(choice.analgesicDoses) || (choice.analgesic ? 1 : 0);
+  if(analgesicDoses > 0) G.analgesicCount=(G.analgesicCount||0)+analgesicDoses;
   if(choice.fastingMed) G.fastingMedCount=(G.fastingMedCount||0)+1;
   if(choice.comboMedCaffeine) G.comboCount=(G.comboCount||0)+1;
   if(choice.sleepHours) recordSleep(choice.sleepHours);
