@@ -230,6 +230,11 @@
     if (opener?.isConnected && typeof opener.focus === 'function') opener.focus();
   }
 
+  function applyResultImageError(image, error, resultName) {
+    image.hidden = true;
+    error.textContent = `${resultName || '결과 카드'} 이미지를 불러오지 못했습니다.`;
+  }
+
   function initResultDialog() {
     const { dialog, closeButton, image, error } = dialogElements();
     if (!dialog || !closeButton || !image || !error || dialog.dataset.guideReady === 'true') return;
@@ -244,8 +249,7 @@
       if (event.target === dialog) closeResultDialog();
     });
     image.addEventListener('error', () => {
-      image.hidden = true;
-      error.textContent = `${dialogState.resultName || '결과 카드'} 이미지를 불러오지 못했습니다.`;
+      applyResultImageError(image, error, dialogState.resultName);
     });
     image.addEventListener('load', () => {
       image.hidden = false;
@@ -265,6 +269,7 @@
     renderCharacterGrid,
     openResultDialog,
     closeResultDialog,
+    applyResultImageError,
     initResultDialog
   };
 

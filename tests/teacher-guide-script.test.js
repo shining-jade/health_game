@@ -29,4 +29,12 @@ for (const result of guide.RESULT_TYPES) {
 const state = guide.createDialogState();
 if (state.opener !== null) throw new Error('모달 초기 opener는 null이어야 함');
 
+const failedImage = { hidden: false };
+const failureStatus = { textContent: '' };
+guide.applyResultImageError(failedImage, failureStatus, '신중한 다람쥐형');
+if (!failedImage.hidden) throw new Error('로드 실패 이미지를 숨기지 않음');
+if (failureStatus.textContent !== '신중한 다람쥐형 이미지를 불러오지 못했습니다.') {
+  throw new Error(`이미지 실패 안내 불일치: ${failureStatus.textContent}`);
+}
+
 console.log('teacher guide script contract passed');
