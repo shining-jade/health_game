@@ -15,4 +15,18 @@ if (!Array.isArray(guide.RESULT_TYPES) || guide.RESULT_TYPES.length !== 8) {
 const keys = new Set(guide.RESULT_TYPES.map(item => item.key));
 if (keys.size !== 8) throw new Error('결과 유형 key 중복');
 
+if (guide.resultImagePath('card.png') !== '../assets/type-result-cards/card.png') {
+  throw new Error('결과 카드 상대 경로 오류');
+}
+
+for (const result of guide.RESULT_TYPES) {
+  const markup = guide.buildResultCardMarkup(result);
+  for (const expected of [result.key, result.name, result.summary, result.file, 'button']) {
+    if (!markup.includes(expected)) throw new Error(`${result.name} 마크업 누락: ${expected}`);
+  }
+}
+
+const state = guide.createDialogState();
+if (state.opener !== null) throw new Error('모달 초기 opener는 null이어야 함');
+
 console.log('teacher guide script contract passed');

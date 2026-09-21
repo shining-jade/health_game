@@ -53,6 +53,26 @@
     })
   ]);
 
+  function resultImagePath(file) {
+    return `../assets/type-result-cards/${file}`;
+  }
+
+  function buildResultCardMarkup(result) {
+    return `
+      <button class="character-card" type="button" data-result-key="${result.key}" aria-label="${result.name} 결과 카드 크게 보기">
+        <img src="${resultImagePath(result.file)}" alt="" loading="lazy">
+        <span class="character-card__name">${result.name}</span>
+        <span class="character-card__summary">${result.summary}</span>
+      </button>
+    `.trim();
+  }
+
+  function createDialogState() {
+    return { opener: null, resultName: '' };
+  }
+
+  const dialogState = createDialogState();
+
   function resolveTabId(hash) {
     const id = String(hash || '').replace(/^#/, '');
     return TAB_IDS.includes(id) ? id : TAB_IDS[0];
@@ -147,9 +167,114 @@
     activateTab(resolveTabId(window.location.hash), { updateHash: false });
   }
 
-  const api = { TAB_IDS, RESULT_TYPES, resolveTabId, activateTab, initTabs };
+  function renderCharacterGrid() {
+    if (typeof document === 'undefined') return;
+    const grid = document.getElementById('character-grid');
+    if (!grid) return;
+
+    grid.innerHTML = RESULT_TYPES.map(buildResultCardMarkup).join('');
+    for (const button of grid.querySelectorAll('[data-result-key]')) {
+      button.addEventListener('click', () => {
+        const result = RESULT_TYPES.find(item => item.key === button.dataset.resultKey);
+        if (result) openResultDialog(result, button);
+      });
+    }
+  }
+
+  function dialogElements() {
+    if (typeof document === 'undefined') return {};
+    return {
+      dialog: document.getElementById('result-dialog'),
+      closeButton: document.getElementById('result-dialog-close'),
+      title: document.getElementById('result-dialog-title'),
+      image: document.getElementById('result-dialog-image'),
+      error: document.querySelector('#result-dialog .dialog-error')
+    };
+  }
+
+  function openResultDialog(result, opener) {
+    const { dialog, closeButton, title, image, error } = dialogElements();
+    if (!dialog || !closeButton || !title || !image || !error || !result) return;
+
+    dialogState.opener = opener || null;
+    dialogState.resultName = result.name;
+    title.textContent = result.name;
+    error.textContent = '';
+    image.hidden = false;
+    image.alt = `${result.name} 결과 카드`;
+    image.src = resultImagePath(result.file);
+
+    if (typeof dialog.showModal === 'function') {
+      if (!dialog.open) dialog.showModal();
+    } else {
+      dialog.setAttribute('open', '');
+      dialog.classList.add('dialog-fallback-open');
+    }
+    closeButton.focus();
+  }
+
+  function closeResultDialog() {
+    const { dialog } = dialogElements();
+    if (!dialog) return;
+
+    if (typeof dialog.close === 'function' && dialog.open) {
+      dialog.close();
+    } else {
+      dialog.removeAttribute('open');
+      dialog.classList.remove('dialog-fallback-open');
+    }
+
+    const opener = dialogState.opener;
+    dialogState.opener = null;
+    dialogState.resultName = '';
+    if (opener?.isConnected && typeof opener.focus === 'function') opener.focus();
+  }
+
+  function initResultDialog() {
+    const { dialog, closeButton, image, error } = dialogElements();
+    if (!dialog || !closeButton || !image || !error || dialog.dataset.guideReady === 'true') return;
+
+    dialog.dataset.guideReady = 'true';
+    closeButton.addEventListener('click', closeResultDialog);
+    dialog.addEventListener('cancel', event => {
+      event.preventDefault();
+      closeResultDialog();
+    });
+    dialog.addEventListener('click', event => {
+      if (event.target === dialog) closeResultDialog();
+    });
+    image.addEventListener('error', () => {
+      image.hidden = true;
+      error.textContent = `${dialogState.resultName || '결과 카드'} 이미지를 불러오지 못했습니다.`;
+    });
+    image.addEventListener('load', () => {
+      image.hidden = false;
+      error.textContent = '';
+    });
+  }
+
+  const api = {
+    TAB_IDS,
+    RESULT_TYPES,
+    resolveTabId,
+    activateTab,
+    initTabs,
+    resultImagePath,
+    buildResultCardMarkup,
+    createDialogState,
+    renderCharacterGrid,
+    openResultDialog,
+    closeResultDialog,
+    initResultDialog
+  };
 
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   if (typeof window !== 'undefined') window.TeacherGuide = api;
-  if (typeof document !== 'undefined') document.addEventListener('DOMContentLoaded', initTabs, { once: true });
+  if (typeof document !== 'undefined') {
+    document.addEventListener('DOMContentLoaded', () => {
+      initTabs();
+      renderCharacterGrid();
+      initResultDialog();
+    }, { once: true });
+  }
 })();
