@@ -37,4 +37,16 @@ if (failureStatus.textContent !== '신중한 다람쥐형 이미지를 불러오
   throw new Error(`이미지 실패 안내 불일치: ${failureStatus.textContent}`);
 }
 
+let scrollOptions = null;
+const tabList = {
+  clientWidth: 312,
+  scrollLeft: 0,
+  scrollTo(options) { scrollOptions = options; }
+};
+const offscreenTab = { parentElement: tabList, offsetLeft: 450, offsetWidth: 200 };
+guide.ensureTabVisible(offscreenTab, false);
+if (!scrollOptions || scrollOptions.left !== 394 || scrollOptions.behavior !== 'auto') {
+  throw new Error(`선택 탭 스크롤 계산 오류: ${JSON.stringify(scrollOptions)}`);
+}
+
 console.log('teacher guide script contract passed');

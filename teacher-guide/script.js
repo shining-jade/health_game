@@ -86,6 +86,20 @@
     return document.getElementById(`panel-${tabId}`);
   }
 
+  function ensureTabVisible(tab, animate = false) {
+    const list = tab?.parentElement;
+    if (!list || typeof list.scrollTo !== 'function') return;
+
+    const tabStart = tab.offsetLeft;
+    const tabEnd = tabStart + tab.offsetWidth;
+    const visibleStart = list.scrollLeft;
+    const visibleEnd = visibleStart + list.clientWidth;
+    if (tabStart >= visibleStart && tabEnd <= visibleEnd) return;
+
+    const left = Math.max(0, tabStart - (list.clientWidth - tab.offsetWidth) / 2);
+    list.scrollTo({ left, behavior: animate ? 'smooth' : 'auto' });
+  }
+
   function activateTab(tabId, options = {}) {
     if (typeof document === 'undefined') return resolveTabId(`#${tabId}`);
 
@@ -108,10 +122,8 @@
     const activeTab = tabElement(activeId);
     if (moveFocus && activeTab) {
       activeTab.focus();
-      if (typeof activeTab.scrollIntoView === 'function') {
-        activeTab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
-      }
     }
+    if (activeTab) ensureTabVisible(activeTab, moveFocus);
 
     if (updateHash && typeof window !== 'undefined' && window.history?.replaceState) {
       window.history.replaceState(null, '', `#${activeId}`);
@@ -261,6 +273,7 @@
     TAB_IDS,
     RESULT_TYPES,
     resolveTabId,
+    ensureTabVisible,
     activateTab,
     initTabs,
     resultImagePath,
