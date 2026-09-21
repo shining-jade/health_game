@@ -1616,6 +1616,9 @@ body{background:
   backdrop-filter:blur(2px);
 }
 .choice-modal.show{display:flex;}
+.choice-modal.choice-guard .choice-btn{
+  pointer-events:none;
+}
 #screen-student.choice-open .s-right{
   filter:none;
 }
@@ -2506,7 +2509,10 @@ body{background:
           <button class="seg-btn" type="button" data-value="f" onclick="selectSegment('gender','f')">여</button>
         </div>
       </div>
-      <input id="name-inp" type="text" placeholder="예: 1101 홍길동" maxlength="24">
+      <div class="setup-field">
+        <label>학번 이름</label>
+        <input id="name-inp" type="text" placeholder="예: 1101 또는 11001 홍길동" maxlength="24">
+      </div>
       <div class="setup-field">
         <label>체중</label>
         <div style="display:flex;align-items:center;">
@@ -3121,7 +3127,7 @@ let G = {
   lastSleepHour:22, nextDayPenalty:'normal', teacherEventDay:0,
   totalCaffeine:0, caffeineDays:0, sleepTotal:0, sleepCount:0, lastDayCaffeine:0,
   analgesicCount:0, fastingMedCount:0, comboCount:0, helpedFriend:0,
-  miniQuizScore:null, miniQuizTotal:3,
+  miniQuizScore:null, miniQuizTotal:3, miniQuizRetryCount:0,
   labelChecked:false, snsRisk:false, minjunWarned:false, recoveryPlan:false,
   cluesChecked:{}, pendingHealthOffice:'', lastCvsDrink:null, day3CvsDrink:null,
   sceneHistory:[], caffeineLog:[],
@@ -3142,10 +3148,16 @@ function caffeineClues(){
 const MINI_QUIZ = [
   {
     id:'dday_q1', type:'fill', episodeRef:'D-Day',
-    sentence:'약은 이름보다 [1], 감으로 먹기보다 [2], 함께 먹기 전 [3]을 확인해야 한다.',
-    blanks:['성분표','복용간격','주의사항'],
-    tiles:['성분표','복용간격','주의사항','광고문구','친구추천','맛'],
-    explanation:'약을 안전하게 쓰려면 성분표·복용간격·주의사항을 확인해야 해요.'
+    sentence:'약은 이름이나 광고문구보다 [1]와/과 [2]을/를 먼저 확인하고, 정해진 [3]과 [4]을/를 지켜서 먹어야 합니다.',
+    blanks:['성분','주의사항','용량','복용 간격'],
+    acceptedAnswers:[
+      ['성분','주의사항','용량','복용 간격'],
+      ['성분','주의사항','복용 간격','용량'],
+      ['주의사항','성분','용량','복용 간격'],
+      ['주의사항','성분','복용 간격','용량']
+    ],
+    tiles:['성분','주의사항','용량','복용 간격','가격','모양','색상','디자인'],
+    explanation:'약은 이름이나 광고문구보다 성분과 주의사항을 먼저 확인하고, 정해진 용량과 복용 간격을 지켜서 먹어야 해요.'
   },
   {
     id:'dday_q2', type:'fill', episodeRef:'D-Day',
@@ -3324,12 +3336,12 @@ function resumeGame() {
 const NAMES_M=['도영','시우','준서','현우','지호','건우','성민','재원','윤재','은우'];
 const NAMES_F=['하윤','예린','지혜','슬기','수아','나은','채원','유진','다은','지안'];
 function parseStudentIdentity(raw){
-  const match = String(raw || '').trim().match(/^(\d{4})\s+(.+)$/);
+  const match = String(raw || '').trim().match(/^(\d{4,})\s+(.+)$/);
   if(!match) return null;
   const studentId = match[1];
   const grade = Number(studentId[0]);
-  const classNo = Number(studentId[1]);
-  const studentNo = Number(studentId.slice(2));
+  const classNo = Number(studentId.length > 4 ? studentId.slice(1, -2) : studentId[1]);
+  const studentNo = Number(studentId.slice(-2));
   const name = match[2].trim();
   if(!name || grade < 1 || grade > 3 || classNo < 1 || studentNo < 1) return null;
   return { studentId, grade, classNo, studentNo, name };
@@ -3377,7 +3389,7 @@ const confirmName=()=>{
   const weightRaw=weightInput.value.trim();
   const weight=Number(weightRaw);
   const missing=[];
-  if(!identity) missing.push('4자리 학번과 이름');
+  if(!identity) missing.push('학번과 이름');
   if(!weightRaw || !Number.isFinite(weight) || weight<30 || weight>120) missing.push('체중(30~120kg)');
   if(missing.length){
     alert(`${missing.join(', ')}을(를) 입력해 주세요.`);
@@ -3404,7 +3416,7 @@ const confirmName=()=>{
   G.lastDayCaffeine=0;
   G.caffeineLog=[];
   G.analgesicCount=0; G.fastingMedCount=0; G.comboCount=0; G.helpedFriend=0;
-  G.miniQuizScore=null; G.miniQuizTotal=MINI_QUIZ.length;
+  G.miniQuizScore=null; G.miniQuizTotal=MINI_QUIZ.length; G.miniQuizRetryCount=0;
   G.labelChecked=false; G.snsRisk=false; G.minjunWarned=false; G.recoveryPlan=false;
   G.cluesChecked={};
   G.sceneHistory=[];
@@ -3988,6 +4000,7 @@ function buildFourteenDayScenarios(){
                     "title": "공복 복용",
                     "text": "[선택 결과] 두통은 조금 줄었지만 빈속에 먹으니 속이 쓰린 것 같다."
                 },
+                "analgesicDoses": 1,
                 "fastingMed": true,
                 "nextLocation": "🏫 D-5 일과 중"
             },
@@ -4045,6 +4058,7 @@ function buildFourteenDayScenarios(){
                     "title": "식후 복용",
                     "text": "[선택 결과] 바쁜 아침이었지만 설명서를 확인한 덕분에 빈속을 피하고 안전하게 약을 복용해 부작용을 줄였다."
                 },
+                "analgesicDoses": 1,
                 "nextLocation": "🏫 D-5 일과 중"
             },
             {
@@ -4059,6 +4073,7 @@ function buildFourteenDayScenarios(){
                     "title": "기다리는 선택",
                     "text": "[선택 결과] 당장 집중력은 조금 떨어졌지만, 공복을 피해 약을 복용함으로써 부작용을 안전하게 예방했다."
                 },
+                "analgesicDoses": 1,
                 "nextLocation": "🏫 D-5 일과 중"
             },
             {
@@ -4074,6 +4089,7 @@ function buildFourteenDayScenarios(){
                     "title": "공복 복용",
                     "text": "[선택 결과] 두통은 조금 줄었지만 빈속에 먹으니 속이 쓰린 것 같다."
                 },
+                "analgesicDoses": 1,
                 "fastingMed": true,
                 "characterMood": "stomach",
                 "nextLocation": "🏫 D-5 일과 중"
@@ -4344,7 +4360,8 @@ function buildFourteenDayScenarios(){
                     "text": "[선택 결과] 두통을 빨리 가라앉히려고 괜찮아정을 바로 삼켰다. 하지만 종합감기약에 이미 같은 진통제 성분이 들어있어, 나도 모르게 아세트아미노펜을 과다 복용하는 위험한 행동이었다."
                 },
                 "caffeineMg": 30,
-                "analgesic": true,
+                "analgesicDoses": 2,
+                "comboMedCaffeine": true,
                 "nextLocation": "📱 D-3 방과후"
             },
             {
@@ -4362,6 +4379,7 @@ function buildFourteenDayScenarios(){
                 "showDrugCardBeforeResult": {
                     "drugKeys": ["ok", "cold"]
                 },
+                "analgesicDoses": 1,
                 "caffeineMg": 30,
                 "nextLocation": "🔎 D-3 성분표 비교 후 선택"
             },
@@ -4378,6 +4396,7 @@ function buildFourteenDayScenarios(){
                     "title": "참기",
                     "text": "[선택 결과] 약을 더 먹어도 되는지 몰라 그냥 억지로 참아냈다. 위험한 과다 복용은 우연히 피했을지 몰라도, 지독한 통증 때문에 남은 수업 시간 내내 제대로 집중할 수 없었다."
                 },
+                "analgesicDoses": 1,
                 "caffeineMg": 30,
                 "nextLocation": "📱 D-3 방과후"
             },
@@ -4393,6 +4412,7 @@ function buildFourteenDayScenarios(){
                     "title": "보건실 확인",
                     "text": "[선택 결과] 두 약을 들고 보건실로 향했다. 보건 선생님은 종합감기약에도 이미 진통제 성분이 들어있으니 지금 추가로 먹으면 안 된다며 친절하게 알려주셨다."
                 },
+                "analgesicDoses": 1,
                 "caffeineMg": 30,
                 "nextLocation": "📱 D-3 방과후"
             }
@@ -4432,7 +4452,8 @@ function buildFourteenDayScenarios(){
                     "title": "알고도 추가 복용",
                     "text": "[선택 결과] 성분이 겹치는 걸 알지만 통증을 참지 못해 약을 또 먹었다. 중복 복용이 반복되면 심각한 부작용이 발생할 수 있으니 주의해야 한다."
                 },
-                "analgesic": true,
+                "analgesicDoses": 1,
+                "comboMedCaffeine": true,
                 "nextLocation": "📱 D-3 방과후"
             }
         ]
@@ -4461,6 +4482,9 @@ function buildFourteenDayScenarios(){
                     "title": "SNS 꿀팁 따라 하기",
                     "text": "[선택 결과] 호기심에 SNS 꿀팁을 그대로 따라 했다. 하지만 출처 불명의 정보를 맹신해 진통제와 고카페인 음료를 함께 복용하는 것은 심장과 위장에 큰 무리를 주는 위험한 행동이다."
                 },
+                "analgesicDoses": 1,
+                "caffeineMg": 135,
+                "comboMedCaffeine": true,
                 "nextLocation": "🌙 D-3 그날 밤"
             },
             {
@@ -4714,7 +4738,8 @@ function applyChoiceRecords(choice){
   if(choice.minjunWarned) G.minjunWarned=true;
   if(choice.recoveryPlan) G.recoveryPlan=true;
   if(choice.helpedFriend) G.helpedFriend=(G.helpedFriend||0)+1;
-  if(choice.analgesic) G.analgesicCount=(G.analgesicCount||0)+1;
+  const analgesicDoses = Number(choice.analgesicDoses) || (choice.analgesic ? 1 : 0);
+  if(analgesicDoses > 0) G.analgesicCount=(G.analgesicCount||0)+analgesicDoses;
   if(choice.fastingMed) G.fastingMedCount=(G.fastingMedCount||0)+1;
   if(choice.comboMedCaffeine) G.comboCount=(G.comboCount||0)+1;
   if(choice.sleepHours) recordSleep(choice.sleepHours);
@@ -5262,6 +5287,10 @@ const _typing = {
   speed: 26,
   onComplete: null,
 };
+const CHOICE_REVEAL_DELAY_MS = 450;
+const CHOICE_INPUT_GUARD_MS = 300;
+let _choiceRevealTimer = null;
+let _choiceInputLockedUntil = 0;
 const _resultTyping = {
   sentences: [],
   sIdx: 0,
@@ -5651,6 +5680,11 @@ function applyDialogueCueForSentence(sentence) {
 }
 
 function hideChoices() {
+  if (_choiceRevealTimer) {
+    clearTimeout(_choiceRevealTimer);
+    _choiceRevealTimer = null;
+  }
+  _choiceInputLockedUntil = 0;
   const choices = document.getElementById('choices');
   if (!choices) return;
   choices.innerHTML = '';
@@ -5658,7 +5692,7 @@ function hideChoices() {
   choices.style.animation = '';
   const modal = document.getElementById('choice-modal');
   const modalList = document.getElementById('choice-modal-list');
-  if (modal) modal.classList.remove('show');
+  if (modal) modal.classList.remove('show','choice-guard');
   if (modalList) modalList.innerHTML = '';
   setChoiceModalCollapsed(false);
   document.getElementById('screen-student')?.classList.remove('choice-open','choice-collapsed');
@@ -5740,6 +5774,10 @@ function renderChoiceAdPost(sc) {
 }
 
 function renderChoices(sc) {
+  if (_choiceRevealTimer) {
+    clearTimeout(_choiceRevealTimer);
+    _choiceRevealTimer = null;
+  }
   const choices = document.getElementById('choices');
   const modal = document.getElementById('choice-modal');
   const modalList = document.getElementById('choice-modal-list');
@@ -5783,9 +5821,13 @@ function renderChoices(sc) {
     target.appendChild(b);
   });
   if (modal) {
-    modal.classList.add('show');
+    modal.classList.add('show','choice-guard');
     setChoiceModalCollapsed(false);
   }
+  _choiceInputLockedUntil = Date.now() + CHOICE_INPUT_GUARD_MS;
+  setTimeout(() => {
+    if (modal) modal.classList.remove('choice-guard');
+  }, CHOICE_INPUT_GUARD_MS);
   document.getElementById('screen-student')?.classList.add('choice-open');
 }
 
@@ -5801,7 +5843,11 @@ function showChoicesOrNext() {
     return;
   }
   window._choicesWaitingForClues = false;
-  renderChoices(sc);
+  if (_choiceRevealTimer) clearTimeout(_choiceRevealTimer);
+  _choiceRevealTimer = setTimeout(() => {
+    _choiceRevealTimer = null;
+    renderChoices(sc);
+  }, CHOICE_REVEAL_DELAY_MS);
 }
 
 function startResultTyping(text, onComplete) {
@@ -6088,6 +6134,7 @@ function renderScene(idx){
   saveGameState();
 }
 function pickChoice(i){
+  if(Date.now() < _choiceInputLockedUntil) return;
   if(G.answered)return;
   hideChoices();
   const sc=DB.gameData.scenarios[G.scene];
@@ -6413,7 +6460,7 @@ function prevScene(){
   saveGameState();
 }
 
-let _miniQuizState = { qIdx:0, picks:[], correct:0, tileOrders:{} };
+let _miniQuizState = { qIdx:0, picks:[], correct:0, tileOrders:{}, retryCounts:{} };
 
 function shuffleMiniQuizTiles(items){
   const arr = [...(items || [])];
@@ -6453,6 +6500,7 @@ function ensureMiniQuizModal(){
       <div id="mq-tiles" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;"></div>
       <div id="mq-feedback" style="display:none;border-radius:12px;padding:12px 14px;margin-bottom:14px;font-size:.9rem;line-height:1.55;"></div>
       <button id="mq-check" class="btn btn-primary" style="width:100%;margin-bottom:8px;">확인</button>
+      <button id="mq-retry" class="btn btn-primary" style="width:100%;margin-bottom:8px;display:none;">다시 풀어보기</button>
       <button id="mq-next" class="btn" style="width:100%;display:none;">다음</button>
     </div>`;
   document.body.appendChild(modal);
@@ -6463,6 +6511,10 @@ function renderMiniQuizQuestion(){
   const modal = ensureMiniQuizModal();
   const q = MINI_QUIZ[_miniQuizState.qIdx];
   prepareMiniQuizTileOrder(_miniQuizState.qIdx);
+  if(!_miniQuizState.retryCounts) _miniQuizState.retryCounts = {};
+  if(!Number.isFinite(_miniQuizState.retryCounts[_miniQuizState.qIdx])) {
+    _miniQuizState.retryCounts[_miniQuizState.qIdx] = 0;
+  }
   _miniQuizState.picks = [];
   _miniQuizState.locked = false;
   document.getElementById('mq-step').textContent = `${_miniQuizState.qIdx + 1} / ${MINI_QUIZ.length}`;
@@ -6471,6 +6523,7 @@ function renderMiniQuizQuestion(){
   const feedback = document.getElementById('mq-feedback');
   feedback.style.display = 'none';
   document.getElementById('mq-check').style.display = 'block';
+  document.getElementById('mq-retry').style.display = 'none';
   document.getElementById('mq-next').style.display = 'none';
   renderMiniQuizPicks();
   renderMiniQuizTiles();
@@ -6538,6 +6591,15 @@ function editMiniQuizPick(idx){
   renderMiniQuizTiles();
 }
 
+function isMiniQuizAnswerCorrect(q, picks){
+  const accepted = Array.isArray(q.acceptedAnswers) && q.acceptedAnswers.length
+    ? q.acceptedAnswers
+    : [q.blanks || []];
+  return accepted.some(answer =>
+    answer.length === picks.length && answer.every((value, i) => picks[i] === value)
+  );
+}
+
 function checkMiniQuizAnswer(){
   const q = MINI_QUIZ[_miniQuizState.qIdx];
   const feedback = document.getElementById('mq-feedback');
@@ -6548,9 +6610,14 @@ function checkMiniQuizAnswer(){
     feedback.textContent = `빈칸 ${q.blanks.length}개를 모두 채운 뒤 확인을 눌러 주세요.`;
     return;
   }
-  const correct = q.blanks.every((answer, i) => _miniQuizState.picks[i] === answer);
+  const correct = isMiniQuizAnswerCorrect(q, _miniQuizState.picks);
   _miniQuizState.locked = true;
   if(correct) _miniQuizState.correct += 1;
+  if(!correct) {
+    if(!_miniQuizState.retryCounts) _miniQuizState.retryCounts = {};
+    _miniQuizState.retryCounts[_miniQuizState.qIdx] = (_miniQuizState.retryCounts[_miniQuizState.qIdx] || 0) + 1;
+  }
+  const wrongAttempts = _miniQuizState.retryCounts?.[_miniQuizState.qIdx] || 0;
   feedback.style.display = 'block';
   feedback.style.background = correct ? '#dcfce7' : '#fee2e2';
   feedback.style.color = correct ? '#166534' : '#991b1b';
@@ -6558,9 +6625,23 @@ function checkMiniQuizAnswer(){
   renderMiniQuizPicks();
   renderMiniQuizTiles();
   document.getElementById('mq-check').style.display = 'none';
+  const retry = document.getElementById('mq-retry');
   const next = document.getElementById('mq-next');
-  next.style.display = 'block';
+  retry.style.display = correct ? 'none' : 'block';
+  next.style.display = correct || wrongAttempts >= 2 ? 'block' : 'none';
   next.textContent = _miniQuizState.qIdx < MINI_QUIZ.length - 1 ? '다음' : '채점 결과';
+}
+
+function retryMiniQuizQuestion(){
+  _miniQuizState.picks = [];
+  _miniQuizState.locked = false;
+  const feedback = document.getElementById('mq-feedback');
+  feedback.style.display = 'none';
+  document.getElementById('mq-check').style.display = 'block';
+  document.getElementById('mq-retry').style.display = 'none';
+  document.getElementById('mq-next').style.display = 'none';
+  renderMiniQuizPicks();
+  renderMiniQuizTiles();
 }
 
 function nextMiniQuizQuestion(){
@@ -6571,8 +6652,11 @@ function nextMiniQuizQuestion(){
   }
   document.getElementById('mini-quiz-modal').style.display = 'none';
   const total = _miniQuizState.correct;
+  const retryTotal = Object.values(_miniQuizState.retryCounts || {})
+    .reduce((sum, count) => sum + (Number(count) || 0), 0);
   G.miniQuizScore = total;
   G.miniQuizTotal = MINI_QUIZ.length;
+  G.miniQuizRetryCount = retryTotal;
   const title = `미니 퀴즈 ${total}/${MINI_QUIZ.length}`;
   const resultMessages = {
     3: '3/3 채점 결과, 완벽해요! 시험의 모든 핵심 문항을 완벽하게 맞추셨습니다. 성분표와 주의사항을 훌륭하게 숙지하여, 이번 시험에서 최상의 결과를 기록했습니다.',
@@ -6585,9 +6669,11 @@ function nextMiniQuizQuestion(){
 }
 
 function openMiniQuiz(){
-  _miniQuizState = { qIdx:0, picks:[], correct:0, locked:false, tileOrders:{} };
+  _miniQuizState = { qIdx:0, picks:[], correct:0, locked:false, tileOrders:{}, retryCounts:{} };
+  G.miniQuizRetryCount = 0;
   const modal = ensureMiniQuizModal();
   modal.querySelector('#mq-check').onclick = checkMiniQuizAnswer;
+  modal.querySelector('#mq-retry').onclick = retryMiniQuizQuestion;
   modal.querySelector('#mq-next').onclick = nextMiniQuizQuestion;
   renderMiniQuizQuestion();
 }
@@ -6640,7 +6726,7 @@ const TYPE_RESULT_CARDS = {
 
 function showEnding(){
   show('ending');
-  document.getElementById('ending-title').textContent=`${G.name}의 결과`;
+  document.getElementById('ending-title').textContent=`${studentDisplayName()}의 결과`;
   document.getElementById('ending-sub').textContent='약물 오남용 예방 시뮬레이션 완료!';
   drawRadar(); drawEndMsg();
 }
@@ -6808,6 +6894,7 @@ function drawEndMsg(){
   const miniQuizScore = Number.isFinite(Number(G.miniQuizScore)) ? Number(G.miniQuizScore) : null;
   const miniQuizTotal = Number.isFinite(Number(G.miniQuizTotal)) ? Number(G.miniQuizTotal) : MINI_QUIZ.length;
   const miniQuizText = miniQuizScore === null ? '기록 없음' : `${miniQuizScore}/${miniQuizTotal}`;
+  const miniQuizRetryCount = Number.isFinite(Number(G.miniQuizRetryCount)) ? Number(G.miniQuizRetryCount) : 0;
   const typeCard = selectTypeResultCard({
     stats:{ health, sleep, caffeine, judgment, knowledge:G.stats.knowledge || 0, social:G.stats.social || 0 },
     avg, min, max, allHigh, avgCaffeine, avgSleep, analgesics, fasting, combo, helped
@@ -6892,7 +6979,7 @@ function drawEndMsg(){
       <div>💊 진통제 복용: <strong>${analgesics}회</strong> / 공복 복용: <strong>${fasting}회</strong></div>
       <div>⚠️ 카페인+진통제 중복: <strong>${combo}회</strong></div>
       <div>🤝 친구에게 도움을 준 횟수: <strong>${helped}회</strong></div>
-      <div>📝 학습 확인 미니퀴즈: <strong>${miniQuizText}</strong></div>
+      <div>📝 학습 확인 미니퀴즈: <strong>${miniQuizText}</strong> (다시푼 횟수: <strong>${miniQuizRetryCount}회</strong>)</div>
       <div>🧭 결과 유형: <strong>${typeCard.title}</strong></div>
     </div>`;
   document.getElementById('ending-msg').style.borderLeftColor = color;

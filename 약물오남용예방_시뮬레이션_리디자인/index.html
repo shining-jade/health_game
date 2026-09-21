@@ -3038,7 +3038,9 @@
         fullText: "",
         displayedText: "",
         timer: null,
-        speed: 26
+        unlockTimer: null,
+        speed: 26,
+        completionDelay: 650
       }
     };
 
@@ -3857,6 +3859,10 @@
           return `<button class="sub-btn" type="button"${modalAttr}>${escapeHtml(action.text)}</button>`;
         })
         .join("");
+
+      if (state.typing.isTyping || state.typing.unlockTimer) {
+        disableChoicesWhileTyping(true);
+      }
     };
 
     const disableChoicesWhileTyping = (disabled) => {
@@ -3866,6 +3872,19 @@
         button.style.opacity = disabled || isLocked ? "0.6" : "";
         button.style.pointerEvents = disabled || isLocked ? "none" : "";
       });
+    };
+
+    const scheduleChoicesUnlock = (delay = state.typing.completionDelay) => {
+      if (state.typing.unlockTimer) {
+        clearTimeout(state.typing.unlockTimer);
+        state.typing.unlockTimer = null;
+      }
+
+      disableChoicesWhileTyping(true);
+      state.typing.unlockTimer = window.setTimeout(() => {
+        state.typing.unlockTimer = null;
+        disableChoicesWhileTyping(false);
+      }, delay);
     };
 
     const setSkipButtonVisible = (visible) => {
@@ -3883,14 +3902,23 @@
         state.typing.timer = null;
       }
 
+      if (state.typing.unlockTimer) {
+        clearTimeout(state.typing.unlockTimer);
+        state.typing.unlockTimer = null;
+      }
+
       if (forceComplete && textEl) {
         textEl.textContent = state.typing.fullText || "";
         state.typing.displayedText = state.typing.fullText || "";
       }
 
       state.typing.isTyping = false;
-      disableChoicesWhileTyping(false);
       setSkipButtonVisible(false);
+      if (forceComplete) {
+        scheduleChoicesUnlock();
+      } else {
+        disableChoicesWhileTyping(false);
+      }
     };
 
     const startTypewriter = (text, speed = state.typing.speed) => {
