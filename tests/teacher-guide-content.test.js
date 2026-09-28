@@ -7,7 +7,7 @@ if (!fs.existsSync(htmlPath)) throw new Error('teacher-guide/index.html 없음')
 
 const html = fs.readFileSync(htmlPath, 'utf8');
 const requiredText = [
-  '왜 만들었나요',
+  '이 앱을 왜 만들게 되었나요?',
   '7일간의 선택',
   '결과 캐릭터',
   '수업 활용 · 제작 이야기',
